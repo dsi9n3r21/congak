@@ -39,13 +39,19 @@ export async function login(formData: FormData) {
   const password = String(formData.get("password"));
 
   const supabase = createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-  if (error) {
+  if (error || !data.user) {
     return { error: "Emel atau kata laluan tidak sah." };
   }
 
-  redirect("/dashboard");
+  const { data: userRow } = await supabase
+    .from("users")
+    .select("role")
+    .eq("id", data.user.id)
+    .single();
+
+  redirect(userRow?.role === "parent" ? "/parent/dashboard" : "/dashboard");
 }
 
 export async function logout() {
