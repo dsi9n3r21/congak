@@ -92,6 +92,19 @@ export default async function DashboardPage() {
         </section>
       )}
 
+      <section className="mx-5 mt-5">
+        <a
+          href="/exam"
+          className="flex items-center justify-between rounded-kite border-2 border-saga-light bg-saga-light/30 px-5 py-4"
+        >
+          <div>
+            <p className="font-display text-sm font-bold text-saga-dark">Sedia untuk cabaran?</p>
+            <p className="text-xs text-ink/60">Cuba Mod Peperiksaan Bertempoh</p>
+          </div>
+          <span className="text-lg">⏱️</span>
+        </a>
+      </section>
+
       <BottomNav />
     </main>
   );
