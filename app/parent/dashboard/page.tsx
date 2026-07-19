@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { LinkChildForm } from "@/components/parent/LinkChildForm";
+import { logout } from "@/lib/actions/auth";
 
 interface LinkedChild {
   id: string;
@@ -41,8 +42,20 @@ export default async function ParentDashboardPage() {
 
   return (
     <main className="min-h-screen px-5 pb-10 pt-6">
-      <h1 className="font-display text-2xl font-bold text-ink">Papan Pemuka Ibu Bapa</h1>
-      <p className="mt-1 text-sm text-ink/60">{user?.email}</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-ink">Papan Pemuka Ibu Bapa</h1>
+          <p className="mt-1 text-sm text-ink/60">{user?.email}</p>
+        </div>
+        <form action={logout}>
+          <button
+            type="submit"
+            className="rounded-kite border-2 border-ink/10 px-3 py-2 text-xs font-semibold text-ink/60 min-h-[44px]"
+          >
+            Log Keluar
+          </button>
+        </form>
+      </div>
 
       <div className="mt-5">
         <LinkChildForm />
