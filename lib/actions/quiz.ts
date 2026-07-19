@@ -2,7 +2,9 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { classifyMistake } from "@/lib/mistakes/classify";
+import { updateStreak } from "./streak";
 import type { GeneratedQuestion } from "@/lib/questions/types";
+import type { Bilingual } from "@/lib/i18n/dictionary";
 
 interface QuizAnswer {
   question: GeneratedQuestion;
@@ -14,7 +16,7 @@ export interface QuizResult {
   total: number;
   accuracy: number;
   timeTakenSeconds: number;
-  mistakeBreakdown: { mistakeType: string; count: number; hint: string }[];
+  mistakeBreakdown: { mistakeType: string; count: number; hint: Bilingual }[];
 }
 
 export async function submitQuiz(
@@ -28,7 +30,7 @@ export async function submitQuiz(
   } = await supabase.auth.getUser();
 
   let score = 0;
-  const mistakeCounts = new Map<string, { count: number; hint: string }>();
+  const mistakeCounts = new Map<string, { count: number; hint: Bilingual }>();
 
   for (const { question, studentAnswer } of answers) {
     const isCorrect = studentAnswer.trim() === question.correctAnswer;
@@ -60,6 +62,8 @@ export async function submitQuiz(
         accuracy,
         time_taken: timeTakenSeconds,
       });
+
+      await updateStreak(supabase, student.id);
 
       for (const [mistakeType] of mistakeCounts) {
         await supabase.rpc("record_mistake_pattern", {

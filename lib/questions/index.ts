@@ -1,12 +1,18 @@
 import { generateWholeNumbersAddition } from "./generators/wholeNumbers";
 import { generateFractionsSameDenominator } from "./generators/fractions";
 import { generateMoneyChange } from "./generators/money";
+import { generatePerimeter } from "./generators/perimeter";
+import { generateDecimalAddSubtract } from "./generators/decimals";
+import { generatePercentageOfQuantity } from "./generators/percentage";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
   whole_numbers_addition: generateWholeNumbersAddition,
   fractions_same_denominator: generateFractionsSameDenominator,
   money_change: generateMoneyChange,
+  perimeter: generatePerimeter,
+  decimal_add_subtract: generateDecimalAddSubtract,
+  percentage_of_quantity: generatePercentageOfQuantity,
 };
 
 /**

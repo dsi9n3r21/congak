@@ -25,8 +25,9 @@ export function generateWholeNumbersAddition(params: GeneratorParams): Generated
   const b = randInt(min, max);
   const correct = a + b;
 
+  const equation = `${a.toLocaleString("en-US")} + ${b.toLocaleString("en-US")} = ?`;
   const question: GeneratedQuestion = {
-    prompt: `${a.toLocaleString("ms-MY")} + ${b.toLocaleString("ms-MY")} = ?`,
+    prompt: { ms: equation, en: equation },
     type,
     correctAnswer: String(correct),
     context: { a, b, correct },

@@ -2,6 +2,8 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { linkChildByCode } from "@/lib/actions/parent";
+import { UI } from "@/lib/i18n/dictionary";
+import { Bi } from "@/lib/i18n/Bi";
 
 type FormState = { error?: string; success?: boolean; childName?: string };
 
@@ -13,11 +15,14 @@ function SubmitButton() {
       disabled={pending}
       className="rounded-kite bg-kuning px-5 py-3 font-display font-bold text-white disabled:opacity-50 min-h-[44px]"
     >
-      {pending ? "..." : "Pautkan"}
+      {pending ? "..." : <Bi text={UI.linkButton} lang="both" />}
     </button>
   );
 }
 
+// Title/subtitle are rendered by the parent dashboard page, which wraps
+// this in the same bordered card — this component is just the input row
+// and its result messages.
 export function LinkChildForm() {
   const [state, formAction] = useFormState<FormState, FormData>(
     async (_prev, formData) => (await linkChildByCode(formData)) ?? {},
@@ -25,9 +30,7 @@ export function LinkChildForm() {
   );
 
   return (
-    <div className="rounded-kite border-2 border-dashed border-biru-light bg-biru-light/30 p-4">
-      <p className="text-sm font-semibold text-ink">Pautkan akaun anak</p>
-      <p className="mt-0.5 text-xs text-ink/60">Minta anak anda kongsi kod 6-aksara dari papan pemuka mereka.</p>
+    <div>
       <form action={formAction} className="mt-3 flex gap-2">
         <input
           name="code"

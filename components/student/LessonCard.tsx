@@ -3,68 +3,74 @@
 import { useState } from "react";
 import clsx from "clsx";
 import type { TopicContent } from "@/lib/content/topics";
+import type { Lang } from "@/lib/i18n/dictionary";
+import { Bi } from "@/lib/i18n/Bi";
+import { UI } from "@/lib/i18n/dictionary";
 
-const TABS = ["Belajar", "Tips", "Contoh", "Kesilapan Lazim"] as const;
-type Tab = (typeof TABS)[number];
+const TAB_KEYS = ["learnTabLearn", "learnTabTips", "learnTabExample", "learnTabMistakes"] as const;
+type TabKey = (typeof TAB_KEYS)[number];
 
-export function LessonCard({ topic }: { topic: TopicContent }) {
-  const [tab, setTab] = useState<Tab>("Belajar");
+export function LessonCard({ topic, lang }: { topic: TopicContent; lang: Lang }) {
+  const [tab, setTab] = useState<TabKey>("learnTabLearn");
 
   return (
     <div className="rounded-kite bg-white shadow-card">
-      {/* Tabs scroll horizontally on narrow screens rather than wrapping/shrinking */}
       <div className="flex gap-1 overflow-x-auto border-b border-kuning-light px-3 pt-3">
-        {TABS.map((t) => (
+        {TAB_KEYS.map((key) => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={key}
+            onClick={() => setTab(key)}
             className={clsx(
               "whitespace-nowrap rounded-t-lg px-3 py-2 text-sm font-semibold min-h-[44px]",
-              tab === t ? "bg-kuning-light text-kuning-dark" : "text-ink/50"
+              tab === key ? "bg-kuning-light text-kuning-dark" : "text-ink/50"
             )}
           >
-            {t}
+            <Bi text={UI[key]} lang={lang} />
           </button>
         ))}
       </div>
 
       <div className="p-5">
-        {tab === "Belajar" && (
+        {tab === "learnTabLearn" && (
           <p className="whitespace-pre-line font-body text-[15px] leading-relaxed text-ink">
-            {topic.explanation}
+            <Bi text={topic.explanation} lang={lang} />
           </p>
         )}
 
-        {tab === "Tips" && (
+        {tab === "learnTabTips" && (
           <div className="flex gap-3 rounded-kite bg-pandan-light p-4">
             <span className="text-xl">💡</span>
-            <p className="font-body text-[15px] leading-relaxed text-ink">{topic.tips}</p>
+            <p className="font-body text-[15px] leading-relaxed text-ink">
+              <Bi text={topic.tips} lang={lang} />
+            </p>
           </div>
         )}
 
-        {tab === "Contoh" && (
+        {tab === "learnTabExample" && (
           <div>
             <p className="font-num text-lg font-bold text-biru-dark">{topic.workedExample.problem}</p>
             <ol className="mt-3 space-y-2">
               {topic.workedExample.steps.map((step, i) => (
                 <li key={i} className="flex gap-2 text-sm text-ink">
                   <span className="font-num font-semibold text-biru">{i + 1}.</span>
-                  {step}
+                  <Bi text={step} lang={lang} />
                 </li>
               ))}
             </ol>
             <p className="mt-4 rounded-lg bg-biru-light px-3 py-2 font-num text-base font-bold text-biru-dark">
-              Jawapan: {topic.workedExample.answer}
+              <Bi text={UI.answerLabel} lang={lang} />: {topic.workedExample.answer}
             </p>
           </div>
         )}
 
-        {tab === "Kesilapan Lazim" && (
+        {tab === "learnTabMistakes" && (
           <ul className="space-y-3">
             {topic.commonMistakes.map((m) => (
               <li key={m.mistakeType} className="flex gap-2 rounded-kite bg-saga-light/50 p-3">
                 <span className="text-lg">⚠️</span>
-                <p className="text-sm text-ink">{m.description}</p>
+                <p className="text-sm text-ink">
+                  <Bi text={m.description} lang={lang} />
+                </p>
               </li>
             ))}
           </ul>

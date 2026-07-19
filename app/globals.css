@@ -17,9 +17,11 @@ body.a11y-large-text {
   font-size: 118%;
 }
 
-/* Accessibility: dyslexia-friendly font swap (loaded via next/font when enabled) */
+/* Accessibility: dyslexia-friendly font swap — Lexend, loaded via next/font
+   in layout.tsx. (Previously referenced "OpenDyslexic", which was never
+   actually loaded anywhere, so this toggle did nothing.) */
 body.a11y-dyslexia-font {
-  font-family: "OpenDyslexic", var(--font-jakarta), system-ui, sans-serif;
+  font-family: var(--font-lexend), var(--font-jakarta), system-ui, sans-serif;
 }
 
 /* Accessibility: low-distraction mode — flattens color, kills non-essential motion */

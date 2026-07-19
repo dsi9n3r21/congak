@@ -1,8 +1,10 @@
+import type { Bilingual } from "../i18n/dictionary";
+
 export type QuestionType = "mcq" | "fill" | "drag" | "match" | "word_problem";
 
 export interface GeneratedQuestion {
   /** Frozen snapshot — this exact object gets stored in attempts.question_snapshot_json */
-  prompt: string;
+  prompt: Bilingual;
   type: QuestionType;
   /** For mcq: the option list including the correct one, pre-shuffled */
   options?: string[];

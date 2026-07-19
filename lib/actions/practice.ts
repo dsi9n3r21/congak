@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { updateStreak } from "./streak";
 import type { GeneratedQuestion } from "@/lib/questions/types";
 
 export async function startPracticeSession(topicId: string): Promise<string | null> {
@@ -49,44 +50,42 @@ export async function recordAttempt(input: RecordAttemptInput) {
     time_taken_seconds: input.timeTakenSeconds,
   });
 
+  // One lookup, reused below — previously each of these steps fetched
+  // session.student_id separately (3 redundant queries per attempt).
+  const { data: session } = await supabase
+    .from("practice_sessions")
+    .select("student_id")
+    .eq("id", input.sessionId)
+    .single();
+  if (!session) return;
+
+  const studentId = session.student_id as string;
+
   if (!input.isCorrect && input.mistakeType) {
-    const { data: session } = await supabase
-      .from("practice_sessions")
-      .select("student_id")
-      .eq("id", input.sessionId)
-      .single();
-    if (session) {
-      await supabase.rpc("record_mistake_pattern", {
-        p_student_id: session.student_id,
-        p_topic_id: input.topicId,
-        p_mistake_type: input.mistakeType,
-      });
-    }
+    await supabase.rpc("record_mistake_pattern", {
+      p_student_id: studentId,
+      p_topic_id: input.topicId,
+      p_mistake_type: input.mistakeType,
+    });
   }
 
-  await updateTopicMastery(input.sessionId, input.topicId, input.isCorrect);
+  await updateTopicMastery(studentId, input.topicId, input.isCorrect);
+  await updateStreak(supabase, studentId);
   if (input.isCorrect) {
-    await awardXp(input.sessionId);
+    await awardXp(studentId);
   }
 }
 
 /** +10 XP per correct answer. xpToNext scales as level*125 — matches the
  * curve the dashboard uses to render the progress bar, so keep them in sync
  * if this changes. */
-async function awardXp(sessionId: string) {
+async function awardXp(studentId: string) {
   const supabase = createClient();
-
-  const { data: session } = await supabase
-    .from("practice_sessions")
-    .select("student_id")
-    .eq("id", sessionId)
-    .single();
-  if (!session) return;
 
   const { data: student } = await supabase
     .from("students")
     .select("xp, level")
-    .eq("id", session.student_id)
+    .eq("id", studentId)
     .single();
   if (!student) return;
 
@@ -97,26 +96,19 @@ async function awardXp(sessionId: string) {
     level += 1;
   }
 
-  await supabase.from("students").update({ xp, level }).eq("id", session.student_id);
+  await supabase.from("students").update({ xp, level }).eq("id", studentId);
 }
 
 /** Simple heuristic for now: +8 mastery on correct, -5 on incorrect,
  * clamped 0-100. weak_flag trips below 50. Good enough to power the
  * dashboard's "weak topics" list until a proper model replaces it. */
-async function updateTopicMastery(sessionId: string, topicId: string, isCorrect: boolean) {
+async function updateTopicMastery(studentId: string, topicId: string, isCorrect: boolean) {
   const supabase = createClient();
-
-  const { data: session } = await supabase
-    .from("practice_sessions")
-    .select("student_id")
-    .eq("id", sessionId)
-    .single();
-  if (!session) return;
 
   const { data: existing } = await supabase
     .from("topic_mastery")
     .select("mastery_score")
-    .eq("student_id", session.student_id)
+    .eq("student_id", studentId)
     .eq("topic_id", topicId)
     .single();
 
@@ -124,7 +116,7 @@ async function updateTopicMastery(sessionId: string, topicId: string, isCorrect:
   const next = Math.max(0, Math.min(100, current + (isCorrect ? 8 : -5)));
 
   await supabase.from("topic_mastery").upsert({
-    student_id: session.student_id,
+    student_id: studentId,
     topic_id: topicId,
     mastery_score: next,
     weak_flag: next < 50,

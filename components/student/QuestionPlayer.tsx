@@ -7,16 +7,19 @@ import { classifyMistake } from "@/lib/mistakes/classify";
 import { startPracticeSession, recordAttempt } from "@/lib/actions/practice";
 import type { GeneratedQuestion } from "@/lib/questions/types";
 import type { TopicContent } from "@/lib/content/topics";
+import type { Bilingual, Lang } from "@/lib/i18n/dictionary";
+import { UI } from "@/lib/i18n/dictionary";
+import { Bi } from "@/lib/i18n/Bi";
 
 type Status = "answering" | "correct" | "incorrect";
 
-export function QuestionPlayer({ topic }: { topic: TopicContent }) {
+export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lang }) {
   const [templateIndex, setTemplateIndex] = useState(0);
   const [question, setQuestion] = useState<GeneratedQuestion>(() => generateFromTemplate(topic, 0));
   const [status, setStatus] = useState<Status>("answering");
   const [inputValue, setInputValue] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
-  const [mistakeHint, setMistakeHint] = useState<string | null>(null);
+  const [mistakeHint, setMistakeHint] = useState<Bilingual | null>(null);
   const [stats, setStats] = useState({ correct: 0, attempted: 0 });
   const sessionIdRef = useRef<string | null>(null);
   const questionStartRef = useRef<number>(Date.now());
@@ -37,7 +40,7 @@ export function QuestionPlayer({ topic }: { topic: TopicContent }) {
     setStats((s) => ({ correct: s.correct + (isCorrect ? 1 : 0), attempted: s.attempted + 1 }));
 
     let mistakeType: string | null = null;
-    let hint: string | null = null;
+    let hint: Bilingual | null = null;
     if (!isCorrect) {
       const classification = classifyMistake(question, currentAnswer);
       mistakeType = classification.mistakeType;
@@ -90,11 +93,13 @@ export function QuestionPlayer({ topic }: { topic: TopicContent }) {
     <div>
       {/* Session progress — small and out of the way, not a dashboard */}
       <p className="mb-3 text-xs font-num text-ink/50">
-        {stats.correct}/{stats.attempted} betul sesi ini
+        {stats.correct}/{stats.attempted}
       </p>
 
       <div className="rounded-kite bg-white p-5 shadow-card">
-        <p className="font-display text-lg font-bold leading-snug text-ink">{question.prompt}</p>
+        <p className="font-display text-lg font-bold leading-snug text-ink">
+          <Bi text={question.prompt} lang={lang} />
+        </p>
 
         {question.type === "mcq" && question.options && (
           <div className="mt-5 grid grid-cols-1 gap-2.5">
@@ -124,7 +129,7 @@ export function QuestionPlayer({ topic }: { topic: TopicContent }) {
             value={inputValue}
             disabled={status !== "answering"}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Taip jawapan..."
+            placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
             className="mt-5 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-biru focus:outline-none"
           />
         )}
@@ -135,33 +140,39 @@ export function QuestionPlayer({ topic }: { topic: TopicContent }) {
             disabled={!currentAnswer}
             className="mt-5 w-full rounded-kite bg-kuning py-3 font-display font-bold text-white disabled:opacity-40 min-h-[44px]"
           >
-            Semak Jawapan
+            <Bi text={UI.checkAnswer} lang={lang} />
           </button>
         )}
       </div>
 
       {status === "correct" && (
         <div className="mt-4 rounded-kite bg-pandan-light p-4">
-          <p className="font-display font-bold text-pandan-dark">Betul! Syabas! 🎉</p>
+          <p className="font-display font-bold text-pandan-dark">
+            <Bi text={UI.correctFeedback} lang={lang} /> 🎉
+          </p>
           <button
             onClick={() => nextQuestion(false)}
             className="mt-3 w-full rounded-kite bg-pandan py-3 font-display font-bold text-white min-h-[44px]"
           >
-            Soalan Seterusnya →
+            <Bi text={UI.nextQuestion} lang={lang} /> →
           </button>
         </div>
       )}
 
       {status === "incorrect" && (
         <div className="mt-4 rounded-kite border border-biru-light bg-biru-light/40 p-4">
-          <p className="font-display text-sm font-bold text-biru-dark">🦉 Profesor Nombor</p>
-          <p className="mt-1 text-sm text-ink">{mistakeHint}</p>
-          <p className="mt-2 text-xs text-ink/60">Jawapan sebenar: <span className="font-num font-semibold">{question.correctAnswer}</span></p>
+          <p className="font-display text-sm font-bold text-biru-dark">
+            🦉 <Bi text={UI.professorNombor} lang={lang} />
+          </p>
+          {mistakeHint && <p className="mt-1 text-sm text-ink"><Bi text={mistakeHint} lang={lang} /></p>}
+          <p className="mt-2 text-xs text-ink/60">
+            <Bi text={UI.actualAnswer} lang={lang} />: <span className="font-num font-semibold">{question.correctAnswer}</span>
+          </p>
           <button
             onClick={() => nextQuestion(true)}
             className="mt-3 w-full rounded-kite bg-biru py-3 font-display font-bold text-white min-h-[44px]"
           >
-            Cuba Soalan Serupa →
+            <Bi text={UI.tryPro} lang={lang} /> →
           </button>
         </div>
       )}

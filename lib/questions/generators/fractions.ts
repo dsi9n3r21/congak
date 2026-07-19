@@ -12,8 +12,9 @@ export function generateFractionsSameDenominator(params: GeneratorParams): Gener
   const numB = randInt(1, denom - numA - 1 > 0 ? denom - numA - 1 : 1);
   const correctNum = numA + numB;
 
+  const equation = `${numA}/${denom} + ${numB}/${denom} = ?`;
   const question: GeneratedQuestion = {
-    prompt: `${numA}/${denom} + ${numB}/${denom} = ?`,
+    prompt: { ms: equation, en: equation },
     type,
     correctAnswer: `${correctNum}/${denom}`,
     context: { numA, numB, denom, correctNum },

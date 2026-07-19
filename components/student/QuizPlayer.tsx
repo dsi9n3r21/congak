@@ -6,6 +6,9 @@ import { generateQuestion } from "@/lib/questions";
 import { submitQuiz, type QuizResult } from "@/lib/actions/quiz";
 import type { GeneratedQuestion } from "@/lib/questions/types";
 import type { TopicContent } from "@/lib/content/topics";
+import type { Lang } from "@/lib/i18n/dictionary";
+import { UI } from "@/lib/i18n/dictionary";
+import { Bi } from "@/lib/i18n/Bi";
 
 const QUIZ_LENGTH = 5;
 
@@ -18,7 +21,7 @@ function buildQuizQuestions(topic: TopicContent): GeneratedQuestion[] {
   return questions;
 }
 
-export function QuizPlayer({ topic }: { topic: TopicContent }) {
+export function QuizPlayer({ topic, lang }: { topic: TopicContent; lang: Lang }) {
   const questions = useMemo(() => buildQuizQuestions(topic), [topic]);
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
@@ -50,13 +53,13 @@ export function QuizPlayer({ topic }: { topic: TopicContent }) {
   }
 
   if (result) {
-    return <QuizResults topic={topic} result={result} />;
+    return <QuizResults topic={topic} result={result} lang={lang} />;
   }
 
   return (
     <div>
       <p className="mb-3 text-xs font-num text-ink/50">
-        Soalan {index + 1}/{questions.length}
+        <Bi text={UI.quizQuestionOf} lang="ms" /> {index + 1}/{questions.length}
       </p>
       <div className="mb-4 h-1.5 w-full rounded-full bg-ink/10">
         <div
@@ -66,7 +69,9 @@ export function QuizPlayer({ topic }: { topic: TopicContent }) {
       </div>
 
       <div className="rounded-kite bg-white p-5 shadow-card">
-        <p className="font-display text-lg font-bold leading-snug text-ink">{question.prompt}</p>
+        <p className="font-display text-lg font-bold leading-snug text-ink">
+          <Bi text={question.prompt} lang={lang} />
+        </p>
 
         {question.type === "mcq" && question.options ? (
           <div className="mt-5 grid grid-cols-1 gap-2.5">
@@ -87,7 +92,7 @@ export function QuizPlayer({ topic }: { topic: TopicContent }) {
             type="text"
             value={currentValue}
             onChange={(e) => setCurrentValue(e.target.value)}
-            placeholder="Taip jawapan..."
+            placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
             className="mt-5 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-biru focus:outline-none"
           />
         )}
@@ -97,14 +102,14 @@ export function QuizPlayer({ topic }: { topic: TopicContent }) {
           disabled={!currentValue || submitting}
           className="mt-5 w-full rounded-kite bg-kuning py-3 font-display font-bold text-white disabled:opacity-40 min-h-[44px]"
         >
-          {submitting ? "Menyemak..." : isLast ? "Hantar Kuiz" : "Seterusnya →"}
+          {submitting ? "..." : isLast ? <Bi text={UI.submitQuiz} lang={lang} /> : <><Bi text={UI.nextArrow} lang={lang} /> →</>}
         </button>
       </div>
     </div>
   );
 }
 
-function QuizResults({ topic, result }: { topic: TopicContent; result: QuizResult }) {
+function QuizResults({ topic, result, lang }: { topic: TopicContent; result: QuizResult; lang: Lang }) {
   const minutes = Math.floor(result.timeTakenSeconds / 60);
   const seconds = result.timeTakenSeconds % 60;
 
@@ -113,21 +118,25 @@ function QuizResults({ topic, result }: { topic: TopicContent; result: QuizResul
       <div className="rounded-kite bg-white p-6 text-center shadow-card">
         <p className="text-4xl">{result.accuracy >= 80 ? "🏆" : result.accuracy >= 50 ? "👍" : "💪"}</p>
         <p className="mt-2 font-display text-2xl font-bold text-ink">
-          {result.score}/{result.total} Betul
+          {result.score}/{result.total} <Bi text={UI.quizScore} lang={lang} />
         </p>
-        <p className="mt-1 font-num text-lg font-semibold text-biru-dark">{result.accuracy}% Ketepatan</p>
+        <p className="mt-1 font-num text-lg font-semibold text-biru-dark">
+          {result.accuracy}% <Bi text={UI.quizAccuracy} lang={lang} />
+        </p>
         <p className="mt-1 text-xs text-ink/50 font-num">
-          Masa: {minutes}m {seconds}s
+          <Bi text={UI.quizTime} lang={lang} />: {minutes}m {seconds}s
         </p>
       </div>
 
       {result.mistakeBreakdown.length > 0 && (
         <div className="mt-4 rounded-kite bg-saga-light/40 p-4">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-saga-dark">Analisis Topik</p>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-saga-dark">
+            <Bi text={UI.topicAnalysis} lang={lang} />
+          </p>
           <ul className="space-y-2">
             {result.mistakeBreakdown.map((m) => (
               <li key={m.mistakeType} className="text-sm text-ink">
-                <span className="font-semibold">{m.count}x</span> — {m.hint}
+                <span className="font-semibold">{m.count}x</span> — <Bi text={m.hint} lang={lang} />
               </li>
             ))}
           </ul>
@@ -139,13 +148,13 @@ function QuizResults({ topic, result }: { topic: TopicContent; result: QuizResul
           href={`/practice/${topic.id}`}
           className="flex-1 rounded-kite bg-biru py-3 text-center font-display font-bold text-white min-h-[44px]"
         >
-          Latihan Lagi
+          <Bi text={UI.practiceMore} lang={lang} />
         </Link>
         <Link
           href="/dashboard"
           className="flex-1 rounded-kite border-2 border-ink/10 py-3 text-center font-display font-bold text-ink min-h-[44px]"
         >
-          Ke Papan Pemuka
+          <Bi text={UI.toDashboard} lang={lang} />
         </Link>
       </div>
     </div>

@@ -2,11 +2,11 @@ import { pick, randInt, shuffleOptions } from "../utils";
 import type { GeneratedQuestion, GeneratorParams } from "../types";
 
 const CANTEEN_ITEMS = [
-  { name: "nasi lemak", price: 2.5 },
-  { name: "air kotak", price: 1.5 },
-  { name: "roti canai", price: 1.8 },
-  { name: "kuih", price: 1.0 },
-  { name: "mee goreng", price: 3.5 },
+  { ms: "nasi lemak", en: "nasi lemak", price: 2.5 },
+  { ms: "air kotak", en: "packet drink", price: 1.5 },
+  { ms: "roti canai", en: "roti canai", price: 1.8 },
+  { ms: "kuih", en: "kuih (local snack)", price: 1.0 },
+  { ms: "mee goreng", en: "fried noodles", price: 3.5 },
 ];
 
 function toSen(rm: number): number {
@@ -23,16 +23,24 @@ export function generateMoneyChange(params: GeneratorParams): GeneratedQuestion 
   const useContext = params.context === "canteen";
 
   const item = useContext ? pick(CANTEEN_ITEMS) : null;
-  const priceSen = item ? toSen(item.price) : toSen(randInt(2, Number(params.maxPrice ?? 15)));
-  // Paid amount must be a note/coin value bigger than the price.
+  const priceSen = item ? toSen(item.price) : randInt(150, Number(params.maxPrice ?? 20) * 100);
+  // Paid amount must be a note/coin value bigger than the price, and within
+  // the configured ceiling — previously maxPaid was accepted but never
+  // actually applied, so easy questions could get an oversized note.
   const noteOptions = [500, 1000, 2000, 5000]; // RM5, RM10, RM20, RM50 in sen
-  const paidSen = pick(noteOptions.filter((n) => n > priceSen)) ?? 5000;
+  const paidSen = pick(noteOptions.filter((n) => n > priceSen && n <= maxPaidRM * 100)) ?? 5000;
 
   const changeSen = paidSen - priceSen;
 
   const prompt = useContext
-    ? `Aisyah beli ${item!.name} berharga ${formatRM(priceSen)} di kantin. Dia bayar dengan wang ${formatRM(paidSen)}. Berapakah baki wang Aisyah?`
-    : `Bayaran: ${formatRM(paidSen)}. Harga barang: ${formatRM(priceSen)}. Berapakah baki?`;
+    ? {
+        ms: `Aisyah beli ${item!.ms} berharga ${formatRM(priceSen)} di kantin. Dia bayar dengan wang ${formatRM(paidSen)}. Berapakah baki wang Aisyah?`,
+        en: `Aisyah buys ${item!.en} for ${formatRM(priceSen)} at the canteen. She pays with ${formatRM(paidSen)}. What is Aisyah's change?`,
+      }
+    : {
+        ms: `Bayaran: ${formatRM(paidSen)}. Harga barang: ${formatRM(priceSen)}. Berapakah baki?`,
+        en: `Payment: ${formatRM(paidSen)}. Item price: ${formatRM(priceSen)}. What is the change?`,
+      };
 
   const question: GeneratedQuestion = {
     prompt,

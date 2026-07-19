@@ -1,6 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/lib/actions/auth";
 import { BottomNav } from "@/components/ui/BottomNav";
+import { LanguageSelector } from "@/components/student/LanguageSelector";
+import { AccessibilityToggles } from "@/components/student/AccessibilityToggles";
+import { Bi } from "@/lib/i18n/Bi";
+import { UI } from "@/lib/i18n/dictionary";
 
 export default async function ProfilePage() {
   const supabase = createClient();
@@ -10,9 +14,11 @@ export default async function ProfilePage() {
 
   const { data: student } = await supabase
     .from("students")
-    .select("display_name, year_level, avatar_id, theme, link_code")
+    .select("display_name, year_level, avatar_id, theme, link_code, language_pref, a11y_large_text, a11y_dyslexia_font, a11y_low_distraction")
     .eq("user_id", user?.id ?? "")
     .single();
+
+  const lang = student?.language_pref ?? "both";
 
   return (
     <main className="min-h-screen pb-24 md:pb-8">
@@ -24,19 +30,33 @@ export default async function ProfilePage() {
 
       {student?.link_code && (
         <section className="mx-5 mt-2 rounded-kite border-2 border-dashed border-biru-light bg-biru-light/30 px-5 py-4 text-center">
-          <p className="text-xs text-ink/60">Kod Pautan Ibu Bapa</p>
+          <p className="text-xs text-ink/60"><Bi text={UI.linkCode} lang={lang} /></p>
           <p className="mt-1 font-num text-xl font-bold tracking-widest text-biru-dark">{student.link_code}</p>
         </section>
       )}
+
+      <section className="mx-5 mt-5">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">
+          <Bi text={UI.language} lang={lang} />
+        </p>
+        <LanguageSelector current={lang} />
+      </section>
 
       {/* Accessibility toggles — wired to the a11y-* body classes in
           globals.css. Kept as a simple static list for now; persisting
           the choice per-student is a fast-follow. */}
       <section className="mx-5 mt-5">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Kebolehcapaian</p>
-        <div className="rounded-kite bg-white shadow-card divide-y divide-ink/5">
-          <p className="px-4 py-3 text-sm text-ink/40">Teks Besar, Fon Mesra Disleksia, dan Mod Kurang Gangguan akan tersedia tidak lama lagi.</p>
-        </div>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">
+          <Bi text={UI.accessibility} lang={lang} />
+        </p>
+        <AccessibilityToggles
+          lang={lang}
+          initial={{
+            a11y_large_text: student?.a11y_large_text ?? false,
+            a11y_dyslexia_font: student?.a11y_dyslexia_font ?? false,
+            a11y_low_distraction: student?.a11y_low_distraction ?? false,
+          }}
+        />
       </section>
 
       <section className="mx-5 mt-5">
@@ -45,7 +65,7 @@ export default async function ProfilePage() {
             type="submit"
             className="w-full rounded-kite border-2 border-saga-light py-3 font-display font-bold text-saga min-h-[44px]"
           >
-            Log Keluar
+            <Bi text={UI.logout} lang={lang} />
           </button>
         </form>
       </section>

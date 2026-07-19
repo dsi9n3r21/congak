@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I — easier for a kid to type correctly
@@ -51,4 +52,36 @@ export async function createStudentProfile(formData: FormData) {
   }
 
   redirect("/dashboard");
+}
+
+export async function updateLanguagePref(formData: FormData) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const languagePref = String(formData.get("languagePref"));
+  await supabase.from("students").update({ language_pref: languagePref }).eq("user_id", user.id);
+  revalidatePath("/profile");
+  revalidatePath("/dashboard");
+}
+
+const A11Y_FIELDS = ["a11y_large_text", "a11y_dyslexia_font", "a11y_low_distraction"] as const;
+type A11yField = (typeof A11Y_FIELDS)[number];
+
+export async function updateAccessibilityPref(field: A11yField, value: boolean) {
+  if (!A11Y_FIELDS.includes(field)) return; // guard against an unexpected field name reaching the DB
+
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase.from("students").update({ [field]: value }).eq("user_id", user.id);
+  // Layout renders the <body> classes server-side, so the whole tree
+  // (not just /profile) needs to re-render for the toggle to take effect
+  // immediately.
+  revalidatePath("/", "layout");
 }
