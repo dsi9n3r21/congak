@@ -46,7 +46,8 @@ export async function createStudentProfile(formData: FormData) {
   }
 
   if (error) {
-    return { error: "Gagal simpan profil. Sila cuba lagi." };
+    console.error("[createStudentProfile] insert failed:", error);
+    return { error: `Gagal simpan profil: ${error.message}` };
   }
 
   redirect("/dashboard");
