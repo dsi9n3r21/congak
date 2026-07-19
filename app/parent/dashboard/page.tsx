@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { LinkChildForm } from "@/components/parent/LinkChildForm";
 import { logout } from "@/lib/actions/auth";
@@ -66,7 +67,11 @@ export default async function ParentDashboardPage() {
           <p className="text-sm text-ink/50">Belum ada anak dipautkan lagi.</p>
         )}
         {children.map((child, i) => (
-          <div key={child.id} className="rounded-kite bg-white p-4 shadow-card">
+          <Link
+            key={child.id}
+            href={`/parent/child/${child.id}`}
+            className="block rounded-kite bg-white p-4 shadow-card active:scale-[0.98] transition-transform"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-display text-lg font-bold text-ink">{child.display_name}</p>
@@ -82,7 +87,7 @@ export default async function ParentDashboardPage() {
                 {weakCounts[i]} topik memerlukan perhatian
               </p>
             )}
-          </div>
+          </Link>
         ))}
       </section>
     </main>
