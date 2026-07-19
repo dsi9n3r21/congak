@@ -19,12 +19,18 @@ export default function LearnTopicPage({ params }: { params: { topicId: string }
         <LessonCard topic={topic} />
       </section>
 
-      <section className="mx-5 mt-5">
+      <section className="mx-5 mt-5 flex gap-2">
         <Link
           href={`/practice/${topic.id}`}
-          className="block rounded-kite bg-kuning px-5 py-4 text-center font-display text-base font-bold text-white shadow-card active:scale-[0.98] transition-transform"
+          className="flex-1 rounded-kite bg-kuning px-5 py-4 text-center font-display text-base font-bold text-white shadow-card active:scale-[0.98] transition-transform"
         >
           Mula Latihan →
+        </Link>
+        <Link
+          href={`/quiz/${topic.id}`}
+          className="flex-1 rounded-kite bg-biru px-5 py-4 text-center font-display text-base font-bold text-white shadow-card active:scale-[0.98] transition-transform"
+        >
+          Mula Kuiz →
         </Link>
       </section>
 

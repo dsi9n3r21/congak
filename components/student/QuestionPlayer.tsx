@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { generateQuestion } from "@/lib/questions";
 import { classifyMistake } from "@/lib/mistakes/classify";
+import { startPracticeSession, recordAttempt } from "@/lib/actions/practice";
 import type { GeneratedQuestion } from "@/lib/questions/types";
 import type { TopicContent } from "@/lib/content/topics";
 
@@ -17,30 +18,57 @@ export function QuestionPlayer({ topic }: { topic: TopicContent }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [mistakeHint, setMistakeHint] = useState<string | null>(null);
   const [stats, setStats] = useState({ correct: 0, attempted: 0 });
+  const sessionIdRef = useRef<string | null>(null);
+  const questionStartRef = useRef<number>(Date.now());
+
+  useEffect(() => {
+    startPracticeSession(topic.id).then((id) => {
+      sessionIdRef.current = id;
+    });
+  }, [topic.id]);
 
   const currentAnswer = question.type === "mcq" ? selected : inputValue;
 
   const submit = useCallback(() => {
     if (!currentAnswer) return;
     const isCorrect = currentAnswer.trim() === question.correctAnswer;
-
-    // TODO(Phase 1.5): persist to Supabase `attempts` table here —
-    // { session_id, question_snapshot_json: question, student_answer: currentAnswer,
-    //   is_correct: isCorrect, mistake_type, time_taken_seconds }
-    // and bump topic_mastery. Kept client-only for now so this screen is testable
-    // without full auth wired up yet.
+    const timeTakenSeconds = Math.round((Date.now() - questionStartRef.current) / 1000);
 
     setStats((s) => ({ correct: s.correct + (isCorrect ? 1 : 0), attempted: s.attempted + 1 }));
+
+    let mistakeType: string | null = null;
+    let hint: string | null = null;
+    if (!isCorrect) {
+      const classification = classifyMistake(question, currentAnswer);
+      mistakeType = classification.mistakeType;
+      hint = classification.hint;
+    }
+
+    // Fire-and-forget: don't block the feedback UI on the write. If there's
+    // no active session (e.g. not logged in), this silently no-ops rather
+    // than breaking the practice flow.
+    if (sessionIdRef.current) {
+      recordAttempt({
+        sessionId: sessionIdRef.current,
+        topicId: topic.id,
+        question,
+        studentAnswer: currentAnswer,
+        isCorrect,
+        mistakeType,
+        timeTakenSeconds,
+      }).catch(() => {
+        // Swallow — practice should keep working even if persistence fails.
+      });
+    }
 
     if (isCorrect) {
       setStatus("correct");
       setMistakeHint(null);
     } else {
-      const { hint } = classifyMistake(question, currentAnswer);
       setMistakeHint(hint);
       setStatus("incorrect");
     }
-  }, [currentAnswer, question]);
+  }, [currentAnswer, question, topic.id]);
 
   const nextQuestion = useCallback(
     (sameTemplate: boolean) => {
@@ -53,6 +81,7 @@ export function QuestionPlayer({ topic }: { topic: TopicContent }) {
       setInputValue("");
       setSelected(null);
       setMistakeHint(null);
+      questionStartRef.current = Date.now();
     },
     [templateIndex, topic]
   );
