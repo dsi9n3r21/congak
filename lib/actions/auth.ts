@@ -21,8 +21,14 @@ export async function signUp(formData: FormData) {
     .from("users")
     .insert({ id: data.user.id, role });
 
-  if (userRowError) {
-    return { error: "Akaun dicipta tetapi profil gagal disediakan. Sila hubungi sokongan." };
+  if (userRowError && userRowError.code !== "23505") {
+    // 23505 = unique_violation: this can happen if a previous signup
+    // attempt with the same email already created the users row (Supabase
+    // returns the same existing auth user on a repeat signUp call rather
+    // than erroring, as an anti-enumeration measure). That's recoverable —
+    // the row we want already exists — so only real failures stop the flow.
+    console.error("[signUp] users insert failed:", userRowError);
+    return { error: `Akaun dicipta tetapi profil gagal disediakan: ${userRowError.message}` };
   }
 
   redirect(role === "student" ? "/profile/setup" : "/parent/dashboard");
