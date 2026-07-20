@@ -273,6 +273,104 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "area_rectangle": {
+      const { length, width, correct } = question.context as { length: number; width: number; correct: number };
+      if (Number(answer) === 2 * (length + width)) {
+        return {
+          mistakeType: "area_perimeter_confusion",
+          hint: {
+            ms: "Luas ialah panjang × lebar, bukan perimeter. Cuba darab, bukan tambah.",
+            en: "Area is length × width, not perimeter. Try multiplying, not adding.",
+          },
+        };
+      }
+      if (Number(answer) === length + width) {
+        return {
+          mistakeType: "forgot_multiply_area",
+          hint: {
+            ms: "Untuk mencari luas, darabkan panjang dengan lebar.",
+            en: "To find the area, multiply the length by the width.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: panjang × lebar.", en: "Try calculating again: length × width." },
+      };
+    }
+
+    case "angles_straight_line": {
+      const { angleA, correct } = question.context as { angleA: number; correct: number };
+      if (Number(answer) === Math.abs(90 - angleA)) {
+        return {
+          mistakeType: "confused_with_complementary",
+          hint: {
+            ms: "Sudut pada garis lurus berjumlah 180°, bukan 90°.",
+            en: "Angles on a straight line add up to 180°, not 90°.",
+          },
+        };
+      }
+      if (Number(answer) === angleA) {
+        return {
+          mistakeType: "no_operation_performed",
+          hint: {
+            ms: "Tolak sudut yang diberi daripada 180° untuk cari sudut satu lagi.",
+            en: "Subtract the given angle from 180° to find the other angle.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: 180° − sudut yang diberi.", en: "Try calculating again: 180° − the given angle." },
+      };
+    }
+
+    case "area_composite": {
+      const { area1, correct } = question.context as { area1: number; correct: number };
+      if (Number(answer) === area1) {
+        return {
+          mistakeType: "forgot_second_rectangle",
+          hint: {
+            ms: "Jangan lupa kira luas KEDUA-DUA segi empat tepat, kemudian tambah.",
+            en: "Don't forget to work out the area of BOTH rectangles, then add them.",
+          },
+        };
+      }
+      return {
+        mistakeType: "area_addition_error",
+        hint: {
+          ms: "Kira luas setiap segi empat tepat berasingan (panjang × lebar), kemudian tambah kedua-duanya.",
+          en: "Calculate each rectangle's area separately (length × width), then add the two together.",
+        },
+      };
+    }
+
+    case "angles_triangle_sum": {
+      const { angleA, angleB, correct } = question.context as { angleA: number; angleB: number; correct: number };
+      if (Number(answer) === 360 - angleA - angleB) {
+        return {
+          mistakeType: "confused_angle_sum_360",
+          hint: {
+            ms: "Sudut dalam segi tiga berjumlah 180°, bukan 360°. 360° ialah untuk sudut pada satu titik.",
+            en: "Angles in a triangle add up to 180°, not 360°. 360° is for angles at a point.",
+          },
+        };
+      }
+      if (Number(answer) === 180 - angleA) {
+        return {
+          mistakeType: "only_subtracted_one_angle",
+          hint: {
+            ms: "Tolak KEDUA-DUA sudut yang diberi daripada 180°, bukan satu sahaja.",
+            en: "Subtract BOTH given angles from 180°, not just one.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: 180° − sudut pertama − sudut kedua.", en: "Try calculating again: 180° − first angle − second angle." },
+      };
+    }
+
     default:
       return {
         mistakeType: "unknown",

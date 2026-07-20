@@ -8,6 +8,10 @@ import { generateTimeDuration } from "./generators/time";
 import { generateAverage } from "./generators/average";
 import { generateSimplifyRatio } from "./generators/ratio";
 import { generateVolume } from "./generators/volume";
+import { generateAreaRectangle } from "./generators/areaRectangle";
+import { generateAnglesStraightLine } from "./generators/anglesStraightLine";
+import { generateAreaComposite } from "./generators/areaComposite";
+import { generateAnglesTriangleSum } from "./generators/anglesTriangleSum";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
@@ -21,6 +25,10 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   average: generateAverage,
   simplify_ratio: generateSimplifyRatio,
   volume: generateVolume,
+  area_rectangle: generateAreaRectangle,
+  angles_straight_line: generateAnglesStraightLine,
+  area_composite: generateAreaComposite,
+  angles_triangle_sum: generateAnglesTriangleSum,
 };
 
 /**

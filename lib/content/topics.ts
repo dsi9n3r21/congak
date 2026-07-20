@@ -332,4 +332,126 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "volume", config: {} },
     ],
   },
+  "a1000000-0000-0000-0000-000000000011": {
+    id: "a1000000-0000-0000-0000-000000000011",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Luas Segi Empat Tepat & Segi Empat Sama", en: "Area of Rectangles & Squares" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Luas ialah keluasan ruang di dalam sesuatu bentuk. Untuk segi empat tepat, kita gunakan formula: Luas = panjang × lebar. Untuk segi empat sama, semua sisi sama panjang, jadi Luas = sisi × sisi.\n\nContoh harian: Sebidang tanah berbentuk segi empat tepat hendak ditanami rumput. Berapakah luas tanah itu?",
+      en: "Area is the amount of space inside a shape. For a rectangle, we use the formula: Area = length × width. For a square, all sides are equal, so Area = side × side.\n\nEveryday example: A rectangular plot of land is going to be planted with grass. What is the area of the land?",
+    },
+    tips: {
+      ms: "Bayangkan bentuk itu dipenuhi dengan petak-petak kecil 1cm × 1cm — luas ialah jumlah petak yang boleh muat di dalamnya.",
+      en: "Imagine the shape filled with tiny 1cm × 1cm squares — the area is how many of those squares fit inside it.",
+    },
+    workedExample: {
+      problem: "Segi empat tepat 7 cm × 4 cm",
+      steps: [
+        { ms: "Luas = panjang × lebar", en: "Area = length × width" },
+        { ms: "= 7 × 4", en: "= 7 × 4" },
+        { ms: "= 28 cm²", en: "= 28 cm²" },
+      ],
+      answer: "28 cm²",
+    },
+    commonMistakes: [
+      { mistakeType: "area_perimeter_confusion", description: { ms: "Murid mengira perimeter (2×(panjang+lebar)) berbanding luas.", en: "The student calculates perimeter (2×(length+width)) instead of area." } },
+      { mistakeType: "forgot_multiply_area", description: { ms: "Murid menambah panjang dan lebar, bukan mendarabkannya.", en: "The student adds the length and width instead of multiplying them." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "area_rectangle", config: { min: 3, max: 10 } },
+      { type: "fill", difficulty: 2, generatorKey: "area_rectangle", config: { min: 5, max: 15 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000012": {
+    id: "a1000000-0000-0000-0000-000000000012",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Sudut Pada Garis Lurus", en: "Angles on a Straight Line" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Sudut-sudut pada satu garis lurus akan sentiasa berjumlah 180°. Jika kita tahu satu sudut, kita boleh cari sudut satu lagi dengan tolak 180° dengan sudut yang diketahui.\n\nContoh harian: Sebatang kayu disandarkan pada dinding, membentuk dua sudut pada garis lurus lantai. Jika satu sudut ialah 65°, berapakah sudut satu lagi?",
+      en: "Angles that lie along one straight line always add up to 180°. If we know one angle, we can find the other by subtracting the known angle from 180°.\n\nEveryday example: A stick leans against a wall, forming two angles along the straight line of the floor. If one angle is 65°, what is the other angle?",
+    },
+    tips: {
+      ms: "Fikirkan garis lurus sebagai separuh bulatan (180°) yang dibahagikan kepada dua bahagian oleh sudut yang diberi.",
+      en: "Think of the straight line as a half-circle (180°) split into two parts by the given angle.",
+    },
+    workedExample: {
+      problem: "Satu sudut ialah 65° pada garis lurus",
+      steps: [
+        { ms: "Jumlah sudut pada garis lurus = 180°", en: "Total of angles on a straight line = 180°" },
+        { ms: "180° − 65° = 115°", en: "180° − 65° = 115°" },
+      ],
+      answer: "115°",
+    },
+    commonMistakes: [
+      { mistakeType: "confused_with_complementary", description: { ms: "Murid tolak daripada 90° (sudut bersandar) berbanding 180°.", en: "The student subtracts from 90° (complementary angles) instead of 180°." } },
+      { mistakeType: "no_operation_performed", description: { ms: "Murid menulis semula sudut yang diberi tanpa membuat sebarang pengiraan.", en: "The student just restates the given angle without performing any calculation." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "angles_straight_line", config: {} },
+      { type: "fill", difficulty: 2, generatorKey: "angles_straight_line", config: {} },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000013": {
+    id: "a1000000-0000-0000-0000-000000000013",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Luas Bentuk Gubahan", en: "Area of Composite Shapes" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Bentuk gubahan ialah bentuk yang dibina daripada dua atau lebih segi empat tepat/sama yang digabungkan. Untuk mencari jumlah luas, kita bahagikan bentuk itu kepada bahagian-bahagian segi empat tepat, kira luas setiap bahagian, kemudian tambahkan kesemuanya.\n\nContoh harian: Sebuah taman berbentuk 'L' dibina daripada dua kawasan segi empat tepat. Berapakah jumlah luas taman itu?",
+      en: "A composite shape is made by combining two or more rectangles/squares. To find the total area, we split the shape into rectangular parts, work out each part's area, then add them all together.\n\nEveryday example: An L-shaped garden is made of two rectangular sections. What is the total area of the garden?",
+    },
+    tips: {
+      ms: "Lukis garis untuk membahagikan bentuk gubahan kepada segi empat tepat yang berasingan sebelum mengira.",
+      en: "Draw a line to split the composite shape into separate rectangles before calculating.",
+    },
+    workedExample: {
+      problem: "Segi Empat Tepat A: 6 cm × 3 cm, Segi Empat Tepat B: 4 cm × 2 cm",
+      steps: [
+        { ms: "Luas A = 6 × 3 = 18 cm²", en: "Area A = 6 × 3 = 18 cm²" },
+        { ms: "Luas B = 4 × 2 = 8 cm²", en: "Area B = 4 × 2 = 8 cm²" },
+        { ms: "Jumlah = 18 + 8 = 26 cm²", en: "Total = 18 + 8 = 26 cm²" },
+      ],
+      answer: "26 cm²",
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_second_rectangle", description: { ms: "Murid hanya mengira luas satu segi empat tepat sahaja.", en: "The student only calculates the area of one rectangle." } },
+      { mistakeType: "area_addition_error", description: { ms: "Murid menambah semua sisi berbanding mengira setiap luas dahulu.", en: "The student adds all the side lengths together instead of finding each area first." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "area_composite", config: { min: 2, max: 8 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "area_composite", config: { min: 3, max: 10 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000014": {
+    id: "a1000000-0000-0000-0000-000000000014",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Jumlah Sudut Dalam Segi Tiga", en: "Sum of Angles in a Triangle" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Jumlah ketiga-tiga sudut dalam sebarang segi tiga sentiasa 180°. Jika kita tahu dua sudut, kita boleh cari sudut ketiga dengan tolak kedua-dua sudut yang diketahui daripada 180°.\n\nContoh harian: Sekeping kad berbentuk segi tiga mempunyai dua sudut 50° dan 60°. Berapakah sudut ketiga?",
+      en: "The three angles in any triangle always add up to 180°. If we know two angles, we can find the third by subtracting both known angles from 180°.\n\nEveryday example: A triangular card has two angles of 50° and 60°. What is the third angle?",
+    },
+    tips: {
+      ms: "Tambah dua sudut yang diketahui dahulu, kemudian tolak jumlah itu daripada 180°.",
+      en: "Add the two known angles together first, then subtract that total from 180°.",
+    },
+    workedExample: {
+      problem: "Dua sudut: 50° dan 60°",
+      steps: [
+        { ms: "Tambah dua sudut: 50° + 60° = 110°", en: "Add the two angles: 50° + 60° = 110°" },
+        { ms: "180° − 110° = 70°", en: "180° − 110° = 70°" },
+      ],
+      answer: "70°",
+    },
+    commonMistakes: [
+      { mistakeType: "confused_angle_sum_360", description: { ms: "Murid tolak daripada 360° (sudut pada satu titik) berbanding 180°.", en: "The student subtracts from 360° (angles at a point) instead of 180°." } },
+      { mistakeType: "only_subtracted_one_angle", description: { ms: "Murid hanya tolak satu daripada dua sudut yang diberi.", en: "The student only subtracts one of the two given angles." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "angles_triangle_sum", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "angles_triangle_sum", config: {} },
+    ],
+  },
 };
