@@ -10,6 +10,8 @@ import type { TopicContent } from "@/lib/content/topics";
 import type { Bilingual, Lang } from "@/lib/i18n/dictionary";
 import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
+import { OPTION_LABELS } from "@/lib/questions/optionLabels";
+import { AngleDiagram } from "@/components/student/diagrams/AngleDiagram";
 
 type Status = "answering" | "correct" | "incorrect";
 
@@ -101,6 +103,12 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
           <Bi text={question.prompt} lang={lang} />
         </p>
 
+        {question.diagram?.kind === "angle" && (
+          <div className="mt-4">
+            <AngleDiagram degrees={question.diagram.degrees} />
+          </div>
+        )}
+
         {question.type === "mcq" && question.options && (
           <div className="mt-5 grid grid-cols-1 gap-2.5">
             {question.options.map((opt) => (
@@ -109,7 +117,8 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
                 disabled={status !== "answering"}
                 onClick={() => setSelected(opt)}
                 className={clsx(
-                  "rounded-kite border-2 px-4 py-3 text-left font-num text-base min-h-[44px] transition-colors",
+                  "rounded-kite border-2 px-4 py-3 text-left text-base min-h-[44px] transition-colors",
+                  OPTION_LABELS[opt] ? "font-body" : "font-num",
                   selected === opt && status === "answering" && "border-biru bg-biru-light",
                   selected !== opt && "border-ink/10",
                   status === "correct" && opt === question.correctAnswer && "border-pandan bg-pandan-light",
@@ -117,7 +126,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
                   status === "incorrect" && opt === question.correctAnswer && "border-pandan bg-pandan-light"
                 )}
               >
-                {opt}
+                <OptionLabel value={opt} lang={lang} />
               </button>
             ))}
           </div>
@@ -166,7 +175,10 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
           </p>
           {mistakeHint && <p className="mt-1 text-sm text-ink"><Bi text={mistakeHint} lang={lang} /></p>}
           <p className="mt-2 text-xs text-ink/60">
-            <Bi text={UI.actualAnswer} lang={lang} />: <span className="font-num font-semibold">{question.correctAnswer}</span>
+            <Bi text={UI.actualAnswer} lang={lang} />:{" "}
+            <span className={clsx("font-semibold", OPTION_LABELS[question.correctAnswer] ? "font-body" : "font-num")}>
+              <OptionLabel value={question.correctAnswer} lang={lang} />
+            </span>
           </p>
           <button
             onClick={() => nextQuestion(true)}
@@ -178,6 +190,12 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
       )}
     </div>
   );
+}
+
+function OptionLabel({ value, lang }: { value: string; lang: Lang }) {
+  const entry = OPTION_LABELS[value];
+  if (!entry) return <>{value}</>;
+  return <Bi text={entry} lang={lang} />;
 }
 
 function generateFromTemplate(topic: TopicContent, index: number): GeneratedQuestion {

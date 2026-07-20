@@ -13,6 +13,10 @@ export interface GeneratedQuestion {
   context: Record<string, number | string>;
   generatorKey: string;
   difficulty: number;
+  /** Optional visual to render above the prompt. Add new "kind" variants
+   * here as more diagram types are needed — keep each renderer in its own
+   * component under components/student/diagrams/. */
+  diagram?: { kind: "angle"; degrees: number };
 }
 
 export interface GeneratorParams {

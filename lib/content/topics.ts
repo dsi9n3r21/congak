@@ -454,4 +454,32 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "angles_triangle_sum", config: {} },
     ],
   },
+  "a1000000-0000-0000-0000-000000000015": {
+    id: "a1000000-0000-0000-0000-000000000015",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Jenis-Jenis Sudut", en: "Types of Angles" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Sudut boleh dikelaskan mengikut saiznya:\n• Sudut Tirus (Acute) — kurang daripada 90°\n• Sudut Tegak (Right Angle) — tepat 90°\n• Sudut Cakah (Obtuse) — lebih daripada 90° tetapi kurang daripada 180°\n• Sudut Refleks (Reflex) — lebih daripada 180° tetapi kurang daripada 360°\n\nContoh harian: Bucu meja biasanya sudut tegak (90°). Bucu jam menunjukkan pelbagai jenis sudut bergantung pada waktu.",
+      en: "Angles are classified by their size:\n• Acute — less than 90°\n• Right Angle — exactly 90°\n• Obtuse — more than 90° but less than 180°\n• Reflex — more than 180° but less than 360°\n\nEveryday example: The corner of a table is usually a right angle (90°). A clock's hands show different angle types depending on the time.",
+    },
+    tips: {
+      ms: "Bandingkan sudut dengan bucu segi empat sama (90°) — jika ia nampak lebih kecil, ia tirus; jika lebih besar tetapi masih 'tertutup', ia cakah; jika ia 'terbuka luas' melebihi separuh pusingan, ia refleks.",
+      en: "Compare the angle to the corner of a square (90°) — if it looks smaller, it's acute; if bigger but still 'closed', it's obtuse; if it's opened wide past a half-turn, it's reflex.",
+    },
+    workedExample: {
+      problem: "Sudut 130°",
+      steps: [
+        { ms: "130° lebih besar daripada 90°", en: "130° is greater than 90°" },
+        { ms: "130° kurang daripada 180°", en: "130° is less than 180°" },
+        { ms: "Jadi ia adalah Sudut Cakah (Obtuse)", en: "So it is an Obtuse angle" },
+      ],
+      answer: "Sudut Cakah (Obtuse)",
+    },
+    commonMistakes: [
+      { mistakeType: "confused_with_right_angle", description: { ms: "Murid memilih 'Sudut Tegak' walaupun sudut itu bukan tepat 90°.", en: "The student picks 'Right Angle' even though the angle isn't exactly 90°." } },
+      { mistakeType: "missed_reflex_angle", description: { ms: "Murid tidak menyedari sudut refleks perlu melebihi 180°.", en: "The student doesn't recognize that a reflex angle must be greater than 180°." } },
+    ],
+    questionTemplates: [{ type: "mcq", difficulty: 1, generatorKey: "angles_classify", config: {} }],
+  },
 };

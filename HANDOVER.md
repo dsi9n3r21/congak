@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0012 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0013 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0013**.
+should be **0014**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,12 +55,12 @@ should be **0013**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...014` (14 topics). Next new topic should start at `...015`.
+  `...015` (15 topics). Next new topic should start at `...016`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (14 of ~40+ real KSSR sub-topics)
+## Current curriculum coverage (15 of ~40+ real KSSR sub-topics)
 Verified against a real Pelangi Publishing reference book structure
 (8 units per year, each with 10-16 sub-skills — see chat history for the
 full unit list if needed, or ask Lynda to re-share the anyflip.com link:
@@ -73,20 +73,38 @@ https://anyflip.com/ekbvw/vshm/basic).
 | Money | ✓ (change) | — | — |
 | Time | — | ✓ (duration) | — |
 | Length/Mass/Volume | perimeter | — | volume (liquid) |
-| **Space** (polygons/angles/area) | area (rectangle/square) | angles (straight line), area (composite) | angles (triangle sum) |
+| **Space** (polygons/angles/area) | area (rectangle/square), angle types (acute/right/obtuse/reflex) | angles (straight line), area (composite) | angles (triangle sum) |
 | Coordinates/Ratio/Proportion | — | — | ratio (simplify) |
 | Data Handling | — | average | — |
 
-**Space unit — first pass shipped this round**: 4 new topics/generators —
-`area_rectangle` (Y4), `angles_straight_line` (Y5), `area_composite` (Y5),
-`angles_triangle_sum` (Y6). All angle/shape content is text-described
-(no diagram rendering exists in the app — consistent with how `perimeter`
-already worked), so these ask students to reason from a written
-description rather than a picture. **Not yet covered in Space**: types of
-angles (acute/obtuse/reflex — inherently visual, would need an SVG/shape
-rendering component, a bigger scope decision, don't start unprompted),
-angles at a point (360°) as its own topic, area of triangle, circles
-(Y6). Suggest asking Lynda which of these to prioritize next.
+**Diagram infrastructure — added this round.** Questions can now carry an
+optional `diagram` field (`lib/questions/types.ts`) alongside the usual
+text prompt. First (and so far only) diagram kind is `"angle"`, rendered
+by `components/student/diagrams/AngleDiagram.tsx` — a plain SVG, two rays
+from a vertex plus an arc, using the theme's ink/biru hex values directly
+(SVG can't reach Tailwind classes). The arc's large-arc-flag is just
+`degrees > 180`, which handles reflex angles for free — no special-casing
+needed. If you add more diagram kinds later (triangle, composite shape),
+follow the same pattern: new `kind` variant on the union, new component
+in `components/student/diagrams/`, one new `if` branch in
+`QuestionPlayer.tsx` where `AngleDiagram` is rendered now.
+
+Word-based answers (angle type names, not numbers) needed a second small
+piece: `lib/questions/optionLabels.ts` maps canonical keys (`"acute"`,
+`"right"`, etc.) to bilingual labels. `correctAnswer`/`options` stay as
+those plain keys (grading is still a string compare), and
+`QuestionPlayer` looks the key up via `OPTION_LABELS` to render the
+translated word instead of the raw key — falls back to the raw string for
+every existing numeric-answer generator, so nothing else was touched.
+Reuse this same map (add new keys) for any future word-based generator
+rather than inventing a second lookup.
+
+**Types of Angles (Y4) shipped using this infrastructure** —
+`angles_classify` generator, id `...015`.
+
+**Space unit still open**: area of triangle, circles (Y6), angles at a
+point (360°) as a standalone topic. Ask Lynda which to prioritize next
+rather than guessing — these may want their own diagram kinds.
 
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to

@@ -371,6 +371,35 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "angles_classify": {
+      const { degrees, correctType } = question.context as { degrees: number; correctType: string };
+      if (answer === "right" && correctType !== "right") {
+        return {
+          mistakeType: "confused_with_right_angle",
+          hint: {
+            ms: "Sudut tegak (right angle) ialah TEPAT 90°. Sudut ini bukan tepat 90°.",
+            en: "A right angle is EXACTLY 90°. This angle isn't exactly 90°.",
+          },
+        };
+      }
+      if (correctType === "reflex" && answer !== "reflex") {
+        return {
+          mistakeType: "missed_reflex_angle",
+          hint: {
+            ms: "Sudut refleks lebih besar daripada 180°. Lihat bahagian rajah yang lebih besar.",
+            en: "A reflex angle is greater than 180°. Look at the larger part of the diagram.",
+          },
+        };
+      }
+      return {
+        mistakeType: "angle_type_confusion",
+        hint: {
+          ms: "Ingat: Tirus < 90° < Tegak = 90° < Cakah < 180° < Refleks < 360°.",
+          en: "Remember: Acute < 90° < Right = 90° < Obtuse < 180° < Reflex < 360°.",
+        },
+      };
+    }
+
     default:
       return {
         mistakeType: "unknown",
