@@ -60,8 +60,18 @@ export function generateMoneyChange(params: GeneratorParams): GeneratedQuestion 
 
     question.options = shuffleOptions(
       question.correctAnswer,
-      [conversionErrorDistractor, borrowErrorDistractor].filter((d) => d !== question.correctAnswer)
+      Array.from(
+        new Set([conversionErrorDistractor, borrowErrorDistractor].filter((d) => d !== question.correctAnswer))
+      )
     );
+    // This generator never had a uniqueness-guaranteed fallback — the two
+    // distractors above can collide with each other or the correct answer
+    // for some price/payment combinations, leaving only 2 options.
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(0, changeSen + randInt(10, 90) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
   }
 
   return question;

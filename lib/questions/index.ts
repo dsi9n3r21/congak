@@ -4,6 +4,10 @@ import { generateMoneyChange } from "./generators/money";
 import { generatePerimeter } from "./generators/perimeter";
 import { generateDecimalAddSubtract } from "./generators/decimals";
 import { generatePercentageOfQuantity } from "./generators/percentage";
+import { generateTimeDuration } from "./generators/time";
+import { generateAverage } from "./generators/average";
+import { generateSimplifyRatio } from "./generators/ratio";
+import { generateVolume } from "./generators/volume";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
@@ -13,6 +17,10 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   perimeter: generatePerimeter,
   decimal_add_subtract: generateDecimalAddSubtract,
   percentage_of_quantity: generatePercentageOfQuantity,
+  time_duration: generateTimeDuration,
+  average: generateAverage,
+  simplify_ratio: generateSimplifyRatio,
+  volume: generateVolume,
 };
 
 /**

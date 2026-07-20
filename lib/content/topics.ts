@@ -210,4 +210,126 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "percentage_of_quantity", config: { percentages: [20, 75, 5] } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000007": {
+    id: "a1000000-0000-0000-0000-000000000007",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Waktu dan Masa", en: "Time & Duration" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Untuk mengira waktu tamat, kita tambah tempoh masa kepada waktu mula. Ingat: 60 minit = 1 jam. Jika jumlah minit melebihi 60, tukar 60 minit itu kepada 1 jam.\n\nContoh harian: Kelas tuisyen Amin bermula pukul 2:30 petang dan berlangsung 90 minit. Pukul berapakah ia tamat?",
+      en: "To find the end time, we add the duration to the start time. Remember: 60 minutes = 1 hour. If the total minutes go past 60, convert that 60 minutes into 1 hour.\n\nEveryday example: Amin's tuition class starts at 2:30 pm and lasts 90 minutes. What time does it end?",
+    },
+    tips: {
+      ms: "Pisahkan tempoh masa kepada jam dan minit dahulu (90 minit = 1 jam 30 minit), kemudian tambah secara berasingan.",
+      en: "Split the duration into hours and minutes first (90 minutes = 1 hour 30 minutes), then add each part separately.",
+    },
+    workedExample: {
+      problem: "2:30 + 90 minit",
+      steps: [
+        { ms: "90 minit = 1 jam 30 minit", en: "90 minutes = 1 hour 30 minutes" },
+        { ms: "2:30 + 1 jam = 3:30", en: "2:30 + 1 hour = 3:30" },
+        { ms: "3:30 + 30 minit = 4:00", en: "3:30 + 30 minutes = 4:00" },
+      ],
+      answer: "4:00",
+    },
+    commonMistakes: [
+      { mistakeType: "time_carry_error", description: { ms: "Murid tidak menukar 60 minit kepada 1 jam apabila jumlah minit melebihi 60.", en: "The student doesn't convert 60 minutes into 1 hour when the total minutes exceed 60." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "time_duration", config: {} },
+      { type: "fill", difficulty: 2, generatorKey: "time_duration", config: {} },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000008": {
+    id: "a1000000-0000-0000-0000-000000000008",
+    strand: { ms: "Statistik", en: "Statistics" },
+    title: { ms: "Purata (Min)", en: "Average (Mean)" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Purata (min) ialah nilai yang mewakili satu set data. Untuk mencari purata, tambah semua nilai, kemudian bahagikan dengan bilangan nilai tersebut.\n\nContoh harian: Markah ujian matematik Aina untuk 4 minggu ialah 70, 80, 75, 75. Berapakah purata markahnya?",
+      en: "The average (mean) is a value that represents a set of data. To find the average, add all the values together, then divide by how many values there are.\n\nEveryday example: Aina's maths test scores over 4 weeks were 70, 80, 75, 75. What is her average score?",
+    },
+    tips: {
+      ms: "Purata = Jumlah Semua Nilai ÷ Bilangan Nilai. Jangan lupa langkah bahagi — jumlah sahaja bukan purata.",
+      en: "Average = Total of All Values ÷ Number of Values. Don't forget the division step — the sum alone isn't the average.",
+    },
+    workedExample: {
+      problem: "70, 80, 75, 75",
+      steps: [
+        { ms: "Jumlah = 70+80+75+75 = 300", en: "Sum = 70+80+75+75 = 300" },
+        { ms: "Bilangan nilai = 4", en: "Number of values = 4" },
+        { ms: "Purata = 300 ÷ 4 = 75", en: "Average = 300 ÷ 4 = 75" },
+      ],
+      answer: 75,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_divide_average", description: { ms: "Murid memberikan jumlah keseluruhan sebagai jawapan, tanpa membahagikannya.", en: "The student gives the total sum as the answer, without dividing it." } },
+      { mistakeType: "wrong_count_average", description: { ms: "Murid membahagikan dengan bilangan nilai yang salah.", en: "The student divides by the wrong number of values." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "average", config: { count: 3, maxValue: 15 } },
+      { type: "fill", difficulty: 2, generatorKey: "average", config: { count: 4, maxValue: 20 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000009": {
+    id: "a1000000-0000-0000-0000-000000000009",
+    strand: { ms: "Nisbah", en: "Ratio" },
+    title: { ms: "Nisbah Mudah", en: "Simple Ratio" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Nisbah membandingkan dua kuantiti. Untuk memudahkan nisbah, bahagikan kedua-dua bahagian dengan nombor terbesar yang boleh membahagikannya dengan tepat (Pembahagi Sepunya Terbesar).\n\nContoh harian: Dalam sebuah kelas, terdapat 12 murid lelaki dan 18 murid perempuan. Apakah nisbah lelaki kepada perempuan dalam bentuk paling ringkas?",
+      en: "A ratio compares two quantities. To simplify a ratio, divide both parts by the largest number that divides them evenly (the Greatest Common Divisor).\n\nEveryday example: In a class, there are 12 boys and 18 girls. What is the ratio of boys to girls in simplest form?",
+    },
+    tips: {
+      ms: "Cuba bahagi kedua-dua bahagian dengan 2, kemudian 3, dan seterusnya sehingga tidak boleh dibahagi lagi tanpa baki.",
+      en: "Try dividing both parts by 2, then 3, and so on until neither can be divided any further without a remainder.",
+    },
+    workedExample: {
+      problem: "12:18",
+      steps: [
+        { ms: "Bahagi kedua-dua bahagian dengan 6", en: "Divide both parts by 6" },
+        { ms: "12÷6 : 18÷6", en: "12÷6 : 18÷6" },
+        { ms: "= 2:3", en: "= 2:3" },
+      ],
+      answer: "2:3",
+    },
+    commonMistakes: [
+      { mistakeType: "ratio_not_fully_simplified", description: { ms: "Murid hanya membahagikan sebahagian, bukan sehingga bentuk paling ringkas.", en: "The student only partially simplifies, not all the way to the simplest form." } },
+      { mistakeType: "ratio_order_reversed", description: { ms: "Murid menukar susunan nisbah secara tidak sengaja.", en: "The student accidentally reverses the order of the ratio." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "simplify_ratio", config: { maxMultiplier: 4 } },
+      { type: "fill", difficulty: 2, generatorKey: "simplify_ratio", config: { maxMultiplier: 6 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000010": {
+    id: "a1000000-0000-0000-0000-000000000010",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Isipadu Cecair", en: "Volume of Liquid" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Isipadu cecair diukur dalam liter (L) dan mililiter (ml). 1 liter = 1000 mililiter. Apabila menambah isipadu yang dinyatakan dalam L dan ml, tukar semuanya kepada ml dahulu.\n\nContoh harian: Sebuah balang mengandungi 1 L 250 ml jus. 300 ml jus lagi dituang masuk. Berapakah jumlah isipadu jus sekarang?",
+      en: "Liquid volume is measured in litres (L) and millilitres (ml). 1 litre = 1000 millilitres. When adding volumes given in both L and ml, convert everything to ml first.\n\nEveryday example: A jug contains 1 L 250 ml of juice. Another 300 ml is poured in. What is the total volume of juice now?",
+    },
+    tips: {
+      ms: "Selalu tukar liter kepada ml dahulu (darab dengan 1000) sebelum membuat sebarang pengiraan.",
+      en: "Always convert litres to ml first (multiply by 1000) before doing any calculation.",
+    },
+    workedExample: {
+      problem: "1 L 250 ml + 300 ml",
+      steps: [
+        { ms: "1 L = 1000 ml", en: "1 L = 1000 ml" },
+        { ms: "1000 ml + 250 ml = 1250 ml", en: "1000 ml + 250 ml = 1250 ml" },
+        { ms: "1250 ml + 300 ml = 1550 ml", en: "1250 ml + 300 ml = 1550 ml" },
+      ],
+      answer: "1550 ml",
+    },
+    commonMistakes: [
+      { mistakeType: "volume_conversion_error", description: { ms: "Murid tidak menukar liter kepada ml dengan betul sebelum menambah.", en: "The student doesn't correctly convert litres to ml before adding." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "volume", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "volume", config: {} },
+    ],
+  },
 };

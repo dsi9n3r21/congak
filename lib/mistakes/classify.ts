@@ -187,6 +187,92 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "time_duration": {
+      const { startHour, startMinute, durationMinutes, correct } = question.context as {
+        startHour: number; startMinute: number; durationMinutes: number; correct: string;
+      };
+      const noCarryMinute = (startMinute + durationMinutes) % 60;
+      const noCarryTime = `${((startHour - 1) % 12) + 1}:${String(noCarryMinute).padStart(2, "0")}`;
+      if (answer === noCarryTime) {
+        return {
+          mistakeType: "time_carry_error",
+          hint: {
+            ms: "Apabila minit melebihi 60, tukar 60 minit kepada 1 jam dan tambah pada jam.",
+            en: "When minutes go past 60, convert 60 minutes into 1 hour and add it to the hour.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: `Cuba kira semula bermula dari ${correct === answer ? "" : "waktu mula"}.`, en: "Try calculating again from the start time." },
+      };
+    }
+
+    case "average": {
+      const { sum, count } = question.context as { sum: number; count: number };
+      if (Number(answer) === sum) {
+        return {
+          mistakeType: "forgot_divide_average",
+          hint: {
+            ms: "Purata perlu dibahagi dengan bilangan nombor — jangan berhenti pada jumlah sahaja.",
+            en: "The average needs to be divided by how many numbers there are — don't stop at just the sum.",
+          },
+        };
+      }
+      if (Number(answer) === Math.round(sum / (count - 1))) {
+        return {
+          mistakeType: "wrong_count_average",
+          hint: {
+            ms: "Semak semula: berapa banyak nombor sepatutnya anda bahagikan dengan?",
+            en: "Double check: how many numbers should you actually be dividing by?",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Purata = Jumlah ÷ Bilangan nombor.", en: "Average = Sum ÷ Count of numbers." },
+      };
+    }
+
+    case "simplify_ratio": {
+      const { a, b, simplifiedA, simplifiedB } = question.context as {
+        a: number; b: number; simplifiedA: number; simplifiedB: number;
+      };
+      if (answer === `${simplifiedB}:${simplifiedA}`) {
+        return {
+          mistakeType: "ratio_order_reversed",
+          hint: {
+            ms: "Susunan nisbah penting — pastikan bahagian pertama kekal di depan.",
+            en: "The order in a ratio matters — make sure the first part stays first.",
+          },
+        };
+      }
+      return {
+        mistakeType: "ratio_not_fully_simplified",
+        hint: {
+          ms: "Cari nombor terbesar yang boleh membahagikan kedua-dua bahagian nisbah dengan tepat.",
+          en: "Find the largest number that divides both parts of the ratio evenly.",
+        },
+      };
+    }
+
+    case "volume": {
+      const { totalMlA, mlB, correctMl } = question.context as { totalMlA: number; mlB: number; correctMl: number };
+      if (Number(answer) === mlB + (totalMlA - Math.floor(totalMlA / 1000) * 1000)) {
+        return {
+          mistakeType: "volume_conversion_error",
+          hint: {
+            ms: "Tukar liter kepada ml dahulu (1 L = 1000 ml) sebelum menambah.",
+            en: "Convert litres to ml first (1 L = 1000 ml) before adding.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Tukar semua kepada ml dahulu, kemudian tambah.", en: "Convert everything to ml first, then add." },
+      };
+    }
+
     default:
       return {
         mistakeType: "unknown",

@@ -38,15 +38,16 @@ export function generateWholeNumbersAddition(params: GeneratorParams): Generated
   if (type === "mcq") {
     const forgotCarryDistractor = noCarryAdd(a, b);
     const misalignedDistractor = correct + (Math.random() > 0.5 ? 10 : -10) * randInt(1, 9);
-    question.options = shuffleOptions(
-      String(correct),
-      [String(forgotCarryDistractor), String(misalignedDistractor)].filter(
-        (d) => d !== String(correct)
-      )
+    const distractors = Array.from(
+      new Set([String(forgotCarryDistractor), String(misalignedDistractor)].filter((d) => d !== String(correct)))
     );
-    // Guarantee 3 distinct options even on rare collisions
+    question.options = shuffleOptions(String(correct), distractors);
+    // Guarantee 3 distinct options even on rare collisions — the previous
+    // version pushed a random offset without checking it wasn't already
+    // present, so it could (and did) produce duplicate options.
     while (question.options.length < 3) {
-      question.options.push(String(correct + randInt(-99, 99) || 1));
+      const candidate = String(correct + (randInt(1, 99) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
     }
   }
 
