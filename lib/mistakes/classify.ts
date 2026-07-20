@@ -400,6 +400,58 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "area_triangle": {
+      const { base, height, correct } = question.context as { base: number; height: number; correct: number };
+      if (Number(answer) === base * height) {
+        return {
+          mistakeType: "forgot_to_halve",
+          hint: {
+            ms: "Luas segi tiga ialah SEPARUH daripada tapak × tinggi. Jangan lupa bahagi dengan 2.",
+            en: "The area of a triangle is HALF of base × height. Don't forget to divide by 2.",
+          },
+        };
+      }
+      if (Number(answer) === Math.round((base / 2) * (height / 2))) {
+        return {
+          mistakeType: "halved_both_dimensions",
+          hint: {
+            ms: "Darab tapak dengan tinggi dahulu, kemudian bahagikan HASIL itu dengan 2 — bukan bahagikan kedua-dua nombor dahulu.",
+            en: "Multiply base by height first, then divide that RESULT by 2 — not divide both numbers first.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: (tapak × tinggi) ÷ 2.", en: "Try calculating again: (base × height) ÷ 2." },
+      };
+    }
+
+    case "angles_at_point": {
+      const { angleA, angleB, correct } = question.context as { angleA: number; angleB: number; correct: number };
+      if (Number(answer) === Math.abs(180 - angleA - angleB)) {
+        return {
+          mistakeType: "confused_with_180",
+          hint: {
+            ms: "Sudut pada satu titik berjumlah 360°, bukan 180°. 180° ialah untuk sudut pada garis lurus atau dalam segi tiga.",
+            en: "Angles at a point add up to 360°, not 180°. 180° is for angles on a straight line or in a triangle.",
+          },
+        };
+      }
+      if (Number(answer) === 360 - angleA) {
+        return {
+          mistakeType: "only_subtracted_one_angle",
+          hint: {
+            ms: "Tolak KEDUA-DUA sudut yang diberi daripada 360°, bukan satu sahaja.",
+            en: "Subtract BOTH given angles from 360°, not just one.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: 360° − sudut pertama − sudut kedua.", en: "Try calculating again: 360° − first angle − second angle." },
+      };
+    }
+
     default:
       return {
         mistakeType: "unknown",

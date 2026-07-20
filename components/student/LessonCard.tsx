@@ -7,7 +7,7 @@ import type { Lang } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
 import { UI } from "@/lib/i18n/dictionary";
 
-const TAB_KEYS = ["learnTabLearn", "learnTabTips", "learnTabExample", "learnTabMistakes"] as const;
+const TAB_KEYS = ["learnTabLearn", "learnTabHowTo", "learnTabTips", "learnTabExample", "learnTabMistakes"] as const;
 type TabKey = (typeof TAB_KEYS)[number];
 
 export function LessonCard({ topic, lang }: { topic: TopicContent; lang: Lang }) {
@@ -37,12 +37,31 @@ export function LessonCard({ topic, lang }: { topic: TopicContent; lang: Lang })
           </p>
         )}
 
+        {tab === "learnTabHowTo" && (
+          <ol className="space-y-2.5">
+            {topic.howTo.map((step, i) => (
+              <li key={i} className="flex gap-2.5 text-sm text-ink">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-biru-light font-num font-bold text-biru-dark">
+                  {i + 1}
+                </span>
+                <span className="pt-0.5">
+                  <Bi text={step} lang={lang} />
+                </span>
+              </li>
+            ))}
+          </ol>
+        )}
+
         {tab === "learnTabTips" && (
-          <div className="flex gap-3 rounded-kite bg-pandan-light p-4">
-            <span className="text-xl">💡</span>
-            <p className="font-body text-[15px] leading-relaxed text-ink">
-              <Bi text={topic.tips} lang={lang} />
-            </p>
+          <div className="space-y-3">
+            {topic.tips.map((tip, i) => (
+              <div key={i} className="flex gap-3 rounded-kite bg-pandan-light p-4">
+                <span className="text-xl">💡</span>
+                <p className="font-body text-[15px] leading-relaxed text-ink">
+                  <Bi text={tip} lang={lang} />
+                </p>
+              </div>
+            ))}
           </div>
         )}
 

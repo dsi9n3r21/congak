@@ -12,6 +12,8 @@ import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
 import { OPTION_LABELS } from "@/lib/questions/optionLabels";
 import { AngleDiagram } from "@/components/student/diagrams/AngleDiagram";
+import { TriangleDiagram } from "@/components/student/diagrams/TriangleDiagram";
+import { AnglesAtPointDiagram } from "@/components/student/diagrams/AnglesAtPointDiagram";
 
 type Status = "answering" | "correct" | "incorrect";
 
@@ -106,6 +108,16 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
         {question.diagram?.kind === "angle" && (
           <div className="mt-4">
             <AngleDiagram degrees={question.diagram.degrees} />
+          </div>
+        )}
+        {question.diagram?.kind === "triangle" && (
+          <div className="mt-4">
+            <TriangleDiagram base={question.diagram.base} height={question.diagram.height} />
+          </div>
+        )}
+        {question.diagram?.kind === "point3" && (
+          <div className="mt-4">
+            <AnglesAtPointDiagram angleA={question.diagram.angleA} angleB={question.diagram.angleB} />
           </div>
         )}
 

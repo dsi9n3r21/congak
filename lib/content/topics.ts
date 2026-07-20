@@ -17,7 +17,11 @@ export interface TopicContent {
   title: Bilingual;
   yearLevel: number;
   explanation: Bilingual;
-  tips: Bilingual;
+  /** Short standalone reminders/shortcuts — shown as a bulleted list. */
+  tips: Bilingual[];
+  /** General, number-free method steps ("how to solve this type of question") —
+   * distinct from workedExample, which walks one specific set of numbers. */
+  howTo: Bilingual[];
   workedExample: { problem: string; steps: Bilingual[]; answer: string | number };
   commonMistakes: { mistakeType: string; description: Bilingual }[];
   questionTemplates: { type: "mcq" | "fill" | "word_problem"; difficulty: number; generatorKey: string; config: Record<string, unknown> }[];
@@ -33,10 +37,22 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Apabila kita menambah dua nombor besar, kita susun nombor ikut nilai tempat: puluh ribu, ribu, ratus, puluh, sa. Kita tambah dari lajur sa (kanan sekali) dahulu, dan \"simpan\" jika jumlah lebih 9.\n\nContoh harian: Kedai buku ada 32,450 pensel dan terima 18,600 pensel baru. Berapa jumlah pensel sekarang?",
       en: "When adding two large numbers, we line them up by place value: ten thousands, thousands, hundreds, tens, ones. We add starting from the ones column (rightmost) first, and \"carry\" whenever a column's total is more than 9.\n\nEveryday example: A bookshop has 32,450 pencils and receives 18,600 new ones. How many pencils are there now?",
     },
-    tips: {
-      ms: "Susun nombor ikut nilai tempat dengan kemas — guna kertas berpetak jika perlu. Sentiasa mula tambah dari lajur paling kanan (sa).",
-      en: "Line up numbers neatly by place value — use grid paper if it helps. Always start adding from the rightmost column (ones).",
-    },
+    tips: [
+      {
+        ms: "Susun nombor ikut nilai tempat dengan kemas — guna kertas berpetak jika perlu. Sentiasa mula tambah dari lajur paling kanan (sa).",
+        en: "Line up numbers neatly by place value — use grid paper if it helps. Always start adding from the rightmost column (ones).",
+      },
+      {
+        ms: "Anggarkan jawapan dahulu dengan membundarkan kedua-dua nombor — ini membantu anda kesan jika jawapan akhir tidak masuk akal.",
+        en: "Estimate the answer first by rounding both numbers — this helps you catch it if your final answer doesn't make sense.",
+      },
+    ],
+    howTo: [
+      { ms: "Susun kedua-dua nombor menegak, ikut nilai tempat (sa di bawah sa, puluh di bawah puluh, dan seterusnya).", en: "Line the two numbers up vertically, matching place value (ones under ones, tens under tens, and so on)." },
+      { ms: "Tambah lajur sa (paling kanan) dahulu.", en: "Add the ones column (rightmost) first." },
+      { ms: "Jika jumlah lajur itu 10 atau lebih, tulis digit sa dan \"simpan\" 1 ke lajur sebelah kiri.", en: "If that column's total is 10 or more, write down the ones digit and \"carry\" the 1 to the column on the left." },
+      { ms: "Ulang proses ini bagi setiap lajur sehingga ke kiri sekali.", en: "Repeat this for every column, moving left, until you reach the last one." },
+    ],
     workedExample: {
       problem: "32450 + 18600",
       steps: [
@@ -67,10 +83,22 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Apabila penyebut (nombor bawah) dua pecahan adalah SAMA, kita hanya tambah pengangka (nombor atas) sahaja. Penyebut kekal sama.\n\nContoh: 2/5 + 1/5 = (2+1)/5 = 3/5. Bayangkan 5 keping pizza dipotong sama besar — kita ambil 2 keping, kemudian 1 keping lagi.",
       en: "When two fractions have the SAME denominator (bottom number), we only add the numerators (top numbers). The denominator stays the same.\n\nExample: 2/5 + 1/5 = (2+1)/5 = 3/5. Imagine a pizza cut into 5 equal slices — we take 2 slices, then 1 more slice.",
     },
-    tips: {
-      ms: "Penyebut sama = kongsi saiz bahagian yang sama. Hanya nombor atas (pengangka) yang berubah.",
-      en: "Same denominator = the pieces are the same size. Only the top number (numerator) changes.",
-    },
+    tips: [
+      {
+        ms: "Penyebut sama = kongsi saiz bahagian yang sama. Hanya nombor atas (pengangka) yang berubah.",
+        en: "Same denominator = the pieces are the same size. Only the top number (numerator) changes.",
+      },
+      {
+        ms: "Jika jawapan pengangka lebih besar daripada penyebut (cth. 9/8), itu ialah pecahan tak wajar — anda boleh tukarkannya kepada nombor bercampur.",
+        en: "If the numerator ends up bigger than the denominator (e.g. 9/8), that's an improper fraction — you can convert it to a mixed number.",
+      },
+    ],
+    howTo: [
+      { ms: "Semak sama ada kedua-dua pecahan mempunyai penyebut yang sama.", en: "Check that both fractions have the same denominator." },
+      { ms: "Tambahkan pengangka (nombor atas) sahaja.", en: "Add just the numerators (top numbers) together." },
+      { ms: "Kekalkan penyebut (nombor bawah) tanpa diubah.", en: "Keep the denominator (bottom number) unchanged." },
+      { ms: "Permudahkan pecahan itu jika boleh.", en: "Simplify the fraction if possible." },
+    ],
     workedExample: {
       problem: "3/8 + 2/8",
       steps: [
@@ -96,10 +124,22 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Baki wang ialah beza antara wang yang dibayar dengan harga barang. Kita tolak: Wang Dibayar − Harga Barang = Baki.\n\nContoh: Ali beli air kotak RM2.50 di kantin dan bayar dengan RM5.00. Baki = RM5.00 − RM2.50 = RM2.50.",
       en: "Change is the difference between the money paid and the item's price. We subtract: Money Paid − Item Price = Change.\n\nExample: Ali buys a packet drink for RM2.50 at the canteen and pays with RM5.00. Change = RM5.00 − RM2.50 = RM2.50.",
     },
-    tips: {
-      ms: "Tukar semua kepada sen dahulu (RM5.00 = 500 sen) supaya lebih mudah tolak, kemudian tukar balik kepada RM jika perlu.",
-      en: "Convert everything to sen first (RM5.00 = 500 sen) to make subtraction easier, then convert back to RM if needed.",
-    },
+    tips: [
+      {
+        ms: "Tukar semua kepada sen dahulu (RM5.00 = 500 sen) supaya lebih mudah tolak, kemudian tukar balik kepada RM jika perlu.",
+        en: "Convert everything to sen first (RM5.00 = 500 sen) to make subtraction easier, then convert back to RM if needed.",
+      },
+      {
+        ms: "Semak jawapan anda: Baki + Harga Barang MESTI menyamai Wang Dibayar.",
+        en: "Check your answer: Change + Item Price MUST equal Money Paid.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti Wang Dibayar dan Harga Barang.", en: "Identify the Money Paid and the Item Price." },
+      { ms: "Tukar kedua-dua nilai kepada sen sepenuhnya.", en: "Convert both values fully into sen." },
+      { ms: "Tolak: Wang Dibayar − Harga Barang.", en: "Subtract: Money Paid − Item Price." },
+      { ms: "Tukar jawapan itu balik kepada format RM.", en: "Convert the answer back into RM format." },
+    ],
     workedExample: {
       problem: "RM10.00 - RM6.30",
       steps: [
@@ -127,10 +167,22 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Perimeter ialah jumlah panjang semua sisi sesuatu bentuk. Untuk segi empat tepat, kita gunakan formula: Perimeter = 2 × (panjang + lebar). Untuk segi empat sama, semua sisi sama panjang.\n\nContoh harian: Pak Ali ingin memagar sebidang tanah berbentuk segi empat tepat. Berapa panjang pagar yang diperlukan?",
       en: "Perimeter is the total length of all the sides of a shape. For a rectangle, we use the formula: Perimeter = 2 × (length + width). For a square, all sides are the same length.\n\nEveryday example: Pak Ali wants to fence a rectangular plot of land. How much fencing does he need?",
     },
-    tips: {
-      ms: "Bayangkan berjalan mengelilingi keseluruhan bentuk itu — perimeter ialah jumlah jarak yang anda jalani.",
-      en: "Imagine walking all the way around the shape — the perimeter is the total distance you'd walk.",
-    },
+    tips: [
+      {
+        ms: "Bayangkan berjalan mengelilingi keseluruhan bentuk itu — perimeter ialah jumlah jarak yang anda jalani.",
+        en: "Imagine walking all the way around the shape — the perimeter is the total distance you'd walk.",
+      },
+      {
+        ms: "Untuk segi empat sama, cukup darab satu sisi dengan 4 — tidak perlu formula panjang+lebar.",
+        en: "For a square, just multiply one side by 4 — no need for the length+width formula.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti bentuk itu — segi empat tepat atau segi empat sama.", en: "Identify the shape — rectangle or square." },
+      { ms: "Untuk segi empat tepat: tambah panjang dan lebar, kemudian darab jumlah itu dengan 2.", en: "For a rectangle: add the length and width, then multiply that total by 2." },
+      { ms: "Untuk segi empat sama: darab panjang satu sisi dengan 4.", en: "For a square: multiply one side's length by 4." },
+      { ms: "Sertakan unit ukuran (cm, m) dalam jawapan akhir.", en: "Include the unit of measurement (cm, m) in your final answer." },
+    ],
     workedExample: {
       problem: "Segi empat tepat 8 cm × 5 cm",
       steps: [
@@ -158,10 +210,22 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Apabila menambah atau menolak nombor perpuluhan, titik perpuluhan MESTI disusun lurus antara satu sama lain, sama seperti nilai tempat dalam nombor bulat.\n\nContoh harian: Siti membeli buku RM12.50 dan pensel RM3.20. Berapa jumlah perbelanjaannya?",
       en: "When adding or subtracting decimal numbers, the decimal points MUST line up with each other, just like place value does for whole numbers.\n\nEveryday example: Siti buys a book for RM12.50 and a pencil for RM3.20. How much did she spend in total?",
     },
-    tips: {
-      ms: "Susun nombor secara menegak dengan titik perpuluhan segaris. Tambah sifar jika perlu supaya kedua-dua nombor ada bilangan digit selepas titik perpuluhan yang sama.",
-      en: "Line the numbers up vertically with decimal points aligned. Add a zero if needed so both numbers have the same number of digits after the decimal point.",
-    },
+    tips: [
+      {
+        ms: "Susun nombor secara menegak dengan titik perpuluhan segaris. Tambah sifar jika perlu supaya kedua-dua nombor ada bilangan digit selepas titik perpuluhan yang sama.",
+        en: "Line the numbers up vertically with decimal points aligned. Add a zero if needed so both numbers have the same number of digits after the decimal point.",
+      },
+      {
+        ms: "Selepas mengira, semak semula titik perpuluhan dalam jawapan anda berada di kedudukan yang betul, segaris dengan soalan.",
+        en: "After calculating, double-check the decimal point in your answer is in the correct spot, lined up with the question.",
+      },
+    ],
+    howTo: [
+      { ms: "Susun kedua-dua nombor menegak dengan titik perpuluhan segaris.", en: "Line up both numbers vertically with the decimal points aligned." },
+      { ms: "Tambah sifar pada hujung nombor yang lebih pendek jika perlu.", en: "Add a trailing zero to the shorter number if needed." },
+      { ms: "Tambah atau tolak seperti nombor bulat biasa, lajur demi lajur dari kanan.", en: "Add or subtract as with whole numbers, column by column from the right." },
+      { ms: "Letakkan titik perpuluhan dalam jawapan pada kedudukan yang sama segaris.", en: "Place the decimal point in your answer in the same lined-up position." },
+    ],
     workedExample: {
       problem: "12.50 + 3.20",
       steps: [
@@ -188,10 +252,21 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Peratus bermaksud \"per seratus\". Untuk mencari peratus daripada suatu kuantiti, kita bahagi peratus itu dengan 100, kemudian darab dengan kuantiti tersebut.\n\nContoh harian: Sebuah kedai memberi diskaun 20% untuk barang berharga RM50. Berapakah jumlah diskaun itu?",
       en: "Percent means \"per hundred\". To find a percentage of a quantity, we divide the percentage by 100, then multiply by that quantity.\n\nEveryday example: A shop gives a 20% discount on an item priced at RM50. What is the discount amount?",
     },
-    tips: {
-      ms: "50% ialah separuh, 25% ialah suku, 10% ialah selepas menggerakkan titik perpuluhan satu tempat ke kiri. Guna ini untuk anggaran pantas.",
-      en: "50% is half, 25% is a quarter, 10% is moving the decimal point one place left. Use these as quick estimation checks.",
-    },
+    tips: [
+      {
+        ms: "50% ialah separuh, 25% ialah suku, 10% ialah selepas menggerakkan titik perpuluhan satu tempat ke kiri. Guna ini untuk anggaran pantas.",
+        en: "50% is half, 25% is a quarter, 10% is moving the decimal point one place left. Use these as quick estimation checks.",
+      },
+      {
+        ms: "Jawapan mesti lebih kecil daripada kuantiti asal (kecuali peratus itu 100% atau lebih) — jika lebih besar, semak semula pengiraan anda.",
+        en: "The answer should be smaller than the original quantity (unless the percentage is 100% or more) — if it's bigger, double-check your working.",
+      },
+    ],
+    howTo: [
+      { ms: "Tukar peratus itu kepada pecahan per seratus (cth. 20% = 20/100).", en: "Convert the percentage into a fraction over 100 (e.g. 20% = 20/100)." },
+      { ms: "Darabkan pecahan itu dengan kuantiti yang diberi.", en: "Multiply that fraction by the given quantity." },
+      { ms: "Permudahkan pengiraan itu untuk dapatkan jawapan.", en: "Simplify the calculation to get the answer." },
+    ],
     workedExample: {
       problem: "20% daripada 50",
       steps: [
@@ -219,10 +294,22 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Untuk mengira waktu tamat, kita tambah tempoh masa kepada waktu mula. Ingat: 60 minit = 1 jam. Jika jumlah minit melebihi 60, tukar 60 minit itu kepada 1 jam.\n\nContoh harian: Kelas tuisyen Amin bermula pukul 2:30 petang dan berlangsung 90 minit. Pukul berapakah ia tamat?",
       en: "To find the end time, we add the duration to the start time. Remember: 60 minutes = 1 hour. If the total minutes go past 60, convert that 60 minutes into 1 hour.\n\nEveryday example: Amin's tuition class starts at 2:30 pm and lasts 90 minutes. What time does it end?",
     },
-    tips: {
-      ms: "Pisahkan tempoh masa kepada jam dan minit dahulu (90 minit = 1 jam 30 minit), kemudian tambah secara berasingan.",
-      en: "Split the duration into hours and minutes first (90 minutes = 1 hour 30 minutes), then add each part separately.",
-    },
+    tips: [
+      {
+        ms: "Pisahkan tempoh masa kepada jam dan minit dahulu (90 minit = 1 jam 30 minit), kemudian tambah secara berasingan.",
+        en: "Split the duration into hours and minutes first (90 minutes = 1 hour 30 minutes), then add each part separately.",
+      },
+      {
+        ms: "Jika jawapan minit anda melebihi 60, tukar setiap 60 minit itu kepada 1 jam tambahan.",
+        en: "If your minutes total goes past 60, convert every 60 minutes into an extra hour.",
+      },
+    ],
+    howTo: [
+      { ms: "Tukar tempoh masa kepada jam dan minit berasingan.", en: "Convert the duration into separate hours and minutes." },
+      { ms: "Tambah bilangan jam kepada waktu mula.", en: "Add the number of hours to the start time." },
+      { ms: "Tambah bilangan minit yang selebihnya.", en: "Add the remaining number of minutes." },
+      { ms: "Jika jumlah minit mencapai 60 atau lebih, tukar kepada 1 jam dan laraskan waktu.", en: "If the minutes reach 60 or more, convert into an extra hour and adjust the time." },
+    ],
     workedExample: {
       problem: "2:30 + 90 minit",
       steps: [
@@ -249,10 +336,21 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Purata (min) ialah nilai yang mewakili satu set data. Untuk mencari purata, tambah semua nilai, kemudian bahagikan dengan bilangan nilai tersebut.\n\nContoh harian: Markah ujian matematik Aina untuk 4 minggu ialah 70, 80, 75, 75. Berapakah purata markahnya?",
       en: "The average (mean) is a value that represents a set of data. To find the average, add all the values together, then divide by how many values there are.\n\nEveryday example: Aina's maths test scores over 4 weeks were 70, 80, 75, 75. What is her average score?",
     },
-    tips: {
-      ms: "Purata = Jumlah Semua Nilai ÷ Bilangan Nilai. Jangan lupa langkah bahagi — jumlah sahaja bukan purata.",
-      en: "Average = Total of All Values ÷ Number of Values. Don't forget the division step — the sum alone isn't the average.",
-    },
+    tips: [
+      {
+        ms: "Purata = Jumlah Semua Nilai ÷ Bilangan Nilai. Jangan lupa langkah bahagi — jumlah sahaja bukan purata.",
+        en: "Average = Total of All Values ÷ Number of Values. Don't forget the division step — the sum alone isn't the average.",
+      },
+      {
+        ms: "Kira semula berapa banyak nilai yang diberi dalam soalan sebelum membahagi — silap kira bilangan nilai ialah kesilapan biasa.",
+        en: "Recount how many values the question gives before dividing — miscounting the number of values is a common slip.",
+      },
+    ],
+    howTo: [
+      { ms: "Tambahkan semua nilai dalam set data itu.", en: "Add up all the values in the data set." },
+      { ms: "Kira berapa banyak nilai yang ada.", en: "Count how many values there are." },
+      { ms: "Bahagikan jumlah itu dengan bilangan nilai.", en: "Divide the total by the number of values." },
+    ],
     workedExample: {
       problem: "70, 80, 75, 75",
       steps: [
@@ -280,10 +378,21 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Nisbah membandingkan dua kuantiti. Untuk memudahkan nisbah, bahagikan kedua-dua bahagian dengan nombor terbesar yang boleh membahagikannya dengan tepat (Pembahagi Sepunya Terbesar).\n\nContoh harian: Dalam sebuah kelas, terdapat 12 murid lelaki dan 18 murid perempuan. Apakah nisbah lelaki kepada perempuan dalam bentuk paling ringkas?",
       en: "A ratio compares two quantities. To simplify a ratio, divide both parts by the largest number that divides them evenly (the Greatest Common Divisor).\n\nEveryday example: In a class, there are 12 boys and 18 girls. What is the ratio of boys to girls in simplest form?",
     },
-    tips: {
-      ms: "Cuba bahagi kedua-dua bahagian dengan 2, kemudian 3, dan seterusnya sehingga tidak boleh dibahagi lagi tanpa baki.",
-      en: "Try dividing both parts by 2, then 3, and so on until neither can be divided any further without a remainder.",
-    },
+    tips: [
+      {
+        ms: "Cuba bahagi kedua-dua bahagian dengan 2, kemudian 3, dan seterusnya sehingga tidak boleh dibahagi lagi tanpa baki.",
+        en: "Try dividing both parts by 2, then 3, and so on until neither can be divided any further without a remainder.",
+      },
+      {
+        ms: "Nisbah paling ringkas tidak boleh dipermudahkan lagi — jika kedua-dua nombor masih ada faktor sepunya, teruskan membahagi.",
+        en: "The simplest ratio can't be simplified any further — if both numbers still share a common factor, keep dividing.",
+      },
+    ],
+    howTo: [
+      { ms: "Cari faktor sepunya terbesar (HCF/GCD) bagi kedua-dua nombor dalam nisbah.", en: "Find the highest common factor (HCF/GCD) of both numbers in the ratio." },
+      { ms: "Bahagikan kedua-dua nombor itu dengan faktor sepunya terbesar tersebut.", en: "Divide both numbers by that highest common factor." },
+      { ms: "Semak sama ada nisbah itu sudah dalam bentuk paling ringkas.", en: "Check that the ratio is now in its simplest form." },
+    ],
     workedExample: {
       problem: "12:18",
       steps: [
@@ -311,10 +420,21 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Isipadu cecair diukur dalam liter (L) dan mililiter (ml). 1 liter = 1000 mililiter. Apabila menambah isipadu yang dinyatakan dalam L dan ml, tukar semuanya kepada ml dahulu.\n\nContoh harian: Sebuah balang mengandungi 1 L 250 ml jus. 300 ml jus lagi dituang masuk. Berapakah jumlah isipadu jus sekarang?",
       en: "Liquid volume is measured in litres (L) and millilitres (ml). 1 litre = 1000 millilitres. When adding volumes given in both L and ml, convert everything to ml first.\n\nEveryday example: A jug contains 1 L 250 ml of juice. Another 300 ml is poured in. What is the total volume of juice now?",
     },
-    tips: {
-      ms: "Selalu tukar liter kepada ml dahulu (darab dengan 1000) sebelum membuat sebarang pengiraan.",
-      en: "Always convert litres to ml first (multiply by 1000) before doing any calculation.",
-    },
+    tips: [
+      {
+        ms: "Selalu tukar liter kepada ml dahulu (darab dengan 1000) sebelum membuat sebarang pengiraan.",
+        en: "Always convert litres to ml first (multiply by 1000) before doing any calculation.",
+      },
+      {
+        ms: "Selepas mengira dalam ml, tukar balik kepada L dan ml jika soalan meminta jawapan dalam format itu.",
+        en: "After calculating in ml, convert back to L and ml if the question asks for the answer in that format.",
+      },
+    ],
+    howTo: [
+      { ms: "Tukar semua nilai liter kepada ml (darab dengan 1000).", en: "Convert every litre value to ml (multiply by 1000)." },
+      { ms: "Tambah atau tolak nilai-nilai itu dalam ml.", en: "Add or subtract the values in ml." },
+      { ms: "Tukar jawapan itu balik kepada L dan ml jika perlu.", en: "Convert the answer back into L and ml if needed." },
+    ],
     workedExample: {
       problem: "1 L 250 ml + 300 ml",
       steps: [
@@ -341,10 +461,21 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Luas ialah keluasan ruang di dalam sesuatu bentuk. Untuk segi empat tepat, kita gunakan formula: Luas = panjang × lebar. Untuk segi empat sama, semua sisi sama panjang, jadi Luas = sisi × sisi.\n\nContoh harian: Sebidang tanah berbentuk segi empat tepat hendak ditanami rumput. Berapakah luas tanah itu?",
       en: "Area is the amount of space inside a shape. For a rectangle, we use the formula: Area = length × width. For a square, all sides are equal, so Area = side × side.\n\nEveryday example: A rectangular plot of land is going to be planted with grass. What is the area of the land?",
     },
-    tips: {
-      ms: "Bayangkan bentuk itu dipenuhi dengan petak-petak kecil 1cm × 1cm — luas ialah jumlah petak yang boleh muat di dalamnya.",
-      en: "Imagine the shape filled with tiny 1cm × 1cm squares — the area is how many of those squares fit inside it.",
-    },
+    tips: [
+      {
+        ms: "Bayangkan bentuk itu dipenuhi dengan petak-petak kecil 1cm × 1cm — luas ialah jumlah petak yang boleh muat di dalamnya.",
+        en: "Imagine the shape filled with tiny 1cm × 1cm squares — the area is how many of those squares fit inside it.",
+      },
+      {
+        ms: "Jangan lupa unit luas ialah \"persegi\" (cm² atau m²), bukan sama seperti unit panjang biasa.",
+        en: "Don't forget the unit for area is \"squared\" (cm² or m²), not the same as a plain length unit.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti panjang dan lebar bentuk itu.", en: "Identify the length and width of the shape." },
+      { ms: "Darabkan panjang dengan lebar.", en: "Multiply the length by the width." },
+      { ms: "Tulis jawapan dengan unit persegi yang betul (cm², m²).", en: "Write the answer with the correct squared unit (cm², m²)." },
+    ],
     workedExample: {
       problem: "Segi empat tepat 7 cm × 4 cm",
       steps: [
@@ -372,10 +503,21 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Sudut-sudut pada satu garis lurus akan sentiasa berjumlah 180°. Jika kita tahu satu sudut, kita boleh cari sudut satu lagi dengan tolak 180° dengan sudut yang diketahui.\n\nContoh harian: Sebatang kayu disandarkan pada dinding, membentuk dua sudut pada garis lurus lantai. Jika satu sudut ialah 65°, berapakah sudut satu lagi?",
       en: "Angles that lie along one straight line always add up to 180°. If we know one angle, we can find the other by subtracting the known angle from 180°.\n\nEveryday example: A stick leans against a wall, forming two angles along the straight line of the floor. If one angle is 65°, what is the other angle?",
     },
-    tips: {
-      ms: "Fikirkan garis lurus sebagai separuh bulatan (180°) yang dibahagikan kepada dua bahagian oleh sudut yang diberi.",
-      en: "Think of the straight line as a half-circle (180°) split into two parts by the given angle.",
-    },
+    tips: [
+      {
+        ms: "Fikirkan garis lurus sebagai separuh bulatan (180°) yang dibahagikan kepada dua bahagian oleh sudut yang diberi.",
+        en: "Think of the straight line as a half-circle (180°) split into two parts by the given angle.",
+      },
+      {
+        ms: "Semak jawapan anda: sudut yang diberi + jawapan anda MESTI menyamai 180°.",
+        en: "Check your answer: the given angle + your answer MUST equal 180°.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti sudut yang diberi pada garis lurus itu.", en: "Identify the given angle on the straight line." },
+      { ms: "Tolak sudut itu daripada 180°.", en: "Subtract that angle from 180°." },
+      { ms: "Jawapan itu ialah sudut satu lagi.", en: "The result is the other angle." },
+    ],
     workedExample: {
       problem: "Satu sudut ialah 65° pada garis lurus",
       steps: [
@@ -402,10 +544,21 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Bentuk gubahan ialah bentuk yang dibina daripada dua atau lebih segi empat tepat/sama yang digabungkan. Untuk mencari jumlah luas, kita bahagikan bentuk itu kepada bahagian-bahagian segi empat tepat, kira luas setiap bahagian, kemudian tambahkan kesemuanya.\n\nContoh harian: Sebuah taman berbentuk 'L' dibina daripada dua kawasan segi empat tepat. Berapakah jumlah luas taman itu?",
       en: "A composite shape is made by combining two or more rectangles/squares. To find the total area, we split the shape into rectangular parts, work out each part's area, then add them all together.\n\nEveryday example: An L-shaped garden is made of two rectangular sections. What is the total area of the garden?",
     },
-    tips: {
-      ms: "Lukis garis untuk membahagikan bentuk gubahan kepada segi empat tepat yang berasingan sebelum mengira.",
-      en: "Draw a line to split the composite shape into separate rectangles before calculating.",
-    },
+    tips: [
+      {
+        ms: "Lukis garis untuk membahagikan bentuk gubahan kepada segi empat tepat yang berasingan sebelum mengira.",
+        en: "Draw a line to split the composite shape into separate rectangles before calculating.",
+      },
+      {
+        ms: "Kira luas setiap segi empat tepat secara berasingan dahulu — jangan cuba gabungkan semua nombor dalam satu langkah.",
+        en: "Work out each rectangle's area separately first — don't try to combine all the numbers in one step.",
+      },
+    ],
+    howTo: [
+      { ms: "Bahagikan bentuk gubahan itu kepada dua atau lebih segi empat tepat.", en: "Split the composite shape into two or more rectangles." },
+      { ms: "Kira luas setiap segi empat tepat secara berasingan (panjang × lebar).", en: "Calculate each rectangle's area separately (length × width)." },
+      { ms: "Tambahkan semua luas itu untuk dapatkan jumlah keseluruhan.", en: "Add all those areas together to get the total." },
+    ],
     workedExample: {
       problem: "Segi Empat Tepat A: 6 cm × 3 cm, Segi Empat Tepat B: 4 cm × 2 cm",
       steps: [
@@ -433,10 +586,21 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Jumlah ketiga-tiga sudut dalam sebarang segi tiga sentiasa 180°. Jika kita tahu dua sudut, kita boleh cari sudut ketiga dengan tolak kedua-dua sudut yang diketahui daripada 180°.\n\nContoh harian: Sekeping kad berbentuk segi tiga mempunyai dua sudut 50° dan 60°. Berapakah sudut ketiga?",
       en: "The three angles in any triangle always add up to 180°. If we know two angles, we can find the third by subtracting both known angles from 180°.\n\nEveryday example: A triangular card has two angles of 50° and 60°. What is the third angle?",
     },
-    tips: {
-      ms: "Tambah dua sudut yang diketahui dahulu, kemudian tolak jumlah itu daripada 180°.",
-      en: "Add the two known angles together first, then subtract that total from 180°.",
-    },
+    tips: [
+      {
+        ms: "Tambah dua sudut yang diketahui dahulu, kemudian tolak jumlah itu daripada 180°.",
+        en: "Add the two known angles together first, then subtract that total from 180°.",
+      },
+      {
+        ms: "Semak jawapan anda: ketiga-tiga sudut segi tiga itu MESTI berjumlah tepat 180° apabila ditambah bersama.",
+        en: "Check your answer: all three angles of the triangle MUST add up to exactly 180° together.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti kedua-dua sudut yang diberi dalam segi tiga itu.", en: "Identify the two given angles in the triangle." },
+      { ms: "Tambahkan kedua-dua sudut itu bersama.", en: "Add those two angles together." },
+      { ms: "Tolak jumlah itu daripada 180°.", en: "Subtract that total from 180°." },
+    ],
     workedExample: {
       problem: "Dua sudut: 50° dan 60°",
       steps: [
@@ -463,10 +627,22 @@ export const TOPICS: Record<string, TopicContent> = {
       ms: "Sudut boleh dikelaskan mengikut saiznya:\n• Sudut Tirus (Acute) — kurang daripada 90°\n• Sudut Tegak (Right Angle) — tepat 90°\n• Sudut Cakah (Obtuse) — lebih daripada 90° tetapi kurang daripada 180°\n• Sudut Refleks (Reflex) — lebih daripada 180° tetapi kurang daripada 360°\n\nContoh harian: Bucu meja biasanya sudut tegak (90°). Bucu jam menunjukkan pelbagai jenis sudut bergantung pada waktu.",
       en: "Angles are classified by their size:\n• Acute — less than 90°\n• Right Angle — exactly 90°\n• Obtuse — more than 90° but less than 180°\n• Reflex — more than 180° but less than 360°\n\nEveryday example: The corner of a table is usually a right angle (90°). A clock's hands show different angle types depending on the time.",
     },
-    tips: {
-      ms: "Bandingkan sudut dengan bucu segi empat sama (90°) — jika ia nampak lebih kecil, ia tirus; jika lebih besar tetapi masih 'tertutup', ia cakah; jika ia 'terbuka luas' melebihi separuh pusingan, ia refleks.",
-      en: "Compare the angle to the corner of a square (90°) — if it looks smaller, it's acute; if bigger but still 'closed', it's obtuse; if it's opened wide past a half-turn, it's reflex.",
-    },
+    tips: [
+      {
+        ms: "Bandingkan sudut dengan bucu segi empat sama (90°) — jika ia nampak lebih kecil, ia tirus; jika lebih besar tetapi masih 'tertutup', ia cakah; jika ia 'terbuka luas' melebihi separuh pusingan, ia refleks.",
+        en: "Compare the angle to the corner of a square (90°) — if it looks smaller, it's acute; if bigger but still 'closed', it's obtuse; if it's opened wide past a half-turn, it's reflex.",
+      },
+      {
+        ms: "Hafal turutan ini: Tirus < Tegak < Cakah < Refleks — saiznya sentiasa bertambah mengikut susunan itu.",
+        en: "Memorize this order: Acute < Right < Obtuse < Reflex — the size always increases in that order.",
+      },
+    ],
+    howTo: [
+      { ms: "Anggarkan saiz sudut itu berbanding sudut tegak (90°).", en: "Estimate the angle's size compared to a right angle (90°)." },
+      { ms: "Jika ia kurang daripada 90°, kelaskan sebagai Tirus.", en: "If it's less than 90°, classify it as Acute." },
+      { ms: "Jika ia tepat 90°, kelaskan sebagai Tegak.", en: "If it's exactly 90°, classify it as Right." },
+      { ms: "Jika ia antara 90° dan 180°, kelaskan sebagai Cakah; jika lebih daripada 180°, kelaskan sebagai Refleks.", en: "If it's between 90° and 180°, classify it as Obtuse; if it's more than 180°, classify it as Reflex." },
+    ],
     workedExample: {
       problem: "Sudut 130°",
       steps: [
@@ -481,5 +657,89 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "missed_reflex_angle", description: { ms: "Murid tidak menyedari sudut refleks perlu melebihi 180°.", en: "The student doesn't recognize that a reflex angle must be greater than 180°." } },
     ],
     questionTemplates: [{ type: "mcq", difficulty: 1, generatorKey: "angles_classify", config: {} }],
+  },
+  "a1000000-0000-0000-0000-000000000016": {
+    id: "a1000000-0000-0000-0000-000000000016",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Luas Segi Tiga", en: "Area of a Triangle" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Luas segi tiga ialah separuh daripada luas segi empat tepat yang mempunyai tapak dan tinggi yang sama. Formula: Luas = ½ × tapak × tinggi.\n\nContoh harian: Sekeping kain berbentuk segi tiga hendak dipotong. Berapakah luas kain itu?",
+      en: "The area of a triangle is half the area of a rectangle with the same base and height. Formula: Area = ½ × base × height.\n\nEveryday example: A triangular piece of cloth needs to be cut. What is the area of the cloth?",
+    },
+    tips: [
+      {
+        ms: "Darabkan tapak dengan tinggi dahulu, kemudian bahagikan jawapan itu dengan 2 — jangan bahagikan tapak atau tinggi secara berasingan.",
+        en: "Multiply the base by the height first, then divide that answer by 2 — don't divide the base or height separately.",
+      },
+      {
+        ms: "Tinggi segi tiga MESTI diukur secara tegak lurus (bersudut 90°) daripada tapak ke bucu atas — bukan panjang sisi condong.",
+        en: "The height of a triangle MUST be measured perpendicular (at 90°) from the base to the top vertex — not the length of a slanted side.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti tapak dan tinggi segi tiga itu.", en: "Identify the triangle's base and height." },
+      { ms: "Darabkan tapak dengan tinggi.", en: "Multiply the base by the height." },
+      { ms: "Bahagikan hasil darab itu dengan 2.", en: "Divide that product by 2." },
+    ],
+    workedExample: {
+      problem: "Tapak 8 cm, tinggi 5 cm",
+      steps: [
+        { ms: "Luas = ½ × tapak × tinggi", en: "Area = ½ × base × height" },
+        { ms: "= ½ × 8 × 5", en: "= ½ × 8 × 5" },
+        { ms: "= ½ × 40", en: "= ½ × 40" },
+        { ms: "= 20 cm²", en: "= 20 cm²" },
+      ],
+      answer: "20 cm²",
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_to_halve", description: { ms: "Murid mengira tapak × tinggi tanpa membahagikan dengan 2.", en: "The student calculates base × height without dividing by 2." } },
+      { mistakeType: "halved_both_dimensions", description: { ms: "Murid membahagikan tapak dan tinggi dengan 2 secara berasingan sebelum mendarab.", en: "The student divides the base and height by 2 separately before multiplying." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "area_triangle", config: { min: 4, max: 16 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "area_triangle", config: { min: 6, max: 20 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000017": {
+    id: "a1000000-0000-0000-0000-000000000017",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Sudut Pada Satu Titik", en: "Angles at a Point" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Apabila beberapa sudut bertemu pada satu titik dan mengelilinginya sepenuhnya, jumlah kesemua sudut itu ialah 360° (satu pusingan penuh). Jika kita tahu semua sudut kecuali satu, kita boleh cari sudut yang hilang dengan tolak jumlah sudut yang diketahui daripada 360°.\n\nContoh harian: Tiga jalan bertemu pada satu bulatan (roundabout). Dua daripada sudut antara jalan itu ialah 110° dan 95°. Berapakah sudut ketiga?",
+      en: "When several angles meet at a single point and go all the way around it, they add up to 360° (one full turn). If we know all but one of the angles, we can find the missing one by subtracting the known angles from 360°.\n\nEveryday example: Three roads meet at a roundabout. Two of the angles between the roads are 110° and 95°. What is the third angle?",
+    },
+    tips: [
+      {
+        ms: "Bayangkan satu pusingan penuh mengelilingi titik itu — jumlahnya sentiasa 360°, tidak kira berapa banyak sudut yang membahagikannya.",
+        en: "Imagine one full turn around the point — it always totals 360°, no matter how many angles divide it up.",
+      },
+      {
+        ms: "Jangan keliru dengan sudut pada garis lurus (180°) — sudut pada satu titik mengelilingi TITIK itu sepenuhnya, bukan hanya separuh.",
+        en: "Don't confuse this with angles on a straight line (180°) — angles at a point go all the way around the point, not just halfway.",
+      },
+    ],
+    howTo: [
+      { ms: "Tambahkan semua sudut yang diketahui.", en: "Add up all the known angles." },
+      { ms: "Tolak jumlah itu daripada 360°.", en: "Subtract that total from 360°." },
+      { ms: "Jawapan itu ialah sudut yang hilang.", en: "The result is the missing angle." },
+    ],
+    workedExample: {
+      problem: "Dua sudut: 110° dan 95°",
+      steps: [
+        { ms: "Tambah dua sudut: 110° + 95° = 205°", en: "Add the two angles: 110° + 95° = 205°" },
+        { ms: "360° − 205° = 155°", en: "360° − 205° = 155°" },
+      ],
+      answer: "155°",
+    },
+    commonMistakes: [
+      { mistakeType: "confused_with_180", description: { ms: "Murid tolak daripada 180° (garis lurus/segi tiga) berbanding 360°.", en: "The student subtracts from 180° (straight line/triangle) instead of 360°." } },
+      { mistakeType: "only_subtracted_one_angle", description: { ms: "Murid hanya tolak satu daripada dua sudut yang diberi.", en: "The student only subtracts one of the two given angles." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "angles_at_point", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "angles_at_point", config: {} },
+    ],
   },
 };

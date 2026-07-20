@@ -16,6 +16,7 @@ export const UI: Record<string, Bilingual> = {
   navProfile: { ms: "Saya", en: "Me" },
 
   learnTabLearn: { ms: "Belajar", en: "Learn" },
+  learnTabHowTo: { ms: "Cara Buat", en: "How To" },
   learnTabTips: { ms: "Tips", en: "Tips" },
   learnTabExample: { ms: "Contoh", en: "Example" },
   learnTabMistakes: { ms: "Kesilapan Lazim", en: "Common Mistakes" },

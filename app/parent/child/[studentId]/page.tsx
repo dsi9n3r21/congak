@@ -116,7 +116,7 @@ export default async function ChildDetailPage({ params }: { params: { studentId:
               return (
                 <div key={topicId} className="rounded-kite bg-white p-3">
                   <p className="text-sm font-semibold text-ink"><Bi text={topic.title} lang={lang} /></p>
-                  <p className="mt-1 text-xs text-ink/70"><Bi text={topic.tips} lang={lang} /></p>
+                  <p className="mt-1 text-xs text-ink/70"><Bi text={topic.tips[0]} lang={lang} /></p>
                   {relevantPatterns.length > 0 && (
                     <ul className="mt-2 space-y-1">
                       {relevantPatterns.map((p) => {

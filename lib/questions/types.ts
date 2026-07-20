@@ -16,7 +16,10 @@ export interface GeneratedQuestion {
   /** Optional visual to render above the prompt. Add new "kind" variants
    * here as more diagram types are needed — keep each renderer in its own
    * component under components/student/diagrams/. */
-  diagram?: { kind: "angle"; degrees: number };
+  diagram?:
+    | { kind: "angle"; degrees: number }
+    | { kind: "triangle"; base: number; height: number }
+    | { kind: "point3"; angleA: number; angleB: number };
 }
 
 export interface GeneratorParams {

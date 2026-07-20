@@ -13,6 +13,8 @@ import { generateAnglesStraightLine } from "./generators/anglesStraightLine";
 import { generateAreaComposite } from "./generators/areaComposite";
 import { generateAnglesTriangleSum } from "./generators/anglesTriangleSum";
 import { generateAnglesClassify } from "./generators/anglesClassify";
+import { generateAreaTriangle } from "./generators/areaTriangle";
+import { generateAnglesAtPoint } from "./generators/anglesAtPoint";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
@@ -31,6 +33,8 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   area_composite: generateAreaComposite,
   angles_triangle_sum: generateAnglesTriangleSum,
   angles_classify: generateAnglesClassify,
+  area_triangle: generateAreaTriangle,
+  angles_at_point: generateAnglesAtPoint,
 };
 
 /**

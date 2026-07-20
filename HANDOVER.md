@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0013 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0015 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0014**.
+should be **0016**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,12 +55,12 @@ should be **0014**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...015` (15 topics). Next new topic should start at `...016`.
+  `...017` (17 topics). Next new topic should start at `...018`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (15 of ~40+ real KSSR sub-topics)
+## Current curriculum coverage (17 of ~40+ real KSSR sub-topics)
 Verified against a real Pelangi Publishing reference book structure
 (8 units per year, each with 10-16 sub-skills — see chat history for the
 full unit list if needed, or ask Lynda to re-share the anyflip.com link:
@@ -73,38 +73,55 @@ https://anyflip.com/ekbvw/vshm/basic).
 | Money | ✓ (change) | — | — |
 | Time | — | ✓ (duration) | — |
 | Length/Mass/Volume | perimeter | — | volume (liquid) |
-| **Space** (polygons/angles/area) | area (rectangle/square), angle types (acute/right/obtuse/reflex) | angles (straight line), area (composite) | angles (triangle sum) |
+| **Space** (polygons/angles/area) | area (rectangle/square), angle types (acute/right/obtuse/reflex) | angles (straight line, at a point), area (composite) | angles (triangle sum), area (triangle) |
 | Coordinates/Ratio/Proportion | — | — | ratio (simplify) |
 | Data Handling | — | average | — |
 
-**Diagram infrastructure — added this round.** Questions can now carry an
-optional `diagram` field (`lib/questions/types.ts`) alongside the usual
-text prompt. First (and so far only) diagram kind is `"angle"`, rendered
-by `components/student/diagrams/AngleDiagram.tsx` — a plain SVG, two rays
-from a vertex plus an arc, using the theme's ink/biru hex values directly
-(SVG can't reach Tailwind classes). The arc's large-arc-flag is just
-`degrees > 180`, which handles reflex angles for free — no special-casing
-needed. If you add more diagram kinds later (triangle, composite shape),
-follow the same pattern: new `kind` variant on the union, new component
-in `components/student/diagrams/`, one new `if` branch in
-`QuestionPlayer.tsx` where `AngleDiagram` is rendered now.
+**Diagram infrastructure** (`lib/questions/types.ts` `diagram` field,
+`components/student/diagrams/`) now has three kinds: `"angle"`
+(`AngleDiagram.tsx`), `"triangle"` (`TriangleDiagram.tsx`, base + dashed
+altitude, right-angle marker at the foot — deliberately scalene, not a
+right triangle, so height reads as a distinct concept from a side), and
+`"point3"` (`AnglesAtPointDiagram.tsx` — three angles around a point, two
+labeled, the unknown third one marked "?" in dashed red). Same extension
+pattern each time: add a `kind` to the union in `types.ts`, a new
+component, one more `if` branch in `QuestionPlayer.tsx` next to the ones
+already there.
 
-Word-based answers (angle type names, not numbers) needed a second small
-piece: `lib/questions/optionLabels.ts` maps canonical keys (`"acute"`,
-`"right"`, etc.) to bilingual labels. `correctAnswer`/`options` stay as
-those plain keys (grading is still a string compare), and
-`QuestionPlayer` looks the key up via `OPTION_LABELS` to render the
-translated word instead of the raw key — falls back to the raw string for
-every existing numeric-answer generator, so nothing else was touched.
-Reuse this same map (add new keys) for any future word-based generator
-rather than inventing a second lookup.
+**Area of a Triangle (Y6)** — `area_triangle` generator, id `...016`,
+pairs naturally with the existing `angles_triangle_sum` (Y6) topic.
 
-**Types of Angles (Y4) shipped using this infrastructure** —
-`angles_classify` generator, id `...015`.
+**Angles at a Point (Y5) shipped this round** — `angles_at_point`
+generator, id `...017`.
 
-**Space unit still open**: area of triangle, circles (Y6), angles at a
-point (360°) as a standalone topic. Ask Lynda which to prioritize next
-rather than guessing — these may want their own diagram kinds.
+Word-based answers (e.g. angle type names, not numbers) go through
+`lib/questions/optionLabels.ts` — `correctAnswer`/`options` stay as plain
+canonical keys (`"acute"`, `"right"`, ...) for grading, and
+`QuestionPlayer` looks each key up in `OPTION_LABELS` to render the
+translated word, falling back to the raw string for numeric generators.
+Reuse this map (add new keys) for any future word-based generator.
+
+**Tips & "How To" — teacher feedback, applied across all 17 topics.**
+`TopicContent.tips` is now `Bilingual[]` (was a single `Bilingual`) —
+every topic has at least 2 tips, shown as separate cards in the Tips tab.
+Added a new `howTo: Bilingual[]` field — a general, number-free method
+(e.g. "1. Identify base and height → 2. Multiply → 3. Divide by 2"),
+distinct from `workedExample` which walks one specific set of numbers.
+Rendered in a new "How To" tab in `LessonCard.tsx`, positioned right
+after "Learn". `lib/i18n/dictionary.ts` got a `learnTabHowTo` key. The
+parent dashboard's compact weak-topic card
+(`app/parent/child/[studentId]/page.tsx`) now shows `topic.tips[0]` (the
+primary tip) rather than the old single field. **Any future new topic
+must include both `tips` (2+) and `howTo` (3+) — TypeScript will already
+error if either is missing since they're required fields on
+`TopicContent`, but worth double-checking content quality (not just
+presence) when writing a new topic.**
+
+**Space unit still open**: circles (Y6 — would need a CircleDiagram, and
+a decision on whether to teach circumference, area, or both first). Ask
+Lynda before starting circles specifically — it's a bigger scope jump
+(irrational π, rounding rules) than anything shipped so far. Otherwise
+the Space unit is now solidly covered across all three years.
 
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to
