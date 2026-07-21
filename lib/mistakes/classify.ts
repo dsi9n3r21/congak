@@ -635,6 +635,26 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "coordinates": {
+      const { x, y } = question.context as { x: number; y: number };
+      if (answer === `(${y}, ${x})`) {
+        return {
+          mistakeType: "swapped_x_and_y",
+          hint: {
+            ms: "Baca koordinat ATAS PANJANG (x) dahulu, kemudian NAIK (y). Susunan itu penting!",
+            en: "Read coordinates ACROSS (x) first, then UP (y). The order matters!",
+          },
+        };
+      }
+      return {
+        mistakeType: "misread_grid_position",
+        hint: {
+          ms: "Kira semula: berapa unit ke kanan (x), kemudian berapa unit ke atas (y) dari titik asalan?",
+          en: "Recount: how many units to the right (x), then how many units up (y) from the origin?",
+        },
+      };
+    }
+
     default:
       return {
         mistakeType: "unknown",

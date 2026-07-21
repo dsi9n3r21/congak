@@ -21,7 +21,8 @@ export interface GeneratedQuestion {
     | { kind: "triangle"; base: number; height: number }
     | { kind: "point3"; angleA: number; angleB: number }
     | { kind: "circle"; radius: number }
-    | { kind: "bar_chart"; labels: string[]; values: number[] };
+    | { kind: "bar_chart"; labels: string[]; values: number[] }
+    | { kind: "coordinate_grid"; x: number; y: number; gridSize: number };
 }
 
 export interface GeneratorParams {

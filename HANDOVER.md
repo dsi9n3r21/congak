@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0019 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0020 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0020**.
+should be **0021**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,16 +55,21 @@ should be **0020**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...023` (23 topics). Next new topic should start at `...024`.
+  `...024` (24 topics). Next new topic should start at `...025`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (23 of ~40+ real KSSR sub-topics)
+## Current curriculum coverage (24 of ~40+ real KSSR sub-topics, ≈60%)
 Verified against a real Pelangi Publishing reference book structure
 (8 units per year, each with 10-16 sub-skills — see chat history for the
 full unit list if needed, or ask Lynda to re-share the anyflip.com link:
-https://anyflip.com/ekbvw/vshm/basic).
+https://anyflip.com/ekbvw/vshm/basic). **The "~40+" total is an estimate
+from skimming that reference, not an official KSSR sub-topic count** —
+treat any completion percentage as directional, not precise. On that
+basis: 24/40 ≈ 60%, but Numbers & Operations in particular is likely
+undercounted (that unit usually has more sub-skills per year than any
+other), so the real percentage is probably somewhat lower than 60%.
 
 | Unit | Y4 | Y5 | Y6 |
 |---|---|---|---|
@@ -74,40 +79,40 @@ https://anyflip.com/ekbvw/vshm/basic).
 | Time | — | ✓ (duration) | — |
 | Length/Mass/Volume | perimeter | — | volume (liquid) |
 | **Space** (polygons/angles/area) | area (rectangle/square), angle types | angles (straight line, at a point), area (composite) | angles (triangle sum), area (triangle), circumference & area of a circle |
-| Coordinates/Ratio/Proportion | — | — | ratio (simplify) |
+| Coordinates/Ratio/Proportion | — | coordinates | ratio (simplify) |
 | Data Handling | — | average, bar graphs | — |
 
 **Diagram infrastructure** (`lib/questions/types.ts` `diagram` field,
-`components/student/diagrams/`) has five kinds now: `"angle"`,
-`"triangle"`, `"point3"`, `"circle"`, and `"bar_chart"`
-(`BarChartDiagram.tsx` — 4 labeled bars, values shown above each bar).
-This is the first diagram kind used outside the Space unit — confirms the
-`diagram` field genuinely generalizes across strands, not just geometry.
+`components/student/diagrams/`) has six kinds now: `"angle"`,
+`"triangle"`, `"point3"`, `"circle"`, `"bar_chart"`, and
+`"coordinate_grid"` (`CoordinateGridDiagram.tsx` — first-quadrant grid,
+one plotted point, dashed guide lines to each axis).
 
-**Reading Bar Graphs (Y5) shipped this round** — `bar_graph` generator,
-id `...023`, first Data Handling topic beyond `average`. Two question
-variants (`total`: sum all 4 bars; `difference`: gap between the highest
-and lowest bar) picked randomly per question via `pick()`. Bar labels are
-plain letters (A/B/C/D) rather than real words specifically so the
-diagram never needs bilingual text — the diagram itself isn't wrapped in
-the `Bi` component, only the surrounding prompt is, so any real-word
-labels would need to stay in one language on the chart even when the UI
-is in the other. Keep this same "labels are language-neutral tokens"
-approach for any future graph/chart-based generator.
+**Reading Coordinates (Y5) shipped this round** — `coordinates`
+generator, id `...024`, the first topic in the Coordinates strand (that
+strand previously only had Y6 ratio simplification). **Deliberately
+MCQ-only** — the answer format `(x, y)` is too fragile for the app's
+exact-string "fill" grading (`answer.trim() === correctAnswer`, no
+internal-whitespace normalization — a student typing `(3,5)` instead of
+`(3, 5)` would be marked wrong for a formatting reason, not a math one).
+If a future topic needs a similarly-formatted free-typed answer, either
+keep it MCQ-only like this one, or fix the grading to normalize
+whitespace/punctuation first — that's a `QuestionPlayer.tsx` change
+worth doing once, not per-topic.
 
 Word-based answers (e.g. angle type names, not numbers) go through
 `lib/questions/optionLabels.ts` — see `OPTION_LABELS` for details if
 adding another word-based generator.
 
-**Tips & "How To"** — every topic (all 23) has 2+ tips and a 3+ step
+**Tips & "How To"** — every topic (all 24) has 2+ tips and a 3+ step
 general `howTo` method, per teacher feedback. Both fields are required by
 TypeScript on `TopicContent`.
 
-**Still open**: Numbers & Operations (Y5/Y6 each need more than one
-topic in a real curriculum), Coordinates/Ratio/Proportion (only has
-Y6 ratio simplification), and Data Handling could still use median/mode
-or pictograph reading. No single obvious next pick — ask Lynda what
-matters most for her daughter's actual upcoming schoolwork.
+**Still open**: Numbers & Operations (Y5/Y6 each need more topics),
+Ratio/Proportion (only Y6 ratio simplification — no Y4/Y5 groundwork, no
+direct proportion), Data Handling (median/mode, pictographs). Ask Lynda
+what matters most for her daughter's actual upcoming schoolwork before
+picking the next one blind.
 
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to

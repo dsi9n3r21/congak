@@ -995,4 +995,47 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "fill", difficulty: 2, generatorKey: "bar_graph", config: { min: 8, max: 40 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000024": {
+    id: "a1000000-0000-0000-0000-000000000024",
+    strand: { ms: "Koordinat", en: "Coordinates" },
+    title: { ms: "Membaca Koordinat", en: "Reading Coordinates" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Koordinat menunjukkan kedudukan sesuatu titik pada grid menggunakan dua nombor: (x, y). Nombor pertama (x) menunjukkan berapa unit ke KANAN daripada titik asalan, dan nombor kedua (y) menunjukkan berapa unit ke ATAS.\n\nContoh harian: Pada peta sebuah taman, gerai makanan berada pada koordinat (4, 6) — 4 unit ke kanan dan 6 unit ke atas daripada pintu masuk.",
+      en: "Coordinates show a point's position on a grid using two numbers: (x, y). The first number (x) shows how many units to the RIGHT of the origin, and the second number (y) shows how many units UP.\n\nEveryday example: On a park map, a food stall is at coordinates (4, 6) — 4 units right and 6 units up from the entrance.",
+    },
+    tips: [
+      {
+        ms: "Ingat susunan: \"masuk rumah dahulu, baru naik tangga\" — x (ke kanan) sentiasa ditulis dahulu, kemudian y (ke atas).",
+        en: "Remember the order: \"go along the hallway first, then up the stairs\" — x (across) is always written first, then y (up).",
+      },
+      {
+        ms: "Mula kira dari titik asalan (0, 0) setiap kali — jangan kira dari kedudukan lain di grid.",
+        en: "Always start counting from the origin (0, 0) — don't count from some other point on the grid.",
+      },
+    ],
+    howTo: [
+      { ms: "Cari titik asalan (0, 0) di sudut bawah kiri grid.", en: "Find the origin (0, 0) at the bottom-left corner of the grid." },
+      { ms: "Kira berapa unit titik itu berada ke KANAN daripada titik asalan — ini ialah nilai x.", en: "Count how many units the point is to the RIGHT of the origin — this is the x-value." },
+      { ms: "Kira berapa unit titik itu berada ke ATAS daripada titik asalan — ini ialah nilai y.", en: "Count how many units the point is UP from the origin — this is the y-value." },
+      { ms: "Tulis jawapan sebagai (x, y).", en: "Write the answer as (x, y)." },
+    ],
+    workedExample: {
+      problem: "Titik berada 4 unit ke kanan dan 6 unit ke atas",
+      steps: [
+        { ms: "Nilai x = 4 (ke kanan)", en: "x-value = 4 (right)" },
+        { ms: "Nilai y = 6 (ke atas)", en: "y-value = 6 (up)" },
+        { ms: "Koordinat = (4, 6)", en: "Coordinates = (4, 6)" },
+      ],
+      answer: "(4, 6)",
+    },
+    commonMistakes: [
+      { mistakeType: "swapped_x_and_y", description: { ms: "Murid menulis nilai y dahulu, kemudian x — tersalah susunan.", en: "The student writes the y-value first, then x — the order is reversed." } },
+      { mistakeType: "misread_grid_position", description: { ms: "Murid silap kira bilangan unit pada grid.", en: "The student miscounts the number of units on the grid." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 10 } },
+      { type: "mcq", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 12 } },
+    ],
+  },
 };

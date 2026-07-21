@@ -16,6 +16,7 @@ import { TriangleDiagram } from "@/components/student/diagrams/TriangleDiagram";
 import { AnglesAtPointDiagram } from "@/components/student/diagrams/AnglesAtPointDiagram";
 import { CircleDiagram } from "@/components/student/diagrams/CircleDiagram";
 import { BarChartDiagram } from "@/components/student/diagrams/BarChartDiagram";
+import { CoordinateGridDiagram } from "@/components/student/diagrams/CoordinateGridDiagram";
 
 type Status = "answering" | "correct" | "incorrect";
 
@@ -130,6 +131,11 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
         {question.diagram?.kind === "bar_chart" && (
           <div className="mt-4">
             <BarChartDiagram labels={question.diagram.labels} values={question.diagram.values} />
+          </div>
+        )}
+        {question.diagram?.kind === "coordinate_grid" && (
+          <div className="mt-4">
+            <CoordinateGridDiagram x={question.diagram.x} y={question.diagram.y} gridSize={question.diagram.gridSize} />
           </div>
         )}
 
