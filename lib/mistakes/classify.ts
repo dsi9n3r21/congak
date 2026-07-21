@@ -17,6 +17,21 @@ function noCarryAdd(a: number, b: number): number {
   return Number(result);
 }
 
+/** Mirrors the no-borrow simulation in wholeNumbersSubtraction.ts so we
+ * can detect the same mistake pattern from a free-typed "fill" answer. */
+function noBorrowSubtract(a: number, b: number): number {
+  const da = String(a).split("").reverse();
+  const db = String(b).split("").reverse();
+  const len = Math.max(da.length, db.length);
+  let result = "";
+  for (let i = 0; i < len; i++) {
+    const digitA = Number(da[i] ?? 0);
+    const digitB = Number(db[i] ?? 0);
+    result = String(Math.abs(digitA - digitB)) + result;
+  }
+  return Number(result);
+}
+
 export interface ClassificationResult {
   mistakeType: string;
   /** Short, kid-facing hint used as a fallback if the AI call fails/is skipped */
@@ -503,6 +518,86 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       return {
         mistakeType: "calculation_error",
         hint: { ms: "Cuba kira semula: π × jejari × jejari (guna π = 3.142).", en: "Try calculating again: π × radius × radius (use π = 3.142)." },
+      };
+    }
+
+    case "whole_numbers_subtraction": {
+      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      if (Number(answer) === noBorrowSubtract(a, b)) {
+        return {
+          mistakeType: "forgot_borrow",
+          hint: {
+            ms: "Apabila digit atas lebih kecil daripada digit bawah, anda perlu \"pinjam\" 1 daripada lajur sebelah kiri.",
+            en: "When the top digit is smaller than the bottom digit, you need to \"borrow\" 1 from the column on the left.",
+          },
+        };
+      }
+      if (Math.abs(Number(answer) - correct) % 10 === 0 && answer !== String(correct)) {
+        return {
+          mistakeType: "place_value_misalignment",
+          hint: {
+            ms: "Semak semula: adakah setiap digit disusun pada lajur nilai tempat yang betul?",
+            en: "Double check: is every digit lined up in the correct place value column?",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula, lajur demi lajur dari kanan.", en: "Try calculating again, column by column from the right." },
+      };
+    }
+
+    case "whole_numbers_multiplication": {
+      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      const tens = Math.floor(b / 10);
+      const ones = b % 10;
+      if (Number(answer) === a * tens + a * ones) {
+        return {
+          mistakeType: "forgot_shift",
+          hint: {
+            ms: "Apabila darab dengan digit puluh, jangan lupa tambah satu 0 di hujung hasil darab kedua sebelum menambahnya.",
+            en: "When multiplying by the tens digit, don't forget to add a trailing 0 to that partial product before adding it.",
+          },
+        };
+      }
+      if (Number(answer) === a + b) {
+        return {
+          mistakeType: "added_instead_of_multiplied",
+          hint: {
+            ms: "Ini soalan darab, bukan tambah. Darabkan kedua-dua nombor itu.",
+            en: "This is a multiplication question, not addition. Multiply the two numbers together.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula hasil darab itu.", en: "Try calculating the product again." },
+      };
+    }
+
+    case "whole_numbers_division": {
+      const { dividend, divisor, correct } = question.context as { dividend: number; divisor: number; correct: number };
+      if (Number(answer) === dividend - divisor) {
+        return {
+          mistakeType: "subtracted_instead_of_divided",
+          hint: {
+            ms: "Ini soalan bahagi, bukan tolak. Berapa kali boleh anda tolak pembahagi daripada nombor itu?",
+            en: "This is a division question, not subtraction. How many times does the divisor fit into the number?",
+          },
+        };
+      }
+      if (Number(answer) === dividend + divisor) {
+        return {
+          mistakeType: "added_instead_of_divided",
+          hint: {
+            ms: "Ini soalan bahagi, bukan tambah. Cari berapa kali pembahagi masuk ke dalam nombor itu.",
+            en: "This is a division question, not addition. Find how many times the divisor fits into the number.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: berapa kali pembahagi boleh masuk ke dalam nombor itu.", en: "Try calculating again: how many times does the divisor fit into the number." },
       };
     }
 

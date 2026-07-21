@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0017 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0018 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0018**.
+should be **0019**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,12 +55,12 @@ should be **0018**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...019` (19 topics). Next new topic should start at `...020`.
+  `...022` (22 topics). Next new topic should start at `...023`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (19 of ~40+ real KSSR sub-topics)
+## Current curriculum coverage (22 of ~40+ real KSSR sub-topics)
 Verified against a real Pelangi Publishing reference book structure
 (8 units per year, each with 10-16 sub-skills — see chat history for the
 full unit list if needed, or ask Lynda to re-share the anyflip.com link:
@@ -68,7 +68,7 @@ https://anyflip.com/ekbvw/vshm/basic).
 
 | Unit | Y4 | Y5 | Y6 |
 |---|---|---|---|
-| Numbers & Operations | addition only | — | — |
+| Numbers & Operations | addition, subtraction | multiplication (2-digit) | division (2-digit) |
 | Fractions/Decimals/% | fractions (add) | decimals (add/sub) | percentage |
 | Money | ✓ (change) | — | — |
 | Time | — | ✓ (duration) | — |
@@ -78,25 +78,23 @@ https://anyflip.com/ekbvw/vshm/basic).
 | Data Handling | — | average | — |
 
 **Diagram infrastructure** (`lib/questions/types.ts` `diagram` field,
-`components/student/diagrams/`) has four kinds: `"angle"`
-(`AngleDiagram.tsx`), `"triangle"` (`TriangleDiagram.tsx`), `"point3"`
-(`AnglesAtPointDiagram.tsx`), and `"circle"` (`CircleDiagram.tsx` —
-reused by both circumference and area of a circle). Same extension
-pattern each time: add a `kind` to the union in `types.ts`, a new
-component, one more `if` branch in `QuestionPlayer.tsx`.
+`components/student/diagrams/`) has four kinds: `"angle"`, `"triangle"`,
+`"point3"`, `"circle"`. Space unit is complete — see prior rounds in this
+doc's history if you need the details.
 
-**Area of a Circle (Y6) shipped this round** — `area_circle` generator,
-id `...019`, the planned follow-up to Circumference (0016). Same
-π = 3.142 convention, same `.toFixed(2)` answer format, same
-`CircleDiagram`. Distractors: confusing it with the circumference
-formula (2 × π × r), and squaring the diameter instead of the radius.
-
-**This completes the Space unit's planned scope** — every year (4-6) now
-has meaningful Space coverage: shapes/area, angles (straight line, at a
-point, triangle sum, types), and circles (circumference + area). No open
-items left in this unit; next curriculum work should pick a different
-unit (see table above for what's still thin — Numbers & Operations,
-Coordinates, and Data Handling all have the least coverage right now).
+**Numbers & Operations expanded this round** — previously only had
+Y4 addition. Added: `whole_numbers_subtraction` (Y4, id `...020`, mirrors
+the addition generator's column/borrow pattern), `whole_numbers_multiplication`
+(Y5, id `...021`, multiplies by a 2-digit number, models the classic
+"forgot to shift the tens partial product" mistake), and
+`whole_numbers_division` (Y6, id `...022`, divides by a 2-digit divisor —
+kept exact/no-remainder at this level, since remainders-as-decimals is a
+separate teaching decision worth its own topic later). All three follow
+the existing `whole_numbers_addition` conventions closely: same equation-style
+prompt format (`a op b = ?`), same `noCarryAdd`-style mirrored helper
+functions duplicated between the generator and `classify.ts` (needed so
+`classify.ts` can detect the mistake pattern from a free-typed "fill"
+answer, not just an MCQ pick — same as the existing addition topic).
 
 Word-based answers (e.g. angle type names, not numbers) go through
 `lib/questions/optionLabels.ts` — `correctAnswer`/`options` stay as plain
@@ -105,10 +103,19 @@ canonical keys (`"acute"`, `"right"`, ...) for grading, and
 translated word, falling back to the raw string for numeric generators.
 Reuse this map (add new keys) for any future word-based generator.
 
-**Tips & "How To"** — every topic (all 19) has 2+ tips and a 3+ step
+**Tips & "How To"** — every topic (all 22) has 2+ tips and a 3+ step
 general `howTo` method, per teacher feedback. See `lib/content/topics.ts`
 `TopicContent` — both fields are required by TypeScript, so a new topic
 missing either won't compile.
+
+**Numbers & Operations still open**: Y5/Y6 need more than one topic each
+in a real curriculum (this unit typically has the most sub-skills of any
+unit — think rounding, negative numbers, index notation depending on
+year). What's here now is a solid start (one topic per year, all three
+basic operations besides addition covered), not full coverage. Next
+round could either go deeper here or move to Coordinates/Ratio/Proportion
+or Data Handling, which are equally thin — worth asking Lynda which
+matters most for her daughter's actual upcoming schoolwork.
 
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to

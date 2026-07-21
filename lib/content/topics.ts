@@ -826,4 +826,132 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "fill", difficulty: 3, generatorKey: "area_circle", config: { min: 4, max: 18 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000020": {
+    id: "a1000000-0000-0000-0000-000000000020",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Tolak Nombor Bulat Hingga 100000", en: "Subtracting Whole Numbers up to 100,000" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Menolak nombor besar berfungsi sama seperti menolak nombor kecil — susun ikut nilai tempat dan tolak dari kanan ke kiri. Apabila digit atas lebih kecil daripada digit bawah, kita perlu \"pinjam\" 1 daripada lajur sebelah kiri.\n\nContoh harian: Sebuah kedai ada 84500 biji telur pada awal bulan. Selepas dijual 37800 biji, berapa biji yang tinggal?",
+      en: "Subtracting large numbers works the same way as small ones — line up by place value and subtract from right to left. When the top digit is smaller than the bottom digit, we need to \"borrow\" 1 from the column on the left.\n\nEveryday example: A shop starts the month with 84,500 eggs. After selling 37,800, how many are left?",
+    },
+    tips: [
+      {
+        ms: "Susun kedua-dua nombor menegak ikut nilai tempat, sama seperti tambah — tetapi nombor yang lebih besar mesti di atas.",
+        en: "Line up both numbers vertically by place value, just like addition — but the bigger number must go on top.",
+      },
+      {
+        ms: "Anggarkan jawapan dahulu dengan membundarkan kedua-dua nombor — ini membantu anda kesan jika jawapan akhir tidak masuk akal.",
+        en: "Estimate the answer first by rounding both numbers — this helps you catch it if your final answer doesn't make sense.",
+      },
+    ],
+    howTo: [
+      { ms: "Susun kedua-dua nombor menegak, nombor lebih besar di atas.", en: "Line the two numbers up vertically, with the bigger number on top." },
+      { ms: "Tolak lajur sa (paling kanan) dahulu.", en: "Subtract the ones column (rightmost) first." },
+      { ms: "Jika digit atas lebih kecil, \"pinjam\" 1 daripada lajur sebelah kiri sebelum menolak.", en: "If the top digit is smaller, \"borrow\" 1 from the column on the left before subtracting." },
+      { ms: "Ulang proses ini bagi setiap lajur sehingga ke kiri sekali.", en: "Repeat this for every column, moving left, until you reach the last one." },
+    ],
+    workedExample: {
+      problem: "84500 − 37800",
+      steps: [
+        { ms: "0 − 0 = 0 (sa)", en: "0 − 0 = 0 (ones)" },
+        { ms: "0 − 0 = 0 (puluh)", en: "0 − 0 = 0 (tens)" },
+        { ms: "5 − 8: pinjam 1, jadi 15 − 8 = 7 (ratus)", en: "5 − 8: borrow 1, so 15 − 8 = 7 (hundreds)" },
+        { ms: "3(baki)−1(pinjam)=3, 3 − 7: pinjam 1, jadi 13 − 7 = 6 (ribu)", en: "3(remaining)−1(borrowed)=3, 3 − 7: borrow 1, so 13 − 7 = 6 (thousands)" },
+        { ms: "7(baki)−1(pinjam)=6, 6 − 3 = 3 (puluh ribu)", en: "7(remaining)−1(borrowed)=6, 6 − 3 = 3 (ten thousands)" },
+      ],
+      answer: 46700,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_borrow", description: { ms: "Murid tolak digit lebih kecil daripada digit lebih besar mengikut susunan terbalik (bukan pinjam).", en: "The student subtracts the smaller digit from the larger one regardless of position, instead of borrowing." } },
+      { mistakeType: "place_value_misalignment", description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_subtraction", config: { min: 15000, max: 45000 } },
+      { type: "fill", difficulty: 2, generatorKey: "whole_numbers_subtraction", config: { min: 25000, max: 90000 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000021": {
+    id: "a1000000-0000-0000-0000-000000000021",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Darab Dengan Nombor 2 Digit", en: "Multiplying by a 2-Digit Number" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Apabila mendarab dengan nombor 2 digit, kita darab secara berasingan dengan digit sa, kemudian dengan digit puluh, lalu tambahkan kedua-dua hasil itu. Hasil darab dengan digit puluh mesti dianjak satu tempat ke kiri (tambah 0 di hujung) sebelum ditambah.\n\nContoh harian: Sebuah kilang mengeluarkan 245 tin susu setiap hari. Berapa tin dikeluarkan dalam 23 hari?",
+      en: "When multiplying by a 2-digit number, we multiply separately by the ones digit, then by the tens digit, then add both results together. The result from the tens digit must be shifted one place left (add a trailing 0) before adding.\n\nEveryday example: A factory produces 245 tins of milk every day. How many tins are produced in 23 days?",
+    },
+    tips: [
+      {
+        ms: "Bahagikan pengiraan itu kepada dua langkah: darab dengan digit sa dahulu, kemudian dengan digit puluh secara berasingan.",
+        en: "Split the calculation into two steps: multiply by the ones digit first, then the tens digit separately.",
+      },
+      {
+        ms: "Apabila mendarab dengan digit puluh, letakkan 0 di lajur sa hasil darab kedua itu sebelum menambah — ini penting!",
+        en: "When multiplying by the tens digit, place a 0 in the ones column of that second product before adding — this step is easy to skip.",
+      },
+    ],
+    howTo: [
+      { ms: "Darabkan nombor pertama dengan digit sa nombor kedua.", en: "Multiply the first number by the ones digit of the second number." },
+      { ms: "Darabkan nombor pertama dengan digit puluh nombor kedua, kemudian anjak hasil itu satu tempat ke kiri.", en: "Multiply the first number by the tens digit of the second number, then shift that result one place to the left." },
+      { ms: "Tambahkan kedua-dua hasil darab itu.", en: "Add the two products together." },
+    ],
+    workedExample: {
+      problem: "245 × 23",
+      steps: [
+        { ms: "245 × 3 = 735", en: "245 × 3 = 735" },
+        { ms: "245 × 20 = 4900", en: "245 × 20 = 4900" },
+        { ms: "735 + 4900 = 5635", en: "735 + 4900 = 5635" },
+      ],
+      answer: 5635,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_shift", description: { ms: "Murid darab dengan digit puluh tetapi lupa anjak hasilnya (lupa tambah 0).", en: "The student multiplies by the tens digit but forgets to shift the result (forgets the trailing 0)." } },
+      { mistakeType: "added_instead_of_multiplied", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 999 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 500 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000022": {
+    id: "a1000000-0000-0000-0000-000000000022",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Bahagi Dengan Nombor 2 Digit", en: "Dividing by a 2-Digit Number" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Membahagi ialah mencari berapa kali satu nombor (pembahagi) boleh masuk ke dalam nombor lain (bahagi). Apabila pembahagi ialah nombor 2 digit, kita anggarkan dahulu berapa kali ia boleh masuk, kemudian semak dengan darab semula.\n\nContoh harian: 1288 biji buku hendak diagihkan sama rata kepada 23 buah kelas. Berapa biji buku setiap kelas terima?",
+      en: "Dividing means finding how many times one number (the divisor) fits into another (the dividend). When the divisor is a 2-digit number, we estimate how many times it fits first, then check by multiplying back.\n\nEveryday example: 1,288 books need to be shared equally among 23 classes. How many books does each class get?",
+    },
+    tips: [
+      {
+        ms: "Anggarkan dahulu dengan membundarkan pembahagi — cth. 23 boleh dianggap 20 untuk anggaran pantas.",
+        en: "Estimate first by rounding the divisor — e.g. 23 can be treated as 20 for a quick estimate.",
+      },
+      {
+        ms: "Semak jawapan anda: darabkan jawapan (hasil bahagi) dengan pembahagi — ia MESTI menyamai bahagi (nombor asal).",
+        en: "Check your answer: multiply your answer (the quotient) by the divisor — it MUST equal the dividend (the original number).",
+      },
+    ],
+    howTo: [
+      { ms: "Anggarkan berapa kali pembahagi boleh masuk ke dalam bahagi.", en: "Estimate how many times the divisor fits into the dividend." },
+      { ms: "Darabkan anggaran itu dengan pembahagi dan bandingkan dengan bahagi.", en: "Multiply that estimate by the divisor and compare it to the dividend." },
+      { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
+    ],
+    workedExample: {
+      problem: "1288 ÷ 23",
+      steps: [
+        { ms: "Anggaran: 23 × 50 = 1150 (terlalu kecil)", en: "Estimate: 23 × 50 = 1150 (too small)" },
+        { ms: "Cuba 23 × 56 = 1288 ✓", en: "Try 23 × 56 = 1288 ✓" },
+      ],
+      answer: 56,
+    },
+    commonMistakes: [
+      { mistakeType: "subtracted_instead_of_divided", description: { ms: "Murid menolak pembahagi daripada bahagi berbanding membahagikannya.", en: "The student subtracts the divisor from the dividend instead of dividing." } },
+      { mistakeType: "added_instead_of_divided", description: { ms: "Murid menambah pembahagi kepada bahagi berbanding membahagikannya.", en: "The student adds the divisor to the dividend instead of dividing." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 10, maxQuotient: 99 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 15, maxQuotient: 80 } },
+    ],
+  },
 };

@@ -17,6 +17,9 @@ import { generateAreaTriangle } from "./generators/areaTriangle";
 import { generateAnglesAtPoint } from "./generators/anglesAtPoint";
 import { generateCircumference } from "./generators/circumference";
 import { generateAreaCircle } from "./generators/areaCircle";
+import { generateWholeNumbersSubtraction } from "./generators/wholeNumbersSubtraction";
+import { generateWholeNumbersMultiplication } from "./generators/wholeNumbersMultiplication";
+import { generateWholeNumbersDivision } from "./generators/wholeNumbersDivision";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
@@ -39,6 +42,9 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   angles_at_point: generateAnglesAtPoint,
   circumference: generateCircumference,
   area_circle: generateAreaCircle,
+  whole_numbers_subtraction: generateWholeNumbersSubtraction,
+  whole_numbers_multiplication: generateWholeNumbersMultiplication,
+  whole_numbers_division: generateWholeNumbersDivision,
 };
 
 /**
