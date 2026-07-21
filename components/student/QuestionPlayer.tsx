@@ -15,6 +15,7 @@ import { AngleDiagram } from "@/components/student/diagrams/AngleDiagram";
 import { TriangleDiagram } from "@/components/student/diagrams/TriangleDiagram";
 import { AnglesAtPointDiagram } from "@/components/student/diagrams/AnglesAtPointDiagram";
 import { CircleDiagram } from "@/components/student/diagrams/CircleDiagram";
+import { BarChartDiagram } from "@/components/student/diagrams/BarChartDiagram";
 
 type Status = "answering" | "correct" | "incorrect";
 
@@ -124,6 +125,11 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
         {question.diagram?.kind === "circle" && (
           <div className="mt-4">
             <CircleDiagram radius={question.diagram.radius} />
+          </div>
+        )}
+        {question.diagram?.kind === "bar_chart" && (
+          <div className="mt-4">
+            <BarChartDiagram labels={question.diagram.labels} values={question.diagram.values} />
           </div>
         )}
 

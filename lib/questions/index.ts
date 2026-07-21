@@ -20,6 +20,7 @@ import { generateAreaCircle } from "./generators/areaCircle";
 import { generateWholeNumbersSubtraction } from "./generators/wholeNumbersSubtraction";
 import { generateWholeNumbersMultiplication } from "./generators/wholeNumbersMultiplication";
 import { generateWholeNumbersDivision } from "./generators/wholeNumbersDivision";
+import { generateBarGraph } from "./generators/barGraph";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
@@ -45,6 +46,7 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   whole_numbers_subtraction: generateWholeNumbersSubtraction,
   whole_numbers_multiplication: generateWholeNumbersMultiplication,
   whole_numbers_division: generateWholeNumbersDivision,
+  bar_graph: generateBarGraph,
 };
 
 /**

@@ -20,7 +20,8 @@ export interface GeneratedQuestion {
     | { kind: "angle"; degrees: number }
     | { kind: "triangle"; base: number; height: number }
     | { kind: "point3"; angleA: number; angleB: number }
-    | { kind: "circle"; radius: number };
+    | { kind: "circle"; radius: number }
+    | { kind: "bar_chart"; labels: string[]; values: number[] };
 }
 
 export interface GeneratorParams {

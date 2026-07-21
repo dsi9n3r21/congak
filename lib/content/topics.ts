@@ -954,4 +954,45 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 15, maxQuotient: 80 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000023": {
+    id: "a1000000-0000-0000-0000-000000000023",
+    strand: { ms: "Statistik", en: "Statistics" },
+    title: { ms: "Membaca Graf Palang", en: "Reading Bar Graphs" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Graf palang menunjukkan data menggunakan palang (bar) — semakin tinggi palang, semakin besar nilainya. Kita boleh gunakan graf palang untuk cari jumlah keseluruhan data, atau bandingkan dua kumpulan dengan cari bezanya.\n\nContoh harian: Sebuah graf palang menunjukkan bilangan buku yang dibaca oleh 4 orang murid dalam sebulan. Berapakah jumlah buku yang dibaca oleh kesemua murid itu?",
+      en: "A bar graph shows data using bars — the taller the bar, the bigger the value. We can use a bar graph to find the total of all the data, or compare two groups by finding the difference between them.\n\nEveryday example: A bar graph shows how many books 4 students read in a month. What is the total number of books read by all the students?",
+    },
+    tips: [
+      {
+        ms: "Baca nilai pada setiap palang dengan teliti sebelum mengira — silap baca satu nombor akan menyebabkan jawapan salah.",
+        en: "Read the value on each bar carefully before calculating — misreading even one number will throw off the whole answer.",
+      },
+      {
+        ms: "Untuk soalan \"jumlah\", tambah SEMUA palang. Untuk soalan \"beza\", tolak nilai yang lebih kecil daripada nilai yang lebih besar sahaja.",
+        en: "For \"total\" questions, add UP ALL the bars. For \"difference\" questions, just subtract the smaller value from the bigger one.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti soalan itu meminta jumlah atau beza.", en: "Identify whether the question is asking for a total or a difference." },
+      { ms: "Baca nilai setiap palang yang berkaitan daripada graf.", en: "Read the value of each relevant bar from the graph." },
+      { ms: "Untuk jumlah: tambahkan semua nilai. Untuk beza: tolak nilai lebih kecil daripada nilai lebih besar.", en: "For a total: add all the values. For a difference: subtract the smaller value from the bigger one." },
+    ],
+    workedExample: {
+      problem: "Kumpulan A=12, B=18, C=9, D=15",
+      steps: [
+        { ms: "Jumlah = 12 + 18 + 9 + 15", en: "Total = 12 + 18 + 9 + 15" },
+        { ms: "= 54", en: "= 54" },
+      ],
+      answer: 54,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_one_bar", description: { ms: "Murid tertinggal satu kumpulan semasa menambah jumlah keseluruhan.", en: "The student misses one group while adding up the total." } },
+      { mistakeType: "added_instead_of_subtracted", description: { ms: "Murid menambah dua nilai berbanding mencari beza antara keduanya.", en: "The student adds two values instead of finding the difference between them." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "bar_graph", config: { min: 5, max: 32 } },
+      { type: "fill", difficulty: 2, generatorKey: "bar_graph", config: { min: 8, max: 40 } },
+    ],
+  },
 };

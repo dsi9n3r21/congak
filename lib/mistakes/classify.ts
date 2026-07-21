@@ -601,6 +601,40 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "bar_graph": {
+      const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number };
+      const values = [ctx.v0, ctx.v1, ctx.v2, ctx.v3];
+      if (ctx.variant === "total") {
+        const forgotOneOptions = values.map((_, i) => ctx.correct - values[i]);
+        if (forgotOneOptions.includes(Number(answer))) {
+          return {
+            mistakeType: "forgot_one_bar",
+            hint: {
+              ms: "Semak semula: adakah anda tambah kesemua 4 kumpulan, atau terlepas satu?",
+              en: "Double check: did you add up all 4 groups, or miss one?",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: { ms: "Cuba tambah semula nilai bagi kesemua 4 kumpulan.", en: "Try adding up the values for all 4 groups again." },
+        };
+      }
+      if (Number(answer) === values[0] + values[1]) {
+        return {
+          mistakeType: "added_instead_of_subtracted",
+          hint: {
+            ms: "Soalan ini minta BEZA (perbezaan), bukan jumlah — tolak nilai yang lebih kecil daripada nilai yang lebih besar.",
+            en: "This question asks for the DIFFERENCE, not a total — subtract the smaller value from the bigger one.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cari nilai kumpulan tertinggi dan terendah, kemudian tolak.", en: "Find the highest and lowest group's values, then subtract." },
+      };
+    }
+
     default:
       return {
         mistakeType: "unknown",

@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0018 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0019 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0019**.
+should be **0020**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,12 +55,12 @@ should be **0019**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...022` (22 topics). Next new topic should start at `...023`.
+  `...023` (23 topics). Next new topic should start at `...024`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (22 of ~40+ real KSSR sub-topics)
+## Current curriculum coverage (23 of ~40+ real KSSR sub-topics)
 Verified against a real Pelangi Publishing reference book structure
 (8 units per year, each with 10-16 sub-skills — see chat history for the
 full unit list if needed, or ask Lynda to re-share the anyflip.com link:
@@ -73,48 +73,40 @@ https://anyflip.com/ekbvw/vshm/basic).
 | Money | ✓ (change) | — | — |
 | Time | — | ✓ (duration) | — |
 | Length/Mass/Volume | perimeter | — | volume (liquid) |
-| **Space** (polygons/angles/area) | area (rectangle/square), angle types (acute/right/obtuse/reflex) | angles (straight line, at a point), area (composite) | angles (triangle sum), area (triangle), circumference & area of a circle |
+| **Space** (polygons/angles/area) | area (rectangle/square), angle types | angles (straight line, at a point), area (composite) | angles (triangle sum), area (triangle), circumference & area of a circle |
 | Coordinates/Ratio/Proportion | — | — | ratio (simplify) |
-| Data Handling | — | average | — |
+| Data Handling | — | average, bar graphs | — |
 
 **Diagram infrastructure** (`lib/questions/types.ts` `diagram` field,
-`components/student/diagrams/`) has four kinds: `"angle"`, `"triangle"`,
-`"point3"`, `"circle"`. Space unit is complete — see prior rounds in this
-doc's history if you need the details.
+`components/student/diagrams/`) has five kinds now: `"angle"`,
+`"triangle"`, `"point3"`, `"circle"`, and `"bar_chart"`
+(`BarChartDiagram.tsx` — 4 labeled bars, values shown above each bar).
+This is the first diagram kind used outside the Space unit — confirms the
+`diagram` field genuinely generalizes across strands, not just geometry.
 
-**Numbers & Operations expanded this round** — previously only had
-Y4 addition. Added: `whole_numbers_subtraction` (Y4, id `...020`, mirrors
-the addition generator's column/borrow pattern), `whole_numbers_multiplication`
-(Y5, id `...021`, multiplies by a 2-digit number, models the classic
-"forgot to shift the tens partial product" mistake), and
-`whole_numbers_division` (Y6, id `...022`, divides by a 2-digit divisor —
-kept exact/no-remainder at this level, since remainders-as-decimals is a
-separate teaching decision worth its own topic later). All three follow
-the existing `whole_numbers_addition` conventions closely: same equation-style
-prompt format (`a op b = ?`), same `noCarryAdd`-style mirrored helper
-functions duplicated between the generator and `classify.ts` (needed so
-`classify.ts` can detect the mistake pattern from a free-typed "fill"
-answer, not just an MCQ pick — same as the existing addition topic).
+**Reading Bar Graphs (Y5) shipped this round** — `bar_graph` generator,
+id `...023`, first Data Handling topic beyond `average`. Two question
+variants (`total`: sum all 4 bars; `difference`: gap between the highest
+and lowest bar) picked randomly per question via `pick()`. Bar labels are
+plain letters (A/B/C/D) rather than real words specifically so the
+diagram never needs bilingual text — the diagram itself isn't wrapped in
+the `Bi` component, only the surrounding prompt is, so any real-word
+labels would need to stay in one language on the chart even when the UI
+is in the other. Keep this same "labels are language-neutral tokens"
+approach for any future graph/chart-based generator.
 
 Word-based answers (e.g. angle type names, not numbers) go through
-`lib/questions/optionLabels.ts` — `correctAnswer`/`options` stay as plain
-canonical keys (`"acute"`, `"right"`, ...) for grading, and
-`QuestionPlayer` looks each key up in `OPTION_LABELS` to render the
-translated word, falling back to the raw string for numeric generators.
-Reuse this map (add new keys) for any future word-based generator.
+`lib/questions/optionLabels.ts` — see `OPTION_LABELS` for details if
+adding another word-based generator.
 
-**Tips & "How To"** — every topic (all 22) has 2+ tips and a 3+ step
-general `howTo` method, per teacher feedback. See `lib/content/topics.ts`
-`TopicContent` — both fields are required by TypeScript, so a new topic
-missing either won't compile.
+**Tips & "How To"** — every topic (all 23) has 2+ tips and a 3+ step
+general `howTo` method, per teacher feedback. Both fields are required by
+TypeScript on `TopicContent`.
 
-**Numbers & Operations still open**: Y5/Y6 need more than one topic each
-in a real curriculum (this unit typically has the most sub-skills of any
-unit — think rounding, negative numbers, index notation depending on
-year). What's here now is a solid start (one topic per year, all three
-basic operations besides addition covered), not full coverage. Next
-round could either go deeper here or move to Coordinates/Ratio/Proportion
-or Data Handling, which are equally thin — worth asking Lynda which
+**Still open**: Numbers & Operations (Y5/Y6 each need more than one
+topic in a real curriculum), Coordinates/Ratio/Proportion (only has
+Y6 ratio simplification), and Data Handling could still use median/mode
+or pictograph reading. No single obvious next pick — ask Lynda what
 matters most for her daughter's actual upcoming schoolwork.
 
 ## Known deferred items (don't start these unprompted)
