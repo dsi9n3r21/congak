@@ -672,6 +672,150 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "whole_numbers_multiplication_y4": {
+      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      const digits = String(a).split("").reverse();
+      let noCarry = "";
+      for (const d of digits) noCarry = String((Number(d) * b) % 10) + noCarry;
+      if (Number(answer) === Number(noCarry)) {
+        return {
+          mistakeType: "forgot_carry",
+          hint: {
+            ms: "Apabila hasil darab satu digit lebih daripada 9, jangan lupa \"simpan\" baki ke lajur seterusnya.",
+            en: "When one digit's product is more than 9, don't forget to \"carry\" the extra into the next column.",
+          },
+        };
+      }
+      if (Number(answer) === a + b) {
+        return {
+          mistakeType: "added_instead_of_multiplied",
+          hint: {
+            ms: "Ini soalan darab, bukan tambah. Darabkan kedua-dua nombor itu.",
+            en: "This is a multiplication question, not addition. Multiply the two numbers together.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula hasil darab itu.", en: "Try calculating the product again." },
+      };
+    }
+
+    case "whole_numbers_division_y4": {
+      const { dividend, divisor, correct } = question.context as { dividend: number; divisor: number; correct: number };
+      if (Number(answer) === dividend - divisor) {
+        return {
+          mistakeType: "subtracted_instead_of_divided",
+          hint: {
+            ms: "Ini soalan bahagi, bukan tolak. Berapa kali boleh anda tolak pembahagi daripada nombor itu?",
+            en: "This is a division question, not subtraction. How many times does the divisor fit into the number?",
+          },
+        };
+      }
+      if (Number(answer) === dividend + divisor) {
+        return {
+          mistakeType: "added_instead_of_divided",
+          hint: {
+            ms: "Ini soalan bahagi, bukan tambah. Cari berapa kali pembahagi masuk ke dalam nombor itu.",
+            en: "This is a division question, not addition. Find how many times the divisor fits into the number.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: berapa kali pembahagi boleh masuk ke dalam nombor itu.", en: "Try calculating again: how many times does the divisor fit into the number." },
+      };
+    }
+
+    case "whole_numbers_addition_y5": {
+      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      if (Number(answer) === noCarryAdd(a, b)) {
+        return {
+          mistakeType: "forgot_carry",
+          hint: {
+            ms: "Jangan lupa \"simpan\" apabila jumlah lajur lebih 9.",
+            en: "Don't forget to \"carry\" when a column's total is more than 9.",
+          },
+        };
+      }
+      if (Math.abs(Number(answer) - correct) % 100 === 0 && answer !== String(correct)) {
+        return {
+          mistakeType: "place_value_misalignment",
+          hint: {
+            ms: "Semak semula: adakah setiap digit disusun pada lajur nilai tempat yang betul?",
+            en: "Double check: is every digit lined up in the correct place value column?",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Cuba tambah semula langkah demi langkah, bermula dari lajur sa.",
+          en: "Try adding again step by step, starting from the ones column.",
+        },
+      };
+    }
+
+    case "whole_numbers_subtraction_y5": {
+      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      if (Number(answer) === noBorrowSubtract(a, b)) {
+        return {
+          mistakeType: "forgot_borrow",
+          hint: {
+            ms: "Apabila digit atas lebih kecil daripada digit bawah, anda perlu \"pinjam\" 1 daripada lajur sebelah kiri.",
+            en: "When the top digit is smaller than the bottom digit, you need to \"borrow\" 1 from the column on the left.",
+          },
+        };
+      }
+      if (Math.abs(Number(answer) - correct) % 100 === 0 && answer !== String(correct)) {
+        return {
+          mistakeType: "place_value_misalignment",
+          hint: {
+            ms: "Semak semula: adakah setiap digit disusun pada lajur nilai tempat yang betul?",
+            en: "Double check: is every digit lined up in the correct place value column?",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula, lajur demi lajur dari kanan.", en: "Try calculating again, column by column from the right." },
+      };
+    }
+
+    case "whole_numbers_addition_y6": {
+      const { a, b } = question.context as { a: number; b: number; c: number; correct: number };
+      if (Number(answer) === a + b) {
+        return {
+          mistakeType: "forgot_addend",
+          hint: {
+            ms: "Ada TIGA nombor dalam soalan ini — semak semula anda sudah tambah kesemuanya.",
+            en: "There are THREE numbers in this question — double check you've added all of them.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba tambah semula ketiga-tiga nombor itu, satu demi satu.", en: "Try adding all three numbers again, one at a time." },
+      };
+    }
+
+    case "whole_numbers_subtraction_y6": {
+      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      if (Number(answer) === noBorrowSubtract(a, b)) {
+        return {
+          mistakeType: "forgot_borrow",
+          hint: {
+            ms: "Apabila digit atas ialah 0 dan digit bawah lebih besar, anda perlu \"pinjam\" merentasi beberapa lajur 0 secara berturutan.",
+            en: "When the top digit is 0 and the bottom digit is bigger, you need to \"borrow\" across several zero columns in a row.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula, lajur demi lajur dari kanan — berhati-hati dengan lajur 0.", en: "Try calculating again, column by column from the right — watch the zero columns carefully." },
+      };
+    }
+
     case "bar_graph": {
       const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number };
       const values = [ctx.v0, ctx.v1, ctx.v2, ctx.v3];

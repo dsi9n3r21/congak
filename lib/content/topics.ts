@@ -1162,4 +1162,268 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000028": {
+    id: "a1000000-0000-0000-0000-000000000028",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Darab Dengan Nombor 1 Digit", en: "Multiplying by a 1-Digit Number" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Apabila mendarab nombor besar dengan nombor 1 digit, kita darab setiap digit (bermula dari sa) dengan nombor itu, dan \"simpan\" apa-apa lebihan ke lajur seterusnya — sama seperti dalam penambahan.\n\nContoh harian: Sebuah kedai menjual 1,245 biji telur setiap hari. Berapa biji telur dijual dalam 4 hari?",
+      en: "When multiplying a big number by a 1-digit number, we multiply each digit (starting from the ones) by that number, and \"carry\" any overflow into the next column — just like in addition.\n\nEveryday example: A shop sells 1,245 eggs every day. How many eggs are sold in 4 days?",
+    },
+    tips: [
+      {
+        ms: "Mula dari lajur sa dan bergerak ke kiri, sama seperti tambah.",
+        en: "Start from the ones column and work left, just like addition.",
+      },
+      {
+        ms: "Jika hasil darab satu lajur lebih daripada 9, tulis digit sa sahaja dan \"simpan\" baki ke lajur seterusnya.",
+        en: "If one column's product is more than 9, write only the ones digit and \"carry\" the rest into the next column.",
+      },
+    ],
+    howTo: [
+      { ms: "Darabkan digit sa nombor besar itu dengan nombor 1 digit.", en: "Multiply the ones digit of the big number by the 1-digit number." },
+      { ms: "Simpan apa-apa lebihan ke lajur seterusnya, kemudian ulang untuk setiap lajur.", en: "Carry any overflow to the next column, then repeat for every column." },
+      { ms: "Gabungkan semua digit jawapan untuk dapatkan jawapan akhir.", en: "Combine all the answer digits to get the final answer." },
+    ],
+    workedExample: {
+      problem: "1245 × 4",
+      steps: [
+        { ms: "5 × 4 = 20, tulis 0, simpan 2", en: "5 × 4 = 20, write 0, carry 2" },
+        { ms: "4 × 4 = 16, + 2 (simpan) = 18, tulis 8, simpan 1", en: "4 × 4 = 16, + 2 (carried) = 18, write 8, carry 1" },
+        { ms: "2 × 4 = 8, + 1 (simpan) = 9, tulis 9", en: "2 × 4 = 8, + 1 (carried) = 9, write 9" },
+        { ms: "1 × 4 = 4, tulis 4", en: "1 × 4 = 4, write 4" },
+        { ms: "Jawapan: 4980", en: "Answer: 4980" },
+      ],
+      answer: 4980,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_carry", description: { ms: "Murid darab setiap digit secara berasingan tanpa \"simpan\" lebihan ke lajur seterusnya.", en: "The student multiplies each digit separately without carrying the overflow into the next column." } },
+      { mistakeType: "added_instead_of_multiplied", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 9999 } },
+      { type: "word_problem", difficulty: 1, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 5000 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000029": {
+    id: "a1000000-0000-0000-0000-000000000029",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Bahagi Dengan Nombor 1 Digit", en: "Dividing by a 1-Digit Number" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Membahagi ialah mencari berapa kali satu nombor (pembahagi) boleh masuk ke dalam nombor lain (bahagi). Pada tahap ini, pembahagi ialah nombor 1 digit sahaja.\n\nContoh harian: 84 biji biskut hendak diagihkan sama rata kepada 4 orang murid. Berapa biji biskut setiap murid terima?",
+      en: "Dividing means finding how many times one number (the divisor) fits into another (the dividend). At this level, the divisor is just a 1-digit number.\n\nEveryday example: 84 biscuits need to be shared equally among 4 students. How many biscuits does each student get?",
+    },
+    tips: [
+      {
+        ms: "Guna sifir nombor pembahagi untuk bantu anggaran — cth. bahagi dengan 4, fikir sifir 4.",
+        en: "Use the divisor's times table to help estimate — e.g. dividing by 4, think of the 4 times table.",
+      },
+      {
+        ms: "Semak jawapan anda: darabkan jawapan (hasil bahagi) dengan pembahagi — ia MESTI menyamai bahagi (nombor asal).",
+        en: "Check your answer: multiply your answer (the quotient) by the divisor — it MUST equal the dividend (the original number).",
+      },
+    ],
+    howTo: [
+      { ms: "Anggarkan berapa kali pembahagi boleh masuk ke dalam bahagi, digit demi digit dari kiri.", en: "Estimate how many times the divisor fits into the dividend, digit by digit from the left." },
+      { ms: "Darabkan anggaran itu dengan pembahagi dan bandingkan dengan bahagi.", en: "Multiply that estimate by the divisor and compare it to the dividend." },
+      { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
+    ],
+    workedExample: {
+      problem: "84 ÷ 4",
+      steps: [
+        { ms: "4 masuk ke dalam 8 sebanyak 2 kali", en: "4 goes into 8 twice" },
+        { ms: "4 masuk ke dalam 4 sebanyak 1 kali", en: "4 goes into 4 once" },
+        { ms: "84 ÷ 4 = 21", en: "84 ÷ 4 = 21" },
+      ],
+      answer: 21,
+    },
+    commonMistakes: [
+      { mistakeType: "subtracted_instead_of_divided", description: { ms: "Murid menolak pembahagi daripada bahagi berbanding membahagikannya.", en: "The student subtracts the divisor from the dividend instead of dividing." } },
+      { mistakeType: "added_instead_of_divided", description: { ms: "Murid menambah pembahagi kepada bahagi berbanding membahagikannya.", en: "The student adds the divisor to the dividend instead of dividing." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 99 } },
+      { type: "word_problem", difficulty: 1, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 50 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000030": {
+    id: "a1000000-0000-0000-0000-000000000030",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Tambah Nombor Bulat Hingga 1,000,000", en: "Adding Whole Numbers up to 1,000,000" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Sama seperti tambah nombor hingga 100,000 di Tahun 4, tetapi nombor kini lebih besar (6 digit). Susun digit ikut nilai tempat, tambah dari lajur sa, dan \"simpan\" apabila perlu.\n\nContoh harian: Sebuah stadium ada 245,600 penonton pada perlawanan pertama dan 318,750 penonton pada perlawanan kedua. Berapa jumlah penonton kedua-dua perlawanan?",
+      en: "Same as adding numbers up to 100,000 in Year 4, but the numbers are now bigger (6 digits). Line up the digits by place value, add from the ones column, and carry when needed.\n\nEveryday example: A stadium had 245,600 spectators at the first match and 318,750 at the second match. What is the total number of spectators for both matches?",
+    },
+    tips: [
+      {
+        ms: "Nombor yang lebih besar tidak mengubah kaedah — hanya lebih banyak lajur untuk diuruskan dengan teliti.",
+        en: "A bigger number doesn't change the method — there are just more columns to keep track of carefully.",
+      },
+      {
+        ms: "Susun kedua-dua nombor supaya digit sa sejajar sebelum mula tambah.",
+        en: "Line up both numbers so the ones digits align before you start adding.",
+      },
+    ],
+    howTo: [
+      { ms: "Susun kedua-dua nombor ikut nilai tempat.", en: "Line up both numbers by place value." },
+      { ms: "Tambah bermula dari lajur sa, \"simpan\" apabila jumlah lajur lebih 9.", en: "Add starting from the ones column, carrying when a column's total is more than 9." },
+      { ms: "Teruskan ke lajur seterusnya sehingga semua lajur ditambah.", en: "Continue to the next column until every column is added." },
+    ],
+    workedExample: {
+      problem: "245600 + 318750",
+      steps: [
+        { ms: "0 + 0 = 0 (sa)", en: "0 + 0 = 0 (ones)" },
+        { ms: "0 + 5 = 5 (puluh)", en: "0 + 5 = 5 (tens)" },
+        { ms: "6 + 7 = 13, tulis 3, simpan 1 (ratus)", en: "6 + 7 = 13, write 3, carry 1 (hundreds)" },
+        { ms: "5+1(simpan)=6, 6 + 8 = 14, tulis 4, simpan 1 (ribu)", en: "5+1(carried)=6, 6 + 8 = 14, write 4, carry 1 (thousands)" },
+        { ms: "4+1(simpan)=5, 5 + 1 = 6 (puluh ribu)", en: "4+1(carried)=5, 5 + 1 = 6 (ten thousands)" },
+        { ms: "2 + 3 = 5 (ratus ribu)", en: "2 + 3 = 5 (hundred thousands)" },
+        { ms: "Jawapan: 564,350", en: "Answer: 564,350" },
+      ],
+      answer: 564350,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_carry", description: { ms: "Murid tambah setiap lajur secara berasingan tanpa \"simpan\" apabila jumlah lebih 9.", en: "The student adds each column separately without carrying when the total is more than 9." } },
+      { mistakeType: "place_value_misalignment", description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 999999 } },
+      { type: "fill", difficulty: 2, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 500000 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000031": {
+    id: "a1000000-0000-0000-0000-000000000031",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Tolak Nombor Bulat Hingga 1,000,000", en: "Subtracting Whole Numbers up to 1,000,000" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Sama seperti tolak nombor hingga 100,000 di Tahun 4, tetapi nombor kini lebih besar (6 digit). Susun digit ikut nilai tempat, tolak dari lajur sa, dan \"pinjam\" apabila perlu.\n\nContoh harian: Sebuah bandar ada 876,400 penduduk. Sebanyak 123,850 penduduk berpindah keluar. Berapa penduduk yang tinggal?",
+      en: "Same as subtracting numbers up to 100,000 in Year 4, but the numbers are now bigger (6 digits). Line up the digits by place value, subtract from the ones column, and borrow when needed.\n\nEveryday example: A town has 876,400 residents. 123,850 residents move away. How many residents remain?",
+    },
+    tips: [
+      {
+        ms: "Nombor yang lebih besar tidak mengubah kaedah — hanya lebih banyak lajur untuk diuruskan dengan teliti.",
+        en: "A bigger number doesn't change the method — there are just more columns to keep track of carefully.",
+      },
+      {
+        ms: "Semak jawapan anda: tambah jawapan dengan nombor yang ditolak — ia MESTI menyamai nombor asal.",
+        en: "Check your answer: add your result to the number you subtracted — it MUST equal the original number.",
+      },
+    ],
+    howTo: [
+      { ms: "Susun kedua-dua nombor ikut nilai tempat.", en: "Line up both numbers by place value." },
+      { ms: "Tolak bermula dari lajur sa, \"pinjam\" apabila digit atas lebih kecil.", en: "Subtract starting from the ones column, borrowing when the top digit is smaller." },
+      { ms: "Teruskan ke lajur seterusnya sehingga semua lajur ditolak.", en: "Continue to the next column until every column is subtracted." },
+    ],
+    workedExample: {
+      problem: "876400 − 123850",
+      steps: [
+        { ms: "0 − 0 = 0 (sa)", en: "0 − 0 = 0 (ones)" },
+        { ms: "0 − 5: pinjam 1, 10 − 5 = 5 (puluh)", en: "0 − 5: borrow 1, 10 − 5 = 5 (tens)" },
+        { ms: "3(baki)−1(pinjam)=3, 3 − 8: pinjam 1, 13 − 8 = 5 (ratus)", en: "3(remaining)−1(borrowed)=3, 3 − 8: borrow 1, 13 − 8 = 5 (hundreds)" },
+        { ms: "5(baki)−1(pinjam)=5, 5 − 3 = 2 (ribu)", en: "5(remaining)−1(borrowed)=5, 5 − 3 = 2 (thousands)" },
+        { ms: "7 − 2 = 5 (puluh ribu)", en: "7 − 2 = 5 (ten thousands)" },
+        { ms: "8 − 1 = 7 (ratus ribu)", en: "8 − 1 = 7 (hundred thousands)" },
+        { ms: "Jawapan: 752,550", en: "Answer: 752,550" },
+      ],
+      answer: 752550,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_borrow", description: { ms: "Murid tolak digit lebih kecil daripada digit lebih besar mengikut susunan terbalik (bukan pinjam).", en: "The student subtracts the smaller digit from the larger one regardless of position, instead of borrowing." } },
+      { mistakeType: "place_value_misalignment", description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_subtraction_y5", config: { min: 100000, max: 999999 } },
+      { type: "fill", difficulty: 2, generatorKey: "whole_numbers_subtraction_y5", config: { min: 200000, max: 900000 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000032": {
+    id: "a1000000-0000-0000-0000-000000000032",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Tambah Tiga Nombor Bulat", en: "Adding Three Whole Numbers" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Apabila TIGA nombor perlu ditambah, kita boleh tambah dua nombor dahulu, kemudian tambah nombor ketiga dengan jumlah itu. Kaedah tambah (susun ikut nilai tempat, simpan apabila perlu) adalah sama.\n\nContoh harian: Sebuah kedai buku menjual 12,450 buku pada Januari, 15,800 buku pada Februari, dan 9,670 buku pada Mac. Berapa jumlah buku dijual dalam tiga bulan itu?",
+      en: "When THREE numbers need to be added, we can add two of them first, then add the third number to that sum. The addition method (line up by place value, carry when needed) stays the same.\n\nEveryday example: A bookstore sold 12,450 books in January, 15,800 in February, and 9,670 in March. How many books were sold across those three months in total?",
+    },
+    tips: [
+      {
+        ms: "Semak semula anda sudah tambah SEMUA TIGA nombor — mudah tertinggal nombor ketiga.",
+        en: "Double check you've added ALL THREE numbers — it's easy to accidentally miss the third one.",
+      },
+      {
+        ms: "Tambah dua nombor dahulu untuk dapatkan jumlah, kemudian tambah nombor ketiga pada jumlah itu.",
+        en: "Add two numbers first to get a subtotal, then add the third number to that subtotal.",
+      },
+    ],
+    howTo: [
+      { ms: "Tambah dua nombor pertama untuk dapatkan jumlah sementara.", en: "Add the first two numbers to get a running subtotal." },
+      { ms: "Tambah nombor ketiga pada jumlah sementara itu.", en: "Add the third number to that subtotal." },
+      { ms: "Semak jawapan akhir anda.", en: "Check your final answer." },
+    ],
+    workedExample: {
+      problem: "12450 + 15800 + 9670",
+      steps: [
+        { ms: "12,450 + 15,800 = 28,250", en: "12,450 + 15,800 = 28,250" },
+        { ms: "28,250 + 9,670 = 37,920", en: "28,250 + 9,670 = 37,920" },
+      ],
+      answer: 37920,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_addend", description: { ms: "Murid hanya tambah dua daripada tiga nombor, tertinggal satu.", en: "The student only adds two of the three numbers, missing one." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_addition_y6", config: { min: 10000, max: 99999 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_addition_y6", config: { min: 5000, max: 50000 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000033": {
+    id: "a1000000-0000-0000-0000-000000000033",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Tolak Daripada Nombor Bulat", en: "Subtracting from a Round Number" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Apabila menolak daripada nombor bulat seperti 500,000 (banyak digit 0), kita perlu \"pinjam\" merentasi beberapa lajur 0 secara berturutan sebelum sampai ke digit yang boleh dipinjam.\n\nContoh harian: Sebuah kilang mensasarkan pengeluaran 500,000 unit. Setakat ini, 187,650 unit belum dikeluarkan. Berapa unit sudah dikeluarkan?",
+      en: "When subtracting from a round number like 500,000 (lots of 0 digits), you need to \"borrow\" across several zero columns in a row before reaching a digit that can actually lend.\n\nEveryday example: A factory targets 500,000 units. So far, 187,650 units have not yet been produced. How many units have been produced?",
+    },
+    tips: [
+      {
+        ms: "Apabila digit atas ialah 0 dan anda perlu pinjam, pinjam daripada lajur BUKAN-SIFAR yang paling hampir di sebelah kiri — ia akan \"beri pinjam\" merentasi setiap 0 di antaranya.",
+        en: "When the top digit is 0 and you need to borrow, borrow from the nearest NON-ZERO column to the left — it will \"lend\" across every 0 in between.",
+      },
+      {
+        ms: "Semak jawapan anda: tambah jawapan dengan nombor yang ditolak — ia MESTI menyamai nombor bulat asal.",
+        en: "Check your answer: add your result to the number you subtracted — it MUST equal the original round number.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti lajur bukan-sifar yang paling hampir di sebelah kiri untuk dipinjam.", en: "Identify the nearest non-zero column to the left to borrow from." },
+      { ms: "Pinjam daripada lajur itu — setiap lajur 0 di antaranya akan bertukar menjadi 9.", en: "Borrow from that column — every 0 column in between turns into a 9." },
+      { ms: "Tolak setiap lajur seperti biasa, dari kanan ke kiri.", en: "Subtract each column as usual, from right to left." },
+    ],
+    workedExample: {
+      problem: "500000 − 187650",
+      steps: [
+        { ms: "500,000 boleh ditulis sebagai 4 9 9 9 9 10 selepas pinjam", en: "500,000 can be rewritten as 4 9 9 9 9 10 after borrowing" },
+        { ms: "10 − 0 = 10, tulis 0 (sa)", en: "10 − 0 = 10, write 0 (ones)" },
+        { ms: "9 − 5 = 4 (puluh)", en: "9 − 5 = 4 (tens)" },
+        { ms: "9 − 6 = 3 (ratus)", en: "9 − 6 = 3 (hundreds)" },
+        { ms: "9 − 7 = 2 (ribu)", en: "9 − 7 = 2 (thousands)" },
+        { ms: "9 − 8 = 1 (puluh ribu)", en: "9 − 8 = 1 (ten thousands)" },
+        { ms: "4 − 1 = 3 (ratus ribu)", en: "4 − 1 = 3 (hundred thousands)" },
+        { ms: "Jawapan: 312,350", en: "Answer: 312,350" },
+      ],
+      answer: 312350,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_borrow", description: { ms: "Murid tidak tahu cara pinjam merentasi beberapa lajur 0, dan tolak digit lebih kecil daripada digit lebih besar mengikut susunan terbalik.", en: "The student doesn't know how to borrow across several zero columns, and subtracts the smaller digit from the larger regardless of position." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_subtraction_y6", config: { min: 10000, max: 99999 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_subtraction_y6", config: { min: 10000, max: 80000 } },
+    ],
+  },
 };

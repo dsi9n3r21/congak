@@ -25,6 +25,12 @@ import { generateCoordinates } from "./generators/coordinates";
 import { generateWholeNumbersDivisionY5 } from "./generators/wholeNumbersDivisionY5";
 import { generateWholeNumbersMultiplicationY6 } from "./generators/wholeNumbersMultiplicationY6";
 import { generateMixedOperations } from "./generators/mixedOperations";
+import { generateWholeNumbersMultiplicationY4 } from "./generators/wholeNumbersMultiplicationY4";
+import { generateWholeNumbersDivisionY4 } from "./generators/wholeNumbersDivisionY4";
+import { generateWholeNumbersAdditionY5 } from "./generators/wholeNumbersAdditionY5";
+import { generateWholeNumbersSubtractionY5 } from "./generators/wholeNumbersSubtractionY5";
+import { generateWholeNumbersAdditionY6 } from "./generators/wholeNumbersAdditionY6";
+import { generateWholeNumbersSubtractionY6 } from "./generators/wholeNumbersSubtractionY6";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
@@ -55,6 +61,12 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   whole_numbers_division_y5: generateWholeNumbersDivisionY5,
   whole_numbers_multiplication_y6: generateWholeNumbersMultiplicationY6,
   mixed_operations: generateMixedOperations,
+  whole_numbers_multiplication_y4: generateWholeNumbersMultiplicationY4,
+  whole_numbers_division_y4: generateWholeNumbersDivisionY4,
+  whole_numbers_addition_y5: generateWholeNumbersAdditionY5,
+  whole_numbers_subtraction_y5: generateWholeNumbersSubtractionY5,
+  whole_numbers_addition_y6: generateWholeNumbersAdditionY6,
+  whole_numbers_subtraction_y6: generateWholeNumbersSubtractionY6,
 };
 
 /**

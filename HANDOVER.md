@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0021 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0022 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0022**.
+should be **0023**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,27 +55,27 @@ should be **0022**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...027` (27 topics). Next new topic should start at `...028`.
+  `...033` (33 topics). Next new topic should start at `...034`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (27 of ~40+ real KSSR sub-topics, ≈68%)
+## Current curriculum coverage (33 of ~40+ real KSSR sub-topics, ≈83%)
 Verified against a real Pelangi Publishing reference book structure
 (8 units per year, each with 10-16 sub-skills — see chat history for the
 full unit list if needed, or ask Lynda to re-share the anyflip.com link:
 https://anyflip.com/ekbvw/vshm/basic). **The "~40+" total is an estimate
 from skimming that reference, not an official KSSR sub-topic count** —
 treat any completion percentage as directional, not precise. On that
-basis: 27/40 ≈ 68%, but Numbers & Operations in particular is likely
-still undercounted (that unit usually has more sub-skills per year than
-any other — Y4 still has no multiplication/division of its own, and Y5/Y6
-still lack their own addition/subtraction), so the real percentage is
-probably somewhat lower than 68%.
+basis: 33/40 ≈ 83% — Numbers & Operations is now essentially complete for
+all four basic operations across Y4/Y5/Y6 (addition, subtraction,
+multiplication, division all present at every year level). Remaining gaps
+are concentrated in Ratio/Proportion and Data Handling (see below), so the
+"~40+" estimate itself may need revisiting once those are scoped.
 
 | Unit | Y4 | Y5 | Y6 |
 |---|---|---|---|
-| Numbers & Operations | addition, subtraction | multiplication (2-digit), division (1-digit) | multiplication (4-digit×2-digit), division (2-digit), mixed operations (BODMAS) |
+| Numbers & Operations | addition, subtraction, multiplication (1-digit), division (1-digit) | multiplication (2-digit), division (1-digit), addition/subtraction (6-digit) | multiplication (4-digit×2-digit), division (2-digit), mixed operations (BODMAS), addition (3 addends), subtraction (from round number) |
 | Fractions/Decimals/% | fractions (add) | decimals (add/sub) | percentage |
 | Money | ✓ (change) | — | — |
 | Time | — | ✓ (duration) | — |
@@ -90,6 +90,28 @@ probably somewhat lower than 68%.
 `"coordinate_grid"` (`CoordinateGridDiagram.tsx` — first-quadrant grid,
 one plotted point, dashed guide lines to each axis).
 
+**Numbers & Operations Y4/Y5/Y6 gaps shipped this round** — six new
+topics, ids `...028`–`...033`, closing the last holes in the four basic
+operations across all three years:
+- `whole_numbers_multiplication_y4` (id `...028`) — 1-digit multiplier,
+  the Y4-appropriate level (Y5 already had 2-digit multiplier).
+- `whole_numbers_division_y4` (id `...029`) — 1-digit divisor with a
+  smaller quotient range than Y5's (both use a 1-digit divisor; Y4's
+  quotient tops out at 99, Y5's at 999 — the only intentional difference).
+- `whole_numbers_addition_y5` / `whole_numbers_subtraction_y5` (ids
+  `...030`, `...031`) — 6-digit numbers (up to 1,000,000), the Y5-level
+  step up from Y4's 5-digit addition/subtraction.
+- `whole_numbers_addition_y6` (id `...032`) — **three addends**, not two —
+  the Y6-distinctive step up, with its own `forgot_addend` mistake type.
+- `whole_numbers_subtraction_y6` (id `...033`) — subtracting from a round
+  number (e.g. 500,000) to force a cascading borrow across several zero
+  columns in a row — the classic Y6 pain point, distinct from Y5's
+  subtraction where the minuend's digits are just random.
+
+With this round, Numbers & Operations now has all four basic operations
+present at every year level (Y4/Y5/Y6) — previously only some
+year/operation combinations existed. See the coverage table above.
+
 **Reading Coordinates (Y5)** — `coordinates` generator, id `...024`, the
 first topic in the Coordinates strand (that strand previously only had Y6
 ratio simplification). **Deliberately MCQ-only** — the answer format
@@ -101,34 +123,28 @@ similarly-formatted free-typed answer, either keep it MCQ-only like this
 one, or fix the grading to normalize whitespace/punctuation first — that's
 a `QuestionPlayer.tsx` change worth doing once, not per-topic.
 
-**Numbers & Operations Y5/Y6 gaps shipped this round** — three new
-topics, ids `...025`–`...027`, all reusing the plain-equation pattern (no
-new diagram kind needed):
-- `whole_numbers_division_y5` (id `...025`) — division by a 1-digit
-  divisor, the Y5-appropriate level (Y6 already had 2-digit divisor).
-- `whole_numbers_multiplication_y6` (id `...026`) — 4-digit × 2-digit,
-  the Y6-appropriate level (Y5 already had 3-digit × 2-digit).
-- `mixed_operations` (id `...027`) — **new topic**, not an extension of an
-  existing one: combined operations without brackets (BODMAS), fixed
-  pattern `a + b × c` so the "did it left to right" mistake
-  (`ignored_order_of_operations`) is unambiguous to detect. This is a new
-  sub-strand within Numbers & Operations, not previously covered at all.
+**Numbers & Operations Y5/Y6 gaps (previous round)** — three topics, ids
+`...025`–`...027`: `whole_numbers_division_y5` (1-digit divisor),
+`whole_numbers_multiplication_y6` (4-digit×2-digit), and `mixed_operations`
+(id `...027`, BODMAS — combined operations without brackets, fixed
+pattern `a + b × c` so the "did it left to right" mistake
+(`ignored_order_of_operations`) is unambiguous to detect. This was a new
+sub-strand within Numbers & Operations, not previously covered at all.
 
 Word-based answers (e.g. angle type names, not numbers) go through
 `lib/questions/optionLabels.ts` — see `OPTION_LABELS` for details if
 adding another word-based generator.
 
-**Tips & "How To"** — every topic (all 27) has 2+ tips and a 2+ step
+**Tips & "How To"** — every topic (all 33) has 2+ tips and a 2+ step
 general `howTo` method, per teacher feedback. Both fields are required by
 TypeScript on `TopicContent`.
 
-**Still open**: Numbers & Operations — Y4 still has no multiplication or
-division of its own (only Y5/Y6 do), and Y5/Y6 still lack their own
-addition/subtraction topics (only Y4 does). Also open: Ratio/Proportion
-(only Y6 ratio simplification — no Y4/Y5 groundwork, no direct
-proportion), Data Handling (median/mode, pictographs). Ask Lynda what
-matters most for her daughter's actual upcoming schoolwork before picking
-the next one blind.
+**Still open**: Numbers & Operations is now essentially complete for the
+four basic operations (see coverage table) — remaining gaps are
+Ratio/Proportion (only Y6 ratio simplification — no Y4/Y5 groundwork, no
+direct proportion) and Data Handling (median/mode, pictographs). Ask
+Lynda what matters most for her daughter's actual upcoming schoolwork
+before picking the next one blind.
 
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to
