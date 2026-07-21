@@ -479,6 +479,33 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "area_circle": {
+      const { radius, correct } = question.context as { radius: number; correct: number };
+      const PI = 3.142;
+      if (answer === (2 * radius * PI).toFixed(2)) {
+        return {
+          mistakeType: "confused_with_circumference_formula",
+          hint: {
+            ms: "Itu ialah formula LILITAN (2 × π × jejari), bukan luas. Luas ialah π × jejari × jejari.",
+            en: "That's the CIRCUMFERENCE formula (2 × π × radius), not area. Area is π × radius × radius.",
+          },
+        };
+      }
+      if (answer === (2 * radius * (2 * radius) * PI).toFixed(2)) {
+        return {
+          mistakeType: "squared_diameter_instead",
+          hint: {
+            ms: "Anda mendarab diameter (2 × jejari) dengan dirinya, bukan jejari. Guna jejari sahaja: π × jejari × jejari.",
+            en: "You squared the diameter (2 × radius) instead of the radius. Use the radius only: π × radius × radius.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: π × jejari × jejari (guna π = 3.142).", en: "Try calculating again: π × radius × radius (use π = 3.142)." },
+      };
+    }
+
     default:
       return {
         mistakeType: "unknown",

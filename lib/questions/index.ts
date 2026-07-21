@@ -16,6 +16,7 @@ import { generateAnglesClassify } from "./generators/anglesClassify";
 import { generateAreaTriangle } from "./generators/areaTriangle";
 import { generateAnglesAtPoint } from "./generators/anglesAtPoint";
 import { generateCircumference } from "./generators/circumference";
+import { generateAreaCircle } from "./generators/areaCircle";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
@@ -37,6 +38,7 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   area_triangle: generateAreaTriangle,
   angles_at_point: generateAnglesAtPoint,
   circumference: generateCircumference,
+  area_circle: generateAreaCircle,
 };
 
 /**

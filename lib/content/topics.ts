@@ -784,4 +784,46 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "fill", difficulty: 3, generatorKey: "circumference", config: { min: 5, max: 25 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000019": {
+    id: "a1000000-0000-0000-0000-000000000019",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Luas Bulatan", en: "Area of a Circle" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Luas bulatan ialah ruang di dalam bulatan itu. Formula: Luas = π × jejari × jejari, dengan π (pi) lebih kurang 3.142.\n\nContoh harian: Sekeping meja bulat mempunyai jejari 50 cm. Berapakah luas permukaan meja itu?",
+      en: "The area of a circle is the space inside it. Formula: Area = π × radius × radius, where π (pi) is approximately 3.142.\n\nEveryday example: A round table has a radius of 50 cm. What is the area of the tabletop?",
+    },
+    tips: [
+      {
+        ms: "Formula ini guna jejari, BUKAN diameter. Jika soalan beri diameter, bahagikan dengan 2 dahulu untuk dapatkan jejari.",
+        en: "This formula uses the radius, NOT the diameter. If the question gives the diameter, divide by 2 first to get the radius.",
+      },
+      {
+        ms: "Jangan keliru dengan lilitan (2 × π × jejari) — luas melibatkan jejari didarab dengan DIRINYA, bukan didarab dengan 2.",
+        en: "Don't mix this up with circumference (2 × π × radius) — area involves multiplying the radius by ITSELF, not by 2.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti jejari bulatan itu (bahagikan diameter dengan 2 jika perlu).", en: "Identify the circle's radius (divide the diameter by 2 if needed)." },
+      { ms: "Darabkan jejari dengan dirinya sendiri (jejari × jejari).", en: "Multiply the radius by itself (radius × radius)." },
+      { ms: "Darabkan hasil itu dengan π (3.142).", en: "Multiply that result by π (3.142)." },
+    ],
+    workedExample: {
+      problem: "Jejari 5 cm",
+      steps: [
+        { ms: "Luas = π × jejari × jejari", en: "Area = π × radius × radius" },
+        { ms: "= 3.142 × 5 × 5", en: "= 3.142 × 5 × 5" },
+        { ms: "= 78.55 cm²", en: "= 78.55 cm²" },
+      ],
+      answer: "78.55 cm²",
+    },
+    commonMistakes: [
+      { mistakeType: "confused_with_circumference_formula", description: { ms: "Murid menggunakan formula lilitan (2 × π × jejari) berbanding formula luas.", en: "The student uses the circumference formula (2 × π × radius) instead of the area formula." } },
+      { mistakeType: "squared_diameter_instead", description: { ms: "Murid mendarab diameter dengan dirinya, bukan jejari.", en: "The student squares the diameter instead of the radius." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "area_circle", config: { min: 3, max: 15 } },
+      { type: "fill", difficulty: 3, generatorKey: "area_circle", config: { min: 4, max: 18 } },
+    ],
+  },
 };

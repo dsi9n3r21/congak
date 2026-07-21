@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0016 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0017 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0017**.
+should be **0018**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,12 +55,12 @@ should be **0017**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...018` (18 topics). Next new topic should start at `...019`.
+  `...019` (19 topics). Next new topic should start at `...020`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (18 of ~40+ real KSSR sub-topics)
+## Current curriculum coverage (19 of ~40+ real KSSR sub-topics)
 Verified against a real Pelangi Publishing reference book structure
 (8 units per year, each with 10-16 sub-skills — see chat history for the
 full unit list if needed, or ask Lynda to re-share the anyflip.com link:
@@ -73,27 +73,30 @@ https://anyflip.com/ekbvw/vshm/basic).
 | Money | ✓ (change) | — | — |
 | Time | — | ✓ (duration) | — |
 | Length/Mass/Volume | perimeter | — | volume (liquid) |
-| **Space** (polygons/angles/area) | area (rectangle/square), angle types (acute/right/obtuse/reflex) | angles (straight line, at a point), area (composite) | angles (triangle sum), area (triangle), circumference of a circle |
+| **Space** (polygons/angles/area) | area (rectangle/square), angle types (acute/right/obtuse/reflex) | angles (straight line, at a point), area (composite) | angles (triangle sum), area (triangle), circumference & area of a circle |
 | Coordinates/Ratio/Proportion | — | — | ratio (simplify) |
 | Data Handling | — | average | — |
 
 **Diagram infrastructure** (`lib/questions/types.ts` `diagram` field,
-`components/student/diagrams/`) now has four kinds: `"angle"`
+`components/student/diagrams/`) has four kinds: `"angle"`
 (`AngleDiagram.tsx`), `"triangle"` (`TriangleDiagram.tsx`), `"point3"`
 (`AnglesAtPointDiagram.tsx`), and `"circle"` (`CircleDiagram.tsx` —
-circle with a labeled radius line). Same extension pattern each time: add
-a `kind` to the union in `types.ts`, a new component, one more `if`
-branch in `QuestionPlayer.tsx` next to the ones already there.
+reused by both circumference and area of a circle). Same extension
+pattern each time: add a `kind` to the union in `types.ts`, a new
+component, one more `if` branch in `QuestionPlayer.tsx`.
 
-**Circumference of a Circle (Y6) shipped this round** — `circumference`
-generator, id `...018`. Uses π = 3.142 (the KSSR convention) and is the
-first Space generator with a decimal answer — `correctAnswer` is always
-formatted with `.toFixed(2)`, same convention as the existing
-`decimal_add_subtract` generator, so exact-string grading still works.
-**Deliberately scoped to circumference only.** Area of a circle (π × r²)
-was NOT added — it reuses the same `CircleDiagram` and π convention, so
-it should be a quick follow-up, but wasn't shipped to keep this round's
-diff reviewable. That's the one thing left open in the Space unit.
+**Area of a Circle (Y6) shipped this round** — `area_circle` generator,
+id `...019`, the planned follow-up to Circumference (0016). Same
+π = 3.142 convention, same `.toFixed(2)` answer format, same
+`CircleDiagram`. Distractors: confusing it with the circumference
+formula (2 × π × r), and squaring the diameter instead of the radius.
+
+**This completes the Space unit's planned scope** — every year (4-6) now
+has meaningful Space coverage: shapes/area, angles (straight line, at a
+point, triangle sum, types), and circles (circumference + area). No open
+items left in this unit; next curriculum work should pick a different
+unit (see table above for what's still thin — Numbers & Operations,
+Coordinates, and Data Handling all have the least coverage right now).
 
 Word-based answers (e.g. angle type names, not numbers) go through
 `lib/questions/optionLabels.ts` — `correctAnswer`/`options` stay as plain
@@ -102,14 +105,10 @@ canonical keys (`"acute"`, `"right"`, ...) for grading, and
 translated word, falling back to the raw string for numeric generators.
 Reuse this map (add new keys) for any future word-based generator.
 
-**Tips & "How To"** — every topic (all 18, including this round's) has
-2+ tips and a 3+ step general `howTo` method, per teacher feedback. See
-`lib/content/topics.ts` `TopicContent` — both fields are required by
-TypeScript, so a new topic missing either won't compile.
-
-**Space unit is now essentially complete for this app's scope** — only
-area of a circle remains, and it's a small, well-understood follow-up
-(see above) rather than an open design question.
+**Tips & "How To"** — every topic (all 19) has 2+ tips and a 3+ step
+general `howTo` method, per teacher feedback. See `lib/content/topics.ts`
+`TopicContent` — both fields are required by TypeScript, so a new topic
+missing either won't compile.
 
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to
