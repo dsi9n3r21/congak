@@ -601,6 +601,77 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "whole_numbers_division_y5": {
+      const { dividend, divisor, correct } = question.context as { dividend: number; divisor: number; correct: number };
+      if (Number(answer) === dividend - divisor) {
+        return {
+          mistakeType: "subtracted_instead_of_divided",
+          hint: {
+            ms: "Ini soalan bahagi, bukan tolak. Berapa kali boleh anda tolak pembahagi daripada nombor itu?",
+            en: "This is a division question, not subtraction. How many times does the divisor fit into the number?",
+          },
+        };
+      }
+      if (Number(answer) === dividend + divisor) {
+        return {
+          mistakeType: "added_instead_of_divided",
+          hint: {
+            ms: "Ini soalan bahagi, bukan tambah. Cari berapa kali pembahagi masuk ke dalam nombor itu.",
+            en: "This is a division question, not addition. Find how many times the divisor fits into the number.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: berapa kali pembahagi boleh masuk ke dalam nombor itu.", en: "Try calculating again: how many times does the divisor fit into the number." },
+      };
+    }
+
+    case "whole_numbers_multiplication_y6": {
+      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      const tens = Math.floor(b / 10);
+      const ones = b % 10;
+      if (Number(answer) === a * tens + a * ones) {
+        return {
+          mistakeType: "forgot_shift",
+          hint: {
+            ms: "Apabila darab dengan digit puluh, jangan lupa tambah satu 0 di hujung hasil darab kedua sebelum menambahnya.",
+            en: "When multiplying by the tens digit, don't forget to add a trailing 0 to that partial product before adding it.",
+          },
+        };
+      }
+      if (Number(answer) === a + b) {
+        return {
+          mistakeType: "added_instead_of_multiplied",
+          hint: {
+            ms: "Ini soalan darab, bukan tambah. Darabkan kedua-dua nombor itu.",
+            en: "This is a multiplication question, not addition. Multiply the two numbers together.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula hasil darab itu.", en: "Try calculating the product again." },
+      };
+    }
+
+    case "mixed_operations": {
+      const { a, b, c, correct } = question.context as { a: number; b: number; c: number; correct: number };
+      if (Number(answer) === (a + b) * c) {
+        return {
+          mistakeType: "ignored_order_of_operations",
+          hint: {
+            ms: "Buat pendaraban dahulu, kemudian penambahan — bukan dari kiri ke kanan.",
+            en: "Do the multiplication first, then the addition — not strictly left to right.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: darab dahulu, kemudian tambah.", en: "Try calculating again: multiply first, then add." },
+      };
+    }
+
     case "bar_graph": {
       const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number };
       const values = [ctx.v0, ctx.v1, ctx.v2, ctx.v3];

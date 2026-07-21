@@ -1038,4 +1038,128 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "mcq", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 12 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000025": {
+    id: "a1000000-0000-0000-0000-000000000025",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Bahagi Dengan Nombor 1 Digit", en: "Dividing by a 1-Digit Number" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Membahagi ialah mencari berapa kali satu nombor (pembahagi) boleh masuk ke dalam nombor lain (bahagi). Pada tahap ini, pembahagi ialah nombor 1 digit sahaja, jadi kita boleh guna sifir untuk bantu anggaran.\n\nContoh harian: 738 biji gula-gula hendak diagihkan sama rata kepada 6 orang murid. Berapa biji gula-gula setiap murid terima?",
+      en: "Dividing means finding how many times one number (the divisor) fits into another (the dividend). At this level the divisor is just a 1-digit number, so multiplication tables can help you estimate.\n\nEveryday example: 738 sweets need to be shared equally among 6 students. How many sweets does each student get?",
+    },
+    tips: [
+      {
+        ms: "Guna sifir nombor pembahagi untuk anggarkan dengan cepat — cth. bahagi dengan 6, fikir sifir 6.",
+        en: "Use the divisor's times table to estimate quickly — e.g. dividing by 6, think of the 6 times table.",
+      },
+      {
+        ms: "Semak jawapan anda: darabkan jawapan (hasil bahagi) dengan pembahagi — ia MESTI menyamai bahagi (nombor asal).",
+        en: "Check your answer: multiply your answer (the quotient) by the divisor — it MUST equal the dividend (the original number).",
+      },
+    ],
+    howTo: [
+      { ms: "Anggarkan berapa kali pembahagi boleh masuk ke dalam bahagi, digit demi digit dari kiri.", en: "Estimate how many times the divisor fits into the dividend, digit by digit from the left." },
+      { ms: "Darabkan anggaran itu dengan pembahagi dan bandingkan dengan bahagi.", en: "Multiply that estimate by the divisor and compare it to the dividend." },
+      { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
+    ],
+    workedExample: {
+      problem: "738 ÷ 6",
+      steps: [
+        { ms: "6 masuk ke dalam 7 sebanyak 1 kali, baki 1", en: "6 goes into 7 once, remainder 1" },
+        { ms: "Turunkan 3: 13 ÷ 6 = 2 kali, baki 1", en: "Bring down 3: 13 ÷ 6 = 2 times, remainder 1" },
+        { ms: "Turunkan 8: 18 ÷ 6 = 3 kali, baki 0", en: "Bring down 8: 18 ÷ 6 = 3 times, remainder 0" },
+        { ms: "738 ÷ 6 = 123", en: "738 ÷ 6 = 123" },
+      ],
+      answer: 123,
+    },
+    commonMistakes: [
+      { mistakeType: "subtracted_instead_of_divided", description: { ms: "Murid menolak pembahagi daripada bahagi berbanding membahagikannya.", en: "The student subtracts the divisor from the dividend instead of dividing." } },
+      { mistakeType: "added_instead_of_divided", description: { ms: "Murid menambah pembahagi kepada bahagi berbanding membahagikannya.", en: "The student adds the divisor to the dividend instead of dividing." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 999 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 500 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000026": {
+    id: "a1000000-0000-0000-0000-000000000026",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Darab Nombor 4 Digit Dengan Nombor 2 Digit", en: "Multiplying a 4-Digit Number by a 2-Digit Number" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Sama seperti darab dengan nombor 2 digit di Tahun 5, tetapi nombor pertama kini lebih besar (4 digit). Kita darab secara berasingan dengan digit sa, kemudian dengan digit puluh, lalu tambahkan kedua-dua hasil itu.\n\nContoh harian: Sebuah kilang mengeluarkan 3,450 botol air setiap hari. Berapa botol dikeluarkan dalam 34 hari?",
+      en: "Same method as multiplying by a 2-digit number in Year 5, but the first number is now bigger (4 digits). We multiply separately by the ones digit, then by the tens digit, then add both results together.\n\nEveryday example: A factory produces 3,450 bottles of water every day. How many bottles are produced in 34 days?",
+    },
+    tips: [
+      {
+        ms: "Nombor yang lebih besar tidak mengubah kaedah — hanya lebih banyak digit untuk diuruskan dengan teliti.",
+        en: "A bigger number doesn't change the method — there are just more digits to keep track of carefully.",
+      },
+      {
+        ms: "Apabila mendarab dengan digit puluh, letakkan 0 di lajur sa hasil darab kedua itu sebelum menambah — ini penting!",
+        en: "When multiplying by the tens digit, place a 0 in the ones column of that second product before adding — this step is easy to skip.",
+      },
+    ],
+    howTo: [
+      { ms: "Darabkan nombor pertama dengan digit sa nombor kedua.", en: "Multiply the first number by the ones digit of the second number." },
+      { ms: "Darabkan nombor pertama dengan digit puluh nombor kedua, kemudian anjak hasil itu satu tempat ke kiri.", en: "Multiply the first number by the tens digit of the second number, then shift that result one place to the left." },
+      { ms: "Tambahkan kedua-dua hasil darab itu.", en: "Add the two products together." },
+    ],
+    workedExample: {
+      problem: "3450 × 34",
+      steps: [
+        { ms: "3450 × 4 = 13,800", en: "3450 × 4 = 13,800" },
+        { ms: "3450 × 30 = 103,500", en: "3450 × 30 = 103,500" },
+        { ms: "13,800 + 103,500 = 117,300", en: "13,800 + 103,500 = 117,300" },
+      ],
+      answer: 117300,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_shift", description: { ms: "Murid darab dengan digit puluh tetapi lupa anjak hasilnya (lupa tambah 0).", en: "The student multiplies by the tens digit but forgets to shift the result (forgets the trailing 0)." } },
+      { mistakeType: "added_instead_of_multiplied", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 9999 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 5000 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000027": {
+    id: "a1000000-0000-0000-0000-000000000027",
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    title: { ms: "Operasi Bergabung Tanpa Kurungan", en: "Combined Operations Without Brackets" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Apabila satu soalan ada campuran tambah dan darab tanpa kurungan, kita MESTI buat pendaraban dahulu, kemudian penambahan — bukan dikira dari kiri ke kanan.\n\nContoh harian: Ali ada RM15, kemudian ibunya beri dia 4 keping not RM10. Berapakah jumlah wang Ali sekarang? (15 + 4 × 10)",
+      en: "When a question mixes addition and multiplication with no brackets, we MUST do the multiplication first, then the addition — not simply left to right.\n\nEveryday example: Ali has RM15, then his mother gives him 4 pieces of RM10 notes. How much money does Ali have now? (15 + 4 × 10)",
+    },
+    tips: [
+      {
+        ms: "Ingat: \"Darab dan Bahagi dahulu, Tambah dan Tolak kemudian\" — ini dipanggil susunan operasi.",
+        en: "Remember: \"Multiply and Divide first, Add and Subtract after\" — this is called order of operations.",
+      },
+      {
+        ms: "Bulatkan atau garisi bahagi darab dalam soalan itu dahulu supaya anda tidak terlepas pandang untuk buat itu dahulu.",
+        en: "Circle or underline the multiplication part of the question first so you don't accidentally skip doing it first.",
+      },
+    ],
+    howTo: [
+      { ms: "Cari bahagi darab (atau bahagi) dalam soalan itu dan selesaikan itu dahulu.", en: "Find the multiplication (or division) part of the question and solve that first." },
+      { ms: "Kemudian buat penambahan (atau penolakan) menggunakan hasil daripada langkah pertama.", en: "Then do the addition (or subtraction) using the result from the first step." },
+    ],
+    workedExample: {
+      problem: "15 + 4 × 10",
+      steps: [
+        { ms: "Darab dahulu: 4 × 10 = 40", en: "Multiply first: 4 × 10 = 40" },
+        { ms: "Kemudian tambah: 15 + 40 = 55", en: "Then add: 15 + 40 = 55" },
+      ],
+      answer: 55,
+    },
+    commonMistakes: [
+      { mistakeType: "ignored_order_of_operations", description: { ms: "Murid mengira dari kiri ke kanan (tambah dahulu, kemudian darab) berbanding ikut susunan operasi yang betul.", en: "The student calculates strictly left to right (adds first, then multiplies) instead of following the correct order of operations." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50 } },
+    ],
+  },
 };

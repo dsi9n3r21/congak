@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0020 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0021 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0021**.
+should be **0022**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,25 +55,27 @@ should be **0021**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...024` (24 topics). Next new topic should start at `...025`.
+  `...027` (27 topics). Next new topic should start at `...028`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (24 of ~40+ real KSSR sub-topics, ≈60%)
+## Current curriculum coverage (27 of ~40+ real KSSR sub-topics, ≈68%)
 Verified against a real Pelangi Publishing reference book structure
 (8 units per year, each with 10-16 sub-skills — see chat history for the
 full unit list if needed, or ask Lynda to re-share the anyflip.com link:
 https://anyflip.com/ekbvw/vshm/basic). **The "~40+" total is an estimate
 from skimming that reference, not an official KSSR sub-topic count** —
 treat any completion percentage as directional, not precise. On that
-basis: 24/40 ≈ 60%, but Numbers & Operations in particular is likely
-undercounted (that unit usually has more sub-skills per year than any
-other), so the real percentage is probably somewhat lower than 60%.
+basis: 27/40 ≈ 68%, but Numbers & Operations in particular is likely
+still undercounted (that unit usually has more sub-skills per year than
+any other — Y4 still has no multiplication/division of its own, and Y5/Y6
+still lack their own addition/subtraction), so the real percentage is
+probably somewhat lower than 68%.
 
 | Unit | Y4 | Y5 | Y6 |
 |---|---|---|---|
-| Numbers & Operations | addition, subtraction | multiplication (2-digit) | division (2-digit) |
+| Numbers & Operations | addition, subtraction | multiplication (2-digit), division (1-digit) | multiplication (4-digit×2-digit), division (2-digit), mixed operations (BODMAS) |
 | Fractions/Decimals/% | fractions (add) | decimals (add/sub) | percentage |
 | Money | ✓ (change) | — | — |
 | Time | — | ✓ (duration) | — |
@@ -88,31 +90,45 @@ other), so the real percentage is probably somewhat lower than 60%.
 `"coordinate_grid"` (`CoordinateGridDiagram.tsx` — first-quadrant grid,
 one plotted point, dashed guide lines to each axis).
 
-**Reading Coordinates (Y5) shipped this round** — `coordinates`
-generator, id `...024`, the first topic in the Coordinates strand (that
-strand previously only had Y6 ratio simplification). **Deliberately
-MCQ-only** — the answer format `(x, y)` is too fragile for the app's
-exact-string "fill" grading (`answer.trim() === correctAnswer`, no
-internal-whitespace normalization — a student typing `(3,5)` instead of
-`(3, 5)` would be marked wrong for a formatting reason, not a math one).
-If a future topic needs a similarly-formatted free-typed answer, either
-keep it MCQ-only like this one, or fix the grading to normalize
-whitespace/punctuation first — that's a `QuestionPlayer.tsx` change
-worth doing once, not per-topic.
+**Reading Coordinates (Y5)** — `coordinates` generator, id `...024`, the
+first topic in the Coordinates strand (that strand previously only had Y6
+ratio simplification). **Deliberately MCQ-only** — the answer format
+`(x, y)` is too fragile for the app's exact-string "fill" grading
+(`answer.trim() === correctAnswer`, no internal-whitespace normalization —
+a student typing `(3,5)` instead of `(3, 5)` would be marked wrong for a
+formatting reason, not a math one). If a future topic needs a
+similarly-formatted free-typed answer, either keep it MCQ-only like this
+one, or fix the grading to normalize whitespace/punctuation first — that's
+a `QuestionPlayer.tsx` change worth doing once, not per-topic.
+
+**Numbers & Operations Y5/Y6 gaps shipped this round** — three new
+topics, ids `...025`–`...027`, all reusing the plain-equation pattern (no
+new diagram kind needed):
+- `whole_numbers_division_y5` (id `...025`) — division by a 1-digit
+  divisor, the Y5-appropriate level (Y6 already had 2-digit divisor).
+- `whole_numbers_multiplication_y6` (id `...026`) — 4-digit × 2-digit,
+  the Y6-appropriate level (Y5 already had 3-digit × 2-digit).
+- `mixed_operations` (id `...027`) — **new topic**, not an extension of an
+  existing one: combined operations without brackets (BODMAS), fixed
+  pattern `a + b × c` so the "did it left to right" mistake
+  (`ignored_order_of_operations`) is unambiguous to detect. This is a new
+  sub-strand within Numbers & Operations, not previously covered at all.
 
 Word-based answers (e.g. angle type names, not numbers) go through
 `lib/questions/optionLabels.ts` — see `OPTION_LABELS` for details if
 adding another word-based generator.
 
-**Tips & "How To"** — every topic (all 24) has 2+ tips and a 3+ step
+**Tips & "How To"** — every topic (all 27) has 2+ tips and a 2+ step
 general `howTo` method, per teacher feedback. Both fields are required by
 TypeScript on `TopicContent`.
 
-**Still open**: Numbers & Operations (Y5/Y6 each need more topics),
-Ratio/Proportion (only Y6 ratio simplification — no Y4/Y5 groundwork, no
-direct proportion), Data Handling (median/mode, pictographs). Ask Lynda
-what matters most for her daughter's actual upcoming schoolwork before
-picking the next one blind.
+**Still open**: Numbers & Operations — Y4 still has no multiplication or
+division of its own (only Y5/Y6 do), and Y5/Y6 still lack their own
+addition/subtraction topics (only Y4 does). Also open: Ratio/Proportion
+(only Y6 ratio simplification — no Y4/Y5 groundwork, no direct
+proportion), Data Handling (median/mode, pictographs). Ask Lynda what
+matters most for her daughter's actual upcoming schoolwork before picking
+the next one blind.
 
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to

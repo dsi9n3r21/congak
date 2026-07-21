@@ -22,6 +22,9 @@ import { generateWholeNumbersMultiplication } from "./generators/wholeNumbersMul
 import { generateWholeNumbersDivision } from "./generators/wholeNumbersDivision";
 import { generateBarGraph } from "./generators/barGraph";
 import { generateCoordinates } from "./generators/coordinates";
+import { generateWholeNumbersDivisionY5 } from "./generators/wholeNumbersDivisionY5";
+import { generateWholeNumbersMultiplicationY6 } from "./generators/wholeNumbersMultiplicationY6";
+import { generateMixedOperations } from "./generators/mixedOperations";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
@@ -49,6 +52,9 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   whole_numbers_division: generateWholeNumbersDivision,
   bar_graph: generateBarGraph,
   coordinates: generateCoordinates,
+  whole_numbers_division_y5: generateWholeNumbersDivisionY5,
+  whole_numbers_multiplication_y6: generateWholeNumbersMultiplicationY6,
+  mixed_operations: generateMixedOperations,
 };
 
 /**
