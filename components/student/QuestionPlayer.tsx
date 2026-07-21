@@ -14,6 +14,7 @@ import { OPTION_LABELS } from "@/lib/questions/optionLabels";
 import { AngleDiagram } from "@/components/student/diagrams/AngleDiagram";
 import { TriangleDiagram } from "@/components/student/diagrams/TriangleDiagram";
 import { AnglesAtPointDiagram } from "@/components/student/diagrams/AnglesAtPointDiagram";
+import { CircleDiagram } from "@/components/student/diagrams/CircleDiagram";
 
 type Status = "answering" | "correct" | "incorrect";
 
@@ -118,6 +119,11 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
         {question.diagram?.kind === "point3" && (
           <div className="mt-4">
             <AnglesAtPointDiagram angleA={question.diagram.angleA} angleB={question.diagram.angleB} />
+          </div>
+        )}
+        {question.diagram?.kind === "circle" && (
+          <div className="mt-4">
+            <CircleDiagram radius={question.diagram.radius} />
           </div>
         )}
 

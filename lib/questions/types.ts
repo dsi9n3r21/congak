@@ -19,7 +19,8 @@ export interface GeneratedQuestion {
   diagram?:
     | { kind: "angle"; degrees: number }
     | { kind: "triangle"; base: number; height: number }
-    | { kind: "point3"; angleA: number; angleB: number };
+    | { kind: "point3"; angleA: number; angleB: number }
+    | { kind: "circle"; radius: number };
 }
 
 export interface GeneratorParams {

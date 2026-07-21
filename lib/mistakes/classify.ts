@@ -452,6 +452,33 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "circumference": {
+      const { radius, correct } = question.context as { radius: number; correct: number };
+      const PI = 3.142;
+      if (answer === (radius * PI).toFixed(2)) {
+        return {
+          mistakeType: "forgot_to_double_radius",
+          hint: {
+            ms: "Lilitan = 2 × π × jejari. Jangan lupa gandakan jejari (×2) sebelum darab dengan π.",
+            en: "Circumference = 2 × π × radius. Don't forget to double the radius (×2) before multiplying by π.",
+          },
+        };
+      }
+      if (answer === (radius * radius * PI).toFixed(2)) {
+        return {
+          mistakeType: "confused_with_area_formula",
+          hint: {
+            ms: "Itu ialah formula LUAS bulatan (π × jejari²), bukan lilitan. Lilitan ialah 2 × π × jejari.",
+            en: "That's the AREA formula for a circle (π × radius²), not circumference. Circumference is 2 × π × radius.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula: 2 × π × jejari (guna π = 3.142).", en: "Try calculating again: 2 × π × radius (use π = 3.142)." },
+      };
+    }
+
     default:
       return {
         mistakeType: "unknown",

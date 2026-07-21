@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0015 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0016 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0016**.
+should be **0017**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,12 +55,12 @@ should be **0016**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...017` (17 topics). Next new topic should start at `...018`.
+  `...018` (18 topics). Next new topic should start at `...019`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (17 of ~40+ real KSSR sub-topics)
+## Current curriculum coverage (18 of ~40+ real KSSR sub-topics)
 Verified against a real Pelangi Publishing reference book structure
 (8 units per year, each with 10-16 sub-skills — see chat history for the
 full unit list if needed, or ask Lynda to re-share the anyflip.com link:
@@ -73,26 +73,27 @@ https://anyflip.com/ekbvw/vshm/basic).
 | Money | ✓ (change) | — | — |
 | Time | — | ✓ (duration) | — |
 | Length/Mass/Volume | perimeter | — | volume (liquid) |
-| **Space** (polygons/angles/area) | area (rectangle/square), angle types (acute/right/obtuse/reflex) | angles (straight line, at a point), area (composite) | angles (triangle sum), area (triangle) |
+| **Space** (polygons/angles/area) | area (rectangle/square), angle types (acute/right/obtuse/reflex) | angles (straight line, at a point), area (composite) | angles (triangle sum), area (triangle), circumference of a circle |
 | Coordinates/Ratio/Proportion | — | — | ratio (simplify) |
 | Data Handling | — | average | — |
 
 **Diagram infrastructure** (`lib/questions/types.ts` `diagram` field,
-`components/student/diagrams/`) now has three kinds: `"angle"`
-(`AngleDiagram.tsx`), `"triangle"` (`TriangleDiagram.tsx`, base + dashed
-altitude, right-angle marker at the foot — deliberately scalene, not a
-right triangle, so height reads as a distinct concept from a side), and
-`"point3"` (`AnglesAtPointDiagram.tsx` — three angles around a point, two
-labeled, the unknown third one marked "?" in dashed red). Same extension
-pattern each time: add a `kind` to the union in `types.ts`, a new
-component, one more `if` branch in `QuestionPlayer.tsx` next to the ones
-already there.
+`components/student/diagrams/`) now has four kinds: `"angle"`
+(`AngleDiagram.tsx`), `"triangle"` (`TriangleDiagram.tsx`), `"point3"`
+(`AnglesAtPointDiagram.tsx`), and `"circle"` (`CircleDiagram.tsx` —
+circle with a labeled radius line). Same extension pattern each time: add
+a `kind` to the union in `types.ts`, a new component, one more `if`
+branch in `QuestionPlayer.tsx` next to the ones already there.
 
-**Area of a Triangle (Y6)** — `area_triangle` generator, id `...016`,
-pairs naturally with the existing `angles_triangle_sum` (Y6) topic.
-
-**Angles at a Point (Y5) shipped this round** — `angles_at_point`
-generator, id `...017`.
+**Circumference of a Circle (Y6) shipped this round** — `circumference`
+generator, id `...018`. Uses π = 3.142 (the KSSR convention) and is the
+first Space generator with a decimal answer — `correctAnswer` is always
+formatted with `.toFixed(2)`, same convention as the existing
+`decimal_add_subtract` generator, so exact-string grading still works.
+**Deliberately scoped to circumference only.** Area of a circle (π × r²)
+was NOT added — it reuses the same `CircleDiagram` and π convention, so
+it should be a quick follow-up, but wasn't shipped to keep this round's
+diff reviewable. That's the one thing left open in the Space unit.
 
 Word-based answers (e.g. angle type names, not numbers) go through
 `lib/questions/optionLabels.ts` — `correctAnswer`/`options` stay as plain
@@ -101,27 +102,14 @@ canonical keys (`"acute"`, `"right"`, ...) for grading, and
 translated word, falling back to the raw string for numeric generators.
 Reuse this map (add new keys) for any future word-based generator.
 
-**Tips & "How To" — teacher feedback, applied across all 17 topics.**
-`TopicContent.tips` is now `Bilingual[]` (was a single `Bilingual`) —
-every topic has at least 2 tips, shown as separate cards in the Tips tab.
-Added a new `howTo: Bilingual[]` field — a general, number-free method
-(e.g. "1. Identify base and height → 2. Multiply → 3. Divide by 2"),
-distinct from `workedExample` which walks one specific set of numbers.
-Rendered in a new "How To" tab in `LessonCard.tsx`, positioned right
-after "Learn". `lib/i18n/dictionary.ts` got a `learnTabHowTo` key. The
-parent dashboard's compact weak-topic card
-(`app/parent/child/[studentId]/page.tsx`) now shows `topic.tips[0]` (the
-primary tip) rather than the old single field. **Any future new topic
-must include both `tips` (2+) and `howTo` (3+) — TypeScript will already
-error if either is missing since they're required fields on
-`TopicContent`, but worth double-checking content quality (not just
-presence) when writing a new topic.**
+**Tips & "How To"** — every topic (all 18, including this round's) has
+2+ tips and a 3+ step general `howTo` method, per teacher feedback. See
+`lib/content/topics.ts` `TopicContent` — both fields are required by
+TypeScript, so a new topic missing either won't compile.
 
-**Space unit still open**: circles (Y6 — would need a CircleDiagram, and
-a decision on whether to teach circumference, area, or both first). Ask
-Lynda before starting circles specifically — it's a bigger scope jump
-(irrational π, rounding rules) than anything shipped so far. Otherwise
-the Space unit is now solidly covered across all three years.
+**Space unit is now essentially complete for this app's scope** — only
+area of a circle remains, and it's a small, well-understood follow-up
+(see above) rather than an open design question.
 
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to

@@ -742,4 +742,46 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "angles_at_point", config: {} },
     ],
   },
+  "a1000000-0000-0000-0000-000000000018": {
+    id: "a1000000-0000-0000-0000-000000000018",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Lilitan Bulatan", en: "Circumference of a Circle" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Lilitan ialah jarak mengelilingi sepenuhnya sebuah bulatan — seperti perimeter, tetapi untuk bentuk bulat. Formula: Lilitan = 2 × π × jejari, dengan π (pi) lebih kurang 3.142.\n\nContoh harian: Sebuah kolam berbentuk bulat mempunyai jejari 7 m. Berapakah panjang pagar yang diperlukan untuk mengelilinginya?",
+      en: "Circumference is the distance all the way around a circle — like perimeter, but for a round shape. Formula: Circumference = 2 × π × radius, where π (pi) is approximately 3.142.\n\nEveryday example: A circular pond has a radius of 7 m. How much fencing is needed to go all the way around it?",
+    },
+    tips: [
+      {
+        ms: "π (pi) ialah nombor tetap ≈ 3.142 — ia sentiasa sama tidak kira saiz bulatan.",
+        en: "π (pi) is a fixed number ≈ 3.142 — it's always the same no matter the size of the circle.",
+      },
+      {
+        ms: "Jika soalan memberi diameter (bukan jejari), anda tidak perlu darab dengan 2 lagi — diameter sudah merupakan 2 × jejari.",
+        en: "If the question gives the diameter (not the radius), you don't need to multiply by 2 again — the diameter already IS 2 × radius.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti jejari bulatan itu.", en: "Identify the circle's radius." },
+      { ms: "Gandakan jejari dengan 2 untuk dapatkan diameter.", en: "Double the radius to get the diameter." },
+      { ms: "Darabkan diameter itu dengan π (3.142).", en: "Multiply that diameter by π (3.142)." },
+    ],
+    workedExample: {
+      problem: "Jejari 7 cm",
+      steps: [
+        { ms: "Lilitan = 2 × π × jejari", en: "Circumference = 2 × π × radius" },
+        { ms: "= 2 × 3.142 × 7", en: "= 2 × 3.142 × 7" },
+        { ms: "= 43.99 cm", en: "= 43.99 cm" },
+      ],
+      answer: "43.99 cm",
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_to_double_radius", description: { ms: "Murid mendarab jejari dengan π sahaja, lupa gandakan dengan 2 dahulu.", en: "The student multiplies the radius by π alone, forgetting to double it first." } },
+      { mistakeType: "confused_with_area_formula", description: { ms: "Murid menggunakan formula luas (π × jejari²) berbanding formula lilitan.", en: "The student uses the area formula (π × radius²) instead of the circumference formula." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "circumference", config: { min: 3, max: 20 } },
+      { type: "fill", difficulty: 3, generatorKey: "circumference", config: { min: 5, max: 25 } },
+    ],
+  },
 };
