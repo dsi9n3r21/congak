@@ -77,4 +77,10 @@ export const UI: Record<string, Bilingual> = {
   reviewMistakes: { ms: "Lihat Kesilapan", en: "Review Mistakes" },
   yourAnswer: { ms: "Jawapan anda", en: "Your answer" },
   correctAnswerLabel: { ms: "Jawapan betul", en: "Correct answer" },
+
+  navPintar: { ms: "Pintar", en: "Pintar" },
+  pintarPlaceholder: { ms: "Taip mesej anda...", en: "Type your message..." },
+  pintarSend: { ms: "Hantar", en: "Send" },
+  pintarGreeting: { ms: "Hai {name}! Ada apa-apa saya boleh bantu?", en: "Hi {name}! Anything I can help with?" },
+  pintarError: { ms: "Maaf, Pintar tidak dapat balas sekarang. Cuba lagi sebentar.", en: "Sorry, Pintar can't reply right now. Try again in a moment." },
 };

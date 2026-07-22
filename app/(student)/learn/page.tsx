@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { TOPICS } from "@/lib/content/topics";
-import { BottomNav } from "@/components/ui/BottomNav";
 import { Bi } from "@/lib/i18n/Bi";
 import { createClient } from "@/lib/supabase/server";
 
@@ -87,7 +86,6 @@ export default async function LearnIndexPage() {
         );
       })}
 
-      <BottomNav />
     </main>
   );
 }

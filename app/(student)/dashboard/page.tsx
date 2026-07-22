@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { TOPICS } from "@/lib/content/topics";
-import { BottomNav } from "@/components/ui/BottomNav";
+import { getRecommendedTopic } from "@/lib/content/recommended";
 import { Bi } from "@/lib/i18n/Bi";
 import { UI } from "@/lib/i18n/dictionary";
 
@@ -27,12 +27,7 @@ export default async function DashboardPage() {
   const masteryByTopic = new Map((mastery ?? []).map((m) => [m.topic_id, m]));
 
   const weakTopics = allTopics.filter((t) => masteryByTopic.get(t.id)?.weak_flag);
-
-  const unstarted = allTopics.filter((t) => !masteryByTopic.has(t.id));
-  const recommended =
-    weakTopics[0] ??
-    unstarted[0] ??
-    allTopics.sort((a, b) => (masteryByTopic.get(a.id)?.mastery_score ?? 0) - (masteryByTopic.get(b.id)?.mastery_score ?? 0))[0];
+  const recommended = await getRecommendedTopic(supabase, student?.id ?? "");
 
   const xpToNext = (student?.level ?? 1) * 125;
   const xpPct = Math.min(100, Math.round(((student?.xp ?? 0) / xpToNext) * 100));
@@ -112,7 +107,6 @@ export default async function DashboardPage() {
         </a>
       </section>
 
-      <BottomNav />
     </main>
   );
 }

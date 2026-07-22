@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/lib/actions/auth";
-import { BottomNav } from "@/components/ui/BottomNav";
 import { LanguageSelector } from "@/components/student/LanguageSelector";
 import { AccessibilityToggles } from "@/components/student/AccessibilityToggles";
 import { Bi } from "@/lib/i18n/Bi";
@@ -70,7 +69,6 @@ export default async function ProfilePage() {
         </form>
       </section>
 
-      <BottomNav />
     </main>
   );
 }

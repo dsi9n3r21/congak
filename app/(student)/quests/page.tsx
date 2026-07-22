@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { BottomNav } from "@/components/ui/BottomNav";
 
 export default async function QuestsPage() {
   const supabase = createClient();
@@ -22,7 +21,6 @@ export default async function QuestsPage() {
           ? "A world map with badges, daily missions, and weekly challenges is on the way."
           : "Peta dunia dengan lencana, misi harian, dan cabaran mingguan akan tiba."}
       </p>
-      <BottomNav />
     </main>
   );
 }

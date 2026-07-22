@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TOPICS } from "@/lib/content/topics";
 import { LessonCard } from "@/components/student/LessonCard";
-import { BottomNav } from "@/components/ui/BottomNav";
 import { Bi } from "@/lib/i18n/Bi";
 import { UI } from "@/lib/i18n/dictionary";
 import { createClient } from "@/lib/supabase/server";
@@ -50,7 +49,6 @@ export default async function LearnTopicPage({ params }: { params: { topicId: st
         </Link>
       </section>
 
-      <BottomNav />
     </main>
   );
 }

@@ -9,6 +9,7 @@ const TABS = [
   { href: "/learn", label: "Belajar", icon: "📖" },
   { href: "/practice", label: "Latihan", icon: "✏️" },
   { href: "/quests", label: "Misi", icon: "🪁" }, // kite = quests/adventure, ties to the wau motif
+  { href: "/pintar", label: "Pintar", icon: "🧠" },
   { href: "/profile", label: "Saya", icon: "🙂" },
 ] as const;
 

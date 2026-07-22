@@ -146,6 +146,71 @@ direct proportion) and Data Handling (median/mode, pictographs). Ask
 Lynda what matters most for her daughter's actual upcoming schoolwork
 before picking the next one blind.
 
+## Pintar integration (chat assistant, built by Lynda's husband)
+Pintar's engine lives on the Basrim server (same architecture as an
+existing assistant called Pak Misai) — Congak only owns the frontend side.
+Implemented per `pintar-congak-handoff.md` v2 (decisions locked with
+Lynda's husband's Claude):
+
+- **`app/(student)/layout.tsx`** — new shared layout, renders `<BottomNav />`
+  once. All 9 pre-existing student pages (`dashboard`, `learn`,
+  `learn/[topicId]`, `practice`, `practice/[topicId]`, `quiz/[topicId]`,
+  `exam`, `quests`, `profile`) had their own `import { BottomNav }` +
+  `<BottomNav />` removed — that was 9x duplication before this. Each
+  page's own `<main>` wrapper was left untouched (styling varies slightly
+  per page); the layout renders `<BottomNav />` as a sibling **after**
+  `{children}`, not nested inside — fine visually since `BottomNav` is
+  `fixed bottom-0`, but worth knowing if it ever needs to be nested for a
+  layout reason later.
+- **`app/(student)/pintar/page.tsx`** — new 6th tab, added to `BottomNav`'s
+  `TABS` array (🧠 icon). Dedicated route, no modal/portal, per the locked
+  decision — gets `<BottomNav />` for free via the shared layout.
+- **`lib/content/recommended.ts`** — `getRecommendedTopic()` extracted
+  from what used to be inline logic in `dashboard/page.tsx`. Both
+  `dashboard/page.tsx` and `pintar/page.tsx` now call this one function.
+- **`app/api/pintar/route.ts`** — Congak's own API route that proxies to
+  Pintar's engine. **This exists specifically so the shared secret
+  (`PINTAR_API_KEY`) never reaches the browser** — the browser only ever
+  calls `/api/pintar` (same-origin, no CORS needed for that hop); this
+  route attaches the `x-pintar-key` header server-side before forwarding
+  to `https://basrim.com.my/pintar-engine/chat`. Don't change this to a
+  direct client-side fetch to the Basrim domain — that would expose the
+  key in the browser's network tab to anyone who opens devtools.
+- **`PINTAR_ENGINE_URL` and `PINTAR_API_KEY`** — added to `.env.example`
+  as blank placeholders only (never commit the real key). **Real values
+  need to be set in Vercel's env vars (Production + Preview) — this
+  hasn't been done yet, ask Lynda to add them, or do it for her if she
+  shares Vercel access.** The actual key value was shared in chat, not
+  committed anywhere in the repo.
+- **`components/student/PintarChat.tsx`** — the chat UI, Client Component.
+  Local greeting bubble on mount (not sent to the engine — see comment in
+  the file for why), then a normal send/receive loop against
+  `/api/pintar`. `sessionId` is a fresh `crypto.randomUUID()` per page
+  load — **not persisted**, matching the locked "start stateless" decision.
+  If Lynda wants chat history to survive a refresh later, that's a new
+  Supabase table + migration (next one would be `0023`), deliberately not
+  built yet.
+- **`public/pintar/*.png`** — the 6 avatar-state images (idle, thinking,
+  showing, correct, wrong, confuse) from Lynda's husband, used directly
+  via `next/image` — first use of `next/image` in this app (everywhere
+  else so far has had no images at all).
+- **Two contract fields Congak can't populate accurately yet, flagged
+  in-code, not silently faked:**
+  - `context.xpToday` — Congak only tracks a running total (`students.xp`),
+    no daily tracking table exists. Currently sends total `xp` as a
+    stopgap. If Pintar's engine actually uses this number to talk about
+    "today," it'll be wrong until a real daily-XP table is built.
+  - `context.currentLevel` — sent as `` `Tahap ${level}` ``, no `/10` — the
+    handoff doc's example (`"Tahap 2/10"`) implies a level cap that doesn't
+    exist in Congak's data model (XP-threshold leveling, uncapped).
+  - `language` — contract wants `"bm" | "en"`, Congak's own `language_pref`
+    has a third value (`"both"`, dual-language display). `"both"` maps to
+    `"bm"` for the engine call.
+- **`.gitignore` added** — didn't exist before at all. Added now
+  specifically because this round introduces a real secret
+  (`PINTAR_API_KEY`) — if Lynda ever creates a local `.env.local` and
+  pushes to git without this, it would get committed.
+
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to
   defer this until "everything is running smoothly" — she shared two
@@ -161,7 +226,7 @@ before picking the next one blind.
   real OpenAI call yet — `OPENAI_API_KEY` still blank in Vercel env vars.
 - Teacher/school accounts, subscriptions/billing — untouched, later SaaS
   phase per original PRD.
-- Bottom nav labels are BM-only by design (space constraint on 5 compact
+- Bottom nav labels are BM-only by design (space constraint on 6 compact
   tabs) — everywhere else respects `language_pref`.
 
 ## Deployment gotchas already hit (avoid repeating)

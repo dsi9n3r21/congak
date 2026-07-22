@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { TOPICS } from "@/lib/content/topics";
 import { QuestionPlayer } from "@/components/student/QuestionPlayer";
-import { BottomNav } from "@/components/ui/BottomNav";
 import { Bi } from "@/lib/i18n/Bi";
 import { createClient } from "@/lib/supabase/server";
 
@@ -33,7 +32,6 @@ export default async function PracticeTopicPage({ params }: { params: { topicId:
         <QuestionPlayer topic={topic} lang={lang} />
       </section>
 
-      <BottomNav />
     </main>
   );
 }
