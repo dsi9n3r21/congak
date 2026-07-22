@@ -211,6 +211,65 @@ Lynda's husband's Claude):
   (`PINTAR_API_KEY`) — if Lynda ever creates a local `.env.local` and
   pushes to git without this, it would get committed.
 
+## Visual restyle (in progress — dashboard done, other screens not yet)
+Lynda decided to start visual polish early (not waiting for full
+feature-completeness as originally planned) to get feedback from a few
+teachers and students — framed to them as work-in-progress. Reference:
+two screenshots she shared (a gamified dashboard mockup + a scores/
+leaderboard mockup with mascot character, national/state/school rankings,
+multi-subject tabs, certificates, rewards store).
+
+**Scope decision, discussed with Lynda directly:** the leaderboard mockup
+mixes two very different things —
+- "Skor" (personal stats: today/this year/accuracy/streak) — real data,
+  buildable anytime.
+- "Carta Bulanan" / "Carta Sekolah" (rankings against other real students
+  nationally) — Congak has no other schools/families in it at all right
+  now (single-tenant), so this is either fake data shown to a child as if
+  real (explicitly declined — not something to build even as a
+  placeholder) or genuine multi-tenant infra, which is the deferred SaaS
+  phase, not a quick add.
+- Misi (quests) — currently a "coming soon" placeholder — CAN be built
+  without other students (daily missions/badges from the student's own
+  real activity data), but wasn't in scope for this round either.
+
+**This round shipped: dashboard restyle only** (`dashboard/page.tsx`),
+matching the reference mockup's visual language while keeping Congak's
+existing "wau kite" brand palette (kuning/biru/saga/pandan) rather than
+switching to the mockup's purple/lavender — that palette choice was
+already a deliberate decision documented in `tailwind.config.ts`, not
+something to abandon for one screenshot. Card-by-card mapping:
+- Hero (level + XP) → gradient `biru` → `biru-dark`, was flat `bg-biru`
+  before. Added a presentational-only level-tier label ("Pelajar Baru" →
+  "Juara Congak" by level range, in `dashboard/page.tsx` — not stored
+  anywhere, purely cosmetic).
+- "Cadangan hari ini" (recommended topic) → `pandan` (green) themed now,
+  was `kuning-light` before.
+- "Perlu perhatian" (weak topics) → unchanged `saga` (red), already
+  matched.
+- Parent link code → unchanged `biru`, already matched.
+- Exam CTA → switched from `saga` to `kuning` theming to better match the
+  mockup's orange, and to keep `saga` reserved strictly for alerts per
+  its documented role ("errors, needs improvement, alerts").
+- Added the Pintar `idle.png` mascot to the header as a decorative image
+  (first use of `next/image` outside `PintarChat.tsx`).
+
+**Deliberately NOT added:** the mockup's "Kumpul XP, buka ganjaran!"
+(rewards teaser) card — there's no rewards/badges backend at all (checked
+migrations, nothing exists), so a card promising a reward store that
+doesn't exist would be a dead end for Raida to tap. Also didn't fabricate
+an "XP Hari Ini" (today's XP) number — the mockup shows a daily XP goal,
+but Congak only tracks a running total (`students.xp`), no daily table
+exists (same gap already flagged for Pintar's `xpToday` field). The hero
+card shows real total-XP-toward-next-level progress instead, honestly
+labeled "XP Kamu" (Your XP) rather than implying it's today's.
+
+**Still needed**: same restyle treatment for `learn`, `practice`, `quiz`,
+`exam`, `quests`, `profile` — none of those have been touched yet, so the
+app currently looks inconsistent (new dashboard, old-style everywhere
+else). A real "Skor" personal-stats page and real Misi (daily missions/
+badges) are separate future scope, not visual-only.
+
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to
   defer this until "everything is running smoothly" — she shared two

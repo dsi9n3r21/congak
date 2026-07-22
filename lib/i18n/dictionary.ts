@@ -51,11 +51,17 @@ export const UI: Record<string, Bilingual> = {
   recommendedPath: { ms: "Cadangan Pembelajaran", en: "Recommended Path" },
 
   welcomeBack: { ms: "Selamat kembali,", en: "Welcome back," },
+  dashboardGreeting: { ms: "Hai, {name}! 👋", en: "Hi, {name}! 👋" },
+  dashboardSubtitle: { ms: "Teruskan pembelajaran hari ini!", en: "Keep learning today!" },
+  yourLevel: { ms: "Tahap Kamu", en: "Your Level" },
+  yourXp: { ms: "XP Kamu", en: "Your XP" },
+  streakDaysLabel: { ms: "hari berturut-turut", en: "day streak" },
   recommendedToday: { ms: "Cadangan hari ini", en: "Recommended today" },
   continueLearning: { ms: "Sambung belajar", en: "Continue learning" },
   needsAttention: { ms: "Perlu perhatian", en: "Needs attention" },
   examCta: { ms: "Sedia untuk cabaran?", en: "Ready for a challenge?" },
   examCtaSub: { ms: "Cuba Mod Peperiksaan Bertempoh", en: "Try the Timed Exam Mode" },
+  examCtaButton: { ms: "Mula!", en: "Start!" },
   linkCode: { ms: "Kod Pautan Ibu Bapa", en: "Parent Link Code" },
   linkCodeShare: { ms: "Kongsi kod ini dengan ibu/bapa anda", en: "Share this code with your parent" },
 
