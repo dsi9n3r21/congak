@@ -922,6 +922,89 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "money_add_subtract": {
+      return {
+        mistakeType: "ringgit_sen_carry_error",
+        hint: {
+          ms: "Semak semula: adakah sen dan ringgit \"disimpan\"/\"dipinjam\" dengan betul apabila sen melebihi 100?",
+          en: "Check again: were the ringgit and sen carried/borrowed correctly when the sen total passed 100?",
+        },
+      };
+    }
+
+    case "money_multiply_divide": {
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Tukar kepada sen dahulu, kira, kemudian tukar semula kepada RM.",
+          en: "Convert to sen first, calculate, then convert back to RM.",
+        },
+      };
+    }
+
+    case "simple_interest": {
+      const { principalRM, rate, years, interestSen } = question.context as {
+        principalRM: number; rate: number; years: number; interestSen: number;
+      };
+      const answerSen = Math.round(parseFloat(answer.replace(/[^0-9.]/g, "")) * 100);
+      if (Math.abs(answerSen - Math.round((principalRM * 100 * rate) / 100)) < 5) {
+        return {
+          mistakeType: "forgot_years_multiplier",
+          hint: {
+            ms: "Jangan lupa darabkan dengan bilangan TAHUN — faedah berulang setiap tahun.",
+            en: "Don't forget to multiply by the number of YEARS — interest accumulates every year.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Formula: Faedah = Prinsipal × Kadar × Tahun ÷ 100.",
+          en: "Formula: Interest = Principal × Rate × Years ÷ 100.",
+        },
+      };
+    }
+
+    case "profit_loss": {
+      const { costSen, sellingSen, resultSen } = question.context as {
+        costSen: number; sellingSen: number; resultSen: number;
+      };
+      const answerSen = Math.round(parseFloat(answer.replace(/[^0-9.]/g, "")) * 100);
+      if (Math.abs(answerSen - (costSen + sellingSen)) < 5) {
+        return {
+          mistakeType: "added_instead_of_subtracted",
+          hint: {
+            ms: "Untung/rugi ialah BEZA antara harga jualan dan harga kos, bukan jumlahnya.",
+            en: "Profit/loss is the DIFFERENCE between selling price and cost price, not their sum.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba kira semula beza antara harga jualan dan harga kos.", en: "Try calculating the difference between selling price and cost price again." },
+      };
+    }
+
+    case "time_add_subtract": {
+      return {
+        mistakeType: "time_base60_carry_error",
+        hint: {
+          ms: "Ingat: 60 minit = 1 jam. Semak semula sama ada anda \"simpan\"/\"pinjam\" jam dengan betul.",
+          en: "Remember: 60 minutes = 1 hour. Check whether you carried/borrowed the hour correctly.",
+        },
+      };
+    }
+
+    case "length_add_subtract": {
+      return {
+        mistakeType: "length_base100_carry_error",
+        hint: {
+          ms: "Ingat: 100 cm = 1 m. Semak semula sama ada anda \"simpan\"/\"pinjam\" meter dengan betul.",
+          en: "Remember: 100 cm = 1 m. Check whether you carried/borrowed the metre correctly.",
+        },
+      };
+    }
+
     case "bar_graph": {
       const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number };
       const values = [ctx.v0, ctx.v1, ctx.v2, ctx.v3];

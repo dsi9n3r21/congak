@@ -1634,4 +1634,250 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 6] } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000039": {
+    id: "a1000000-0000-0000-0000-000000000039",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Tambah & Tolak Wang", en: "Adding & Subtracting Money" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Wang dalam Ringgit Malaysia (RM) ditulis dengan 2 tempat perpuluhan (sen). 100 sen = RM1. Untuk tambah atau tolak wang, susun titik perpuluhan lurus, sama seperti nombor perpuluhan biasa.\n\nContoh harian: Ibu beli sayur RM8.50 dan ikan RM12.30. Berapa jumlah perbelanjaan ibu?",
+      en: "Money in Ringgit Malaysia (RM) is written with 2 decimal places (sen). 100 sen = RM1. To add or subtract money, line up the decimal points, just like regular decimal numbers.\n\nEveryday example: Mother buys vegetables for RM8.50 and fish for RM12.30. What's her total spending?",
+    },
+    tips: [
+      {
+        ms: "Susun titik perpuluhan (antara ringgit dan sen) lurus sebelum mengira.",
+        en: "Line up the decimal point (between ringgit and sen) before calculating.",
+      },
+      {
+        ms: "Apabila sen mencapai 100 atau lebih, tukar 100 sen kepada RM1 dan \"simpan\" ke lajur ringgit.",
+        en: "When the sen reaches 100 or more, convert 100 sen into RM1 and carry it into the ringgit column.",
+      },
+    ],
+    howTo: [
+      { ms: "Susun kedua-dua jumlah wang supaya titik perpuluhan sejajar.", en: "Line up both amounts so the decimal points align." },
+      { ms: "Tambah atau tolak sen dahulu, kemudian ringgit.", en: "Add or subtract the sen first, then the ringgit." },
+      { ms: "Jika sen melebihi 100, simpan 1 ke lajur ringgit (sama seperti nombor perpuluhan biasa).", en: "If the sen total is 100 or more, carry 1 into the ringgit column (same as regular decimals)." },
+    ],
+    workedExample: {
+      problem: "RM8.50 + RM12.30",
+      steps: [
+        { ms: "Tambah sen: 50 + 30 = 80 sen", en: "Add the sen: 50 + 30 = 80 sen" },
+        { ms: "Tambah ringgit: 8 + 12 = 20", en: "Add the ringgit: 8 + 12 = 20" },
+        { ms: "Jawapan: RM20.80", en: "Answer: RM20.80" },
+      ],
+      answer: "RM20.80",
+    },
+    commonMistakes: [
+      { mistakeType: "ringgit_sen_carry_error", description: { ms: "Murid tidak \"simpan\"/\"pinjam\" dengan betul apabila sen melebihi 100.", en: "The student doesn't carry/borrow correctly when the sen total passes 100." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "money_add_subtract", config: { maxRM: 20 } },
+      { type: "word_problem", difficulty: 1, generatorKey: "money_add_subtract", config: { maxRM: 15 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000040": {
+    id: "a1000000-0000-0000-0000-000000000040",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Darab & Bahagi Wang", en: "Multiplying & Dividing Money" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Untuk darab atau bahagi wang dengan nombor bulat, kira seperti biasa, kemudian pastikan jawapan ditulis dalam format RM yang betul (2 tempat perpuluhan).\n\nContoh harian: Sebuah buku berharga RM4.50. Berapa kos untuk 3 buah buku?",
+      en: "To multiply or divide money by a whole number, calculate as usual, then make sure the answer is written in the correct RM format (2 decimal places).\n\nEveryday example: A book costs RM4.50. How much do 3 books cost?",
+    },
+    tips: [
+      {
+        ms: "Darab atau bahagi sen dan ringgit sebagai satu nombor perpuluhan, bukan berasingan.",
+        en: "Multiply or divide sen and ringgit together as one decimal number, not separately.",
+      },
+      {
+        ms: "Anggarkan dahulu untuk semak jawapan munasabah (cth. RM4.50 × 3 ≈ RM5 × 3 = RM15).",
+        en: "Estimate first to check your answer is reasonable (e.g. RM4.50 × 3 ≈ RM5 × 3 = RM15).",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti sama ada soalan itu darab atau bahagi.", en: "Identify whether the question is multiplication or division." },
+      { ms: "Kira seperti nombor perpuluhan biasa.", en: "Calculate as you would with regular decimals." },
+      { ms: "Tulis jawapan dalam format RM dengan 2 tempat perpuluhan.", en: "Write the answer in RM format with 2 decimal places." },
+    ],
+    workedExample: {
+      problem: "RM4.50 × 3",
+      steps: [
+        { ms: "Darab seolah-olah nombor bulat: 450 × 3 = 1350", en: "Multiply as whole numbers: 450 × 3 = 1350" },
+        { ms: "Letakkan semula titik perpuluhan: RM13.50", en: "Place the decimal point back: RM13.50" },
+      ],
+      answer: "RM13.50",
+    },
+    commonMistakes: [
+      { mistakeType: "calculation_error", description: { ms: "Murid tidak tukar kepada sen sebelum mengira, menyebabkan ralat titik perpuluhan.", en: "The student doesn't convert to sen before calculating, causing a decimal-point error." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "money_multiply_divide", config: { maxRM: 10 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "money_multiply_divide", config: { maxRM: 8 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000041": {
+    id: "a1000000-0000-0000-0000-000000000041",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Faedah Mudah", en: "Simple Interest" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Faedah mudah ialah wang tambahan yang diperoleh apabila melabur atau disimpan di bank. Formula: Faedah = Prinsipal × Kadar × Tahun ÷ 100.\n\nContoh harian: Jika kamu simpan RM500 pada kadar faedah 4% setahun selama 2 tahun, berapa faedah yang kamu peroleh?",
+      en: "Simple interest is the extra money earned when investing or saving in a bank. Formula: Interest = Principal × Rate × Years ÷ 100.\n\nEveryday example: If you save RM500 at an interest rate of 4% per year for 2 years, how much interest do you earn?",
+    },
+    tips: [
+      {
+        ms: "Prinsipal ialah jumlah wang asal yang dilaburkan atau disimpan.",
+        en: "The principal is the original amount of money invested or saved.",
+      },
+      {
+        ms: "Jangan lupa darabkan dengan bilangan TAHUN — faedah bertambah setiap tahun ia disimpan.",
+        en: "Don't forget to multiply by the number of YEARS — interest builds up for every year it's saved.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti prinsipal, kadar faedah (%), dan tempoh (tahun).", en: "Identify the principal, interest rate (%), and time period (years)." },
+      { ms: "Darabkan ketiga-tiganya: Prinsipal × Kadar × Tahun.", en: "Multiply all three: Principal × Rate × Years." },
+      { ms: "Bahagikan hasilnya dengan 100 untuk dapatkan faedah.", en: "Divide the result by 100 to get the interest." },
+    ],
+    workedExample: {
+      problem: "RM500 pada 4% setahun selama 2 tahun",
+      steps: [
+        { ms: "500 × 4 × 2 = 4000", en: "500 × 4 × 2 = 4000" },
+        { ms: "4000 ÷ 100 = 40", en: "4000 ÷ 100 = 40" },
+        { ms: "Jawapan: RM40.00", en: "Answer: RM40.00" },
+      ],
+      answer: "RM40.00",
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_years_multiplier", description: { ms: "Murid tidak darabkan dengan bilangan tahun, mengira faedah untuk 1 tahun sahaja.", en: "The student doesn't multiply by the number of years, calculating interest for only 1 year." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "simple_interest", config: { maxPrincipalRM: 20 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "simple_interest", config: { maxPrincipalRM: 15 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000042": {
+    id: "a1000000-0000-0000-0000-000000000042",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Untung dan Rugi", en: "Profit and Loss" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Harga kos ialah harga membeli sesuatu barang. Harga jualan ialah harga menjualnya semula. Jika harga jualan LEBIH TINGGI, itu untung. Jika harga jualan LEBIH RENDAH, itu rugi.\n\nContoh harian: Sebuah kedai beli basikal pada harga RM150 dan menjualnya pada RM180. Berapakah untung kedai itu?",
+      en: "Cost price is the price something was bought for. Selling price is the price it's sold for. If the selling price is HIGHER, that's a profit. If it's LOWER, that's a loss.\n\nEveryday example: A shop buys a bicycle for RM150 and sells it for RM180. What is the shop's profit?",
+    },
+    tips: [
+      {
+        ms: "Untung/rugi = beza antara harga jualan dan harga kos, bukan jumlahnya.",
+        en: "Profit/loss = the difference between selling price and cost price, not their sum.",
+      },
+      {
+        ms: "Jualan > Kos = Untung. Jualan < Kos = Rugi.",
+        en: "Selling > Cost = Profit. Selling < Cost = Loss.",
+      },
+    ],
+    howTo: [
+      { ms: "Bandingkan harga jualan dengan harga kos.", en: "Compare the selling price with the cost price." },
+      { ms: "Tentukan sama ada ia untung (jualan lebih tinggi) atau rugi (jualan lebih rendah).", en: "Determine whether it's a profit (selling higher) or a loss (selling lower)." },
+      { ms: "Cari beza antara kedua-dua harga itu.", en: "Find the difference between the two prices." },
+    ],
+    workedExample: {
+      problem: "Harga kos RM150, harga jualan RM180",
+      steps: [
+        { ms: "RM180 > RM150, jadi ini untung", en: "RM180 > RM150, so this is a profit" },
+        { ms: "Untung = RM180 − RM150 = RM30", en: "Profit = RM180 − RM150 = RM30" },
+      ],
+      answer: "RM30.00",
+    },
+    commonMistakes: [
+      { mistakeType: "added_instead_of_subtracted", description: { ms: "Murid menambah harga kos dan harga jualan berbanding mencari beza.", en: "The student adds the cost price and selling price instead of finding the difference." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "profit_loss", config: { maxRM: 100 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "profit_loss", config: { maxRM: 80 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000043": {
+    id: "a1000000-0000-0000-0000-000000000043",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Tambah & Tolak Masa", en: "Adding & Subtracting Time" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Masa diukur dalam jam dan minit, dengan 60 minit = 1 jam. Ini berbeza daripada nombor bulat biasa (yang berasaskan 10) — apabila minit mencapai 60 atau lebih, tukar 60 minit kepada 1 jam.\n\nContoh harian: Ahmad belajar Matematik selama 1 jam 45 minit, kemudian belajar Sains selama 50 minit. Berapa jumlah masa belajar Ahmad?",
+      en: "Time is measured in hours and minutes, with 60 minutes = 1 hour. This is different from regular whole numbers (which are base-10) — when minutes reach 60 or more, convert 60 minutes into 1 hour.\n\nEveryday example: Ahmad studies Maths for 1 hour 45 minutes, then studies Science for 50 minutes. What's Ahmad's total study time?",
+    },
+    tips: [
+      {
+        ms: "Masa berasaskan 60, BUKAN 10 — 60 minit = 1 jam, bukan 100 minit.",
+        en: "Time is base-60, NOT base-10 — 60 minutes = 1 hour, not 100 minutes.",
+      },
+      {
+        ms: "Tambah atau tolak minit dahulu, kemudian jam.",
+        en: "Add or subtract the minutes first, then the hours.",
+      },
+    ],
+    howTo: [
+      { ms: "Tambah atau tolak minit dahulu.", en: "Add or subtract the minutes first." },
+      { ms: "Jika minit mencapai 60 atau lebih, tukar 60 minit kepada 1 jam dan simpan ke lajur jam.", en: "If the minutes reach 60 or more, convert 60 minutes into 1 hour and carry it into the hours column." },
+      { ms: "Tambah atau tolak jam.", en: "Add or subtract the hours." },
+    ],
+    workedExample: {
+      problem: "1 jam 45 minit + 50 minit",
+      steps: [
+        { ms: "Tambah minit: 45 + 50 = 95 minit", en: "Add the minutes: 45 + 50 = 95 minutes" },
+        { ms: "95 minit = 1 jam 35 minit", en: "95 minutes = 1 hour 35 minutes" },
+        { ms: "Tambah jam: 1 jam + 1 jam = 2 jam", en: "Add the hours: 1 hour + 1 hour = 2 hours" },
+        { ms: "Jawapan: 2 jam 35 minit", en: "Answer: 2 hours 35 minutes" },
+      ],
+      answer: "2j 35m",
+    },
+    commonMistakes: [
+      { mistakeType: "time_base60_carry_error", description: { ms: "Murid mengira minit seperti nombor berasaskan 10, tidak menukar 60 minit kepada 1 jam.", en: "The student treats minutes like base-10 numbers, not converting 60 minutes into 1 hour." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "time_add_subtract", config: { maxHours: 5 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "time_add_subtract", config: { maxHours: 3 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000044": {
+    id: "a1000000-0000-0000-0000-000000000044",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Tambah & Tolak Panjang", en: "Adding & Subtracting Length" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Panjang diukur dalam meter (m) dan sentimeter (cm), dengan 100 cm = 1 m. Untuk tambah atau tolak, gunakan kaedah yang sama seperti wang (RM dan sen) — apabila cm mencapai 100 atau lebih, tukar kepada 1 m.\n\nContoh harian: Seutas reben panjangnya 2 m 40 cm. Seutas lagi panjangnya 1 m 75 cm. Berapa jumlah panjang kedua-dua reben?",
+      en: "Length is measured in metres (m) and centimetres (cm), with 100 cm = 1 m. To add or subtract, use the same method as money (RM and sen) — when cm reaches 100 or more, convert it into 1 m.\n\nEveryday example: One ribbon is 2 m 40 cm long. Another is 1 m 75 cm long. What's the total length of both ribbons?",
+    },
+    tips: [
+      {
+        ms: "100 cm = 1 m — sama seperti 100 sen = RM1.",
+        en: "100 cm = 1 m — just like 100 sen = RM1.",
+      },
+      {
+        ms: "Tambah atau tolak cm dahulu, kemudian meter.",
+        en: "Add or subtract the centimetres first, then the metres.",
+      },
+    ],
+    howTo: [
+      { ms: "Tambah atau tolak cm dahulu.", en: "Add or subtract the centimetres first." },
+      { ms: "Jika cm mencapai 100 atau lebih, tukar 100 cm kepada 1 m dan simpan ke lajur meter.", en: "If the cm reach 100 or more, convert 100 cm into 1 m and carry it into the metres column." },
+      { ms: "Tambah atau tolak meter.", en: "Add or subtract the metres." },
+    ],
+    workedExample: {
+      problem: "2 m 40 cm + 1 m 75 cm",
+      steps: [
+        { ms: "Tambah cm: 40 + 75 = 115 cm", en: "Add the cm: 40 + 75 = 115 cm" },
+        { ms: "115 cm = 1 m 15 cm", en: "115 cm = 1 m 15 cm" },
+        { ms: "Tambah meter: 2 m + 1 m + 1 m = 4 m", en: "Add the metres: 2 m + 1 m + 1 m = 4 m" },
+        { ms: "Jawapan: 4 m 15 cm", en: "Answer: 4 m 15 cm" },
+      ],
+      answer: "4m 15cm",
+    },
+    commonMistakes: [
+      { mistakeType: "length_base100_carry_error", description: { ms: "Murid tidak menukar 100 cm kepada 1 m apabila jumlah cm melebihi 100.", en: "The student doesn't convert 100 cm into 1 m when the total cm exceeds 100." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "length_add_subtract", config: { maxMetres: 10 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "length_add_subtract", config: { maxMetres: 6 } },
+    ],
+  },
 };

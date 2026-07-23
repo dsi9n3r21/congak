@@ -1,10 +1,11 @@
 import { generateWholeNumbersAddition } from "./generators/wholeNumbers";
 import { generateFractionsSameDenominator } from "./generators/fractions";
-import { generateMoneyChange } from "./generators/money";
+import { generateMoneyChange, generateMoneyAddSubtract, generateMoneyMultiplyDivide, generateSimpleInterest, generateProfitLoss } from "./generators/money";
 import { generatePerimeter } from "./generators/perimeter";
 import { generateDecimalAddSubtract } from "./generators/decimals";
 import { generatePercentageOfQuantity } from "./generators/percentage";
-import { generateTimeDuration } from "./generators/time";
+import { generateTimeDuration, generateTimeAddSubtract } from "./generators/time";
+import { generateLengthAddSubtract } from "./generators/length";
 import { generateAverage } from "./generators/average";
 import { generateSimplifyRatio } from "./generators/ratio";
 import { generateVolume } from "./generators/volume";
@@ -40,10 +41,16 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   whole_numbers_addition: generateWholeNumbersAddition,
   fractions_same_denominator: generateFractionsSameDenominator,
   money_change: generateMoneyChange,
+  money_add_subtract: generateMoneyAddSubtract,
+  money_multiply_divide: generateMoneyMultiplyDivide,
+  simple_interest: generateSimpleInterest,
+  profit_loss: generateProfitLoss,
   perimeter: generatePerimeter,
   decimal_add_subtract: generateDecimalAddSubtract,
   percentage_of_quantity: generatePercentageOfQuantity,
   time_duration: generateTimeDuration,
+  time_add_subtract: generateTimeAddSubtract,
+  length_add_subtract: generateLengthAddSubtract,
   average: generateAverage,
   simplify_ratio: generateSimplifyRatio,
   volume: generateVolume,

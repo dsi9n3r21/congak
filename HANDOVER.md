@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0023 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0024 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0024**.
+should be **0025**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,13 +55,13 @@ should be **0024**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...033` (33 topics). Next new topic should start at `...034`.
+  `...044` (44 topics). Next new topic should start at `...045`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (38 topics — see note on the denominator)
-**Curriculum source upgraded this round.** Lynda uploaded the actual
+## Current curriculum coverage (44 topics — see note on the denominator)
+**Curriculum source upgraded two rounds ago.** Lynda uploaded the actual
 official KSSR Mathematics Year 4/5/6 textbooks (`Math.zip` — a teacher had
 compared Congak to Delima and suggested this). Their real tables of
 contents were extracted directly (`pdftotext` on the ToC pages — the
@@ -70,33 +70,39 @@ but weren't needed). **This replaces the old "~40+ topic" estimate, which
 was a rough guess from skimming a different (Pelangi) reference book — the
 real curriculum is substantially bigger, especially in three strands
 Congak barely touches:**
-- **Fractions/Decimals/Percentages** — by far the biggest gap. Real books
-  have a full progression each year (fraction multiplication/division,
-  mixed numbers, all 4 decimal operations, percentage conversions) — likely
-  15-20 sub-topics alone across three years. Congak has 8 after this round.
-- **Money** — Y5 adds financial literacy (interest, credit vs. cash). Y6
-  gets genuinely advanced: cost/profit/loss, discounts/rebates/vouchers,
-  invoices/bills/receipts/tax, interest/dividends, assets/liabilities/
-  insurance/takaful. Congak still only has Y4 "giving change" — untouched
-  this round.
-- **Time / Length/Mass/Volume** — real books cover unit conversions and
-  all 4 operations across both, every year. Congak has almost nothing here
-  — untouched this round.
+- **Fractions/Decimals/Percentages** — still the biggest gap even after 5
+  new topics two rounds ago. Real books have a full progression each year
+  (fraction multiplication/division, mixed numbers, all 4 decimal
+  operations, percentage conversions) — likely 15-20 sub-topics alone
+  across three years. Congak has 8.
+- **Money** — partially closed this round (4 new topics — see below), but
+  Y6 real content is still far ahead of Congak: discounts/rebates/
+  vouchers, invoices/bills/receipts/tax, interest/dividends, assets/
+  liabilities/insurance/takaful are all untouched. Y5's "credit vs. cash
+  purchasing" sub-topic also untouched.
+- **Time / Length/Mass/Volume** — partially closed this round (2 new
+  topics — see below), but real books cover a LOT more: unit conversions
+  (mm↔cm↔m↔km, g↔kg, ml↔L, and for time: minutes↔hours↔days↔weeks↔
+  months↔years↔decades↔centuries) and all 4 operations at each
+  conversion level, every year. Y6 also shifts from single-unit operations
+  to *combined* measurement problems (e.g. "length and mass together") —
+  none of that exists in Congak yet. Y6 Time is comparatively light in the
+  real book (just "time zones"), so that one's a smaller lift once picked
+  up.
 
 **Because of this, stop reporting "X/40 ≈ Y%" — that denominator was
-wrong.** The real total is likely 70-100+ sub-topics once Money and
-Time/Length/Mass/Volume are properly scoped from the textbooks (not yet
-done — only Fractions/Decimals/Percentages has been cross-checked in
-detail so far, see below). Until all 8 strands are scoped from the real
-books, report progress as "N topics shipped, biggest known gaps are X/Y/Z"
-rather than a percentage — a confident-sounding wrong percentage is worse
-than no percentage.
+wrong.** The real total is likely 70-100+ sub-topics even after this
+round's additions. Until all 8 strands are scoped from the real books in
+full detail, report progress as "N topics shipped, biggest known gaps are
+X/Y/Z" rather than a percentage — a confident-sounding wrong percentage is
+worse than no percentage.
 
-**Space and Numbers & Operations are the two strands closest to real
-coverage** — Numbers & Operations has all 4 basic operations at every
-year level; Space covers most angle/area/perimeter/circle topics the real
-books have (Y6 circle radius/diameter and specific-degree angle-drawing
-exercises haven't been checked in detail against the real book yet).
+**Space and Numbers & Operations are still the two strands closest to
+real coverage** — Numbers & Operations has all 4 basic operations at
+every year level; Space covers most angle/area/perimeter/circle topics
+the real books have (Y6 circle radius/diameter and specific-degree
+angle-drawing exercises haven't been checked in detail against the real
+book yet).
 
 | Unit | Y4 | Y5 | Y6 |
 |---|---|---|---|
@@ -104,9 +110,9 @@ exercises haven't been checked in detail against the real book yet).
 | Fractions | add (same denom), subtract (same denom) | — | divide by whole number |
 | Decimals | add/subtract (1dp) | add/subtract (2dp), multiply, divide | — |
 | Percentage | — | — | basic (% of quantity) |
-| Money | ✓ (change) | — | — |
-| Time | — | ✓ (duration) | — |
-| Length/Mass/Volume | perimeter | — | volume (liquid) |
+| Money | ✓ (change), add/subtract, multiply/divide | simple interest | profit & loss |
+| Time | add/subtract (hours/min) | ✓ (duration) | — |
+| Length/Mass/Volume | perimeter, length add/subtract (m/cm) | — | volume (liquid) |
 | **Space** (polygons/angles/area) | area (rectangle/square), angle types | angles (straight line, at a point), area (composite) | angles (triangle sum), area (triangle), circumference & area of a circle |
 | Coordinates/Ratio/Proportion | — | coordinates | ratio (simplify) |
 | Data Handling | — | average, bar graphs | — |
@@ -115,7 +121,29 @@ Real Y6 Data Handling also includes basic likelihood/probability (certain/
 impossible, equally likely) — Congak has none of this, not yet scoped in
 detail.
 
-**This round shipped 5 Fractions/Decimals topics** (ids `...034`-`...038`):
+**This round shipped 6 Money/Time/Length topics** (ids `...039`-`...044`):
+Y4 money add/subtract and multiply/divide (RM/sen, same base-100 carry
+pattern as the pre-existing `money_change` generator), Y5 simple interest
+(`I = P × R × T ÷ 100` — first "financial literacy" topic, distinct from
+pure arithmetic drills), Y6 profit & loss (cost price vs. selling price),
+Y4 time add/subtract (hours/minutes, base-60 carrying — distinct from the
+pre-existing `time_duration`, which does clock-time-plus-duration, not
+duration-plus-duration), and Y4 length add/subtract (metres/centimetres,
+base-100 carrying, same pattern as money). New file: `length.ts` (first
+Length/Mass/Volume arithmetic generator — `perimeter.ts` existed but
+computes perimeter, not unit-conversion arithmetic).
+
+**Answer-format decision worth knowing:** `time_add_subtract`'s answer
+format is deliberately language-neutral (`"2j 45m"`, not spelled-out
+"jam"/"minit" or "hours"/"minutes") — the question PROMPT is bilingual as
+usual, but MCQ options/fill answers are a single string shown regardless
+of `language_pref`, so spelling them out in Malay words would look wrong
+to an English-preference student. `length_add_subtract` didn't need this
+distinction since "m"/"cm" abbreviations are identical in both languages.
+If a future generator's answer needs to show words (not just numbers/
+units), check this before hardcoding one language into the answer string.
+
+**The round before this one shipped 5 Fractions/Decimals topics** (ids `...034`-`...038`):
 Y4 fraction subtraction (same denominator, pairs with existing Y4
 addition), Y4 decimal add/subtract **at 1 decimal place** (Y4 had zero
 decimal topics before — the pre-existing `decimal_add_subtract` generator
@@ -239,13 +267,13 @@ Lynda's husband's Claude):
   shares Vercel access.** The actual key value was shared in chat, not
   committed anywhere in the repo.
 - **`components/student/PintarChat.tsx`** — the chat UI, Client Component.
-  Local greeting bubble on mount (not sent to the engine — see comment in
-  the file for why), then a normal send/receive loop against
-  `/api/pintar`. `sessionId` is a fresh `crypto.randomUUID()` per page
-  load — **not persisted**, matching the locked "start stateless" decision.
-  If Lynda wants chat history to survive a refresh later, that's a new
-  Supabase table + migration (next one would be `0023`), deliberately not
-  built yet.
+  Opening greeting is a REAL engine reply now (see "Post-launch fixes"
+  below — this wasn't true at first), then a normal send/receive loop
+  against `/api/pintar`. `sessionId` is a fresh `crypto.randomUUID()` per
+  page load — **not persisted**, matching the locked "start stateless"
+  decision. If Lynda wants chat history to survive a refresh later, that's
+  a new Supabase table + migration (next one would be `0024`), deliberately
+  not built yet.
 - **`public/pintar/*.png`** — the 6 avatar-state images (idle, thinking,
   showing, correct, wrong, confuse) from Lynda's husband, used directly
   via `next/image` — first use of `next/image` in this app (everywhere
@@ -266,6 +294,42 @@ Lynda's husband's Claude):
   specifically because this round introduces a real secret
   (`PINTAR_API_KEY`) — if Lynda ever creates a local `.env.local` and
   pushes to git without this, it would get committed.
+
+### Post-launch fixes (after Pintar's engine went live and got real testing)
+Three issues found once Lynda's husband's side actually tested against
+the live engine — all frontend-only, per his handoff doc, no API contract
+changes needed:
+
+1. **Markdown wasn't rendered.** The engine's `reply` string uses
+   `**bold**` and line breaks/lists, but `PintarChat` rendered it as a
+   plain string, so students saw literal asterisks with no formatting.
+   Fixed by installing `react-markdown` + `remark-gfm` and rendering every
+   `pintar`-role message through a small `PintarMarkdown` wrapper
+   component (in `PintarChat.tsx`) instead of a raw string. Deliberately
+   did NOT add the `@tailwindcss/typography` plugin for this — styled the
+   handful of elements that actually show up (`p`, `strong`, `ul`, `ol`,
+   `li`) with scoped Tailwind classes via `components={}` instead, to
+   avoid a new plugin + config change for a small amount of styling.
+2. **Header subtitle showed the raw current-topic string** (e.g. "Tambah
+   Pecahan Penyebut Sama") instead of a fixed tagline — looked like a
+   copy-paste from a lesson-page component that never got swapped out.
+   Fixed: subtitle is now a static bilingual string (`UI.pintarTagline`,
+   "Pembimbing Matematik Anda" / "Your Maths Guide"), not bound to
+   `currentTopicTitle` at all. `currentTopicTitle` is still sent to the
+   engine in `context.currentTopic` — it just isn't displayed in the
+   header anymore.
+3. **The opening greeting was hardcoded, not a real Pintar reply.** Meant
+   it couldn't reflect persona/tone changes on the engine side, and
+   couldn't reference the student's actual topic/streak. Fixed: on mount,
+   `PintarChat` now calls `/api/pintar` with an internal trigger message
+   (`GREETING_TRIGGER = "__greeting__"`, a constant in `PintarChat.tsx`) —
+   the engine's `system-prompt.js` (on Lynda's husband's side) recognises
+   this and generates a real opening line. The trigger itself is never
+   shown as if the student typed it (`showUserBubble: false` — `callEngine`
+   was refactored out of `send` specifically to support this silent-first-
+   call case). The resulting pintar reply IS added to `historyRef` for
+   subsequent turns, so later messages have a coherent history where
+   Pintar spoke first.
 
 ## Visual restyle (in progress — dashboard done, other screens not yet)
 Lynda decided to start visual polish early (not waiting for full

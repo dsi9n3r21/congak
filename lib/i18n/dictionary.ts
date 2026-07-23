@@ -87,6 +87,6 @@ export const UI: Record<string, Bilingual> = {
   navPintar: { ms: "Pintar", en: "Pintar" },
   pintarPlaceholder: { ms: "Taip mesej anda...", en: "Type your message..." },
   pintarSend: { ms: "Hantar", en: "Send" },
-  pintarGreeting: { ms: "Hai {name}! Ada apa-apa saya boleh bantu?", en: "Hi {name}! Anything I can help with?" },
   pintarError: { ms: "Maaf, Pintar tidak dapat balas sekarang. Cuba lagi sebentar.", en: "Sorry, Pintar can't reply right now. Try again in a moment." },
+  pintarTagline: { ms: "Pembimbing Matematik Anda", en: "Your Maths Guide" },
 };
