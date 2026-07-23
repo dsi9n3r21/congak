@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0022 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0023 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0023**.
+should be **0024**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -60,29 +60,85 @@ should be **0023**.
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (33 of ~40+ real KSSR sub-topics, ≈83%)
-Verified against a real Pelangi Publishing reference book structure
-(8 units per year, each with 10-16 sub-skills — see chat history for the
-full unit list if needed, or ask Lynda to re-share the anyflip.com link:
-https://anyflip.com/ekbvw/vshm/basic). **The "~40+" total is an estimate
-from skimming that reference, not an official KSSR sub-topic count** —
-treat any completion percentage as directional, not precise. On that
-basis: 33/40 ≈ 83% — Numbers & Operations is now essentially complete for
-all four basic operations across Y4/Y5/Y6 (addition, subtraction,
-multiplication, division all present at every year level). Remaining gaps
-are concentrated in Ratio/Proportion and Data Handling (see below), so the
-"~40+" estimate itself may need revisiting once those are scoped.
+## Current curriculum coverage (38 topics — see note on the denominator)
+**Curriculum source upgraded this round.** Lynda uploaded the actual
+official KSSR Mathematics Year 4/5/6 textbooks (`Math.zip` — a teacher had
+compared Congak to Delima and suggested this). Their real tables of
+contents were extracted directly (`pdftotext` on the ToC pages — the
+English headings extract cleanly; some Malay stylized-font headings don't,
+but weren't needed). **This replaces the old "~40+ topic" estimate, which
+was a rough guess from skimming a different (Pelangi) reference book — the
+real curriculum is substantially bigger, especially in three strands
+Congak barely touches:**
+- **Fractions/Decimals/Percentages** — by far the biggest gap. Real books
+  have a full progression each year (fraction multiplication/division,
+  mixed numbers, all 4 decimal operations, percentage conversions) — likely
+  15-20 sub-topics alone across three years. Congak has 8 after this round.
+- **Money** — Y5 adds financial literacy (interest, credit vs. cash). Y6
+  gets genuinely advanced: cost/profit/loss, discounts/rebates/vouchers,
+  invoices/bills/receipts/tax, interest/dividends, assets/liabilities/
+  insurance/takaful. Congak still only has Y4 "giving change" — untouched
+  this round.
+- **Time / Length/Mass/Volume** — real books cover unit conversions and
+  all 4 operations across both, every year. Congak has almost nothing here
+  — untouched this round.
+
+**Because of this, stop reporting "X/40 ≈ Y%" — that denominator was
+wrong.** The real total is likely 70-100+ sub-topics once Money and
+Time/Length/Mass/Volume are properly scoped from the textbooks (not yet
+done — only Fractions/Decimals/Percentages has been cross-checked in
+detail so far, see below). Until all 8 strands are scoped from the real
+books, report progress as "N topics shipped, biggest known gaps are X/Y/Z"
+rather than a percentage — a confident-sounding wrong percentage is worse
+than no percentage.
+
+**Space and Numbers & Operations are the two strands closest to real
+coverage** — Numbers & Operations has all 4 basic operations at every
+year level; Space covers most angle/area/perimeter/circle topics the real
+books have (Y6 circle radius/diameter and specific-degree angle-drawing
+exercises haven't been checked in detail against the real book yet).
 
 | Unit | Y4 | Y5 | Y6 |
 |---|---|---|---|
 | Numbers & Operations | addition, subtraction, multiplication (1-digit), division (1-digit) | multiplication (2-digit), division (1-digit), addition/subtraction (6-digit) | multiplication (4-digit×2-digit), division (2-digit), mixed operations (BODMAS), addition (3 addends), subtraction (from round number) |
-| Fractions/Decimals/% | fractions (add) | decimals (add/sub) | percentage |
+| Fractions | add (same denom), subtract (same denom) | — | divide by whole number |
+| Decimals | add/subtract (1dp) | add/subtract (2dp), multiply, divide | — |
+| Percentage | — | — | basic (% of quantity) |
 | Money | ✓ (change) | — | — |
 | Time | — | ✓ (duration) | — |
 | Length/Mass/Volume | perimeter | — | volume (liquid) |
 | **Space** (polygons/angles/area) | area (rectangle/square), angle types | angles (straight line, at a point), area (composite) | angles (triangle sum), area (triangle), circumference & area of a circle |
 | Coordinates/Ratio/Proportion | — | coordinates | ratio (simplify) |
 | Data Handling | — | average, bar graphs | — |
+
+Real Y6 Data Handling also includes basic likelihood/probability (certain/
+impossible, equally likely) — Congak has none of this, not yet scoped in
+detail.
+
+**This round shipped 5 Fractions/Decimals topics** (ids `...034`-`...038`):
+Y4 fraction subtraction (same denominator, pairs with existing Y4
+addition), Y4 decimal add/subtract **at 1 decimal place** (Y4 had zero
+decimal topics before — the pre-existing `decimal_add_subtract` generator
+is 2-decimal-place, which is actually Y5 level; kept both as separate
+generators rather than unifying with a "places" param, matching how the
+whole-number generators are split one-per-year), Y5 decimal multiply/
+divide (completing the 4-op set for Y5 decimals), and Y6 "dividing a
+fraction by a whole number" (first of four fraction-division sub-topics in
+the real Y6 book — proper÷whole, mixed÷whole, proper÷proper, mixed÷
+proper — started with the simplest).
+
+**Bug caught by the smoke test this round, fixed before shipping:** the
+new decimal generators' distractor logic didn't dedupe against each other
+or pad when they collided (e.g. multiplying by a 0.0 decimal made two
+"classic mistake" distractors both equal 0.0) — caused ~1% of generated
+questions to have fewer than 3 options or duplicates. Added a shared
+`finalizeOptions()` helper in `decimals.ts` (dedupes with a `Set`, pads
+with small random offsets, capped retry loop) and applied it to all 4
+decimal generators, including the pre-existing Y5 one which had the same
+latent bug. Re-ran the smoke test across all 38 topics (37,500 generated
+questions) afterward — 0 failures. If a future generator's distractor
+logic ever produces a collision like this again, reuse `finalizeOptions()`
+rather than re-deriving the dedupe/pad logic per generator.
 
 **Diagram infrastructure** (`lib/questions/types.ts` `diagram` field,
 `components/student/diagrams/`) has six kinds now: `"angle"`,

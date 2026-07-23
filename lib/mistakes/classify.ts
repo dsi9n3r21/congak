@@ -816,6 +816,112 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "fractions_subtract_same_denominator": {
+      const { numA, numB, denom, correctNum } = question.context as {
+        numA: number; numB: number; denom: number; correctNum: number;
+      };
+      if (answer === `${numA + numB}/${denom}`) {
+        return {
+          mistakeType: "added_instead_of_subtracted",
+          hint: {
+            ms: "Ini soalan tolak, bukan tambah. Tolak pengangka kedua daripada pengangka pertama.",
+            en: "This is a subtraction question, not addition. Subtract the second numerator from the first.",
+          },
+        };
+      }
+      if (answer === `${correctNum}/${Math.max(denom - numB, 1)}`) {
+        return {
+          mistakeType: "denominator_subtraction_error",
+          hint: {
+            ms: "Penyebut sepatutnya kekal sama — hanya pengangka (nombor atas) yang ditolak.",
+            en: "The denominator should stay the same — only the numerator (top number) gets subtracted.",
+          },
+        };
+      }
+      return {
+        mistakeType: "fraction_calculation_error",
+        hint: {
+          ms: "Semak semula pengangka: adakah pengangka kedua sudah ditolak daripada pengangka pertama?",
+          en: "Check the numerator again: has the second numerator been subtracted from the first?",
+        },
+      };
+    }
+
+    case "decimal_add_subtract_y4": {
+      return {
+        mistakeType: "decimal_point_misalignment",
+        hint: {
+          ms: "Semak semula: adakah titik perpuluhan disusun lurus semasa mengira?",
+          en: "Check again: were the decimal points lined up correctly when calculating?",
+        },
+      };
+    }
+
+    case "decimal_multiply": {
+      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      if (Math.abs(Number(answer) - Math.round(a * 10) * b) < 0.05) {
+        return {
+          mistakeType: "ignored_decimal_point",
+          hint: {
+            ms: "Jangan abaikan titik perpuluhan semasa mendarab — letakkan semula selepas mengira.",
+            en: "Don't ignore the decimal point while multiplying — place it back after calculating.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba darab semula, kemudian semak kedudukan titik perpuluhan.", en: "Try multiplying again, then check where the decimal point goes." },
+      };
+    }
+
+    case "decimal_divide": {
+      const { dividend, divisor, correct } = question.context as { dividend: number; divisor: number; correct: number };
+      if (Math.abs(Number(answer) - Math.round(dividend * 10) / divisor) < 0.05) {
+        return {
+          mistakeType: "ignored_decimal_point",
+          hint: {
+            ms: "Jangan abaikan titik perpuluhan semasa membahagi — letakkan semula selepas mengira.",
+            en: "Don't ignore the decimal point while dividing — place it back after calculating.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cuba bahagi semula, kemudian semak kedudukan titik perpuluhan.", en: "Try dividing again, then check where the decimal point goes." },
+      };
+    }
+
+    case "fractions_divide_by_whole": {
+      const { num, denom, whole, correctNum, correctDenom } = question.context as {
+        num: number; denom: number; whole: number; correctNum: number; correctDenom: number;
+      };
+      if (answer === `${num * whole}/${denom}`) {
+        return {
+          mistakeType: "multiplied_instead_of_divided",
+          hint: {
+            ms: "Ini soalan bahagi, bukan darab. Darabkan PENYEBUT dengan nombor bulat itu, bukan pengangka.",
+            en: "This is a division question, not multiplication. Multiply the DENOMINATOR by the whole number, not the numerator.",
+          },
+        };
+      }
+      if (answer === `${num}/${denom * whole}` && `${num}/${denom * whole}` !== `${correctNum}/${correctDenom}`) {
+        return {
+          mistakeType: "forgot_to_simplify",
+          hint: {
+            ms: "Jawapan itu betul tetapi belum dipermudahkan. Bahagikan pengangka dan penyebut dengan faktor sepunya.",
+            en: "That answer is correct but not simplified. Divide both numerator and denominator by their common factor.",
+          },
+        };
+      }
+      return {
+        mistakeType: "fraction_calculation_error",
+        hint: {
+          ms: "Ingat peraturan: (a/b) ÷ c = a/(b × c).",
+          en: "Remember the rule: (a/b) ÷ c = a/(b × c).",
+        },
+      };
+    }
+
     case "bar_graph": {
       const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number };
       const values = [ctx.v0, ctx.v1, ctx.v2, ctx.v3];

@@ -31,6 +31,9 @@ import { generateWholeNumbersAdditionY5 } from "./generators/wholeNumbersAdditio
 import { generateWholeNumbersSubtractionY5 } from "./generators/wholeNumbersSubtractionY5";
 import { generateWholeNumbersAdditionY6 } from "./generators/wholeNumbersAdditionY6";
 import { generateWholeNumbersSubtractionY6 } from "./generators/wholeNumbersSubtractionY6";
+import { generateFractionsSubtractSameDenominator } from "./generators/fractionsSubtract";
+import { generateDecimalAddSubtractY4, generateDecimalMultiply, generateDecimalDivide } from "./generators/decimals";
+import { generateFractionsDivideByWhole } from "./generators/fractionsDivide";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
@@ -67,6 +70,11 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   whole_numbers_subtraction_y5: generateWholeNumbersSubtractionY5,
   whole_numbers_addition_y6: generateWholeNumbersAdditionY6,
   whole_numbers_subtraction_y6: generateWholeNumbersSubtractionY6,
+  fractions_subtract_same_denominator: generateFractionsSubtractSameDenominator,
+  decimal_add_subtract_y4: generateDecimalAddSubtractY4,
+  decimal_multiply: generateDecimalMultiply,
+  decimal_divide: generateDecimalDivide,
+  fractions_divide_by_whole: generateFractionsDivideByWhole,
 };
 
 /**

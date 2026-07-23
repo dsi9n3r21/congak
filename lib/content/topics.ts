@@ -1426,4 +1426,212 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_subtraction_y6", config: { min: 10000, max: 80000 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000034": {
+    id: "a1000000-0000-0000-0000-000000000034",
+    strand: { ms: "Pecahan", en: "Fractions" },
+    title: { ms: "Tolak Pecahan Penyebut Sama", en: "Subtracting Fractions with the Same Denominator" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Apabila penyebut (nombor bawah) dua pecahan adalah SAMA, kita hanya tolak pengangka (nombor atas) sahaja. Penyebut kekal sama.\n\nContoh: 4/5 − 1/5 = (4−1)/5 = 3/5. Bayangkan 5 keping pizza — kita ada 4 keping, kemudian makan 1 keping.",
+      en: "When two fractions have the SAME denominator (bottom number), we only subtract the numerators (top numbers). The denominator stays the same.\n\nExample: 4/5 − 1/5 = (4−1)/5 = 3/5. Imagine 5 pizza slices — we have 4 slices, then eat 1.",
+    },
+    tips: [
+      {
+        ms: "Penyebut sama = kongsi saiz bahagian yang sama. Hanya nombor atas (pengangka) yang berubah.",
+        en: "Same denominator = the pieces are the same size. Only the top number (numerator) changes.",
+      },
+      {
+        ms: "Pengangka pertama mesti lebih besar (atau sama) daripada pengangka kedua, supaya jawapan tidak negatif.",
+        en: "The first numerator must be bigger than (or equal to) the second, so the answer doesn't go negative.",
+      },
+    ],
+    howTo: [
+      { ms: "Semak sama ada kedua-dua pecahan mempunyai penyebut yang sama.", en: "Check that both fractions have the same denominator." },
+      { ms: "Tolak pengangka kedua daripada pengangka pertama.", en: "Subtract the second numerator from the first." },
+      { ms: "Kekalkan penyebut (nombor bawah) tanpa diubah.", en: "Keep the denominator (bottom number) unchanged." },
+    ],
+    workedExample: {
+      problem: "5/8 − 2/8",
+      steps: [
+        { ms: "Penyebut sama, kekalkan 8", en: "Same denominator, keep it as 8" },
+        { ms: "Tolak pengangka: 5−2=3", en: "Subtract the numerators: 5−2=3" },
+      ],
+      answer: "3/8",
+    },
+    commonMistakes: [
+      { mistakeType: "added_instead_of_subtracted", description: { ms: "Murid menambah pengangka berbanding menolaknya.", en: "The student adds the numerators instead of subtracting them." } },
+      { mistakeType: "denominator_subtraction_error", description: { ms: "Murid turut menolak penyebut.", en: "The student also subtracts the denominators." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [4, 5, 6, 8, 10, 12] } },
+      { type: "fill", difficulty: 2, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [8, 10, 12, 15, 16] } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000035": {
+    id: "a1000000-0000-0000-0000-000000000035",
+    strand: { ms: "Perpuluhan", en: "Decimals" },
+    title: { ms: "Tambah & Tolak Perpuluhan (1 Tempat Perpuluhan)", en: "Adding & Subtracting Decimals (1 Decimal Place)" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Perpuluhan 1 tempat perpuluhan (persepuluhan) seperti 3.5 bermaksud 3 dan 5 persepuluhan. Untuk tambah atau tolak, susun titik perpuluhan lurus, sama seperti nombor bulat biasa.\n\nContoh harian: Ali berlari 2.4 km pagi ini dan 1.3 km petang ini. Berapa jumlah jarak larian Ali?",
+      en: "A 1-decimal-place number (tenths) like 3.5 means 3 and 5 tenths. To add or subtract, line up the decimal points, just like normal whole numbers.\n\nEveryday example: Ali ran 2.4 km this morning and 1.3 km this evening. What's his total running distance?",
+    },
+    tips: [
+      {
+        ms: "Sentiasa susun titik perpuluhan lurus (satu di atas satu) sebelum mengira.",
+        en: "Always line up the decimal points directly above each other before calculating.",
+      },
+      {
+        ms: "Fikirkan tempat persepuluhan seperti sen dalam wang — 0.5 hampir sama konsepnya dengan RM0.50.",
+        en: "Think of the tenths place like small change — 0.5 works the same way as thinking about half of something.",
+      },
+    ],
+    howTo: [
+      { ms: "Susun kedua-dua nombor supaya titik perpuluhan sejajar.", en: "Line up both numbers so the decimal points align." },
+      { ms: "Tambah atau tolak bermula dari lajur paling kanan (persepuluhan), sama seperti nombor bulat.", en: "Add or subtract starting from the rightmost column (tenths), just like whole numbers." },
+      { ms: "Letakkan titik perpuluhan pada jawapan, pada kedudukan yang sama.", en: "Place the decimal point in your answer, in the same position." },
+    ],
+    workedExample: {
+      problem: "2.4 + 1.3",
+      steps: [
+        { ms: "Susun titik perpuluhan lurus", en: "Line up the decimal points" },
+        { ms: "Tambah persepuluhan: 4+3=7", en: "Add the tenths: 4+3=7" },
+        { ms: "Tambah nombor bulat: 2+1=3", en: "Add the whole numbers: 2+1=3" },
+        { ms: "Jawapan: 3.7", en: "Answer: 3.7" },
+      ],
+      answer: "3.7",
+    },
+    commonMistakes: [
+      { mistakeType: "decimal_point_misalignment", description: { ms: "Murid tidak susun titik perpuluhan dengan betul semasa mengira.", en: "The student doesn't line up the decimal points correctly when calculating." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "decimal_add_subtract_y4", config: { maxWhole: 10 } },
+      { type: "fill", difficulty: 1, generatorKey: "decimal_add_subtract_y4", config: { maxWhole: 20 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000036": {
+    id: "a1000000-0000-0000-0000-000000000036",
+    strand: { ms: "Perpuluhan", en: "Decimals" },
+    title: { ms: "Darab Perpuluhan", en: "Multiplying Decimals" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Untuk darab nombor perpuluhan dengan nombor bulat, darab seperti biasa dahulu (abaikan titik perpuluhan buat sementara), kemudian letakkan semula titik perpuluhan pada jawapan.\n\nContoh harian: Sebotol jus berisi 1.5 liter. Berapa liter jus dalam 4 botol?",
+      en: "To multiply a decimal by a whole number, multiply as usual first (ignore the decimal point temporarily), then place the decimal point back into the answer.\n\nEveryday example: A bottle of juice holds 1.5 litres. How many litres are in 4 bottles?",
+    },
+    tips: [
+      {
+        ms: "Darab seolah-olah kedua-dua nombor itu nombor bulat dahulu, kemudian kembalikan titik perpuluhan.",
+        en: "Multiply as if both numbers were whole numbers first, then bring the decimal point back.",
+      },
+      {
+        ms: "Anggarkan jawapan dahulu (cth. 1.5 × 4 ≈ 2 × 4 = 8) untuk semak jawapan akhir masuk akal.",
+        en: "Estimate the answer first (e.g. 1.5 × 4 ≈ 2 × 4 = 8) to check your final answer makes sense.",
+      },
+    ],
+    howTo: [
+      { ms: "Darab kedua-dua nombor seolah-olah nombor bulat, abaikan titik perpuluhan.", en: "Multiply both numbers as if they were whole numbers, ignoring the decimal point." },
+      { ms: "Kira semula berapa tempat perpuluhan patut ada dalam jawapan.", en: "Work out how many decimal places the answer should have." },
+      { ms: "Letakkan titik perpuluhan pada kedudukan yang betul.", en: "Place the decimal point in the correct position." },
+    ],
+    workedExample: {
+      problem: "1.5 × 4",
+      steps: [
+        { ms: "Darab seolah-olah nombor bulat: 15 × 4 = 60", en: "Multiply as whole numbers: 15 × 4 = 60" },
+        { ms: "1.5 ada 1 tempat perpuluhan, jadi letakkan titik: 6.0", en: "1.5 has 1 decimal place, so place the point: 6.0" },
+        { ms: "Jawapan: 6.0", en: "Answer: 6.0" },
+      ],
+      answer: "6.0",
+    },
+    commonMistakes: [
+      { mistakeType: "ignored_decimal_point", description: { ms: "Murid darab dengan betul tetapi lupa letakkan semula titik perpuluhan pada jawapan.", en: "The student multiplies correctly but forgets to place the decimal point back into the answer." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "decimal_multiply", config: { maxWhole: 10 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "decimal_multiply", config: { maxWhole: 8 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000037": {
+    id: "a1000000-0000-0000-0000-000000000037",
+    strand: { ms: "Perpuluhan", en: "Decimals" },
+    title: { ms: "Bahagi Perpuluhan", en: "Dividing Decimals" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Untuk bahagi nombor perpuluhan dengan nombor bulat, bahagi seperti biasa, dan letakkan titik perpuluhan pada jawapan terus di atas titik perpuluhan bahagi (nombor asal).\n\nContoh harian: 7.2 meter tali dipotong sama rata kepada 3 bahagian. Berapa panjang setiap bahagian?",
+      en: "To divide a decimal by a whole number, divide as usual, and place the decimal point in the answer directly above the decimal point in the number being divided.\n\nEveryday example: 7.2 metres of rope is cut equally into 3 pieces. How long is each piece?",
+    },
+    tips: [
+      {
+        ms: "Letakkan titik perpuluhan pada jawapan terus di atas titik perpuluhan asal, sebelum mula membahagi.",
+        en: "Place the decimal point in your answer directly above the original decimal point, before you start dividing.",
+      },
+      {
+        ms: "Semak jawapan anda: darabkan jawapan dengan pembahagi — ia MESTI menyamai nombor asal.",
+        en: "Check your answer: multiply your answer by the divisor — it MUST equal the original number.",
+      },
+    ],
+    howTo: [
+      { ms: "Letakkan titik perpuluhan pada jawapan, terus di atas titik perpuluhan bahagi.", en: "Place the decimal point in the answer, directly above the decimal point being divided." },
+      { ms: "Bahagi seperti biasa, digit demi digit.", en: "Divide as usual, digit by digit." },
+      { ms: "Semak jawapan akhir dengan darab semula.", en: "Check the final answer by multiplying back." },
+    ],
+    workedExample: {
+      problem: "7.2 ÷ 3",
+      steps: [
+        { ms: "Letakkan titik perpuluhan pada jawapan terus di atas 7.2", en: "Place the decimal point in the answer directly above 7.2" },
+        { ms: "7 ÷ 3 = 2, baki 1", en: "7 ÷ 3 = 2, remainder 1" },
+        { ms: "12 ÷ 3 = 4 (bawa turun 2 persepuluhan)", en: "12 ÷ 3 = 4 (bring down the 2 tenths)" },
+        { ms: "Jawapan: 2.4", en: "Answer: 2.4" },
+      ],
+      answer: "2.4",
+    },
+    commonMistakes: [
+      { mistakeType: "ignored_decimal_point", description: { ms: "Murid membahagi dengan betul tetapi lupa letakkan semula titik perpuluhan pada jawapan.", en: "The student divides correctly but forgets to place the decimal point back into the answer." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "decimal_divide", config: { maxQuotientWhole: 10 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "decimal_divide", config: { maxQuotientWhole: 8 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000038": {
+    id: "a1000000-0000-0000-0000-000000000038",
+    strand: { ms: "Pecahan", en: "Fractions" },
+    title: { ms: "Bahagi Pecahan Dengan Nombor Bulat", en: "Dividing a Fraction by a Whole Number" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Untuk membahagikan pecahan wajar dengan nombor bulat, darabkan sahaja PENYEBUT (nombor bawah) dengan nombor bulat itu. Pengangka (nombor atas) kekal sama, kemudian permudahkan jika boleh.\n\nContoh harian: 3/4 bar coklat hendak dikongsi sama rata antara 2 orang kawan. Berapa bahagian setiap orang dapat?",
+      en: "To divide a proper fraction by a whole number, just multiply the DENOMINATOR (bottom number) by that whole number. The numerator (top number) stays the same, then simplify if possible.\n\nEveryday example: 3/4 of a chocolate bar is shared equally between 2 friends. How much does each friend get?",
+    },
+    tips: [
+      {
+        ms: "Peraturan: (a/b) ÷ c = a/(b × c) — hanya penyebut yang berubah.",
+        en: "The rule: (a/b) ÷ c = a/(b × c) — only the denominator changes.",
+      },
+      {
+        ms: "Jangan lupa permudahkan jawapan akhir jika pengangka dan penyebut ada faktor sepunya.",
+        en: "Don't forget to simplify the final answer if the numerator and denominator share a common factor.",
+      },
+    ],
+    howTo: [
+      { ms: "Kenal pasti pengangka, penyebut, dan nombor bulat pembahagi.", en: "Identify the numerator, denominator, and the whole number divisor." },
+      { ms: "Darabkan penyebut dengan nombor bulat itu. Pengangka kekal sama.", en: "Multiply the denominator by that whole number. The numerator stays the same." },
+      { ms: "Permudahkan pecahan jawapan jika boleh.", en: "Simplify the resulting fraction if possible." },
+    ],
+    workedExample: {
+      problem: "3/4 ÷ 2",
+      steps: [
+        { ms: "Darabkan penyebut: 4 × 2 = 8", en: "Multiply the denominator: 4 × 2 = 8" },
+        { ms: "Pengangka kekal: 3", en: "Numerator stays: 3" },
+        { ms: "Jawapan: 3/8 (sudah paling mudah)", en: "Answer: 3/8 (already simplest form)" },
+      ],
+      answer: "3/8",
+    },
+    commonMistakes: [
+      { mistakeType: "multiplied_instead_of_divided", description: { ms: "Murid darabkan pengangka dengan nombor bulat, bukan penyebut.", en: "The student multiplies the numerator by the whole number instead of the denominator." } },
+      { mistakeType: "forgot_to_simplify", description: { ms: "Murid dapat jawapan yang betul tetapi tidak permudahkannya.", en: "The student gets the correct answer but doesn't simplify it." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 5, 6, 8] } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 6] } },
+    ],
+  },
 };
