@@ -252,3 +252,122 @@ export function generateProfitLoss(params: GeneratorParams): GeneratedQuestion {
 
   return question;
 }
+
+// Year 6 KSSR "Discount" — original price minus a percentage discount.
+export function generateDiscount(params: GeneratorParams): GeneratedQuestion {
+  const maxRM = Number(params.maxRM ?? 100);
+  const type = (params.type as "mcq" | "fill") ?? "mcq";
+
+  const priceRM = randInt(2, maxRM / 2) * 2; // even RM value keeps percentages clean
+  const discountPct = pick([10, 20, 25, 50]);
+  const discountSen = Math.round((priceRM * 100 * discountPct) / 100);
+  const finalSen = priceRM * 100 - discountSen;
+
+  const question: GeneratedQuestion = {
+    prompt: {
+      ms: `Sebuah baju berharga RM${priceRM}. Kedai memberi diskaun ${discountPct}%. Berapakah harga selepas diskaun?`,
+      en: `A shirt costs RM${priceRM}. The shop gives a ${discountPct}% discount. What is the price after the discount?`,
+    },
+    type,
+    correctAnswer: formatRM(finalSen),
+    context: { priceRM, discountPct, discountSen, finalSen },
+    generatorKey: "discount",
+    difficulty: 3,
+  };
+
+  if (type === "mcq") {
+    // Classic mistake: gives the discount AMOUNT instead of the final
+    // price after the discount.
+    const gaveDiscountAmount = formatRM(discountSen);
+    // Classic mistake: added the discount instead of subtracting it.
+    const addedInstead = formatRM(priceRM * 100 + discountSen);
+    const distractors = Array.from(
+      new Set([gaveDiscountAmount, addedInstead].filter((d) => d !== formatRM(finalSen)))
+    );
+    question.options = shuffleOptions(formatRM(finalSen), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(0, finalSen + randInt(50, 500) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+  }
+
+  return question;
+}
+
+// Year 6 KSSR "Receipt and Service Tax" — total payable = amount + tax.
+export function generateServiceTax(params: GeneratorParams): GeneratedQuestion {
+  const maxRM = Number(params.maxRM ?? 200);
+  const type = (params.type as "mcq" | "fill") ?? "mcq";
+
+  const amountRM = randInt(10, maxRM);
+  const taxRate = pick([6, 8, 10]); // common Malaysian SST-style rates
+  const taxSen = Math.round((amountRM * 100 * taxRate) / 100);
+  const totalSen = amountRM * 100 + taxSen;
+
+  const question: GeneratedQuestion = {
+    prompt: {
+      ms: `Sebuah invois berjumlah RM${amountRM}. Cukai perkhidmatan ${taxRate}% dikenakan. Berapakah jumlah yang perlu dibayar?`,
+      en: `An invoice totals RM${amountRM}. A ${taxRate}% service tax is charged. What is the total amount payable?`,
+    },
+    type,
+    correctAnswer: formatRM(totalSen),
+    context: { amountRM, taxRate, taxSen, totalSen },
+    generatorKey: "service_tax",
+    difficulty: 3,
+  };
+
+  if (type === "mcq") {
+    // Classic mistake: gives just the tax amount, not the total payable.
+    const gaveTaxOnly = formatRM(taxSen);
+    // Classic mistake: subtracted the tax instead of adding it.
+    const subtractedInstead = formatRM(amountRM * 100 - taxSen);
+    const distractors = Array.from(
+      new Set([gaveTaxOnly, subtractedInstead].filter((d) => d !== formatRM(totalSen)))
+    );
+    question.options = shuffleOptions(formatRM(totalSen), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(0, totalSen + randInt(50, 500) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+  }
+
+  return question;
+}
+
+// Year 6 KSSR "Interest and Dividend" — dividend = number of shares ×
+// dividend rate per share.
+export function generateDividend(params: GeneratorParams): GeneratedQuestion {
+  const maxShares = Number(params.maxShares ?? 500);
+  const type = (params.type as "mcq" | "fill") ?? "mcq";
+
+  const shares = randInt(5, maxShares / 10) * 10; // round lot sizes
+  const dividendPerShareSen = pick([5, 10, 15, 20, 25]); // sen per share
+  const totalSen = shares * dividendPerShareSen;
+
+  const question: GeneratedQuestion = {
+    prompt: {
+      ms: `Ali memiliki ${shares} unit saham. Syarikat itu mengisytiharkan dividen ${formatRM(dividendPerShareSen)} bagi setiap saham. Berapakah jumlah dividen yang Ali terima?`,
+      en: `Ali owns ${shares} shares. The company declares a dividend of ${formatRM(dividendPerShareSen)} per share. How much total dividend does Ali receive?`,
+    },
+    type,
+    correctAnswer: formatRM(totalSen),
+    context: { shares, dividendPerShareSen, totalSen },
+    generatorKey: "dividend",
+    difficulty: 3,
+  };
+
+  if (type === "mcq") {
+    const addedInstead = formatRM(shares * 100 + dividendPerShareSen);
+    const distractors = Array.from(new Set([addedInstead].filter((d) => d !== formatRM(totalSen))));
+    question.options = shuffleOptions(formatRM(totalSen), distractors);
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(0, totalSen + randInt(50, 500) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+  }
+
+  return question;
+}

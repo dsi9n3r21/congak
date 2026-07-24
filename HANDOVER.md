@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0024 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0027 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0025**.
+should be **0028**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,12 +55,83 @@ should be **0025**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...044` (44 topics). Next new topic should start at `...045`.
+  `...061` (61 topics). Next new topic should start at `...062`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (44 topics — see note on the denominator)
+## Current curriculum coverage (61 topics — see note on the denominator)
+**Explicit instruction from Lynda: keep going until the real curriculum is
+fully covered** (not just another round or two). This is a standing
+instruction, not a one-off batch.
+
+**Latest round (ids `...058`-`...061`):** first real content in
+Coordinates/Ratio/Proportion since the strand's initial 2 topics — Y5
+"Proportion to Find a Value" (given a ratio and one known quantity, scale
+to find the other). Also 3 more Y6 Money topics from the real book's
+richer content: service tax (invoice/receipt), dividend, and asset vs.
+liability (Congak's second word-answer, non-arithmetic generator
+alongside `likelihood` — binary this time, only 2 valid categories, so
+`asset_liability`'s options array is 2 items, not the usual 3 — the smoke
+test needed a per-generator minimum-options exception for this, not a
+blanket "always ≥3" rule).
+
+**Still not touched by any round yet:** Y6 Coordinates (distance between
+two coordinates — needs a diagram, more setup than the arithmetic-only
+topics above), Y5/Y6 Time's full unit-conversion-then-arithmetic depth
+(Congak has conversion topics and Y4-level add/subtract, but not
+Y5/Y6-level "add 2 decades 3 years to 1 decade 8 years" style problems),
+Y5 Money "credit vs. cash purchasing" (comparison-based, not a clean
+arithmetic generator — needs scoping), Y6 Money insurance/takaful
+(heavily vocabulary/conceptual, similar challenge to asset/liability but
+likely needs more categories than a clean binary).
+
+**The round before that (ids `...052`-`...057`):** pushed further into Fractions/
+Decimals/Percentages, still the biggest known gap. Added Y4 percentage of
+a quantity (reused the existing `percentage_of_quantity` generator with a
+simpler config — no new code), Y4 fraction↔percentage conversion, Y5
+fraction multiplication, a reusable Y5/Y6 decimal↔percentage converter
+(`decimal_percentage_convert`, same one-generator-many-configs approach as
+`unit_convert`), Y6 percentage add/subtract, and Y6 "dividing a mixed
+number by a whole number" (third of four fraction-division sub-topics —
+see `...038` for the first, `...057` for the second: proper÷whole is done,
+mixed÷whole is done, proper÷proper and mixed÷proper are not).
+
+**Recurring bug pattern, now familiar — check this first when a new
+generator's `tsc` fails:** storing a `boolean` directly in a generator's
+`context` object fails type-checking (`context` is typed
+`Record<string, string | number>`, no boolean). Fix is always the same:
+store `"yes"/"no"` (or similar) instead of `true/false`, and cast
+accordingly in the matching `classify.ts` case if it reads that field.
+Hit this again this round (2 more instances) — same fix as the
+`whole_numbers_addition_y6`/`profit_loss` cases from earlier rounds.
+
+**Two rounds before that (ids `...045`-`...051`):** introduced a generic reusable
+`unit_convert` generator (`lib/questions/generators/unitConvert.ts`) —
+Length/Mass/Volume-of-Liquid/Time conversions are all structurally
+identical (multiply or divide by a fixed factor, e.g. 1000 g = 1 kg), so
+one generator with a `pairs` config array now powers 5 topics instead of
+5 near-duplicate files. Also added Y6 Money "Discount" and Y6 Data
+Handling "Likelihood" (first non-arithmetic, word-answer Data Handling
+topic — bag-of-coloured-marbles scenarios, reuses the `OPTION_LABELS`
+convention from `angles_classify`, canonical keys `certain`/`impossible`/
+`equally_likely`/`more_likely`/`less_likely`).
+
+**Still not scoped in detail (do this before building):** Y5/Y6 Time's
+full addition/subtraction across every converted unit (the real Y5 book
+has this for hours/days/months/years/decades/centuries, not just the
+Y4-level hours-and-minutes Congak has); Y6 Money's remaining rich content
+(invoices/bills/receipts/tax, interest/dividends, assets/liabilities/
+insurance/takaful, credit vs. cash purchasing); Coordinates/Ratio/
+Proportion (only has Y5 coordinates + Y6 ratio-simplify — real books have
+distance-between-coordinates, ratio-between-two-quantities, and
+proportion-to-find-a-value, each with more depth); the rest of
+Fractions/Decimals/Percentages (still the single biggest gap — division
+of fractions has 3 more variants beyond what's built, percentages need
+a full progression, not just one basic topic). Re-run the `pdftotext`
+ToC extraction (see below) for the exact section a future round is about
+to build, rather than assuming the summary above is complete — it's a
+summary, not the source of truth.
 **Curriculum source upgraded two rounds ago.** Lynda uploaded the actual
 official KSSR Mathematics Year 4/5/6 textbooks (`Math.zip` — a teacher had
 compared Congak to Delima and suggested this). Their real tables of

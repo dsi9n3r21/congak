@@ -1880,4 +1880,578 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "length_add_subtract", config: { maxMetres: 6 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000045": {
+    id: "a1000000-0000-0000-0000-000000000045",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Tukar Unit Panjang", en: "Converting Units of Length" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Panjang boleh diukur dalam milimeter (mm), sentimeter (cm), meter (m), atau kilometer (km). 10 mm = 1 cm, 100 cm = 1 m, 1000 m = 1 km.\n\nContoh harian: Sebatang pensel panjangnya 15 cm. Berapa milimeter panjangnya?",
+      en: "Length can be measured in millimetres (mm), centimetres (cm), metres (m), or kilometres (km). 10 mm = 1 cm, 100 cm = 1 m, 1000 m = 1 km.\n\nEveryday example: A pencil is 15 cm long. How many millimetres is that?",
+    },
+    tips: [
+      { ms: "Unit lebih kecil = nombor lebih besar. Darab apabila menukar daripada unit besar kepada unit kecil.", en: "Smaller unit = bigger number. Multiply when converting from a larger unit to a smaller one." },
+      { ms: "Unit lebih besar = nombor lebih kecil. Bahagi apabila menukar daripada unit kecil kepada unit besar.", en: "Larger unit = smaller number. Divide when converting from a smaller unit to a larger one." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti unit asal dan unit yang dikehendaki.", en: "Identify the starting unit and the target unit." },
+      { ms: "Ingat faktor penukaran: 10 mm=1cm, 100cm=1m, 1000m=1km.", en: "Remember the conversion factor: 10 mm=1cm, 100cm=1m, 1000m=1km." },
+      { ms: "Darab (unit besar → kecil) atau bahagi (unit kecil → besar).", en: "Multiply (large→small unit) or divide (small→large unit)." },
+    ],
+    workedExample: {
+      problem: "15 cm = ? mm",
+      steps: [
+        { ms: "cm ke mm ialah unit besar ke kecil, jadi darab", en: "cm to mm is large unit to small, so multiply" },
+        { ms: "15 × 10 = 150", en: "15 × 10 = 150" },
+        { ms: "Jawapan: 150 mm", en: "Answer: 150 mm" },
+      ],
+      answer: "150",
+    },
+    commonMistakes: [
+      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah (cth. ×100 bukan ×10) atau darab/bahagi ke arah yang salah.", en: "The student uses the wrong conversion factor (e.g. ×100 instead of ×10) or converts in the wrong direction." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "cm", small: "mm", factor: 10 }, { big: "m", small: "cm", factor: 100 }], maxBig: 12 } },
+      { type: "fill", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "km", small: "m", factor: 1000 }], maxBig: 8 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000046": {
+    id: "a1000000-0000-0000-0000-000000000046",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Tukar Unit Jisim", en: "Converting Units of Mass" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Jisim diukur dalam gram (g) atau kilogram (kg). 1000 g = 1 kg.\n\nContoh harian: Sebungkus gula beratnya 2 kg. Berapa gram beratnya?",
+      en: "Mass is measured in grams (g) or kilograms (kg). 1000 g = 1 kg.\n\nEveryday example: A bag of sugar weighs 2 kg. How many grams is that?",
+    },
+    tips: [
+      { ms: "1000 g = 1 kg — sama seperti 1000 m = 1 km.", en: "1000 g = 1 kg — same relationship as 1000 m = 1 km." },
+      { ms: "kg ke g: darab dengan 1000. g ke kg: bahagi dengan 1000.", en: "kg to g: multiply by 1000. g to kg: divide by 1000." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti unit asal dan unit yang dikehendaki.", en: "Identify the starting unit and the target unit." },
+      { ms: "Darab dengan 1000 (kg → g) atau bahagi dengan 1000 (g → kg).", en: "Multiply by 1000 (kg → g) or divide by 1000 (g → kg)." },
+    ],
+    workedExample: {
+      problem: "2 kg = ? g",
+      steps: [
+        { ms: "kg ke g, jadi darab dengan 1000", en: "kg to g, so multiply by 1000" },
+        { ms: "2 × 1000 = 2000", en: "2 × 1000 = 2000" },
+        { ms: "Jawapan: 2000 g", en: "Answer: 2000 g" },
+      ],
+      answer: "2000",
+    },
+    commonMistakes: [
+      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah atau darab/bahagi ke arah yang salah.", en: "The student uses the wrong conversion factor or converts in the wrong direction." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 10 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 6 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000047": {
+    id: "a1000000-0000-0000-0000-000000000047",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Tukar Unit Isipadu Cecair", en: "Converting Units of Volume of Liquid" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Isipadu cecair diukur dalam mililiter (ml) atau liter (l). 1000 ml = 1 l.\n\nContoh harian: Sebotol air isipadunya 1.5 l. Berapa mililiter isipadunya?",
+      en: "Volume of liquid is measured in millilitres (ml) or litres (l). 1000 ml = 1 l.\n\nEveryday example: A bottle of water holds 1.5 l. How many millilitres is that?",
+    },
+    tips: [
+      { ms: "1000 ml = 1 l — sama seperti 1000 g = 1 kg.", en: "1000 ml = 1 l — same relationship as 1000 g = 1 kg." },
+      { ms: "l ke ml: darab dengan 1000. ml ke l: bahagi dengan 1000.", en: "l to ml: multiply by 1000. ml to l: divide by 1000." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti unit asal dan unit yang dikehendaki.", en: "Identify the starting unit and the target unit." },
+      { ms: "Darab dengan 1000 (l → ml) atau bahagi dengan 1000 (ml → l).", en: "Multiply by 1000 (l → ml) or divide by 1000 (ml → l)." },
+    ],
+    workedExample: {
+      problem: "3 l = ? ml",
+      steps: [
+        { ms: "l ke ml, jadi darab dengan 1000", en: "l to ml, so multiply by 1000" },
+        { ms: "3 × 1000 = 3000", en: "3 × 1000 = 3000" },
+        { ms: "Jawapan: 3000 ml", en: "Answer: 3000 ml" },
+      ],
+      answer: "3000",
+    },
+    commonMistakes: [
+      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah atau darab/bahagi ke arah yang salah.", en: "The student uses the wrong conversion factor or converts in the wrong direction." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 8 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 5 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000048": {
+    id: "a1000000-0000-0000-0000-000000000048",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Tukar Unit Masa", en: "Converting Units of Time" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Masa boleh ditukar antara unit — 24 jam = 1 hari, 7 hari = 1 minggu.\n\nContoh harian: Percutian keluarga Ali mengambil masa 2 minggu. Berapa hari itu?",
+      en: "Time can be converted between units — 24 hours = 1 day, 7 days = 1 week.\n\nEveryday example: Ali's family holiday takes 2 weeks. How many days is that?",
+    },
+    tips: [
+      { ms: "24 jam = 1 hari. 7 hari = 1 minggu.", en: "24 hours = 1 day. 7 days = 1 week." },
+      { ms: "Unit lebih besar ke unit lebih kecil = darab. Unit lebih kecil ke unit lebih besar = bahagi.", en: "Larger unit to smaller unit = multiply. Smaller unit to larger unit = divide." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti unit asal dan unit yang dikehendaki.", en: "Identify the starting unit and the target unit." },
+      { ms: "Darab (hari → jam, minggu → hari) atau bahagi (jam → hari, hari → minggu).", en: "Multiply (day → hour, week → day) or divide (hour → day, day → week)." },
+    ],
+    workedExample: {
+      problem: "2 minggu = ? hari",
+      steps: [
+        { ms: "minggu ke hari, jadi darab dengan 7", en: "week to day, so multiply by 7" },
+        { ms: "2 × 7 = 14", en: "2 × 7 = 14" },
+        { ms: "Jawapan: 14 hari", en: "Answer: 14 days" },
+      ],
+      answer: "14",
+    },
+    commonMistakes: [
+      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah atau darab/bahagi ke arah yang salah.", en: "The student uses the wrong conversion factor or converts in the wrong direction." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "day", small: "hr", factor: 24 }, { big: "wk", small: "day", factor: 7 }], maxBig: 6 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "wk", small: "day", factor: 7 }], maxBig: 4 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000049": {
+    id: "a1000000-0000-0000-0000-000000000049",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Tukar Unit Masa Lanjutan", en: "Converting Units of Time (Advanced)" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Tahun 5 meluaskan penukaran masa: 60 minit = 1 jam, 12 bulan = 1 tahun, 10 tahun = 1 dekad, 10 dekad = 1 abad.\n\nContoh harian: Sebuah bangunan bersejarah dibina 3 abad lalu. Berapa dekad itu?",
+      en: "Year 5 extends time conversion further: 60 minutes = 1 hour, 12 months = 1 year, 10 years = 1 decade, 10 decades = 1 century.\n\nEveryday example: A historic building was built 3 centuries ago. How many decades is that?",
+    },
+    tips: [
+      { ms: "60 minit=1 jam, 12 bulan=1 tahun, 10 tahun=1 dekad, 10 dekad=1 abad.", en: "60 minutes=1 hour, 12 months=1 year, 10 years=1 decade, 10 decades=1 century." },
+      { ms: "Unit lebih besar ke unit lebih kecil = darab. Unit lebih kecil ke unit lebih besar = bahagi.", en: "Larger unit to smaller unit = multiply. Smaller unit to larger unit = divide." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti unit asal dan unit yang dikehendaki.", en: "Identify the starting unit and the target unit." },
+      { ms: "Ingat faktor penukaran yang betul untuk pasangan unit itu.", en: "Recall the correct conversion factor for that unit pair." },
+      { ms: "Darab atau bahagi ikut arah penukaran.", en: "Multiply or divide depending on the direction of conversion." },
+    ],
+    workedExample: {
+      problem: "3 abad = ? dekad",
+      steps: [
+        { ms: "abad ke dekad, jadi darab dengan 10", en: "century to decade, so multiply by 10" },
+        { ms: "3 × 10 = 30", en: "3 × 10 = 30" },
+        { ms: "Jawapan: 30 dekad", en: "Answer: 30 decades" },
+      ],
+      answer: "30",
+    },
+    commonMistakes: [
+      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah (banyak pasangan unit berbeza tahun ini) atau arah yang salah.", en: "The student uses the wrong conversion factor (many different unit pairs this year) or the wrong direction." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "hr", small: "min", factor: 60 }, { big: "yr", small: "mth", factor: 12 }], maxBig: 6 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "dec", small: "yr", factor: 10 }, { big: "c", small: "dec", factor: 10 }], maxBig: 5 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000050": {
+    id: "a1000000-0000-0000-0000-000000000050",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Diskaun", en: "Discount" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Diskaun ialah potongan harga yang diberikan, biasanya dalam peratus (%). Harga selepas diskaun = Harga asal − Jumlah diskaun.\n\nContoh harian: Sepasang kasut berharga RM80 didiskaun 25%. Berapakah harga selepas diskaun?",
+      en: "A discount is a price reduction, usually given as a percentage (%). Price after discount = Original price − Discount amount.\n\nEveryday example: A pair of shoes costs RM80 with a 25% discount. What is the price after the discount?",
+    },
+    tips: [
+      { ms: "Cari jumlah diskaun dahulu (harga asal × peratus ÷ 100), kemudian tolak daripada harga asal.", en: "Find the discount amount first (original price × percent ÷ 100), then subtract it from the original price." },
+      { ms: "Jangan berhenti selepas kira jumlah diskaun — itu BUKAN jawapan akhir.", en: "Don't stop after calculating the discount amount — that's NOT the final answer." },
+    ],
+    howTo: [
+      { ms: "Kira jumlah diskaun: harga asal × peratus diskaun ÷ 100.", en: "Calculate the discount amount: original price × discount percent ÷ 100." },
+      { ms: "Tolak jumlah diskaun daripada harga asal.", en: "Subtract the discount amount from the original price." },
+    ],
+    workedExample: {
+      problem: "RM80 dengan diskaun 25%",
+      steps: [
+        { ms: "Jumlah diskaun: 80 × 25 ÷ 100 = RM20", en: "Discount amount: 80 × 25 ÷ 100 = RM20" },
+        { ms: "Harga selepas diskaun: 80 − 20 = RM60", en: "Price after discount: 80 − 20 = RM60" },
+      ],
+      answer: "RM60.00",
+    },
+    commonMistakes: [
+      { mistakeType: "gave_discount_amount_not_final_price", description: { ms: "Murid beri jumlah diskaun sahaja, bukan harga selepas diskaun.", en: "The student gives only the discount amount, not the price after the discount." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "discount", config: { maxRM: 100 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "discount", config: { maxRM: 80 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000051": {
+    id: "a1000000-0000-0000-0000-000000000051",
+    strand: { ms: "Statistik", en: "Statistics" },
+    title: { ms: "Kebarangkalian", en: "Likelihood" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Kebarangkalian menerangkan sejauh mana sesuatu perkara mungkin berlaku: PASTI (akan berlaku), MUSTAHIL (tidak akan berlaku), atau di antara kedua-duanya — SAMA KEMUNGKINAN, LEBIH BERKEMUNGKINAN, atau KURANG BERKEMUNGKINAN.\n\nContoh harian: Sebuah beg mengandungi 10 biji guli merah sahaja. Adakah pasti atau mustahil untuk mengeluarkan guli biru?",
+      en: "Likelihood describes how likely something is to happen: CERTAIN (will happen), IMPOSSIBLE (won't happen), or somewhere in between — EQUALLY LIKELY, MORE LIKELY, or LESS LIKELY.\n\nEveryday example: A bag contains only 10 red marbles. Is it certain or impossible to pick out a blue marble?",
+    },
+    tips: [
+      { ms: "Jika SEMUA item sama, mengeluarkan item itu PASTI dan item lain MUSTAHIL.", en: "If ALL items are the same, picking that item is CERTAIN and any other item is IMPOSSIBLE." },
+      { ms: "Jika bilangan dua jenis item SAMA, kedua-duanya SAMA KEMUNGKINAN untuk dipilih.", en: "If the count of two item types is EQUAL, both are EQUALLY LIKELY to be picked." },
+      { ms: "Jenis item dengan bilangan LEBIH BANYAK adalah LEBIH BERKEMUNGKINAN dipilih.", en: "The item type with the HIGHER count is MORE LIKELY to be picked." },
+    ],
+    howTo: [
+      { ms: "Kira bilangan setiap jenis item dalam situasi itu.", en: "Count how many of each item type are in the situation." },
+      { ms: "Bandingkan bilangan itu untuk tentukan kategori kebarangkalian yang betul.", en: "Compare those counts to determine the correct likelihood category." },
+    ],
+    workedExample: {
+      problem: "Beg mengandungi 10 guli merah sahaja. Kebarangkalian mengeluarkan guli biru?",
+      steps: [
+        { ms: "Tiada guli biru dalam beg itu", en: "There are no blue marbles in the bag" },
+        { ms: "Jawapan: Mustahil", en: "Answer: Impossible" },
+      ],
+      answer: "impossible",
+    },
+    commonMistakes: [
+      { mistakeType: "likelihood_misconception", description: { ms: "Murid keliru antara kategori kebarangkalian (cth. anggap sama kemungkinan walaupun bilangan tidak sama).", en: "The student confuses the likelihood categories (e.g. assumes equally likely even when the counts aren't equal)." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "likelihood", config: {} },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000052": {
+    id: "a1000000-0000-0000-0000-000000000052",
+    strand: { ms: "Peratus", en: "Percentage" },
+    title: { ms: "Peratus Suatu Kuantiti (Asas)", en: "Percentage of a Quantity (Basic)" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Peratus (%) bermaksud \"per seratus\". Untuk cari peratus suatu kuantiti, darabkan kuantiti itu dengan peratus, kemudian bahagi dengan 100.\n\nContoh harian: Ada 20 biji epal dalam bakul. 25% daripadanya busuk. Berapa biji epal yang busuk?",
+      en: "Percent (%) means \"per hundred\". To find a percentage of a quantity, multiply the quantity by the percentage, then divide by 100.\n\nEveryday example: There are 20 apples in a basket. 25% of them are rotten. How many apples are rotten?",
+    },
+    tips: [
+      { ms: "Ingat peratus biasa: 50%=separuh, 25%=suku, 10%=sepersepuluh.", en: "Remember common percentages: 50%=half, 25%=quarter, 10%=one-tenth." },
+      { ms: "Formula: Kuantiti × Peratus ÷ 100.", en: "Formula: Quantity × Percentage ÷ 100." },
+    ],
+    howTo: [
+      { ms: "Darabkan kuantiti dengan peratus itu.", en: "Multiply the quantity by the percentage." },
+      { ms: "Bahagikan hasilnya dengan 100.", en: "Divide the result by 100." },
+    ],
+    workedExample: {
+      problem: "25% daripada 20",
+      steps: [
+        { ms: "20 × 25 = 500", en: "20 × 25 = 500" },
+        { ms: "500 ÷ 100 = 5", en: "500 ÷ 100 = 5" },
+        { ms: "Jawapan: 5", en: "Answer: 5" },
+      ],
+      answer: 5,
+    },
+    commonMistakes: [
+      { mistakeType: "calculation_error", description: { ms: "Murid lupa bahagi dengan 100 selepas darab.", en: "The student forgets to divide by 100 after multiplying." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "percentage_of_quantity", config: { percentages: [10, 20, 25, 50], maxQuantity: 40 } },
+      { type: "word_problem", difficulty: 1, generatorKey: "percentage_of_quantity", config: { percentages: [10, 25, 50], maxQuantity: 30 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000053": {
+    id: "a1000000-0000-0000-0000-000000000053",
+    strand: { ms: "Pecahan", en: "Fractions" },
+    title: { ms: "Tukar Pecahan dan Peratus", en: "Converting Fractions and Percentages" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Pecahan boleh ditukar kepada peratus dengan menskalakannya supaya penyebut menjadi 100. Contoh: 1/4 = 25/100 = 25%.\n\nContoh harian: 3 daripada 4 kuih dalam bekas telah dimakan. Berapa peratus kuih yang telah dimakan?",
+      en: "A fraction can be converted to a percentage by scaling it so the denominator becomes 100. Example: 1/4 = 25/100 = 25%.\n\nEveryday example: 3 out of 4 cookies in a container have been eaten. What percentage of the cookies have been eaten?",
+    },
+    tips: [
+      { ms: "Fikir: berapa kali penyebut itu perlu didarab untuk jadi 100?", en: "Think: how many times does the denominator need to be multiplied to become 100?" },
+      { ms: "Darabkan pengangka dan penyebut dengan nombor yang sama itu.", en: "Multiply the numerator and denominator by that same number." },
+    ],
+    howTo: [
+      { ms: "Cari nombor yang menukar penyebut kepada 100.", en: "Find the number that turns the denominator into 100." },
+      { ms: "Darabkan pengangka dengan nombor yang sama.", en: "Multiply the numerator by that same number." },
+      { ms: "Pengangka yang baru itu ialah peratusnya.", en: "The new numerator is the percentage." },
+    ],
+    workedExample: {
+      problem: "3/4 = ?%",
+      steps: [
+        { ms: "4 × 25 = 100, jadi darab kedua-dua dengan 25", en: "4 × 25 = 100, so multiply both by 25" },
+        { ms: "3 × 25 = 75", en: "3 × 25 = 75" },
+        { ms: "Jawapan: 75%", en: "Answer: 75%" },
+      ],
+      answer: "75",
+    },
+    commonMistakes: [
+      { mistakeType: "fraction_percentage_conversion_error", description: { ms: "Murid guna pengangka terus sebagai peratus, mengabaikan penyebut.", en: "The student uses the numerator directly as the percentage, ignoring the denominator." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "fractions_percentage_convert", config: { denominators: [2, 4, 5, 10, 20, 25, 50] } },
+      { type: "fill", difficulty: 3, generatorKey: "fractions_percentage_convert", config: { denominators: [4, 5, 10, 20, 25] } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000054": {
+    id: "a1000000-0000-0000-0000-000000000054",
+    strand: { ms: "Pecahan", en: "Fractions" },
+    title: { ms: "Darab Pecahan", en: "Multiplying Fractions" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Untuk darab pecahan wajar dengan nombor bulat, darabkan pengangka sahaja dengan nombor bulat itu. Penyebut kekal sama, kemudian permudahkan.\n\nContoh harian: Setiap plat mempunyai 3/4 cawan tepung. Berapa cawan tepung diperlukan untuk 3 plat?",
+      en: "To multiply a proper fraction by a whole number, multiply only the numerator by that whole number. The denominator stays the same, then simplify.\n\nEveryday example: Each batch needs 3/4 cup of flour. How many cups of flour are needed for 3 batches?",
+    },
+    tips: [
+      { ms: "Peraturan: (a/b) × c = (a×c)/b — hanya pengangka yang berubah.", en: "The rule: (a/b) × c = (a×c)/b — only the numerator changes." },
+      { ms: "Jangan lupa permudahkan jawapan akhir jika boleh.", en: "Don't forget to simplify the final answer if possible." },
+    ],
+    howTo: [
+      { ms: "Darabkan pengangka dengan nombor bulat itu.", en: "Multiply the numerator by the whole number." },
+      { ms: "Penyebut kekal sama.", en: "The denominator stays the same." },
+      { ms: "Permudahkan pecahan jawapan jika boleh.", en: "Simplify the resulting fraction if possible." },
+    ],
+    workedExample: {
+      problem: "3/4 × 3",
+      steps: [
+        { ms: "Darabkan pengangka: 3 × 3 = 9", en: "Multiply the numerator: 3 × 3 = 9" },
+        { ms: "Penyebut kekal: 4", en: "Denominator stays: 4" },
+        { ms: "Jawapan: 9/4", en: "Answer: 9/4" },
+      ],
+      answer: "9/4",
+    },
+    commonMistakes: [
+      { mistakeType: "multiplied_denominator_instead", description: { ms: "Murid darabkan penyebut, bukan pengangka.", en: "The student multiplies the denominator instead of the numerator." } },
+      { mistakeType: "forgot_to_simplify", description: { ms: "Murid dapat jawapan yang betul tetapi tidak permudahkannya.", en: "The student gets the correct answer but doesn't simplify it." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 5, 6, 8] } },
+      { type: "word_problem", difficulty: 2, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 6] } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000055": {
+    id: "a1000000-0000-0000-0000-000000000055",
+    strand: { ms: "Perpuluhan", en: "Decimals" },
+    title: { ms: "Tukar Perpuluhan dan Peratus", en: "Converting Decimals and Percentages" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Untuk tukar perpuluhan kepada peratus, darabkan dengan 100 (anjak titik perpuluhan 2 tempat ke kanan). Untuk arah bertentangan, bahagikan dengan 100.\n\nContoh harian: Ahmad mendapat markah 0.85 daripada 1 dalam ujian. Berapa peratus markahnya?",
+      en: "To convert a decimal to a percentage, multiply by 100 (shift the decimal point 2 places right). For the reverse, divide by 100.\n\nEveryday example: Ahmad scores 0.85 out of 1 in a test. What percentage is that?",
+    },
+    tips: [
+      { ms: "Perpuluhan ke peratus: anjak titik perpuluhan 2 tempat ke KANAN.", en: "Decimal to percentage: shift the decimal point 2 places RIGHT." },
+      { ms: "Peratus ke perpuluhan: anjak titik perpuluhan 2 tempat ke KIRI.", en: "Percentage to decimal: shift the decimal point 2 places LEFT." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti arah penukaran (perpuluhan ke peratus, atau sebaliknya).", en: "Identify the conversion direction (decimal to percentage, or the reverse)." },
+      { ms: "Darab dengan 100 (ke peratus) atau bahagi dengan 100 (ke perpuluhan).", en: "Multiply by 100 (to percentage) or divide by 100 (to decimal)." },
+    ],
+    workedExample: {
+      problem: "0.85 = ?%",
+      steps: [
+        { ms: "Darab dengan 100: 0.85 × 100 = 85", en: "Multiply by 100: 0.85 × 100 = 85" },
+        { ms: "Jawapan: 85%", en: "Answer: 85%" },
+      ],
+      answer: "85",
+    },
+    commonMistakes: [
+      { mistakeType: "decimal_percentage_scale_error", description: { ms: "Murid anjak titik perpuluhan ke arah yang salah, atau salah bilangan tempat.", en: "The student shifts the decimal point in the wrong direction, or by the wrong number of places." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "decimal_percentage_convert", config: { maxWhole: 0 } },
+      { type: "fill", difficulty: 3, generatorKey: "decimal_percentage_convert", config: { maxWhole: 1 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000056": {
+    id: "a1000000-0000-0000-0000-000000000056",
+    strand: { ms: "Peratus", en: "Percentage" },
+    title: { ms: "Tambah & Tolak Peratus", en: "Adding & Subtracting Percentages" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Peratus boleh ditambah atau ditolak terus, sama seperti nombor bulat biasa — jawapan juga dalam peratus.\n\nContoh harian: Harga sebuah kereta naik 20% tahun lepas, kemudian naik lagi 15% tahun ini. Berapa jumlah peningkatan peratus?",
+      en: "Percentages can be added or subtracted directly, just like regular whole numbers — the answer is also a percentage.\n\nEveryday example: A car's price rose 20% last year, then rose another 15% this year. What's the total percentage increase?",
+    },
+    tips: [
+      { ms: "Layan peratus seperti nombor bulat biasa — abaikan simbol % semasa mengira, kemudian tambah semula pada jawapan.", en: "Treat percentages like regular whole numbers — ignore the % symbol while calculating, then add it back to the answer." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti sama ada soalan itu tambah atau tolak.", en: "Identify whether the question is addition or subtraction." },
+      { ms: "Tambah atau tolak nombor peratus itu seperti nombor bulat.", en: "Add or subtract the percentage numbers like whole numbers." },
+    ],
+    workedExample: {
+      problem: "20% + 15%",
+      steps: [
+        { ms: "20 + 15 = 35", en: "20 + 15 = 35" },
+        { ms: "Jawapan: 35%", en: "Answer: 35%" },
+      ],
+      answer: "35",
+    },
+    commonMistakes: [
+      { mistakeType: "calculation_error", description: { ms: "Ralat pengiraan asas semasa tambah atau tolak.", en: "A basic calculation error while adding or subtracting." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "percentage_add_subtract", config: { maxPct: 60 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "percentage_add_subtract", config: { maxPct: 50 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000057": {
+    id: "a1000000-0000-0000-0000-000000000057",
+    strand: { ms: "Pecahan", en: "Fractions" },
+    title: { ms: "Bahagi Nombor Bercampur Dengan Nombor Bulat", en: "Dividing a Mixed Number by a Whole Number" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Untuk membahagikan nombor bercampur dengan nombor bulat, TUKAR nombor bercampur kepada pecahan tak wajar dahulu, kemudian gunakan peraturan yang sama seperti membahagi pecahan biasa.\n\nContoh harian: 2 1/2 keping kek hendak dikongsi sama rata antara 5 orang kawan. Berapa bahagian setiap orang dapat?",
+      en: "To divide a mixed number by a whole number, FIRST convert the mixed number to an improper fraction, then use the same rule as dividing a regular fraction.\n\nEveryday example: 2 1/2 cakes need to be shared equally among 5 friends. How much does each friend get?",
+    },
+    tips: [
+      { ms: "Tukar nombor bercampur kepada pecahan tak wajar dahulu — jangan bahagi bahagian pecahan sahaja.", en: "Convert the mixed number to an improper fraction first — don't divide only the fraction part." },
+      { ms: "Selepas tukar, gunakan peraturan biasa: (a/b) ÷ c = a/(b × c).", en: "After converting, use the regular rule: (a/b) ÷ c = a/(b × c)." },
+    ],
+    howTo: [
+      { ms: "Tukar nombor bercampur kepada pecahan tak wajar: (bulat × penyebut + pengangka)/penyebut.", en: "Convert the mixed number to an improper fraction: (whole × denominator + numerator)/denominator." },
+      { ms: "Darabkan penyebut dengan nombor bulat pembahagi.", en: "Multiply the denominator by the whole-number divisor." },
+      { ms: "Permudahkan jawapan jika boleh.", en: "Simplify the answer if possible." },
+    ],
+    workedExample: {
+      problem: "2 1/2 ÷ 5",
+      steps: [
+        { ms: "Tukar kepada pecahan tak wajar: (2×2+1)/2 = 5/2", en: "Convert to improper fraction: (2×2+1)/2 = 5/2" },
+        { ms: "Darabkan penyebut: 2 × 5 = 10", en: "Multiply the denominator: 2 × 5 = 10" },
+        { ms: "Jawapan: 5/10 = 1/2", en: "Answer: 5/10 = 1/2" },
+      ],
+      answer: "1/2",
+    },
+    commonMistakes: [
+      { mistakeType: "ignored_whole_number_part", description: { ms: "Murid tidak tukar kepada pecahan tak wajar, hanya membahagikan bahagian pecahan sahaja.", en: "The student doesn't convert to an improper fraction, only dividing the fraction part." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4, 5, 6] } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4] } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000058": {
+    id: "a1000000-0000-0000-0000-000000000058",
+    strand: { ms: "Koordinat", en: "Coordinates" },
+    title: { ms: "Perkadaran Untuk Cari Nilai", en: "Proportion to Find a Value" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Apabila nisbah dua kuantiti diketahui, dan satu kuantiti diketahui nilainya, kita boleh cari nilai kuantiti yang satu lagi dengan mencari faktor skala.\n\nContoh harian: Nisbah kucing kepada anjing di sebuah kedai haiwan ialah 2:3. Jika terdapat 8 ekor kucing, berapa ekor anjing?",
+      en: "When the ratio of two quantities is known, and one quantity's value is known, we can find the other quantity's value by finding the scale factor.\n\nEveryday example: The ratio of cats to dogs in a pet shop is 2:3. If there are 8 cats, how many dogs are there?",
+    },
+    tips: [
+      { ms: "Faktor skala = kuantiti diketahui ÷ nombor nisbah yang sepadan.", en: "Scale factor = known quantity ÷ the matching ratio number." },
+      { ms: "Darabkan nombor nisbah yang satu lagi dengan faktor skala yang sama.", en: "Multiply the other ratio number by that same scale factor." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti nombor nisbah yang sepadan dengan kuantiti yang diketahui.", en: "Identify which ratio number corresponds to the known quantity." },
+      { ms: "Cari faktor skala: kuantiti diketahui ÷ nombor nisbah itu.", en: "Find the scale factor: known quantity ÷ that ratio number." },
+      { ms: "Darabkan nombor nisbah yang satu lagi dengan faktor skala.", en: "Multiply the other ratio number by the scale factor." },
+    ],
+    workedExample: {
+      problem: "Nisbah 2:3, kucing=8 ekor. Berapa anjing?",
+      steps: [
+        { ms: "Faktor skala: 8 ÷ 2 = 4", en: "Scale factor: 8 ÷ 2 = 4" },
+        { ms: "Anjing: 3 × 4 = 12", en: "Dogs: 3 × 4 = 12" },
+      ],
+      answer: 12,
+    },
+    commonMistakes: [
+      { mistakeType: "added_instead_of_scaled", description: { ms: "Murid menambah beza antara nombor nisbah berbanding mencari faktor skala.", en: "The student adds the difference between the ratio numbers instead of finding the scale factor." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "proportion", config: { maxScale: 6 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "proportion", config: { maxScale: 5 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000059": {
+    id: "a1000000-0000-0000-0000-000000000059",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Invois, Resit, dan Cukai Perkhidmatan", en: "Invoice, Receipt, and Service Tax" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Cukai perkhidmatan (SST) ialah peratus tambahan yang dikenakan atas jumlah invois. Jumlah perlu dibayar = jumlah invois + jumlah cukai.\n\nContoh harian: Sebuah invois berjumlah RM50. Cukai perkhidmatan 6% dikenakan. Berapakah jumlah perlu dibayar?",
+      en: "Service tax (SST) is an extra percentage charged on top of an invoice amount. Total payable = invoice amount + tax amount.\n\nEveryday example: An invoice totals RM50. A 6% service tax is charged. What is the total amount payable?",
+    },
+    tips: [
+      { ms: "Cari jumlah cukai dahulu (jumlah invois × peratus cukai ÷ 100), kemudian TAMBAH pada jumlah invois.", en: "Find the tax amount first (invoice amount × tax percent ÷ 100), then ADD it to the invoice amount." },
+      { ms: "Jangan berhenti selepas kira cukai — itu bukan jumlah akhir.", en: "Don't stop after calculating the tax — that's not the final amount." },
+    ],
+    howTo: [
+      { ms: "Kira jumlah cukai: jumlah invois × peratus cukai ÷ 100.", en: "Calculate the tax amount: invoice amount × tax percent ÷ 100." },
+      { ms: "Tambah jumlah cukai pada jumlah invois.", en: "Add the tax amount to the invoice amount." },
+    ],
+    workedExample: {
+      problem: "RM50 dengan cukai 6%",
+      steps: [
+        { ms: "Jumlah cukai: 50 × 6 ÷ 100 = RM3", en: "Tax amount: 50 × 6 ÷ 100 = RM3" },
+        { ms: "Jumlah perlu dibayar: 50 + 3 = RM53", en: "Total payable: 50 + 3 = RM53" },
+      ],
+      answer: "RM53.00",
+    },
+    commonMistakes: [
+      { mistakeType: "gave_tax_only", description: { ms: "Murid beri jumlah cukai sahaja, bukan jumlah perlu dibayar.", en: "The student gives only the tax amount, not the total payable." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 200 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 150 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000060": {
+    id: "a1000000-0000-0000-0000-000000000060",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Faedah dan Dividen", en: "Interest and Dividend" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Dividen ialah bahagian keuntungan syarikat yang dibayar kepada pemegang saham, biasanya dalam sen bagi setiap saham. Jumlah dividen = bilangan saham × dividen bagi setiap saham.\n\nContoh harian: Ali memiliki 200 unit saham. Syarikat itu mengisytiharkan dividen RM0.15 bagi setiap saham. Berapakah jumlah dividen Ali?",
+      en: "A dividend is a share of a company's profit paid to shareholders, usually in sen per share. Total dividend = number of shares × dividend per share.\n\nEveryday example: Ali owns 200 shares. The company declares a dividend of RM0.15 per share. What is Ali's total dividend?",
+    },
+    tips: [
+      { ms: "Dividen bagi setiap saham didarab dengan JUMLAH SAHAM yang dimiliki, bukan ditambah.", en: "The dividend per share is multiplied by the TOTAL SHARES owned, not added." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti bilangan saham dan dividen bagi setiap saham.", en: "Identify the number of shares and the dividend per share." },
+      { ms: "Darabkan kedua-duanya untuk dapatkan jumlah dividen.", en: "Multiply them together to get the total dividend." },
+    ],
+    workedExample: {
+      problem: "200 saham × RM0.15 setiap saham",
+      steps: [
+        { ms: "200 × 0.15 = 30", en: "200 × 0.15 = 30" },
+        { ms: "Jawapan: RM30.00", en: "Answer: RM30.00" },
+      ],
+      answer: "RM30.00",
+    },
+    commonMistakes: [
+      { mistakeType: "calculation_error", description: { ms: "Murid tambah berbanding darab bilangan saham dengan dividen bagi setiap saham.", en: "The student adds instead of multiplying the number of shares by the dividend per share." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "dividend", config: { maxShares: 500 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "dividend", config: { maxShares: 300 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000061": {
+    id: "a1000000-0000-0000-0000-000000000061",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Aset dan Liabiliti", en: "Asset and Liability" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Aset ialah sesuatu yang anda MILIKI dan bernilai (cth. rumah, wang simpanan). Liabiliti ialah sesuatu yang anda TERHUTANG (cth. pinjaman, hutang).\n\nContoh harian: Adakah rumah yang anda miliki sepenuhnya sebuah aset atau liabiliti?",
+      en: "An asset is something you OWN that has value (e.g. a house, savings). A liability is something you OWE (e.g. a loan, debt).\n\nEveryday example: Is a house you fully own an asset or a liability?",
+    },
+    tips: [
+      { ms: "Tanya diri anda: adakah ini menambah nilai kekayaan saya, atau adakah saya perlu membayarnya balik?", en: "Ask yourself: does this add to my wealth, or do I need to pay it back?" },
+      { ms: "Aset = MILIK. Liabiliti = HUTANG.", en: "Asset = OWN. Liability = OWE." },
+    ],
+    howTo: [
+      { ms: "Baca perihalan item itu dengan teliti.", en: "Read the item description carefully." },
+      { ms: "Tentukan sama ada ia sesuatu yang dimiliki (aset) atau terhutang (liabiliti).", en: "Determine whether it's something owned (asset) or owed (liability)." },
+    ],
+    workedExample: {
+      problem: "Hutang kad kredit",
+      steps: [
+        { ms: "Ini wang yang perlu dibayar balik", en: "This is money that needs to be paid back" },
+        { ms: "Jawapan: Liabiliti", en: "Answer: Liability" },
+      ],
+      answer: "liability",
+    },
+    commonMistakes: [
+      { mistakeType: "asset_liability_misconception", description: { ms: "Murid keliru antara aset dan liabiliti.", en: "The student confuses assets and liabilities." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "asset_liability", config: {} },
+    ],
+  },
 };

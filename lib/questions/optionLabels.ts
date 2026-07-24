@@ -11,4 +11,11 @@ export const OPTION_LABELS: Record<string, Bilingual> = {
   right: { ms: "Sudut Tegak", en: "Right Angle" },
   obtuse: { ms: "Sudut Cakah", en: "Obtuse" },
   reflex: { ms: "Sudut Refleks", en: "Reflex" },
+  certain: { ms: "Pasti", en: "Certain" },
+  impossible: { ms: "Mustahil", en: "Impossible" },
+  equally_likely: { ms: "Sama Kemungkinan", en: "Equally Likely" },
+  more_likely: { ms: "Lebih Berkemungkinan", en: "More Likely" },
+  less_likely: { ms: "Kurang Berkemungkinan", en: "Less Likely" },
+  asset: { ms: "Aset", en: "Asset" },
+  liability: { ms: "Liabiliti", en: "Liability" },
 };

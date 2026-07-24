@@ -1005,6 +1005,174 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "unit_convert": {
+      const { factor, bigToSmall } = question.context as unknown as { factor: number; bigToSmall: string };
+      const wasBigToSmall = bigToSmall === "yes";
+      return {
+        mistakeType: "wrong_conversion_factor",
+        hint: {
+          ms: `Semak semula faktor penukaran itu — betulkah anda ${wasBigToSmall ? "darab" : "bahagi"} dengan ${factor}?`,
+          en: `Double check the conversion factor — did you ${wasBigToSmall ? "multiply" : "divide"} by ${factor}?`,
+        },
+      };
+    }
+
+    case "discount": {
+      const { discountSen, finalSen } = question.context as { discountSen: number; finalSen: number };
+      const answerSen = Math.round(parseFloat(answer.replace(/[^0-9.]/g, "")) * 100);
+      if (Math.abs(answerSen - discountSen) < 5) {
+        return {
+          mistakeType: "gave_discount_amount_not_final_price",
+          hint: {
+            ms: "Itu jumlah diskaun sahaja. Soalan minta harga SELEPAS diskaun — tolak diskaun daripada harga asal.",
+            en: "That's just the discount amount. The question asks for the price AFTER the discount — subtract the discount from the original price.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cari jumlah diskaun dahulu, kemudian tolak daripada harga asal.", en: "Find the discount amount first, then subtract it from the original price." },
+      };
+    }
+
+    case "likelihood": {
+      return {
+        mistakeType: "likelihood_misconception",
+        hint: {
+          ms: "Fikirkan: berapa banyak cara untuk berjaya, berbanding jumlah keseluruhan?",
+          en: "Think about it: how many ways to succeed, compared to the total?",
+        },
+      };
+    }
+
+    case "fractions_percentage_convert": {
+      return {
+        mistakeType: "fraction_percentage_conversion_error",
+        hint: {
+          ms: "Ingat: peratus ialah \"per seratus\". Skalakan pengangka dan penyebut supaya penyebut menjadi 100.",
+          en: "Remember: percent means \"per hundred\". Scale the numerator and denominator so the denominator becomes 100.",
+        },
+      };
+    }
+
+    case "fractions_multiply": {
+      const { num, denom, whole } = question.context as { num: number; denom: number; whole: number };
+      if (answer === `${num}/${denom * whole}`) {
+        return {
+          mistakeType: "multiplied_denominator_instead",
+          hint: {
+            ms: "Ini soalan darab, bukan bahagi. Darabkan PENGANGKA dengan nombor bulat itu, bukan penyebut.",
+            en: "This is a multiplication question, not division. Multiply the NUMERATOR by the whole number, not the denominator.",
+          },
+        };
+      }
+      return {
+        mistakeType: "forgot_to_simplify",
+        hint: {
+          ms: "Semak semula sama ada jawapan anda sudah dipermudahkan.",
+          en: "Check whether your answer is already in simplest form.",
+        },
+      };
+    }
+
+    case "decimal_percentage_convert": {
+      return {
+        mistakeType: "decimal_percentage_scale_error",
+        hint: {
+          ms: "Ingat: darab dengan 100 untuk tukar perpuluhan kepada peratus, bahagi dengan 100 untuk arah bertentangan.",
+          en: "Remember: multiply by 100 to convert a decimal to a percentage, divide by 100 for the reverse.",
+        },
+      };
+    }
+
+    case "percentage_add_subtract": {
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Layan peratus seperti nombor bulat biasa — tambah atau tolak terus.",
+          en: "Treat the percentages like regular whole numbers — add or subtract directly.",
+        },
+      };
+    }
+
+    case "fractions_divide_mixed_by_whole": {
+      const { fracNum, denom, divisor } = question.context as { fracNum: number; denom: number; divisor: number };
+      if (answer === `${fracNum}/${denom * divisor}`) {
+        return {
+          mistakeType: "ignored_whole_number_part",
+          hint: {
+            ms: "Jangan lupa tukar nombor bercampur kepada pecahan tak wajar dahulu, sebelum membahagi.",
+            en: "Don't forget to convert the mixed number to an improper fraction first, before dividing.",
+          },
+        };
+      }
+      return {
+        mistakeType: "fraction_calculation_error",
+        hint: {
+          ms: "Tukar kepada pecahan tak wajar dahulu, kemudian darabkan penyebut dengan nombor bulat itu.",
+          en: "Convert to an improper fraction first, then multiply the denominator by the whole number.",
+        },
+      };
+    }
+
+    case "service_tax": {
+      const { taxSen, totalSen } = question.context as { taxSen: number; totalSen: number };
+      const answerSen = Math.round(parseFloat(answer.replace(/[^0-9.]/g, "")) * 100);
+      if (Math.abs(answerSen - taxSen) < 5) {
+        return {
+          mistakeType: "gave_tax_only",
+          hint: {
+            ms: "Itu jumlah cukai sahaja. Soalan minta JUMLAH PERLU DIBAYAR — tambah cukai pada jumlah invois.",
+            en: "That's just the tax amount. The question asks for the TOTAL PAYABLE — add the tax to the invoice amount.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cari jumlah cukai dahulu, kemudian tambah pada jumlah invois.", en: "Find the tax amount first, then add it to the invoice total." },
+      };
+    }
+
+    case "dividend": {
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Darabkan bilangan saham dengan dividen bagi setiap saham.",
+          en: "Multiply the number of shares by the dividend per share.",
+        },
+      };
+    }
+
+    case "proportion": {
+      const { a, b, knownVal } = question.context as { a: number; b: number; knownVal: number };
+      if (Number(answer) === knownVal + Math.abs(a - b)) {
+        return {
+          mistakeType: "added_instead_of_scaled",
+          hint: {
+            ms: "Ini soalan nisbah — cari FAKTOR SKALA dahulu (bahagikan), jangan tambah beza.",
+            en: "This is a ratio question — find the SCALE FACTOR first (by dividing), don't add the difference.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Cari faktor skala daripada kuantiti yang diketahui, kemudian gunakan pada sisi nisbah yang satu lagi.",
+          en: "Find the scale factor from the known quantity, then apply it to the other side of the ratio.",
+        },
+      };
+    }
+
+    case "asset_liability": {
+      return {
+        mistakeType: "asset_liability_misconception",
+        hint: {
+          ms: "Aset ialah sesuatu yang anda MILIKI dan bernilai. Liabiliti ialah sesuatu yang anda TERHUTANG.",
+          en: "An asset is something you OWN that has value. A liability is something you OWE.",
+        },
+      };
+    }
+
     case "bar_graph": {
       const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number };
       const values = [ctx.v0, ctx.v1, ctx.v2, ctx.v3];

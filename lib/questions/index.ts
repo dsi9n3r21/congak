@@ -1,11 +1,19 @@
 import { generateWholeNumbersAddition } from "./generators/wholeNumbers";
 import { generateFractionsSameDenominator } from "./generators/fractions";
-import { generateMoneyChange, generateMoneyAddSubtract, generateMoneyMultiplyDivide, generateSimpleInterest, generateProfitLoss } from "./generators/money";
+import { generateMoneyChange, generateMoneyAddSubtract, generateMoneyMultiplyDivide, generateSimpleInterest, generateProfitLoss, generateDiscount, generateServiceTax, generateDividend } from "./generators/money";
 import { generatePerimeter } from "./generators/perimeter";
+import { generateLikelihood } from "./generators/likelihood";
+import { generateProportion } from "./generators/proportion";
+import { generateAssetLiability } from "./generators/assetLiability";
 import { generateDecimalAddSubtract } from "./generators/decimals";
 import { generatePercentageOfQuantity } from "./generators/percentage";
 import { generateTimeDuration, generateTimeAddSubtract } from "./generators/time";
 import { generateLengthAddSubtract } from "./generators/length";
+import { generateUnitConvert } from "./generators/unitConvert";
+import { generateFractionsPercentageConvert } from "./generators/fractionsPercentage";
+import { generateFractionsMultiply } from "./generators/fractionsMultiply";
+import { generateDecimalPercentageConvert, generatePercentageAddSubtract } from "./generators/percentage";
+import { generateFractionsDivideMixedByWhole } from "./generators/fractionsDivideMixed";
 import { generateAverage } from "./generators/average";
 import { generateSimplifyRatio } from "./generators/ratio";
 import { generateVolume } from "./generators/volume";
@@ -45,12 +53,24 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   money_multiply_divide: generateMoneyMultiplyDivide,
   simple_interest: generateSimpleInterest,
   profit_loss: generateProfitLoss,
+  discount: generateDiscount,
+  service_tax: generateServiceTax,
+  dividend: generateDividend,
+  likelihood: generateLikelihood,
+  proportion: generateProportion,
+  asset_liability: generateAssetLiability,
   perimeter: generatePerimeter,
   decimal_add_subtract: generateDecimalAddSubtract,
   percentage_of_quantity: generatePercentageOfQuantity,
   time_duration: generateTimeDuration,
   time_add_subtract: generateTimeAddSubtract,
   length_add_subtract: generateLengthAddSubtract,
+  unit_convert: generateUnitConvert,
+  fractions_percentage_convert: generateFractionsPercentageConvert,
+  fractions_multiply: generateFractionsMultiply,
+  decimal_percentage_convert: generateDecimalPercentageConvert,
+  percentage_add_subtract: generatePercentageAddSubtract,
+  fractions_divide_mixed_by_whole: generateFractionsDivideMixedByWhole,
   average: generateAverage,
   simplify_ratio: generateSimplifyRatio,
   volume: generateVolume,
