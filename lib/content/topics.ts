@@ -2792,4 +2792,73 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 4 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000072": {
+    id: "a1000000-0000-0000-0000-000000000072",
+    strand: { ms: "Statistik", en: "Statistics" },
+    title: { ms: "Membaca Carta Pai", en: "Reading Pie Charts" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Carta pai menunjukkan data sebagai pecahan daripada keseluruhan bulatan — setiap petak mewakili satu pecahan (cth. 1/4, 1/8). Untuk cari bilangan sebenar dalam satu kumpulan, darabkan pecahan itu dengan jumlah keseluruhan data.\n\nContoh harian: Sebuah carta pai menunjukkan pecahan murid yang menggemari 4 sukan berbeza daripada 24 orang murid. Jika satu kumpulan mewakili 1/4, berapakah bilangan murid dalam kumpulan itu?",
+      en: "A pie chart shows data as a fraction of a whole circle — each slice represents a fraction (e.g. 1/4, 1/8). To find the actual count in one group, multiply that fraction by the overall total.\n\nEveryday example: A pie chart shows the fraction of pupils who like 4 different sports, out of 24 pupils. If one group represents 1/4, how many pupils are in that group?",
+    },
+    tips: [
+      { ms: "Setiap petak carta pai ialah PECAHAN daripada jumlah keseluruhan — bukan bilangan sebenar. Darabkan pecahan dengan jumlah untuk dapat bilangan sebenar.", en: "Each pie slice is a FRACTION of the total — not the actual count. Multiply the fraction by the total to get the actual count." },
+      { ms: "Jangan anggap semua petak sama besar — semak nombor pada petak itu (pengangka dan penyebut) sebelum mengira.", en: "Don't assume every slice is the same size — check the numbers on that slice (numerator and denominator) before calculating." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti pecahan bagi kumpulan yang ditanya.", en: "Identify the fraction for the group being asked about." },
+      { ms: "Darabkan pecahan itu dengan jumlah keseluruhan data untuk dapat bilangan sebenar.", en: "Multiply that fraction by the overall total to get the actual count." },
+      { ms: "Untuk soalan beza, cari bilangan sebenar bagi KEDUA-DUA kumpulan dahulu, kemudian tolak.", en: "For a difference question, find the actual count for BOTH groups first, then subtract." },
+    ],
+    workedExample: {
+      problem: "Carta pai: kumpulan A = 1/4, jumlah murid = 24. Berapakah bilangan murid dalam kumpulan A?",
+      steps: [
+        { ms: "Pecahan bagi A ialah 1/4", en: "The fraction for A is 1/4" },
+        { ms: "24 × 1/4 = 6", en: "24 × 1/4 = 6" },
+      ],
+      answer: 6,
+    },
+    commonMistakes: [
+      { mistakeType: "treated_as_unit_fraction", description: { ms: "Murid anggap setiap petak carta pai bersamaan 1 bahagian sahaja (cth. mengira jumlah ÷ penyebut) tanpa mengambil kira pengangka sebenar.", en: "The student assumes every pie slice is worth a single 1-part fraction (e.g. total ÷ denominator) without accounting for the actual numerator." } },
+      { mistakeType: "misread_pie_sector", description: { ms: "Murid baca pecahan bagi petak yang salah semasa mengira.", en: "The student reads the fraction for the wrong slice while calculating." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "pie_chart", config: {} },
+      { type: "fill", difficulty: 3, generatorKey: "pie_chart", config: {} },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000073": {
+    id: "a1000000-0000-0000-0000-000000000073",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Zon Waktu", en: "Time Zones" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Bandar-bandar di seluruh dunia berada dalam zon waktu yang berbeza, ditulis sebagai GMT+ atau GMT− (beza jam daripada Greenwich Mean Time). Untuk cari masa di sebuah bandar lain, cari BEZA GMT antara kedua-dua bandar, kemudian tambah atau tolak beza itu daripada masa yang diberi.\n\nContoh harian: Kuala Lumpur ialah GMT+8 dan Tokyo ialah GMT+9. Jika masa di Kuala Lumpur ialah 14:00, pukul berapakah masa di Tokyo?",
+      en: "Cities around the world sit in different time zones, written as GMT+ or GMT− (the hour difference from Greenwich Mean Time). To find the time in another city, find the GMT DIFFERENCE between the two cities, then add or subtract that difference from the given time.\n\nEveryday example: Kuala Lumpur is GMT+8 and Tokyo is GMT+9. If the time in Kuala Lumpur is 14:00, what time is it in Tokyo?",
+    },
+    tips: [
+      { ms: "Jika bandar kedua mempunyai GMT yang LEBIH TINGGI, masanya LEBIH LEWAT — tambah jam. Jika lebih rendah, masanya lebih awal — tolak jam.", en: "If the second city has a HIGHER GMT, its time is LATER — add hours. If lower, its time is earlier — subtract hours." },
+      { ms: "Bandingkan nombor GMT dahulu sebelum mengira — itulah beza jam yang perlu ditambah atau ditolak.", en: "Compare the GMT numbers first before calculating — that's the hour difference you need to add or subtract." },
+    ],
+    howTo: [
+      { ms: "Cari beza GMT antara kedua-dua bandar (GMT bandar destinasi − GMT bandar asal).", en: "Find the GMT difference between the two cities (destination city's GMT − origin city's GMT)." },
+      { ms: "Tambahkan beza itu (jika positif) atau tolak (jika negatif) daripada masa asal.", en: "Add that difference (if positive) or subtract it (if negative) from the original time." },
+    ],
+    workedExample: {
+      problem: "Kuala Lumpur (GMT+8), Tokyo (GMT+9). Masa di Kuala Lumpur: 14:00. Pukul berapa di Tokyo?",
+      steps: [
+        { ms: "Beza GMT = 9 − 8 = +1 jam", en: "GMT difference = 9 − 8 = +1 hour" },
+        { ms: "14:00 + 1 jam = 15:00", en: "14:00 + 1 hour = 15:00" },
+      ],
+      answer: "15:00",
+    },
+    commonMistakes: [
+      { mistakeType: "wrong_offset_direction", description: { ms: "Murid tolak beza GMT sepatutnya tambah, atau sebaliknya.", en: "The student subtracts the GMT difference when they should add it, or vice versa." } },
+      { mistakeType: "forgot_to_convert", description: { ms: "Murid berikan masa asal tanpa melaraskannya mengikut beza GMT.", en: "The student gives the original time without adjusting it for the GMT difference." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "time_zones", config: {} },
+      { type: "fill", difficulty: 3, generatorKey: "time_zones", config: {} },
+    ],
+  },
 };

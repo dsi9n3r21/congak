@@ -191,3 +191,63 @@ export function generateTimeUnitAddSubtract(params: GeneratorParams): GeneratedQ
 
   return question;
 }
+
+// Year 6 KSSR "Time Zones" — the one Y6 Time sub-topic still missing (the
+// real book is otherwise light on Y6 Time compared to Y4/Y5). Uses a
+// small set of real cities that don't observe daylight saving (so a
+// fixed GMT offset is always historically accurate, no DST edge cases to
+// worry about) rather than fictional generic labels, since real-world
+// GMT offsets are the whole point of the topic. Deliberately stays at
+// "what time is it" — not "what day is it" — to match the same-day
+// simplification the rest of Congak's time generators already use.
+function formatHour24(hour: number): string {
+  const hh = ((hour % 24) + 24) % 24;
+  return `${String(hh).padStart(2, "0")}:00`;
+}
+
+const TIME_ZONE_CITIES = [
+  { name: "Kuala Lumpur", offset: 8 },
+  { name: "Tokyo", offset: 9 },
+  { name: "Dubai", offset: 4 },
+  { name: "Moscow", offset: 3 },
+  { name: "Cairo", offset: 2 },
+  { name: "Karachi", offset: 5 },
+];
+
+export function generateTimeZones(params: GeneratorParams): GeneratedQuestion {
+  const type = (params.type as "mcq" | "fill") ?? "mcq";
+
+  const [cityA, cityB] = [...TIME_ZONE_CITIES].sort(() => Math.random() - 0.5).slice(0, 2);
+  const startHour = randInt(0, 23);
+  const diff = cityB.offset - cityA.offset;
+  const correctHour = startHour + diff;
+  const correct = formatHour24(correctHour);
+
+  const question: GeneratedQuestion = {
+    prompt: {
+      ms: `${cityA.name} ialah GMT+${cityA.offset} dan ${cityB.name} ialah GMT+${cityB.offset}. Jika masa di ${cityA.name} ialah ${formatHour24(startHour)}, pukul berapakah masa di ${cityB.name}?`,
+      en: `${cityA.name} is GMT+${cityA.offset} and ${cityB.name} is GMT+${cityB.offset}. If the time in ${cityA.name} is ${formatHour24(startHour)}, what time is it in ${cityB.name}?`,
+    },
+    type,
+    correctAnswer: correct,
+    context: { cityAOffset: cityA.offset, cityBOffset: cityB.offset, startHour, correctHour: ((correctHour % 24) + 24) % 24 },
+    generatorKey: "time_zones",
+    difficulty: 3,
+  };
+
+  if (type === "mcq") {
+    // Classic mistake: applied the offset difference in the wrong direction.
+    const reversed = formatHour24(startHour - diff);
+    // Classic mistake: forgot to convert the time at all.
+    const noChange = formatHour24(startHour);
+    const distractors = Array.from(new Set([reversed, noChange].filter((d) => d !== correct)));
+    question.options = shuffleOptions(correct, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const bump = randInt(1, 4) * (Math.random() > 0.5 ? 1 : -1);
+      const candidate = formatHour24(correctHour + bump);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+  }
+
+  return question;
+}

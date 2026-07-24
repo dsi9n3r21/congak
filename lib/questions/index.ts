@@ -7,7 +7,7 @@ import { generateProportion } from "./generators/proportion";
 import { generateAssetLiability } from "./generators/assetLiability";
 import { generateDecimalAddSubtract } from "./generators/decimals";
 import { generatePercentageOfQuantity } from "./generators/percentage";
-import { generateTimeDuration, generateTimeAddSubtract, generateTimeUnitAddSubtract } from "./generators/time";
+import { generateTimeDuration, generateTimeAddSubtract, generateTimeUnitAddSubtract, generateTimeZones } from "./generators/time";
 import { generateCoordinateDistance } from "./generators/coordinateDistance";
 import { generateModeRangeMedianMean } from "./generators/statistics";
 import { generateCreditVsCash } from "./generators/creditVsCash";
@@ -35,6 +35,7 @@ import { generateWholeNumbersSubtraction } from "./generators/wholeNumbersSubtra
 import { generateWholeNumbersMultiplication } from "./generators/wholeNumbersMultiplication";
 import { generateWholeNumbersDivision } from "./generators/wholeNumbersDivision";
 import { generateBarGraph } from "./generators/barGraph";
+import { generatePieChart } from "./generators/pieChart";
 import { generateCoordinates } from "./generators/coordinates";
 import { generateWholeNumbersDivisionY5 } from "./generators/wholeNumbersDivisionY5";
 import { generateWholeNumbersMultiplicationY6 } from "./generators/wholeNumbersMultiplicationY6";
@@ -70,6 +71,7 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   time_duration: generateTimeDuration,
   time_add_subtract: generateTimeAddSubtract,
   time_unit_add_subtract: generateTimeUnitAddSubtract,
+  time_zones: generateTimeZones,
   coordinate_distance: generateCoordinateDistance,
   mode_range_median_mean: generateModeRangeMedianMean,
   credit_vs_cash: generateCreditVsCash,
@@ -100,6 +102,7 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   whole_numbers_multiplication: generateWholeNumbersMultiplication,
   whole_numbers_division: generateWholeNumbersDivision,
   bar_graph: generateBarGraph,
+  pie_chart: generatePieChart,
   coordinates: generateCoordinates,
   whole_numbers_division_y5: generateWholeNumbersDivisionY5,
   whole_numbers_multiplication_y6: generateWholeNumbersMultiplicationY6,

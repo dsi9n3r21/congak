@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0031 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0033 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0032**.
+should be **0034**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,16 +55,70 @@ should be **0032**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...071` (71 topics). Next new topic should start at `...072`.
+  `...073` (73 topics). Next new topic should start at `...074`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (71 topics — see note on the denominator)
+## Current curriculum coverage (73 topics — see note on the denominator)
 **Explicit instruction from Lynda: keep going until the real curriculum is
 fully covered.** Standing instruction, not a one-off batch.
 
-**Latest round (ids `...070`-`...071`):** completed the Y6 "combined
+**Latest round (id `...073`):** Time Zones (`time_zones`, Y6 Measurement)
+— this was flagged several rounds back as the one remaining Y6 Time
+sub-topic once "combined measurement" was done. **Important caveat: this
+round did NOT have `Math.zip` (the real KSSR textbooks) available in its
+session** — only the scaffold zip was uploaded this time, not the source
+PDFs. Built this topic from general, well-documented KSSR-level knowledge
+of GMT time-zone problems (non-DST cities with fixed offsets — Kuala
+Lumpur, Tokyo, Dubai, Moscow, Cairo, Karachi — so the offsets are always
+correct) rather than the exact textbook wording. It should be pedagogically
+sound, but if Lynda wants exact-textbook fidelity checked, re-upload
+`Math.zip` next round and cross-check this topic (and the ones below)
+against it.
+
+**Also discovered this round: the "still not scoped in detail" section
+further down this file is stale** — it still lists several things as gaps
+that have since been shipped (Y6 Money's discount/invoice/interest/asset-
+liability/insurance-takaful content, Y6 combined measurement, Y6 pie
+charts). Don't trust that section's specifics without cross-checking the
+live topic list first (`grep "yearLevel:" lib/content/topics.ts` or
+similar) — it was accurate when written but has drifted since.
+
+**Real remaining gaps, per that same stale section, still believed open
+(unverified against the real book this round):** Y5/Y6 Time's fuller
+addition/subtraction across every converted unit; Coordinates/Ratio/
+Proportion depth (real books apparently have more than the current
+distance-between-coordinates + simple-ratio + proportion-to-find-a-value);
+the rest of Fractions/Decimals/Percentages (division-of-fractions
+variants, a fuller percentage progression). **Next round: re-upload
+`Math.zip` and re-run the `pdftotext` ToC extraction described below
+before picking what to build — don't build blind from a stale gap list
+again if the real source is available.**
+
+**The round before that (id `...072`):** Reading Pie Charts (`pie_chart`, Y6
+Statistics) — the one known gap that needed an actual new diagram kind.
+Added `PieChartDiagram.tsx` (SVG sectors sized by fraction, wired into
+`QuestionPlayer.tsx` under `diagram.kind === "pie_chart"`) and a new
+`{ kind: "pie_chart"; segments: {label,numerator,denominator}[] }` variant
+on `GeneratedQuestion["diagram"]` in `lib/questions/types.ts`. Sectors are
+labeled with generic A/B/C/D + their fraction directly on the slice (same
+"keep raw SVG text language-neutral" convention as `bar_graph`'s labels —
+the actual scenario wording lives in the bilingual `prompt`, not the SVG).
+Two variants, mirroring `bar_graph`'s total/difference split: `count`
+(total × one group's fraction) and `difference` (between the
+highest- and lowest-count groups). Fractions are drawn from a fixed list
+of 5 "nice" sets (denominators 6, 8, 12) that always sum to a whole, with
+the pupil total always a multiple of that denominator so every answer is
+a whole number — no rounding edge cases to worry about.
+
+**Now-exhausted list of known content gaps** — every gap that was
+previously flagged (pie charts, and before that all three combined-
+measurement pairings) has been built. If nothing new comes to mind, the
+next round should be a fresh pass through the real textbook/DSKP looking
+for anything not yet covered, rather than assuming coverage is complete.
+
+**The round before that (ids `...070`-`...071`):** completed the Y6 "combined
 measurement" set — Combined Length and Volume (`combined_length_volume`,
 garden hose + fertiliser bottle, divided among equal garden sections) and
 Combined Mass and Volume (`combined_mass_volume`, recipe's flour + milk,

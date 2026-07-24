@@ -22,6 +22,7 @@ export interface GeneratedQuestion {
     | { kind: "point3"; angleA: number; angleB: number }
     | { kind: "circle"; radius: number }
     | { kind: "bar_chart"; labels: string[]; values: number[] }
+    | { kind: "pie_chart"; segments: { label: string; numerator: number; denominator: number }[] }
     | { kind: "coordinate_grid"; x: number; y: number; gridSize: number };
 }
 

@@ -1204,6 +1204,37 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "time_zones": {
+      const { cityAOffset, cityBOffset, startHour } = question.context as unknown as { cityAOffset: number; cityBOffset: number; startHour: number };
+      const reversedHour = ((startHour - (cityBOffset - cityAOffset)) % 24 + 24) % 24;
+      const reversed = `${String(reversedHour).padStart(2, "0")}:00`;
+      if (answer === reversed) {
+        return {
+          mistakeType: "wrong_offset_direction",
+          hint: {
+            ms: "Semak semula ARAH pelarasan — jika bandar itu di GMT lebih tinggi, tambah jam; jika lebih rendah, tolak jam.",
+            en: "Check the DIRECTION of the adjustment — if that city's GMT is higher, add hours; if lower, subtract hours.",
+          },
+        };
+      }
+      if (answer === `${String(((startHour % 24) + 24) % 24).padStart(2, "0")}:00`) {
+        return {
+          mistakeType: "forgot_to_convert",
+          hint: {
+            ms: "Anda lupa laraskan masa mengikut beza GMT antara kedua-dua bandar itu.",
+            en: "You forgot to adjust the time by the GMT difference between the two cities.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Cari beza GMT antara kedua-dua bandar, kemudian tambah atau tolak beza itu daripada masa yang diberi.",
+          en: "Find the GMT difference between the two cities, then add or subtract that difference from the given time.",
+        },
+      };
+    }
+
     case "coordinate_distance": {
       const { coord1, coord2 } = question.context as { coord1: number; coord2: number };
       if (Number(answer) === coord1 + coord2) {
@@ -1327,6 +1358,36 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       return {
         mistakeType: "calculation_error",
         hint: { ms: "Cari nilai kumpulan tertinggi dan terendah, kemudian tolak.", en: "Find the highest and lowest group's values, then subtract." },
+      };
+    }
+
+    case "pie_chart": {
+      const ctx = question.context as { variant: string; total: number; denom: number; targetIndex?: number; iHigh?: number; iLow?: number; correct: number };
+      if (ctx.variant === "count") {
+        const unitFractionOnly = ctx.total / ctx.denom;
+        if (Number(answer) === unitFractionOnly && unitFractionOnly !== ctx.correct) {
+          return {
+            mistakeType: "treated_as_unit_fraction",
+            hint: {
+              ms: "Jangan anggap setiap petak carta pai bersamaan 1 bahagian sahaja — semak semula PECAHAN sebenar bagi kumpulan itu.",
+              en: "Don't assume every pie slice is a single 1-part fraction — check the actual fraction shown for that group.",
+            },
+          };
+        }
+        return {
+          mistakeType: "misread_pie_sector",
+          hint: {
+            ms: "Semak semula anda baca pecahan bagi kumpulan yang betul, kemudian darab dengan jumlah keseluruhan.",
+            en: "Check you read the fraction for the correct group, then multiply it by the total.",
+          },
+        };
+      }
+      return {
+        mistakeType: "added_instead_of_subtracted",
+        hint: {
+          ms: "Soalan ini minta BEZA (perbezaan), bukan jumlah — cari bilangan bagi setiap kumpulan dahulu, kemudian tolak.",
+          en: "This question asks for the DIFFERENCE, not a total — find the count for each group first, then subtract.",
+        },
       };
     }
 
