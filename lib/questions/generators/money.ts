@@ -13,7 +13,7 @@ function toSen(rm: number): number {
   return Math.round(rm * 100);
 }
 
-function formatRM(sen: number): string {
+export function formatRM(sen: number): string {
   return `RM${(sen / 100).toFixed(2)}`;
 }
 

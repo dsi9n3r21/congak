@@ -1173,6 +1173,86 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "fractions_divide_by_fraction": {
+      return {
+        mistakeType: "forgot_to_flip",
+        hint: {
+          ms: "Ingat: \"terbalik dan darab\" — terbalikkan pecahan kedua dahulu, kemudian darab.",
+          en: "Remember: \"flip and multiply\" — flip the second fraction first, then multiply.",
+        },
+      };
+    }
+
+    case "fractions_divide_mixed_by_fraction": {
+      return {
+        mistakeType: "fraction_calculation_error",
+        hint: {
+          ms: "Tukar nombor bercampur kepada pecahan tak wajar dahulu, kemudian \"terbalik dan darab\".",
+          en: "Convert the mixed number to an improper fraction first, then \"flip and multiply\".",
+        },
+      };
+    }
+
+    case "time_unit_add_subtract": {
+      const { factor, big, small } = question.context as unknown as { factor: number; big: string; small: string };
+      return {
+        mistakeType: "time_carry_error",
+        hint: {
+          ms: `Ingat: ${factor} ${small} = 1 ${big}. Semak semula sama ada anda "simpan"/"pinjam" dengan betul.`,
+          en: `Remember: ${factor} ${small} = 1 ${big}. Check whether you carried/borrowed correctly.`,
+        },
+      };
+    }
+
+    case "coordinate_distance": {
+      const { coord1, coord2 } = question.context as { coord1: number; coord2: number };
+      if (Number(answer) === coord1 + coord2) {
+        return {
+          mistakeType: "added_instead_of_subtracted",
+          hint: {
+            ms: "Jarak ialah BEZA antara dua koordinat, bukan jumlahnya.",
+            en: "Distance is the DIFFERENCE between two coordinates, not their sum.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: { ms: "Cari beza antara dua koordinat yang berubah itu.", en: "Find the difference between the two changing coordinates." },
+      };
+    }
+
+    case "mode_range_median_mean": {
+      const { statType } = question.context as unknown as { statType: string };
+      const stats = question.context as unknown as Record<string, string>;
+      const confusedWith = Object.keys(stats).find((k) => ["mode", "range", "median", "mean"].includes(k) && k !== statType && stats[k] === answer);
+      if (confusedWith) {
+        return {
+          mistakeType: "confused_statistic_type",
+          hint: {
+            ms: `Itu jawapan untuk ${confusedWith}, bukan ${statType}. Semak semula definisi setiap satu.`,
+            en: `That's the answer for ${confusedWith}, not ${statType}. Double check the definition of each.`,
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Semak semula: mod=paling kerap, julat=maks−min, median=nilai tengah, min=jumlah÷bilangan.",
+          en: "Check again: mode=most frequent, range=max−min, median=middle value, mean=sum÷count.",
+        },
+      };
+    }
+
+    case "credit_vs_cash": {
+      return {
+        mistakeType: "gave_credit_total_not_difference",
+        hint: {
+          ms: "Soalan minta LEBIHAN bayaran, bukan jumlah ansuran keseluruhan — tolak harga tunai daripada jumlah ansuran.",
+          en: "The question asks for the EXTRA amount paid, not the full instalment total — subtract the cash price from the instalment total.",
+        },
+      };
+    }
+
     case "bar_graph": {
       const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number };
       const values = [ctx.v0, ctx.v1, ctx.v2, ctx.v3];

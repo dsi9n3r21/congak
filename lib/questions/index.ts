@@ -7,7 +7,10 @@ import { generateProportion } from "./generators/proportion";
 import { generateAssetLiability } from "./generators/assetLiability";
 import { generateDecimalAddSubtract } from "./generators/decimals";
 import { generatePercentageOfQuantity } from "./generators/percentage";
-import { generateTimeDuration, generateTimeAddSubtract } from "./generators/time";
+import { generateTimeDuration, generateTimeAddSubtract, generateTimeUnitAddSubtract } from "./generators/time";
+import { generateCoordinateDistance } from "./generators/coordinateDistance";
+import { generateModeRangeMedianMean } from "./generators/statistics";
+import { generateCreditVsCash } from "./generators/creditVsCash";
 import { generateLengthAddSubtract } from "./generators/length";
 import { generateUnitConvert } from "./generators/unitConvert";
 import { generateFractionsPercentageConvert } from "./generators/fractionsPercentage";
@@ -42,7 +45,7 @@ import { generateWholeNumbersAdditionY6 } from "./generators/wholeNumbersAdditio
 import { generateWholeNumbersSubtractionY6 } from "./generators/wholeNumbersSubtractionY6";
 import { generateFractionsSubtractSameDenominator } from "./generators/fractionsSubtract";
 import { generateDecimalAddSubtractY4, generateDecimalMultiply, generateDecimalDivide } from "./generators/decimals";
-import { generateFractionsDivideByWhole } from "./generators/fractionsDivide";
+import { generateFractionsDivideByWhole, generateFractionsDivideByFraction, generateFractionsDivideMixedByFraction } from "./generators/fractionsDivide";
 import type { GeneratedQuestion, GeneratorParams } from "./types";
 
 const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> = {
@@ -64,6 +67,10 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   percentage_of_quantity: generatePercentageOfQuantity,
   time_duration: generateTimeDuration,
   time_add_subtract: generateTimeAddSubtract,
+  time_unit_add_subtract: generateTimeUnitAddSubtract,
+  coordinate_distance: generateCoordinateDistance,
+  mode_range_median_mean: generateModeRangeMedianMean,
+  credit_vs_cash: generateCreditVsCash,
   length_add_subtract: generateLengthAddSubtract,
   unit_convert: generateUnitConvert,
   fractions_percentage_convert: generateFractionsPercentageConvert,
@@ -102,6 +109,8 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   decimal_multiply: generateDecimalMultiply,
   decimal_divide: generateDecimalDivide,
   fractions_divide_by_whole: generateFractionsDivideByWhole,
+  fractions_divide_by_fraction: generateFractionsDivideByFraction,
+  fractions_divide_mixed_by_fraction: generateFractionsDivideMixedByFraction,
 };
 
 /**

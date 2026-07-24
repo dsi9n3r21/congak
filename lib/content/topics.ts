@@ -2454,4 +2454,211 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "mcq", difficulty: 2, generatorKey: "asset_liability", config: {} },
     ],
   },
+  "a1000000-0000-0000-0000-000000000062": {
+    id: "a1000000-0000-0000-0000-000000000062",
+    strand: { ms: "Pecahan", en: "Fractions" },
+    title: { ms: "Bahagi Pecahan Dengan Pecahan", en: "Dividing a Fraction by a Fraction" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Untuk membahagikan pecahan dengan pecahan, TERBALIKKAN pecahan kedua, kemudian DARAB. Ini dipanggil \"terbalik dan darab\".\n\nContoh harian: Ada 3/4 liter jus. Jika setiap gelas memerlukan 1/8 liter, berapa gelas boleh diisi?",
+      en: "To divide a fraction by a fraction, FLIP the second fraction, then MULTIPLY. This is called \"flip and multiply\".\n\nEveryday example: There is 3/4 litre of juice. If each glass needs 1/8 litre, how many glasses can be filled?",
+    },
+    tips: [
+      { ms: "Peraturan: (a/b) ÷ (c/d) = (a/b) × (d/c).", en: "The rule: (a/b) ÷ (c/d) = (a/b) × (d/c)." },
+      { ms: "Selepas terbalik, darabkan pengangka dengan pengangka, dan penyebut dengan penyebut.", en: "After flipping, multiply numerator by numerator, and denominator by denominator." },
+    ],
+    howTo: [
+      { ms: "Terbalikkan pecahan kedua (tukar pengangka dan penyebut).", en: "Flip the second fraction (swap numerator and denominator)." },
+      { ms: "Tukar tanda bahagi kepada darab.", en: "Change the division sign to multiplication." },
+      { ms: "Darabkan kedua-dua pecahan, kemudian permudahkan.", en: "Multiply the two fractions, then simplify." },
+    ],
+    workedExample: {
+      problem: "3/4 ÷ 1/8",
+      steps: [
+        { ms: "Terbalikkan pecahan kedua: 1/8 → 8/1", en: "Flip the second fraction: 1/8 → 8/1" },
+        { ms: "Darab: 3/4 × 8/1 = 24/4", en: "Multiply: 3/4 × 8/1 = 24/4" },
+        { ms: "Permudahkan: 24/4 = 6", en: "Simplify: 24/4 = 6" },
+      ],
+      answer: "6/1",
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_to_flip", description: { ms: "Murid darab terus tanpa terbalikkan pecahan kedua.", en: "The student multiplies straight across without flipping the second fraction." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4, 5, 6] } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4] } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000063": {
+    id: "a1000000-0000-0000-0000-000000000063",
+    strand: { ms: "Pecahan", en: "Fractions" },
+    title: { ms: "Bahagi Nombor Bercampur Dengan Pecahan", en: "Dividing a Mixed Number by a Fraction" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Untuk membahagikan nombor bercampur dengan pecahan, TUKAR nombor bercampur kepada pecahan tak wajar dahulu, kemudian \"terbalik dan darab\" seperti biasa.\n\nContoh harian: 1 1/2 bekas air hendak dituang ke dalam botol bersaiz 1/4 bekas. Berapa botol diperlukan?",
+      en: "To divide a mixed number by a fraction, FIRST convert the mixed number to an improper fraction, then \"flip and multiply\" as usual.\n\nEveryday example: 1 1/2 containers of water need to be poured into bottles that hold 1/4 container each. How many bottles are needed?",
+    },
+    tips: [
+      { ms: "Tukar nombor bercampur kepada pecahan tak wajar dahulu — ini langkah yang paling mudah terlepas pandang.", en: "Convert the mixed number to an improper fraction first — this is the step most often skipped." },
+      { ms: "Selepas tukar, gunakan peraturan biasa: terbalik dan darab.", en: "After converting, use the usual rule: flip and multiply." },
+    ],
+    howTo: [
+      { ms: "Tukar nombor bercampur kepada pecahan tak wajar.", en: "Convert the mixed number to an improper fraction." },
+      { ms: "Terbalikkan pecahan kedua dan tukar bahagi kepada darab.", en: "Flip the second fraction and change division to multiplication." },
+      { ms: "Darabkan dan permudahkan.", en: "Multiply and simplify." },
+    ],
+    workedExample: {
+      problem: "1 1/2 ÷ 1/4",
+      steps: [
+        { ms: "Tukar kepada pecahan tak wajar: 1 1/2 = 3/2", en: "Convert to improper fraction: 1 1/2 = 3/2" },
+        { ms: "Terbalik dan darab: 3/2 × 4/1 = 12/2", en: "Flip and multiply: 3/2 × 4/1 = 12/2" },
+        { ms: "Permudahkan: 12/2 = 6", en: "Simplify: 12/2 = 6" },
+      ],
+      answer: "6/1",
+    },
+    commonMistakes: [
+      { mistakeType: "fraction_calculation_error", description: { ms: "Murid tidak tukar kepada pecahan tak wajar sebelum terbalik dan darab.", en: "The student doesn't convert to an improper fraction before flipping and multiplying." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4, 5, 6] } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4] } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000064": {
+    id: "a1000000-0000-0000-0000-000000000064",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Tambah & Tolak Masa (Unit Lebih Besar)", en: "Adding & Subtracting Time (Bigger Units)" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Sama seperti tambah/tolak jam dan minit, tetapi kini menggunakan unit lebih besar seperti tahun/bulan atau dekad/tahun. Regroup apabila unit kecil mencapai had faktor penukaran (cth. 12 bulan = 1 tahun).\n\nContoh harian: Sebuah bangunan berumur 2 tahun 8 bulan. 1 tahun 5 bulan kemudian, berapa umurnya?",
+      en: "Same as adding/subtracting hours and minutes, but now using bigger units like years/months or decades/years. Regroup when the smaller unit reaches its conversion limit (e.g. 12 months = 1 year).\n\nEveryday example: A building is 2 years 8 months old. 1 year 5 months later, how old is it?",
+    },
+    tips: [
+      { ms: "Kenal pasti faktor penukaran untuk pasangan unit itu dahulu (cth. 12 bulan=1 tahun, 10 tahun=1 dekad).", en: "Identify the conversion factor for that unit pair first (e.g. 12 months=1 year, 10 years=1 decade)." },
+      { ms: "Tambah/tolak unit kecil dahulu, kemudian regroup jika perlu.", en: "Add/subtract the smaller unit first, then regroup if needed." },
+    ],
+    howTo: [
+      { ms: "Tambah atau tolak unit kecil dahulu.", en: "Add or subtract the smaller unit first." },
+      { ms: "Jika unit kecil mencapai atau melebihi faktor penukaran, regroup ke unit besar.", en: "If the smaller unit reaches or exceeds the conversion factor, regroup into the larger unit." },
+      { ms: "Tambah atau tolak unit besar.", en: "Add or subtract the larger unit." },
+    ],
+    workedExample: {
+      problem: "2 tahun 8 bulan + 1 tahun 5 bulan",
+      steps: [
+        { ms: "Tambah bulan: 8 + 5 = 13 bulan", en: "Add the months: 8 + 5 = 13 months" },
+        { ms: "13 bulan = 1 tahun 1 bulan", en: "13 months = 1 year 1 month" },
+        { ms: "Tambah tahun: 2 + 1 + 1 = 4 tahun", en: "Add the years: 2 + 1 + 1 = 4 years" },
+        { ms: "Jawapan: 4 tahun 1 bulan", en: "Answer: 4 years 1 month" },
+      ],
+      answer: "4yr 1mth",
+    },
+    commonMistakes: [
+      { mistakeType: "time_carry_error", description: { ms: "Murid tidak regroup apabila unit kecil melebihi faktor penukaran.", en: "The student doesn't regroup when the smaller unit exceeds the conversion factor." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "yr", small: "mth", factor: 12 }], maxBig: 6 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "dec", small: "yr", factor: 10 }], maxBig: 5 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000065": {
+    id: "a1000000-0000-0000-0000-000000000065",
+    strand: { ms: "Koordinat", en: "Coordinates" },
+    title: { ms: "Jarak Antara Dua Koordinat", en: "Distance Between Two Coordinates" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Jika dua titik berkongsi nilai-x yang sama (jarak menegak) atau nilai-y yang sama (jarak mendatar), jarak antara kedua-duanya ialah beza antara nilai koordinat yang berbeza.\n\nContoh harian: Titik A ialah (2, 3) dan titik B ialah (2, 9) — kedua-duanya kongsi nilai-x. Berapakah jarak antara A dan B?",
+      en: "If two points share the same x-value (vertical distance) or the same y-value (horizontal distance), the distance between them is the difference between the coordinate values that differ.\n\nEveryday example: Point A is at (2, 3) and point B is at (2, 9) — they share the same x-value. What is the distance between A and B?",
+    },
+    tips: [
+      { ms: "Cari nilai koordinat yang SAMA — itu petunjuk sama ada jarak itu mendatar atau menegak.", en: "Find the coordinate value that's the SAME — that tells you whether the distance is horizontal or vertical." },
+      { ms: "Jarak = beza (tolak) antara nilai koordinat yang BERBEZA.", en: "Distance = the difference (subtraction) between the coordinate values that DIFFER." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti sama ada nilai-x atau nilai-y adalah sama untuk kedua-dua titik.", en: "Identify whether the x-values or y-values are the same for both points." },
+      { ms: "Tolak nilai koordinat yang berbeza untuk dapatkan jarak.", en: "Subtract the differing coordinate values to get the distance." },
+    ],
+    workedExample: {
+      problem: "A(2, 3) dan B(2, 9)",
+      steps: [
+        { ms: "Nilai-x sama (2), jadi bandingkan nilai-y", en: "The x-value is the same (2), so compare the y-values" },
+        { ms: "Jarak = 9 − 3 = 6", en: "Distance = 9 − 3 = 6" },
+      ],
+      answer: 6,
+    },
+    commonMistakes: [
+      { mistakeType: "added_instead_of_subtracted", description: { ms: "Murid menambah dua nilai koordinat berbanding mencari beza.", en: "The student adds the two coordinate values instead of finding the difference." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "coordinate_distance", config: { maxCoord: 12 } },
+      { type: "fill", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 15 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000066": {
+    id: "a1000000-0000-0000-0000-000000000066",
+    strand: { ms: "Statistik", en: "Statistics" },
+    title: { ms: "Mod, Julat, Median, dan Min", en: "Mode, Range, Median, and Mean" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Terdapat empat cara untuk menggambarkan set data: MOD (nilai paling kerap), JULAT (beza antara maksimum dan minimum), MEDIAN (nilai tengah apabila disusun), dan MIN (jumlah dibahagi bilangan data — sama seperti purata).\n\nContoh harian: Markah ujian 5 murid ialah 12, 15, 12, 18, 20. Apakah mod markah itu?",
+      en: "There are four ways to describe a data set: MODE (the most frequent value), RANGE (the difference between the maximum and minimum), MEDIAN (the middle value when sorted), and MEAN (the sum divided by the count — same as average).\n\nEveryday example: 5 students' test scores are 12, 15, 12, 18, 20. What is the mode of these scores?",
+    },
+    tips: [
+      { ms: "Mod = nilai yang MUNCUL PALING KERAP.", en: "Mode = the value that APPEARS MOST OFTEN." },
+      { ms: "Julat = nilai TERBESAR tolak nilai TERKECIL.", en: "Range = the LARGEST value minus the SMALLEST value." },
+      { ms: "Median: susun data mengikut turutan dahulu, kemudian cari nilai TENGAH.", en: "Median: sort the data in order first, then find the MIDDLE value." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti yang mana satu diminta: mod, julat, median, atau min.", en: "Identify which one is being asked for: mode, range, median, or mean." },
+      { ms: "Susun data mengikut turutan jika perlu (untuk median atau julat).", en: "Sort the data in order if needed (for median or range)." },
+      { ms: "Kira ikut definisi yang betul untuk statistik itu.", en: "Calculate using the correct definition for that statistic." },
+    ],
+    workedExample: {
+      problem: "12, 15, 12, 18, 20 — cari mod",
+      steps: [
+        { ms: "12 muncul dua kali, yang lain sekali sahaja", en: "12 appears twice, the others only once" },
+        { ms: "Jawapan: Mod = 12", en: "Answer: Mode = 12" },
+      ],
+      answer: 12,
+    },
+    commonMistakes: [
+      { mistakeType: "confused_statistic_type", description: { ms: "Murid keliru antara mod, julat, median, dan min.", en: "The student confuses mode, range, median, and mean." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "mode_range_median_mean", config: { maxValue: 20 } },
+      { type: "fill", difficulty: 3, generatorKey: "mode_range_median_mean", config: { maxValue: 30 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000067": {
+    id: "a1000000-0000-0000-0000-000000000067",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Beli Secara Tunai atau Ansuran", en: "Purchasing Via Cash or Instalment" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Membeli secara ansuran (kredit) biasanya kos LEBIH TINGGI berbanding tunai, kerana bayaran pendahuluan ditambah bayaran bulanan biasanya melebihi harga tunai.\n\nContoh harian: Sebuah peti sejuk berharga RM800 secara tunai. Secara ansuran, bayaran pendahuluan RM80, diikuti 12 bulan pada RM65 sebulan. Berapakah lebihan bayaran secara ansuran?",
+      en: "Buying on instalment (credit) usually costs MORE than paying cash, because the deposit plus monthly payments usually add up to more than the cash price.\n\nEveryday example: A fridge costs RM800 in cash. On instalment, the deposit is RM80, followed by 12 months at RM65 per month. How much extra does buying on instalment cost?",
+    },
+    tips: [
+      { ms: "Kira jumlah keseluruhan ansuran dahulu: bayaran pendahuluan + (bayaran bulanan × bilangan bulan).", en: "Calculate the total instalment cost first: deposit + (monthly payment × number of months)." },
+      { ms: "Lebihan = jumlah ansuran − harga tunai.", en: "Extra amount = instalment total − cash price." },
+    ],
+    howTo: [
+      { ms: "Kira jumlah keseluruhan secara ansuran: bayaran pendahuluan + (bayaran bulanan × bilangan bulan).", en: "Calculate the total instalment amount: deposit + (monthly payment × number of months)." },
+      { ms: "Tolak harga tunai daripada jumlah ansuran itu.", en: "Subtract the cash price from that instalment total." },
+    ],
+    workedExample: {
+      problem: "Tunai RM800; ansuran RM80 + (RM65 × 12 bulan)",
+      steps: [
+        { ms: "Jumlah ansuran: 80 + (65 × 12) = 80 + 780 = RM860", en: "Instalment total: 80 + (65 × 12) = 80 + 780 = RM860" },
+        { ms: "Lebihan: 860 − 800 = RM60", en: "Extra: 860 − 800 = RM60" },
+      ],
+      answer: "RM60.00",
+    },
+    commonMistakes: [
+      { mistakeType: "gave_credit_total_not_difference", description: { ms: "Murid beri jumlah ansuran keseluruhan, bukan lebihan berbanding tunai.", en: "The student gives the full instalment total, not the extra amount compared to cash." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 2000 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 1500 } },
+    ],
+  },
 };

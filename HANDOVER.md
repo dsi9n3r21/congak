@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0027 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0029 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0028**.
+should be **0030**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,17 +55,54 @@ should be **0028**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...061` (61 topics). Next new topic should start at `...062`.
+  `...067` (67 topics). Next new topic should start at `...068`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (61 topics — see note on the denominator)
+## Current curriculum coverage (67 topics — see note on the denominator)
 **Explicit instruction from Lynda: keep going until the real curriculum is
-fully covered** (not just another round or two). This is a standing
-instruction, not a one-off batch.
+fully covered.** Standing instruction, not a one-off batch.
 
-**Latest round (ids `...058`-`...061`):** first real content in
+**Latest round (ids `...066`-`...067`):** Y5 Data Handling "Mode, Range,
+Median, and Mean" — one generator (`mode_range_median_mean`) builds a
+5-value dataset and asks for any one of the four measures; the other three
+computed values double as distractors, which naturally tests the specific
+mistake of confusing one statistic for another rather than just testing
+arithmetic. Also picked up Y5 Money "Purchasing Via Cash or Instalment"
+(`credit_vs_cash`) — previously flagged as needing scoping since it's a
+comparison (instalment total vs. cash price), not a single clean
+operation; turned out fine as a straightforward "find the difference"
+generator once the instalment total is computed.
+
+**Still not touched by any round:** Y6 Money insurance/takaful
+(vocabulary-heavy, more categories than the clean binary `asset_liability`
+used — needs real scoping, not a quick reuse); Y5/Y6 Length/Mass/Volume
+"combined" problems (Y6 shifts from single-unit arithmetic to composite
+problems mixing two units); pie charts (Y5/Y6 Data Handling — needs a new
+diagram kind, more setup than `mode_range_median_mean` needed).
+
+**The round before that (ids `...062`-`...065`):** completed all 4 KSSR
+fraction-division sub-topics (`fractions_divide_by_fraction` and
+`fractions_divide_mixed_by_fraction` — "flip and multiply" — join the
+proper÷whole and mixed÷whole ones from earlier rounds). Added a generic
+`time_unit_add_subtract` generator (years/months, decades/years — same
+one-generator-many-configs pattern as `unit_convert`) for Y5's bigger-unit
+time arithmetic. Added Y6 "Distance Between Two Coordinates", restricted
+to horizontal/vertical-only pairs (two points sharing an x or y value) so
+it's pure arithmetic — no new diagram needed, unlike the Y5 "reading
+coordinates" topic.
+
+**Still not touched by any round:** Y5 Money "credit vs. cash purchasing"
+(comparison-based, needs scoping — not a clean arithmetic generator); Y6
+Money insurance/takaful (vocabulary-heavy, more categories than the clean
+binary `asset_liability` used); Y5/Y6 Length/Mass/Volume "combined"
+problems (Y6 real book shifts from single-unit arithmetic to composite
+problems mixing two units, e.g. length-and-mass together); Data Handling
+beyond `likelihood` (pie charts, mode/range/median/mean are in the real
+Y5/Y6 books, not built).
+
+**The round before that (ids `...058`-`...061`):** first real content in
 Coordinates/Ratio/Proportion since the strand's initial 2 topics — Y5
 "Proportion to Find a Value" (given a ratio and one known quantity, scale
 to find the other). Also 3 more Y6 Money topics from the real book's

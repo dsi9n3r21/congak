@@ -129,3 +129,65 @@ export function generateTimeAddSubtract(params: GeneratorParams): GeneratedQuest
 
   return question;
 }
+
+// Year 5 KSSR extends time addition/subtraction to bigger unit pairs
+// (years/months, decades/years, centuries/decades — not just hours/
+// minutes). Generic, config-driven, same efficiency idea as unit_convert:
+// one generator, many topics via a `pairs` config instead of one
+// near-duplicate file per unit pair.
+interface TimeUnitPair {
+  big: string; // e.g. "yr", "dec", "c"
+  small: string; // e.g. "mth", "yr", "dec"
+  factor: number; // how many `small` units make 1 `big` unit
+}
+
+export function generateTimeUnitAddSubtract(params: GeneratorParams): GeneratedQuestion {
+  const pairs = (params.pairs as TimeUnitPair[]) ?? [{ big: "yr", small: "mth", factor: 12 }];
+  const maxBig = Number(params.maxBig ?? 8);
+  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const op = pick(["add", "subtract"] as const);
+
+  const { big, small, factor } = pick(pairs);
+  let aSmall = randInt(1, maxBig) * factor + randInt(0, factor - 1);
+  let bSmall = randInt(1, maxBig) * factor + randInt(0, factor - 1);
+  if (op === "subtract" && bSmall > aSmall) [aSmall, bSmall] = [bSmall, aSmall];
+
+  const correctSmall = op === "add" ? aSmall + bSmall : aSmall - bSmall;
+  const symbol = op === "add" ? "+" : "−";
+
+  const fmt = (totalSmall: number) => {
+    const bigVal = Math.floor(totalSmall / factor);
+    const smallVal = totalSmall % factor;
+    if (bigVal === 0) return `${smallVal}${small}`;
+    if (smallVal === 0) return `${bigVal}${big}`;
+    return `${bigVal}${big} ${smallVal}${small}`;
+  };
+
+  const question: GeneratedQuestion = {
+    prompt: { ms: `${fmt(aSmall)} ${symbol} ${fmt(bSmall)} = ?`, en: `${fmt(aSmall)} ${symbol} ${fmt(bSmall)} = ?` },
+    type,
+    correctAnswer: fmt(correctSmall),
+    context: { big, small, factor, aSmall, bSmall, correctSmall, op },
+    generatorKey: "time_unit_add_subtract",
+    difficulty: 3,
+  };
+
+  if (type === "mcq") {
+    // Classic mistake: not regrouping at the unit's conversion factor
+    // (treating the small unit as base-10 instead of base-`factor`).
+    const aBig = Math.floor(aSmall / factor), aRem = aSmall % factor;
+    const bBig = Math.floor(bSmall / factor), bRem = bSmall % factor;
+    const noCarryBig = op === "add" ? aBig + bBig : Math.abs(aBig - bBig);
+    const noCarrySmall = op === "add" ? aRem + bRem : Math.abs(aRem - bRem);
+    const noCarryLabel = `${noCarryBig}${big} ${noCarrySmall}${small}`;
+    const distractors = Array.from(new Set([noCarryLabel].filter((d) => d !== question.correctAnswer)));
+    question.options = shuffleOptions(question.correctAnswer, distractors);
+    while (question.options.length < 3) {
+      const candidateSmall = Math.max(0, correctSmall + randInt(1, factor - 1) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = fmt(candidateSmall);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+  }
+
+  return question;
+}
