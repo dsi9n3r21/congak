@@ -2661,4 +2661,135 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 1500 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000068": {
+    id: "a1000000-0000-0000-0000-000000000068",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Insurans dan Takaful", en: "Insurance and Takaful" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Insurans dan takaful kedua-duanya melindungi anda daripada risiko kewangan, tetapi beroperasi secara berbeza. Insurans konvensional dikendalikan syarikat dengan premium tetap untuk keuntungan syarikat. Takaful berdasarkan prinsip Syariah — peserta saling membantu melalui sumbangan bersama, tanpa riba.\n\nContoh harian: Sebuah pelan yang mengagihkan lebihan dana kepada peserta mengikut prinsip perkongsian keuntungan — adakah ini insurans atau takaful?",
+      en: "Insurance and takaful both protect you from financial risk, but operate differently. Conventional insurance is company-run with a fixed premium for the company's profit. Takaful is based on Shariah principles — participants mutually help each other through shared contributions, with no interest involved.\n\nEveryday example: A plan that distributes surplus funds to participants based on profit-sharing principles — is this insurance or takaful?",
+    },
+    tips: [
+      { ms: "Kata kunci untuk Takaful: Syariah, sumbangan bersama, tiada riba, perkongsian keuntungan.", en: "Keywords for Takaful: Shariah, mutual contribution, no interest, profit-sharing." },
+      { ms: "Kata kunci untuk Insurans: konvensional, premium tetap, dikendalikan syarikat untuk keuntungan.", en: "Keywords for Insurance: conventional, fixed premium, company-run for profit." },
+    ],
+    howTo: [
+      { ms: "Baca perihalan pelan itu dengan teliti.", en: "Read the plan's description carefully." },
+      { ms: "Cari petunjuk: adakah ia berasaskan Syariah/sumbangan bersama (takaful) atau premium konvensional (insurans)?", en: "Look for clues: is it Shariah-based/mutual contribution (takaful) or a conventional premium (insurance)?" },
+    ],
+    workedExample: {
+      problem: "Pelan berasaskan prinsip mudharabah, tiada riba",
+      steps: [
+        { ms: "\"Mudharabah\" dan \"tiada riba\" ialah prinsip Syariah", en: "\"Mudharabah\" and \"no interest\" are Shariah principles" },
+        { ms: "Jawapan: Takaful", en: "Answer: Takaful" },
+      ],
+      answer: "takaful",
+    },
+    commonMistakes: [
+      { mistakeType: "insurance_takaful_misconception", description: { ms: "Murid keliru antara ciri insurans konvensional dan takaful.", en: "The student confuses the features of conventional insurance and takaful." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "insurance_takaful", config: {} },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000069": {
+    id: "a1000000-0000-0000-0000-000000000069",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Panjang dan Jisim Bergabung", en: "Combined Length and Mass" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Tahun 6 menggabungkan lebih daripada satu jenis ukuran dalam satu soalan — cth. panjang DAN jisim dalam situasi yang sama. Selesaikan setiap bahagian secara berasingan menggunakan kaedah yang sudah dipelajari.\n\nContoh harian: Seutas tali panjangnya 3 m dan beratnya 1.2 kg. Ia dipotong kepada 4 bahagian sama. Berapakah panjang setiap bahagian?",
+      en: "Year 6 combines more than one type of measurement in a single question — e.g. length AND mass in the same situation. Solve each part separately using methods already learned.\n\nEveryday example: A rope is 3 m long and weighs 1.2 kg. It is cut into 4 equal pieces. What is the length of each piece?",
+    },
+    tips: [
+      { ms: "Baca soalan dengan teliti — kenal pasti kuantiti MANA yang sebenarnya ditanya (panjang atau berat).", en: "Read the question carefully — identify which quantity is actually being asked for (length or weight)." },
+      { ms: "Selesaikan panjang dan jisim secara berasingan — jangan campurkan kedua-duanya.", en: "Solve length and mass separately — don't mix the two together." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti kuantiti yang ditanya: panjang atau berat.", en: "Identify the quantity being asked for: length or weight." },
+      { ms: "Bahagikan jumlah kuantiti itu (panjang ATAU berat) dengan bilangan bahagian.", en: "Divide that total quantity (length OR weight) by the number of pieces." },
+    ],
+    workedExample: {
+      problem: "Tali 3 m, 1.2 kg, dipotong kepada 4 bahagian. Panjang setiap bahagian?",
+      steps: [
+        { ms: "Fokus pada panjang sahaja: 3 m = 300 cm", en: "Focus on length only: 3 m = 300 cm" },
+        { ms: "300 cm ÷ 4 = 75 cm", en: "300 cm ÷ 4 = 75 cm" },
+      ],
+      answer: "75cm",
+    },
+    commonMistakes: [
+      { mistakeType: "mixed_up_measurement_quantity", description: { ms: "Murid jawab kuantiti yang salah (berat berbanding panjang, atau sebaliknya).", en: "The student answers the wrong quantity (weight instead of length, or vice versa)." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 6 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 4 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000070": {
+    id: "a1000000-0000-0000-0000-000000000070",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Panjang dan Isipadu Bergabung", en: "Combined Length and Volume" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Panjang dan isipadu boleh digabungkan dalam satu situasi sebenar — cth. hos taman dan baja cecair yang dibahagikan sama rata. Selesaikan setiap bahagian secara berasingan menggunakan kaedah yang sudah dipelajari.\n\nContoh harian: Hos taman panjangnya 6 m dan botol baja berisi 1 L 200 ml. Kedua-duanya dibahagikan kepada 3 bahagian taman. Berapakah panjang setiap bahagian?",
+      en: "Length and volume can be combined in one real-world situation — e.g. a garden hose and liquid fertiliser divided equally. Solve each part separately using methods already learned.\n\nEveryday example: A garden hose is 6 m long and a fertiliser bottle holds 1 L 200 ml. Both are divided among 3 garden sections. What is the length of each section?",
+    },
+    tips: [
+      { ms: "Baca soalan dengan teliti — kenal pasti kuantiti MANA yang sebenarnya ditanya (panjang atau isipadu).", en: "Read the question carefully — identify which quantity is actually being asked for (length or volume)." },
+      { ms: "Selesaikan panjang dan isipadu secara berasingan — jangan campurkan kedua-duanya.", en: "Solve length and volume separately — don't mix the two together." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti kuantiti yang ditanya: panjang atau isipadu.", en: "Identify the quantity being asked for: length or volume." },
+      { ms: "Bahagikan jumlah kuantiti itu (panjang ATAU isipadu) dengan bilangan bahagian.", en: "Divide that total quantity (length OR volume) by the number of sections." },
+    ],
+    workedExample: {
+      problem: "Hos 6 m, baja 1 L 200 ml, dibahagikan kepada 3 bahagian. Panjang setiap bahagian?",
+      steps: [
+        { ms: "Fokus pada panjang sahaja: 6 m = 600 cm", en: "Focus on length only: 6 m = 600 cm" },
+        { ms: "600 cm ÷ 3 = 200 cm", en: "600 cm ÷ 3 = 200 cm" },
+      ],
+      answer: "200cm",
+    },
+    commonMistakes: [
+      { mistakeType: "mixed_up_measurement_quantity", description: { ms: "Murid jawab kuantiti yang salah (isipadu berbanding panjang, atau sebaliknya).", en: "The student answers the wrong quantity (volume instead of length, or vice versa)." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 6 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 4 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000071": {
+    id: "a1000000-0000-0000-0000-000000000071",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Jisim dan Isipadu Bergabung", en: "Combined Mass and Volume" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Jisim dan isipadu boleh digabungkan dalam satu situasi sebenar — cth. resipi yang menggunakan tepung dan susu, dibahagikan kepada beberapa bahagian sama banyak. Selesaikan setiap bahagian secara berasingan menggunakan kaedah yang sudah dipelajari.\n\nContoh harian: Satu resipi menggunakan 900 g tepung dan 1 L 500 ml susu untuk membuat 3 bahagian sama banyak. Berapakah berat tepung bagi setiap bahagian?",
+      en: "Mass and volume can be combined in one real-world situation — e.g. a recipe using flour and milk, divided into several equal batches. Solve each part separately using methods already learned.\n\nEveryday example: A recipe uses 900 g of flour and 1 L 500 ml of milk to make 3 equal batches. What is the mass of flour for each batch?",
+    },
+    tips: [
+      { ms: "Baca soalan dengan teliti — kenal pasti kuantiti MANA yang sebenarnya ditanya (berat tepung atau isipadu susu).", en: "Read the question carefully — identify which quantity is actually being asked for (mass of flour or volume of milk)." },
+      { ms: "Selesaikan jisim dan isipadu secara berasingan — jangan campurkan kedua-duanya.", en: "Solve mass and volume separately — don't mix the two together." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti kuantiti yang ditanya: berat tepung atau isipadu susu.", en: "Identify the quantity being asked for: mass of flour or volume of milk." },
+      { ms: "Bahagikan jumlah kuantiti itu dengan bilangan bahagian.", en: "Divide that total quantity by the number of batches." },
+    ],
+    workedExample: {
+      problem: "Tepung 900 g, susu 1 L 500 ml, dibahagikan kepada 3 bahagian. Berat tepung setiap bahagian?",
+      steps: [
+        { ms: "Fokus pada jisim sahaja: 900 g ÷ 3", en: "Focus on mass only: 900 g ÷ 3" },
+        { ms: "900 g ÷ 3 = 300 g", en: "900 g ÷ 3 = 300 g" },
+      ],
+      answer: "300g",
+    },
+    commonMistakes: [
+      { mistakeType: "mixed_up_measurement_quantity", description: { ms: "Murid jawab kuantiti yang salah (isipadu susu berbanding berat tepung, atau sebaliknya).", en: "The student answers the wrong quantity (volume of milk instead of mass of flour, or vice versa)." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 6 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 4 } },
+    ],
+  },
 };

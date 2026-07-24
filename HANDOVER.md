@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0029 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0031 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0030**.
+should be **0032**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,16 +55,49 @@ should be **0030**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...067` (67 topics). Next new topic should start at `...068`.
+  `...071` (71 topics). Next new topic should start at `...072`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (67 topics — see note on the denominator)
+## Current curriculum coverage (71 topics — see note on the denominator)
 **Explicit instruction from Lynda: keep going until the real curriculum is
 fully covered.** Standing instruction, not a one-off batch.
 
-**Latest round (ids `...066`-`...067`):** Y5 Data Handling "Mode, Range,
+**Latest round (ids `...070`-`...071`):** completed the Y6 "combined
+measurement" set — Combined Length and Volume (`combined_length_volume`,
+garden hose + fertiliser bottle, divided among equal garden sections) and
+Combined Mass and Volume (`combined_mass_volume`, recipe's flour + milk,
+divided into equal batches). Both follow the exact `combined_length_mass`
+pattern from the round before (mixed-up-quantity + gave-total distractors,
+same single-correctAnswer constraint). No new diagram needed. This closes
+out all three real-book combined-measurement pairings (length+mass,
+length+volume, mass+volume).
+
+**Still not touched by any round:** pie charts (Y5/Y6 Data Handling —
+needs a new diagram kind, unlike everything built so far — this is now
+the only remaining known gap besides re-verifying Space's Y6 circle
+radius/diameter and specific-degree angle-drawing exercises against the
+real textbook).
+
+**The round before that (ids `...068`-`...069`):** closed two more previously-flagged
+gaps. Y6 Money "Insurance and Takaful" (`insurance_takaful`) — third
+word-answer/non-arithmetic generator (alongside `likelihood` and
+`asset_liability`); distinguishes the two by stated operating principle
+(Shariah/mutual-contribution/no-riba vs. conventional/fixed-premium/
+company-run) rather than anything guessable from context, since that's
+what the real lesson is actually teaching. Y6 "Combined Length and Mass"
+(`combined_length_mass`) — first of the Y6 "combined measurement"
+problems (a rope's length AND a parcel's mass both divided by the same
+number of pieces in one scenario; asks for just one of the two results to
+keep a single `correctAnswer`, same constraint every other generator has).
+
+**Still not touched by any round:** pie charts (Y5/Y6 Data Handling —
+needs a new diagram kind, unlike everything built so far); Length/Mass/
+Volume "combined" problems beyond the one length+mass pairing just added
+(length+volume, mass+volume also exist in the real Y6 book).
+
+**The round before that (ids `...066`-`...067`):** Y5 Data Handling "Mode, Range,
 Median, and Mean" — one generator (`mode_range_median_mean`) builds a
 5-value dataset and asks for any one of the four measures; the other three
 computed values double as distractors, which naturally tests the specific

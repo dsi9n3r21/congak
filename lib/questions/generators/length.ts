@@ -6,7 +6,7 @@ import type { GeneratedQuestion, GeneratorParams } from "../types";
 // — see money.ts generateMoneyAddSubtract). "m"/"cm" abbreviations are
 // identical in Malay and English, so unlike time's duration format, no
 // separate neutral-vs-worded formatting is needed here.
-function formatLength(totalCm: number): string {
+export function formatLength(totalCm: number): string {
   const m = Math.floor(totalCm / 100);
   const cm = totalCm % 100;
   if (m === 0) return `${cm}cm`;

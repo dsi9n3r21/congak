@@ -1253,6 +1253,49 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "insurance_takaful": {
+      return {
+        mistakeType: "insurance_takaful_misconception",
+        hint: {
+          ms: "Takaful berdasarkan prinsip Syariah (sumbangan bersama, tiada riba). Insurans konvensional dikendalikan syarikat dengan premium tetap.",
+          en: "Takaful is based on Shariah principles (mutual contribution, no interest). Conventional insurance is company-run with a fixed premium.",
+        },
+      };
+    }
+
+    case "combined_length_mass": {
+      const { askLength } = question.context as unknown as { askLength: string };
+      return {
+        mistakeType: "mixed_up_measurement_quantity",
+        hint: {
+          ms: `Soalan ini minta ${askLength === "yes" ? "PANJANG" : "BERAT"} setiap bahagian — semak semula anda jawab kuantiti yang betul.`,
+          en: `This question asks for the ${askLength === "yes" ? "LENGTH" : "WEIGHT"} of each piece — check you answered the right quantity.`,
+        },
+      };
+    }
+
+    case "combined_length_volume": {
+      const { askLength } = question.context as unknown as { askLength: string };
+      return {
+        mistakeType: "mixed_up_measurement_quantity",
+        hint: {
+          ms: `Soalan ini minta ${askLength === "yes" ? "PANJANG" : "ISIPADU"} setiap bahagian — semak semula anda jawab kuantiti yang betul.`,
+          en: `This question asks for the ${askLength === "yes" ? "LENGTH" : "VOLUME"} of each section — check you answered the right quantity.`,
+        },
+      };
+    }
+
+    case "combined_mass_volume": {
+      const { askMass } = question.context as unknown as { askMass: string };
+      return {
+        mistakeType: "mixed_up_measurement_quantity",
+        hint: {
+          ms: `Soalan ini minta ${askMass === "yes" ? "BERAT TEPUNG" : "ISIPADU SUSU"} setiap bahagian — semak semula anda jawab kuantiti yang betul.`,
+          en: `This question asks for the ${askMass === "yes" ? "MASS OF FLOUR" : "VOLUME OF MILK"} of each batch — check you answered the right quantity.`,
+        },
+      };
+    }
+
     case "bar_graph": {
       const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number };
       const values = [ctx.v0, ctx.v1, ctx.v2, ctx.v3];

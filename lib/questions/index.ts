@@ -11,6 +11,8 @@ import { generateTimeDuration, generateTimeAddSubtract, generateTimeUnitAddSubtr
 import { generateCoordinateDistance } from "./generators/coordinateDistance";
 import { generateModeRangeMedianMean } from "./generators/statistics";
 import { generateCreditVsCash } from "./generators/creditVsCash";
+import { generateInsuranceTakaful } from "./generators/insuranceTakaful";
+import { generateCombinedLengthMass, generateCombinedLengthVolume, generateCombinedMassVolume } from "./generators/combinedMeasurement";
 import { generateLengthAddSubtract } from "./generators/length";
 import { generateUnitConvert } from "./generators/unitConvert";
 import { generateFractionsPercentageConvert } from "./generators/fractionsPercentage";
@@ -71,6 +73,10 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   coordinate_distance: generateCoordinateDistance,
   mode_range_median_mean: generateModeRangeMedianMean,
   credit_vs_cash: generateCreditVsCash,
+  insurance_takaful: generateInsuranceTakaful,
+  combined_length_mass: generateCombinedLengthMass,
+  combined_length_volume: generateCombinedLengthVolume,
+  combined_mass_volume: generateCombinedMassVolume,
   length_add_subtract: generateLengthAddSubtract,
   unit_convert: generateUnitConvert,
   fractions_percentage_convert: generateFractionsPercentageConvert,

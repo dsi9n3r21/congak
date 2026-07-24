@@ -18,4 +18,6 @@ export const OPTION_LABELS: Record<string, Bilingual> = {
   less_likely: { ms: "Kurang Berkemungkinan", en: "Less Likely" },
   asset: { ms: "Aset", en: "Asset" },
   liability: { ms: "Liabiliti", en: "Liability" },
+  insurance: { ms: "Insurans", en: "Insurance" },
+  takaful: { ms: "Takaful", en: "Takaful" },
 };
