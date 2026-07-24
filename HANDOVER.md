@@ -585,6 +585,17 @@ app currently looks inconsistent (new dashboard, old-style everywhere
 else). A real "Skor" personal-stats page and real Misi (daily missions/
 badges) are separate future scope, not visual-only.
 
+**UX change (separate from the visual restyle above):** `learn` and
+`practice` used to stack all 3 years' topics as long sections on one
+page — unwieldy once the topic count passed 70+. Replaced with a shared
+`components/student/TopicYearBrowser.tsx` client component: three
+"Tahun 4/5/6" segmented buttons (same look as the existing Tahun picker
+on profile setup — border-kuning + bg-kuning-light when selected), click
+one to see just that year's topics. Defaults to the student's own year.
+This is a structural fix, not a re-skin — it still uses the OLD (pre-
+restyle) card look, so it still needs the same dashboard-style visual
+pass as the rest of `learn`/`practice` whenever that round happens.
+
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to
   defer this until "everything is running smoothly" — she shared two

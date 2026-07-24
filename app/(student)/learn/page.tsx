@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { TOPICS } from "@/lib/content/topics";
-import { Bi } from "@/lib/i18n/Bi";
 import { createClient } from "@/lib/supabase/server";
+import { TopicYearBrowser, type YearGroup } from "@/components/student/TopicYearBrowser";
 
 export default async function LearnIndexPage() {
   const supabase = createClient();
@@ -20,9 +19,17 @@ export default async function LearnIndexPage() {
     .eq("student_id", student?.id ?? "");
   const masteryByTopic = new Map((mastery ?? []).map((m) => [m.topic_id, m.mastery_score]));
 
-  const topicsByYear = [4, 5, 6].map((year) => ({
+  const groups: YearGroup[] = [4, 5, 6].map((year) => ({
     year,
-    topics: Object.values(TOPICS).filter((t) => t.yearLevel === year),
+    topics: Object.values(TOPICS)
+      .filter((t) => t.yearLevel === year)
+      .map((topic) => ({
+        id: topic.id,
+        strand: topic.strand,
+        title: topic.title,
+        href: `/learn/${topic.id}`,
+        score: masteryByTopic.get(topic.id),
+      })),
   }));
 
   return (
@@ -33,59 +40,17 @@ export default async function LearnIndexPage() {
         </h1>
         <p className="mt-1 text-xs text-ink/50">
           {lang === "en"
-            ? "Pick any topic from any year to learn or revise — not just what's recommended."
-            : "Pilih mana-mana topik dari tahun mana-mana untuk belajar atau mengulang kaji — bukan hanya cadangan sahaja."}
+            ? "Pick a year, then any topic to learn or revise — not just what's recommended."
+            : "Pilih tahun, kemudian mana-mana topik untuk belajar atau mengulang kaji — bukan hanya cadangan sahaja."}
         </p>
       </header>
 
-      {topicsByYear.map(({ year, topics }) => {
-        if (topics.length === 0) return null;
-        return (
-          <section key={year} className="mx-5 mt-4">
-            <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ink/50">
-              Tahun {year}
-              {student?.year_level === year && (
-                <span className="rounded-full bg-kuning-light px-2 py-0.5 text-[10px] text-kuning-dark">
-                  {lang === "en" ? "Your year" : "Tahun anda"}
-                </span>
-              )}
-            </p>
-            <div className="space-y-2">
-              {topics.map((topic) => {
-                const score = masteryByTopic.get(topic.id);
-                return (
-                  <Link
-                    key={topic.id}
-                    href={`/learn/${topic.id}`}
-                    className="block rounded-kite bg-white p-4 shadow-card active:scale-[0.98] transition-transform"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs font-semibold text-kuning-dark"><Bi text={topic.strand} lang={lang} /></p>
-                        <p className="font-display text-base font-bold text-ink"><Bi text={topic.title} lang={lang} /></p>
-                      </div>
-                      {score !== undefined && (
-                        <div className="text-right">
-                          <p className="font-num text-sm font-bold text-ink/60">{score}%</p>
-                        </div>
-                      )}
-                    </div>
-                    {score !== undefined && (
-                      <div className="mt-2 h-1 w-full rounded-full bg-ink/10">
-                        <div
-                          className={`h-1 rounded-full ${score < 50 ? "bg-saga" : "bg-pandan"}`}
-                          style={{ width: `${score}%` }}
-                        />
-                      </div>
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        );
-      })}
-
+      <TopicYearBrowser
+        groups={groups}
+        lang={lang}
+        studentYear={student?.year_level ?? undefined}
+        emptyText={{ ms: "Tiada topik untuk tahun ini.", en: "No topics for this year." }}
+      />
     </main>
   );
 }

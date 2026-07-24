@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { TOPICS } from "@/lib/content/topics";
-import { Bi } from "@/lib/i18n/Bi";
 import { createClient } from "@/lib/supabase/server";
+import { TopicYearBrowser, type YearGroup } from "@/components/student/TopicYearBrowser";
 
 export default async function PracticeIndexPage() {
   const supabase = createClient();
@@ -20,9 +19,17 @@ export default async function PracticeIndexPage() {
     .eq("student_id", student?.id ?? "");
   const masteryByTopic = new Map((mastery ?? []).map((m) => [m.topic_id, m]));
 
-  const topicsByYear = [4, 5, 6].map((year) => ({
+  const groups: YearGroup[] = [4, 5, 6].map((year) => ({
     year,
-    topics: Object.values(TOPICS).filter((t) => t.yearLevel === year),
+    topics: Object.values(TOPICS)
+      .filter((t) => t.yearLevel === year)
+      .map((topic) => ({
+        id: topic.id,
+        strand: topic.strand,
+        title: topic.title,
+        href: `/practice/${topic.id}`,
+        weak: masteryByTopic.get(topic.id)?.weak_flag ?? false,
+      })),
   }));
 
   return (
@@ -33,49 +40,17 @@ export default async function PracticeIndexPage() {
         </h1>
         <p className="mt-1 text-xs text-ink/50">
           {lang === "en"
-            ? "Jump straight into practice questions for any topic."
-            : "Terus mula soalan latihan untuk mana-mana topik."}
+            ? "Pick a year, then jump straight into practice questions for any topic."
+            : "Pilih tahun, kemudian terus mula soalan latihan untuk mana-mana topik."}
         </p>
       </header>
 
-      {topicsByYear.map(({ year, topics }) => {
-        if (topics.length === 0) return null;
-        return (
-          <section key={year} className="mx-5 mt-4">
-            <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ink/50">
-              Tahun {year}
-              {student?.year_level === year && (
-                <span className="rounded-full bg-kuning-light px-2 py-0.5 text-[10px] text-kuning-dark">
-                  {lang === "en" ? "Your year" : "Tahun anda"}
-                </span>
-              )}
-            </p>
-            <div className="space-y-2">
-              {topics.map((topic) => {
-                const m = masteryByTopic.get(topic.id);
-                return (
-                  <Link
-                    key={topic.id}
-                    href={`/practice/${topic.id}`}
-                    className="flex items-center justify-between rounded-kite bg-white p-4 shadow-card active:scale-[0.98] transition-transform"
-                  >
-                    <div>
-                      <p className="text-xs font-semibold text-kuning-dark"><Bi text={topic.strand} lang={lang} /></p>
-                      <p className="font-display text-base font-bold text-ink"><Bi text={topic.title} lang={lang} /></p>
-                    </div>
-                    {m?.weak_flag && (
-                      <span className="rounded-full bg-saga-light px-2 py-1 text-[10px] font-semibold text-saga-dark">
-                        {lang === "en" ? "Weak" : "Lemah"}
-                      </span>
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        );
-      })}
-
+      <TopicYearBrowser
+        groups={groups}
+        lang={lang}
+        studentYear={student?.year_level ?? undefined}
+        emptyText={{ ms: "Tiada topik untuk tahun ini.", en: "No topics for this year." }}
+      />
     </main>
   );
 }
