@@ -4,6 +4,9 @@ import type { Config } from "tailwindcss";
 // paper-craft diamonds, not the generic cream/terracotta or dark/neon-green
 // AI-default palettes. Numbers get a monospace treatment throughout, tying
 // visually back to "congak" (mental arithmetic) — digits feel counted, not decorative.
+// Purple (ungu) added later per Lynda's own reference design (mascot-led,
+// game-like) — used for level/XP, Pintar chat, and selected states; kuning
+// stays for CTAs and everyday warmth so the palette doesn't go all-purple.
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
@@ -37,6 +40,11 @@ const config: Config = {
           DEFAULT: "#3C9D6B",
           dark: "#2A7350",
           light: "#D3EEDF",
+        },
+        ungu: {                  // purple — primary brand accent (level/XP,
+          DEFAULT: "#6D4AC4",    // Pintar chat, selected states), per Lynda's
+          dark: "#4A2F8F",       // reference design; kuning stays for CTAs
+          light: "#E7E0FA",      // that still want the marigold warmth
         },
       },
       fontFamily: {

@@ -5,6 +5,7 @@ import { Bi } from "@/lib/i18n/Bi";
 import { UI } from "@/lib/i18n/dictionary";
 import type { Bilingual } from "@/lib/i18n/dictionary";
 import Image from "next/image";
+import { Star, Flame, Target, Trophy, AlertTriangle, Lock, Timer } from "lucide-react";
 
 // Presentational only — not stored anywhere, just a friendlier label under
 // the level number on the dashboard hero card. Purely cosmetic, doesn't
@@ -70,15 +71,18 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      {/* Hero: level + XP, mirrors the "Tahap Kamu / XP Hari Ini" card in
-          the reference design — labeled as total XP toward next level
-          rather than "today's XP", since Congak doesn't track daily XP
-          separately (only a running total) */}
-      <section className="mx-5 rounded-kite bg-gradient-to-br from-biru to-biru-dark shadow-card px-5 py-5 text-paper">
+      {/* Hero: level + XP, mirrors the "LEVEL / XP TODAY" card in Lynda's
+          reference design — purple gradient now (was blue), labeled as
+          total XP toward next level rather than "today's XP", since
+          Congak doesn't track daily XP separately (only a running total).
+          The reference's "View stats" link isn't wired up here — there's
+          no Skor/stats page built yet (separate deferred feature), so a
+          link to nowhere would be worse than leaving it off. */}
+      <section className="mx-5 rounded-kite bg-gradient-to-br from-ungu to-ungu-dark shadow-card px-5 py-5 text-paper">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-kuning text-xl">
-              ⭐
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-kuning">
+              <Star size={22} className="fill-paper text-paper" />
             </div>
             <div>
               <p className="text-xs opacity-80">
@@ -104,7 +108,7 @@ export default async function DashboardPage() {
           </div>
         </div>
         <div className="mt-4 flex items-center gap-1.5 border-t border-paper/15 pt-3 text-xs opacity-90">
-          <span>🔥</span>
+          <Flame size={14} className="fill-kuning text-kuning" />
           <span className="font-num font-semibold">{streak}</span>
           <span>
             <Bi text={UI.streakDaysLabel} lang={lang} />
@@ -115,7 +119,9 @@ export default async function DashboardPage() {
       {recommended && (
         <section className="mx-5 mt-4 rounded-kite bg-pandan-light px-5 py-4 shadow-card">
           <div className="flex items-start gap-3">
-            <span className="text-2xl">🎯</span>
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-pandan/15">
+              <Target size={18} className="text-pandan-dark" />
+            </span>
             <div className="flex-1">
               <p className="text-xs font-semibold uppercase tracking-wide text-pandan-dark">
                 <Bi text={UI.recommendedToday} lang={lang} />
@@ -130,7 +136,7 @@ export default async function DashboardPage() {
                 <Bi text={UI.continueLearning} lang={lang} /> →
               </a>
             </div>
-            <span className="text-2xl">🏆</span>
+            <Trophy size={22} className="shrink-0 text-pandan-dark/50" />
           </div>
         </section>
       )}
@@ -138,7 +144,7 @@ export default async function DashboardPage() {
       {weakTopics.length > 0 && (
         <section className="mx-5 mt-4 rounded-kite border border-saga-light bg-saga-light/40 px-5 py-4">
           <div className="flex items-center gap-2">
-            <span className="text-lg">⚠️</span>
+            <AlertTriangle size={16} className="text-saga-dark" />
             <p className="text-xs font-semibold uppercase tracking-wide text-saga-dark">
               <Bi text={UI.needsAttention} lang={lang} />
             </p>
@@ -156,7 +162,7 @@ export default async function DashboardPage() {
 
       {student?.link_code && (
         <section className="mx-5 mt-4 flex items-center gap-3 rounded-kite border-2 border-dashed border-biru-light bg-biru-light/30 px-5 py-4">
-          <span className="text-xl">🔒</span>
+          <Lock size={18} className="shrink-0 text-biru-dark" />
           <div className="flex-1">
             <p className="text-xs text-ink/60">
               <Bi text={UI.linkCode} lang={lang} />
@@ -175,7 +181,7 @@ export default async function DashboardPage() {
           className="flex items-center justify-between rounded-kite bg-kuning-light px-5 py-4 shadow-card active:scale-[0.98] transition-transform"
         >
           <div className="flex items-center gap-3">
-            <span className="text-2xl">⏱️</span>
+            <Timer size={22} className="text-kuning-dark" />
             <div>
               <p className="font-display text-sm font-bold text-kuning-dark">
                 <Bi text={UI.examCta} lang={lang} />

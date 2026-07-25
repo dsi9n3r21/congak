@@ -778,6 +778,97 @@ This is a structural fix, not a re-skin — it still uses the OLD (pre-
 restyle) card look, so it still needs the same dashboard-style visual
 pass as the rest of `learn`/`practice` whenever that round happens.
 
+**Next round: Lynda shared a much more detailed reference
+(`Congak_interface_design.png` — a full 11-panel style guide: dashboard,
+Learn/Practice topic lists, Adventure Mode, Pintar chat, an XP/streak/
+badges panel, 4 mascot poses, a colour/type/icon style guide, a buttons/
+components reference, motivational message cards, and a decorative
+background banner) and said explicitly: "the cosmetic still needs a lot
+of work, I want it to look like the attached file." This is a stronger,
+more specific signal than the earlier screenshots, including on the one
+point where Claude had previously overridden the mockup on its own
+judgment — so this round FOLLOWED it, rather than repeating the earlier
+"keep the existing palette" reasoning. That earlier reasoning made sense
+when there was no explicit reference to follow; it doesn't apply once
+Lynda has pointed at a specific detailed design and said "this one."**
+
+**Palette change:** added `ungu` (purple, `#6D4AC4`/`#4A2F8F`/`#E7E0FA`)
+to `tailwind.config.ts` as a new primary accent — used for level/XP,
+Pintar chat, selected states — alongside the existing kuning/biru/saga/
+pandan (kuning still carries CTAs and everyday warmth, so the whole app
+doesn't go purple). Installed `lucide-react` for real line icons,
+replacing emoji throughout the touched files (emoji elsewhere is still
+emoji — not yet swapped everywhere).
+
+**Shipped this round**, matching the reference's icon-square + purple
+language:
+- **`BottomNav.tsx`** — lucide icons (Home/BookOpen/PencilLine/Compass/
+  MessageCircle/User), purple when active, was emoji before.
+- **`dashboard/page.tsx`** — level/XP hero card switched from `biru` to
+  `ungu` gradient (reference shows purple, not blue); Target/Trophy/
+  AlertTriangle/Lock/Timer/Flame/Star lucide icons replacing emoji
+  throughout. Deliberately did NOT add the reference's "View stats" link
+  next to the streak — there's no Skor/stats page built yet, and a link
+  to nowhere is worse than no link.
+- **`lib/content/strandStyle.ts`** (new) — maps each topic strand to a
+  consistent icon + tinted color square (Numbers-family strands →
+  Calculator/blue, Measurement → Clock/teal-green, Money → Coins/gold,
+  Space → Ruler/warm red-orange, Statistics → BarChart3/purple,
+  Coordinates → MapPin, Ratio → Scale), matching the reference's
+  per-topic colored icon squares in the Learn/Practice lists.
+- **`TopicYearBrowser.tsx`** — topic cards now show the icon square from
+  `strandStyle.ts` instead of a plain text strand label. Year pills:
+  selected year is now a solid purple pill (was a yellow-outline pill),
+  with a small star mark for "your year" — matches the reference's
+  "Year 5 ⭐ Your year" treatment. Also fixed a real bug while doing this:
+  `practice/page.tsx` was defaulting every topic without mastery data to
+  `weak: false`, which would have shown a false "Good" badge on topics
+  the student has never attempted — changed to `weak: boolean | undefined`
+  so untried topics show no badge at all, matching the reference's
+  "Weak"/"Good" pills only appearing where there's real signal.
+- **`learn/page.tsx`, `practice/page.tsx` headers** — added the Pintar
+  mascot image (`showing.png` for Learn, `correct.png` for Practice —
+  picked by filename semantics since these exact poses aren't confirmed
+  against the reference's illustrated mascot art, which Congak doesn't
+  have as real assets, only the 6 chat-reaction PNGs Lynda's husband
+  made).
+- **`PintarChat.tsx`** — user bubble switched from `biru` to `ungu`; added
+  an "Online" status dot next to Pintar's name (reference shows this);
+  send button switched from a text pill to a purple circular icon button
+  (lucide `Send`), matching the reference's circular arrow-send button.
+
+**Confirmed NOT done — real gaps against the reference, needs its own
+round(s):**
+- **Badges** (First Steps / Quick Thinker / Fraction Fan hexagons) — no
+  backend at all (same gap flagged for Misi/rewards earlier). Don't
+  fabricate placeholder badge data; this needs a real achievements table
+  + criteria design with Lynda first.
+- **Weekly streak view** (M T W T F S dots with checkmarks) — Congak
+  only stores a running `streak_count`, not per-day history, so there's
+  nothing to render a real week view from yet. Would need a
+  `streak_days` (or similar) table.
+- **Adventure Mode's illustrated island/map background** — the reference
+  shows real illustrated scenery (islands, castle, clouds); this round's
+  `quests/page.tsx` restyle used flat gradient + lucide icons instead,
+  not custom illustration — a real illustrated background is a bigger
+  asset-creation task, not a code change.
+- **4 mascot poses shown in the reference's "Character - Pintar" panel**
+  (walking/waving, reading with glasses, question-mark, trophy) don't
+  exist as real assets — Congak only has the 6 chat-state PNGs
+  (idle/thinking/showing/correct/wrong/confuse). Reused those by
+  best-guess filename semantics where mascot images were added this
+  round; asking Lynda's husband for the exact 4 poses (or confirming the
+  existing 6 are meant to double as these) would remove the guessing.
+- **Motivational message cards** ("Great job! You're on fire!" etc.) —
+  not yet added anywhere; would need a small rotating-message component,
+  probably shown after a correct/streak answer in Practice/Quiz/Exam.
+- **`QuizPlayer.tsx`** — still fully untouched, same gap as last round.
+- **Style guide as a living reference** — the reference's own panel 8
+  (colours/type/icons swatch) is itself a nice idea to keep somewhere in
+  the codebase (e.g. a `/dev/style-guide` route) so future rounds have a
+  single place to check tokens against — not built, just noted as a
+  good idea worth doing once the palette settles further.
+
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to
   defer this until "everything is running smoothly" — she shared two

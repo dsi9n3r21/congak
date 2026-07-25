@@ -1,6 +1,7 @@
 import { TOPICS } from "@/lib/content/topics";
 import { createClient } from "@/lib/supabase/server";
 import { TopicYearBrowser, type YearGroup } from "@/components/student/TopicYearBrowser";
+import Image from "next/image";
 
 export default async function PracticeIndexPage() {
   const supabase = createClient();
@@ -28,7 +29,7 @@ export default async function PracticeIndexPage() {
         strand: topic.strand,
         title: topic.title,
         href: `/practice/${topic.id}`,
-        weak: masteryByTopic.get(topic.id)?.weak_flag ?? false,
+        weak: masteryByTopic.has(topic.id) ? Boolean(masteryByTopic.get(topic.id)?.weak_flag) : undefined,
       })),
   }));
 
@@ -36,6 +37,9 @@ export default async function PracticeIndexPage() {
     <main className="min-h-screen pb-24 md:pb-8">
       <header className="relative overflow-hidden px-5 pt-6 pb-4">
         <div className="absolute right-3 -top-4 h-24 w-24 rounded-full bg-kuning-light/50" />
+        <div className="absolute right-2 top-0 h-20 w-20">
+          <Image src="/pintar/correct.png" alt="" fill className="object-contain" />
+        </div>
         <div className="relative z-10 max-w-[75%]">
           <h1 className="font-display text-xl font-bold text-ink">
             {lang === "en" ? "Practice — Choose a Topic" : "Latihan — Pilih Topik"}

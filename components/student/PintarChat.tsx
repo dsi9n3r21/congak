@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import type { Lang } from "@/lib/i18n/dictionary";
 import { UI } from "@/lib/i18n/dictionary";
 import type { PintarAvatarState, PintarChatResponse, PintarHistoryEntry, PintarQuickReply } from "@/lib/pintar/types";
+import { Send } from "lucide-react";
 import { MathSymbolBar } from "@/components/student/MathSymbolBar";
 
 interface DisplayMessage {
@@ -154,7 +155,13 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
           <Image src={`/pintar/${avatarState}.png`} alt="Pintar" fill className="object-contain" priority />
         </div>
         <div>
-          <h1 className="font-display text-xl font-bold text-ink">Pintar</h1>
+          <div className="flex items-center gap-1.5">
+            <h1 className="font-display text-xl font-bold text-ink">Pintar</h1>
+            <span className="flex items-center gap-1 text-[11px] font-semibold text-pandan">
+              <span className="h-1.5 w-1.5 rounded-full bg-pandan" />
+              {lang === "en" ? "Online" : "Dalam Talian"}
+            </span>
+          </div>
           <p className="text-xs text-ink/50">
             {lang === "en" ? UI.pintarTagline.en : UI.pintarTagline.ms}
           </p>
@@ -167,7 +174,7 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
             <div
               className={clsx(
                 "max-w-[80%] rounded-kite px-4 py-2.5 text-sm shadow-card font-body",
-                m.role === "user" ? "bg-biru text-paper" : "bg-kuning-light text-ink"
+                m.role === "user" ? "bg-ungu text-paper" : "bg-kuning-light text-ink"
               )}
             >
               {m.role === "pintar" ? <PintarMarkdown text={m.text} /> : m.text}
@@ -215,14 +222,15 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
           onChange={(e) => setInput(e.target.value)}
           placeholder={lang === "en" ? UI.pintarPlaceholder.en : UI.pintarPlaceholder.ms}
           disabled={sending}
-          className="flex-1 rounded-kite border border-ink/10 bg-paper px-4 py-2.5 text-sm font-body text-ink outline-none focus:border-biru disabled:opacity-50"
+          className="flex-1 rounded-kite border border-ink/10 bg-paper px-4 py-2.5 text-sm font-body text-ink outline-none focus:border-ungu disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={sending || !input.trim()}
-          className="rounded-kite bg-kuning px-4 py-2.5 text-sm font-semibold text-ink disabled:opacity-40 active:scale-[0.97] transition-transform"
+          aria-label={lang === "en" ? UI.pintarSend.en : UI.pintarSend.ms}
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ungu text-paper disabled:opacity-40 active:scale-[0.97] transition-transform"
         >
-          {lang === "en" ? UI.pintarSend.en : UI.pintarSend.ms}
+          <Send size={18} />
         </button>
       </form>
     </main>

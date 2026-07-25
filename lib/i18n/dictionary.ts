@@ -56,6 +56,7 @@ export const UI: Record<string, Bilingual> = {
   yourLevel: { ms: "Tahap Kamu", en: "Your Level" },
   yourXp: { ms: "XP Kamu", en: "Your XP" },
   streakDaysLabel: { ms: "hari berturut-turut", en: "day streak" },
+  viewStats: { ms: "Lihat statistik", en: "View stats" },
   recommendedToday: { ms: "Cadangan hari ini", en: "Recommended today" },
   continueLearning: { ms: "Sambung belajar", en: "Continue learning" },
   needsAttention: { ms: "Perlu perhatian", en: "Needs attention" },
