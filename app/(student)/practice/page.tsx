@@ -34,15 +34,18 @@ export default async function PracticeIndexPage() {
 
   return (
     <main className="min-h-screen pb-24 md:pb-8">
-      <header className="px-5 pt-6 pb-4">
-        <h1 className="font-display text-xl font-bold text-ink">
-          {lang === "en" ? "Practice — Choose a Topic" : "Latihan — Pilih Topik"}
-        </h1>
-        <p className="mt-1 text-xs text-ink/50">
-          {lang === "en"
-            ? "Pick a year, then jump straight into practice questions for any topic."
-            : "Pilih tahun, kemudian terus mula soalan latihan untuk mana-mana topik."}
-        </p>
+      <header className="relative overflow-hidden px-5 pt-6 pb-4">
+        <div className="absolute right-3 -top-4 h-24 w-24 rounded-full bg-kuning-light/50" />
+        <div className="relative z-10 max-w-[75%]">
+          <h1 className="font-display text-xl font-bold text-ink">
+            {lang === "en" ? "Practice — Choose a Topic" : "Latihan — Pilih Topik"}
+          </h1>
+          <p className="mt-1 text-xs text-ink/50">
+            {lang === "en"
+              ? "Pick a year, then jump straight into practice questions for any topic."
+              : "Pilih tahun, kemudian terus mula soalan latihan untuk mana-mana topik."}
+          </p>
+        </div>
       </header>
 
       <TopicYearBrowser

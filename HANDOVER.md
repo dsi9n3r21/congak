@@ -734,11 +734,38 @@ exists (same gap already flagged for Pintar's `xpToday` field). The hero
 card shows real total-XP-toward-next-level progress instead, honestly
 labeled "XP Kamu" (Your XP) rather than implying it's today's.
 
-**Still needed**: same restyle treatment for `learn`, `practice`, `quiz`,
-`exam`, `quests`, `profile` — none of those have been touched yet, so the
-app currently looks inconsistent (new dashboard, old-style everywhere
-else). A real "Skor" personal-stats page and real Misi (daily missions/
-badges) are separate future scope, not visual-only.
+**Still needed**: same restyle treatment for `quiz` — its per-topic page
+(no index/landing page like learn/practice have) uses `QuizPlayer.tsx`
+for the actual in-question UI, which is a bigger lift than the header
+touch-ups below (styling the question card, options, feedback states) —
+left for a future round. A real "Skor" personal-stats page and real Misi
+(daily missions/badges) are separate future scope, not visual-only.
+
+**Round after the initial dashboard restyle — asked directly "Misi or
+cosmetics first?", recommended cosmetics** (lower risk, no new backend
+decisions, and directly serves the reason Lynda started visual polish
+early — a consistent look for whoever's testing it next). Misi needs a
+missions table + migration + daily-reset logic + a real design
+conversation with Lynda about what missions actually are — that's a
+feature build, not a quick add, so it waits.
+
+Shipped this round:
+- **`profile/page.tsx`** — full restyle: header is now a gradient hero
+  card (same `biru` gradient + decorative blob as the dashboard's level
+  card), avatar in a rounded badge. Link-code/language/accessibility
+  sections wrapped in `shadow-card` white cards instead of bare sections.
+- **`quests/page.tsx`** — full restyle of the "coming soon" placeholder:
+  gradient hero (this one `pandan`, not `biru`, to visually distinguish
+  it) + a 2×2 grid of dimmed preview cards (daily missions, badges,
+  adventure map, weekly challenges) so it reads as "on the way" rather
+  than "broken tab". Still honestly a placeholder — no real data behind
+  any of it, nothing new to wire up beyond swapping this whole page out
+  once Misi is actually built.
+- **`learn/page.tsx`, `practice/page.tsx`, `exam/page.tsx`** — header-only
+  touch-up (added the same decorative blob + `relative overflow-hidden`
+  wrapper as the dashboard's header), no content changes. Exam's blob
+  uses `saga-light` instead of `kuning-light` to match its existing red
+  exam-mode theming rather than copy-pasting the same color everywhere.
 
 **UX change (separate from the visual restyle above):** `learn` and
 `practice` used to stack all 3 years' topics as long sections on one

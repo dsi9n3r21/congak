@@ -21,20 +21,30 @@ export default async function ProfilePage() {
 
   return (
     <main className="min-h-screen pb-24 md:pb-8">
-      <header className="px-5 pt-6 pb-4 text-center">
-        <p className="text-5xl">{student?.avatar_id ?? "🙂"}</p>
-        <h1 className="mt-2 font-display text-xl font-bold text-ink">{student?.display_name}</h1>
-        <p className="text-xs text-ink/50">Tahun {student?.year_level} · {user?.email}</p>
+      {/* Gradient hero, matching the dashboard's header treatment — same
+          decorative blob + rounded avatar badge language as the level
+          card there, so this page doesn't feel like a different app. */}
+      <header className="relative overflow-hidden px-5 pt-6 pb-8">
+        <div className="absolute right-3 -top-4 h-28 w-28 rounded-full bg-kuning-light/60" />
+        <div className="relative z-10 flex flex-col items-center rounded-kite bg-gradient-to-br from-biru to-biru-dark px-5 py-6 text-center text-paper shadow-card">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-kuning text-3xl">
+            {student?.avatar_id ?? "🙂"}
+          </div>
+          <h1 className="mt-3 font-display text-xl font-bold">{student?.display_name}</h1>
+          <p className="mt-0.5 text-xs opacity-80">
+            {lang === "en" ? "Year" : "Tahun"} {student?.year_level} · {user?.email}
+          </p>
+        </div>
       </header>
 
       {student?.link_code && (
-        <section className="mx-5 mt-2 rounded-kite border-2 border-dashed border-biru-light bg-biru-light/30 px-5 py-4 text-center">
+        <section className="mx-5 mt-2 rounded-kite border-2 border-dashed border-biru-light bg-biru-light/30 px-5 py-4 text-center shadow-card">
           <p className="text-xs text-ink/60"><Bi text={UI.linkCode} lang={lang} /></p>
           <p className="mt-1 font-num text-xl font-bold tracking-widest text-biru-dark">{student.link_code}</p>
         </section>
       )}
 
-      <section className="mx-5 mt-5">
+      <section className="mx-5 mt-5 rounded-kite bg-white px-5 py-4 shadow-card">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">
           <Bi text={UI.language} lang={lang} />
         </p>
@@ -44,7 +54,7 @@ export default async function ProfilePage() {
       {/* Accessibility toggles — wired to the a11y-* body classes in
           globals.css. Kept as a simple static list for now; persisting
           the choice per-student is a fast-follow. */}
-      <section className="mx-5 mt-5">
+      <section className="mx-5 mt-4 rounded-kite bg-white px-5 py-4 shadow-card">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">
           <Bi text={UI.accessibility} lang={lang} />
         </p>

@@ -34,15 +34,18 @@ export default async function LearnIndexPage() {
 
   return (
     <main className="min-h-screen pb-24 md:pb-8">
-      <header className="px-5 pt-6 pb-4">
-        <h1 className="font-display text-xl font-bold text-ink">
-          {lang === "en" ? "Learn — Choose a Topic" : "Belajar — Pilih Topik"}
-        </h1>
-        <p className="mt-1 text-xs text-ink/50">
-          {lang === "en"
-            ? "Pick a year, then any topic to learn or revise — not just what's recommended."
-            : "Pilih tahun, kemudian mana-mana topik untuk belajar atau mengulang kaji — bukan hanya cadangan sahaja."}
-        </p>
+      <header className="relative overflow-hidden px-5 pt-6 pb-4">
+        <div className="absolute right-3 -top-4 h-24 w-24 rounded-full bg-kuning-light/50" />
+        <div className="relative z-10 max-w-[75%]">
+          <h1 className="font-display text-xl font-bold text-ink">
+            {lang === "en" ? "Learn — Choose a Topic" : "Belajar — Pilih Topik"}
+          </h1>
+          <p className="mt-1 text-xs text-ink/50">
+            {lang === "en"
+              ? "Pick a year, then any topic to learn or revise — not just what's recommended."
+              : "Pilih tahun, kemudian mana-mana topik untuk belajar atau mengulang kaji — bukan hanya cadangan sahaja."}
+          </p>
+        </div>
       </header>
 
       <TopicYearBrowser
