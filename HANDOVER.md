@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0037 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0038 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0038**.
+should be **0039**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,14 +55,53 @@ should be **0038**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...078` (78 topics). Next new topic should start at `...079`.
+  `...081` (81 topics). Next new topic should start at `...082`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (78 topics — see note on the denominator)
+## Current curriculum coverage (81 topics — see note on the denominator)
 **Explicit instruction from Lynda: keep going until the real curriculum is
 fully covered.** Standing instruction, not a one-off batch.
+
+**Round 16 (ids `...079`-`...081`):** Closed the last two open items from
+round 12-15's scoping.
+
+Checked first: Y5's "distance from the origin" coordinate sub-skill —
+turned out NOT to be a real gap. The existing `coordinate_distance`
+generator (Y6) already produces origin-based cases naturally, since one
+of its two randomised coordinates can land on 0 — Y5's version is just a
+simpler stepping-stone toward the same general skill Y6 already covers.
+No new topic needed.
+
+Then built the composite-shapes trio, which needed a real prerequisite
+first:
+- **Volume of a Cuboid** (`volume_cuboid`, Y4 Space, real ToC p.209) —
+  Congak had NO solid-volume concept at all before this (only liquid
+  volume in ml/L). Basic l × w × h.
+- **Volume of Composite Shapes** (`volume_composite`, Y5 Space, real ToC
+  p.217-224) — two cuboids combined, same "split it, calculate each
+  part, add" pattern as the existing `area_composite`.
+- **Perimeter of Composite Shapes** (`perimeter_composite`, Y5 Space,
+  real ToC p.217) — uses the L-shape bounding-box invariant: cutting a
+  rectangular notch out of a corner doesn't change the perimeter (the
+  removed outer length reappears as an equal inner length). The notch
+  dimensions are given so the shape reads as genuinely composite, but
+  they're a deliberate red herring — the real skill is realizing they
+  don't matter. Verified this invariant holds with a smoke test before
+  shipping (2000 iterations, always checked against the direct formula).
+
+None of these three needed a new diagram — text-only, matching
+`area_composite`'s existing precedent.
+
+**This closes every gap that was confirmed open as of round 15.** No
+newly-discovered gaps this round. Same caveat as always: this was
+targeted spot-checking against ToC lines that looked unfamiliar, not a
+mechanical leaf-by-leaf diff of all three books against all 81 topics —
+don't claim 100% coverage to Lynda without that caveat. If continuing
+this thread, the next step would be that exhaustive diff rather than
+another round of spot-checks, since the "obvious" gaps have now all been
+found and closed.
 
 **Round 15 (id `...078`):** Shipped Parallel Lines and Perpendicular
 Lines (`line_pair_classify`, Y4 Space, real ToC p.201) — the one Y4 gap

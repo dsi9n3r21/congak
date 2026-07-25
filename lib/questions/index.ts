@@ -27,6 +27,9 @@ import { generateVolume } from "./generators/volume";
 import { generateAreaRectangle } from "./generators/areaRectangle";
 import { generateAnglesStraightLine } from "./generators/anglesStraightLine";
 import { generateAreaComposite } from "./generators/areaComposite";
+import { generateVolumeCuboid } from "./generators/volumeCuboid";
+import { generateVolumeComposite } from "./generators/volumeComposite";
+import { generatePerimeterComposite } from "./generators/perimeterComposite";
 import { generateAnglesTriangleSum } from "./generators/anglesTriangleSum";
 import { generateAnglesClassify } from "./generators/anglesClassify";
 import { generateAreaTriangle } from "./generators/areaTriangle";
@@ -99,6 +102,9 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   area_rectangle: generateAreaRectangle,
   angles_straight_line: generateAnglesStraightLine,
   area_composite: generateAreaComposite,
+  volume_cuboid: generateVolumeCuboid,
+  volume_composite: generateVolumeComposite,
+  perimeter_composite: generatePerimeterComposite,
   angles_triangle_sum: generateAnglesTriangleSum,
   angles_classify: generateAnglesClassify,
   area_triangle: generateAreaTriangle,

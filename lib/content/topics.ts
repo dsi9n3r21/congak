@@ -3030,4 +3030,107 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "mcq", difficulty: 2, generatorKey: "line_pair_classify", config: {} },
     ],
   },
+  "a1000000-0000-0000-0000-000000000079": {
+    id: "a1000000-0000-0000-0000-000000000079",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Isi Padu Kuboid", en: "Volume of a Cuboid" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Isi padu ialah ruang yang diisi oleh sesuatu bentuk pepejal. Untuk kuboid, isi padu = panjang × lebar × tinggi. Ini berbeza daripada luas (yang hanya guna DUA dimensi) — isi padu guna KETIGA-TIGA dimensi.\n\nContoh harian: Sebuah kotak berbentuk kuboid mempunyai panjang 5 cm, lebar 3 cm, dan tinggi 2 cm. Isi padu kotak itu = 5 × 3 × 2 = 30 cm³.",
+      en: "Volume is the space filled by a solid shape. For a cuboid, volume = length × width × height. This is different from area (which only uses TWO dimensions) — volume uses ALL THREE dimensions.\n\nEveryday example: A box shaped like a cuboid has a length of 5 cm, a width of 3 cm, and a height of 2 cm. The box's volume = 5 × 3 × 2 = 30 cm³.",
+    },
+    tips: [
+      { ms: "Isi padu guna KETIGA-TIGA dimensi (panjang, lebar, DAN tinggi) — jangan tertinggal satu dimensi seperti mengira luas.", en: "Volume uses ALL THREE dimensions (length, width, AND height) — don't leave one out like when calculating area." },
+      { ms: "Unit isi padu ialah unit padu (cth. cm³), bukan unit petak (cm²) seperti luas.", en: "Volume units are cubic units (e.g. cm³), not square units (cm²) like area." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti panjang, lebar, dan tinggi kuboid itu.", en: "Identify the cuboid's length, width, and height." },
+      { ms: "Darabkan ketiga-tiga nilai itu: panjang × lebar × tinggi.", en: "Multiply all three values together: length × width × height." },
+    ],
+    workedExample: {
+      problem: "Kuboid: panjang 5 cm, lebar 3 cm, tinggi 2 cm. Cari isi padu.",
+      steps: [
+        { ms: "Isi padu = panjang × lebar × tinggi", en: "Volume = length × width × height" },
+        { ms: "5 × 3 × 2 = 30 cm³", en: "5 × 3 × 2 = 30 cm³" },
+      ],
+      answer: "30 cm³",
+    },
+    commonMistakes: [
+      { mistakeType: "treated_volume_as_area", description: { ms: "Murid hanya darabkan DUA daripada tiga dimensi, seperti mengira luas.", en: "The student only multiplies TWO of the three dimensions, like calculating area." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "volume_cuboid", config: { min: 2, max: 10 } },
+      { type: "fill", difficulty: 2, generatorKey: "volume_cuboid", config: { min: 2, max: 8 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000080": {
+    id: "a1000000-0000-0000-0000-000000000080",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Isi Padu Bentuk Gubahan", en: "Volume of Composite Shapes" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Bentuk gubahan tiga dimensi ialah bentuk pepejal yang dibina daripada dua atau lebih kuboid yang digabungkan. Untuk mencari jumlah isi padu, kita kira isi padu SETIAP kuboid secara berasingan (panjang × lebar × tinggi), kemudian tambahkan kesemuanya.\n\nContoh harian: Sebuah bangunan berbentuk 'L' dibina daripada dua blok kuboid. Berapakah jumlah isi padu bangunan itu?",
+      en: "A 3D composite shape is a solid built by combining two or more cuboids. To find the total volume, we calculate EACH cuboid's volume separately (length × width × height), then add them all together.\n\nEveryday example: An L-shaped building is made of two cuboid blocks. What is the total volume of the building?",
+    },
+    tips: [
+      { ms: "Kira isi padu SETIAP kuboid secara berasingan dahulu — jangan cuba gabungkan semua nombor dalam satu langkah.", en: "Work out EACH cuboid's volume separately first — don't try to combine all the numbers in one step." },
+      { ms: "Ingat isi padu perlukan KETIGA-TIGA dimensi bagi setiap kuboid, bukan hanya dua seperti luas.", en: "Remember volume needs ALL THREE dimensions for each cuboid, not just two like area." },
+    ],
+    howTo: [
+      { ms: "Bahagikan bentuk gubahan itu kepada dua atau lebih kuboid.", en: "Split the composite shape into two or more cuboids." },
+      { ms: "Kira isi padu setiap kuboid secara berasingan (panjang × lebar × tinggi).", en: "Calculate each cuboid's volume separately (length × width × height)." },
+      { ms: "Tambahkan semua isi padu itu untuk dapatkan jumlah keseluruhan.", en: "Add all those volumes together to get the total." },
+    ],
+    workedExample: {
+      problem: "Kuboid A: 4 cm × 3 cm × 2 cm, Kuboid B: 3 cm × 2 cm × 2 cm",
+      steps: [
+        { ms: "Isi padu A = 4 × 3 × 2 = 24 cm³", en: "Volume A = 4 × 3 × 2 = 24 cm³" },
+        { ms: "Isi padu B = 3 × 2 × 2 = 12 cm³", en: "Volume B = 3 × 2 × 2 = 12 cm³" },
+        { ms: "Jumlah = 24 + 12 = 36 cm³", en: "Total = 24 + 12 = 36 cm³" },
+      ],
+      answer: "36 cm³",
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_second_cuboid", description: { ms: "Murid hanya mengira isi padu satu kuboid sahaja.", en: "The student only calculates the volume of one cuboid." } },
+      { mistakeType: "volume_addition_error", description: { ms: "Murid darabkan hanya dua dimensi setiap kuboid (seperti luas) berbanding ketiga-tiga.", en: "The student multiplies only two dimensions per cuboid (like area) instead of all three." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 8 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 6 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000081": {
+    id: "a1000000-0000-0000-0000-000000000081",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Perimeter Bentuk Gubahan", en: "Perimeter of Composite Shapes" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Bentuk gubahan berbentuk 'L' terbentuk daripada segi empat tepat besar dengan satu petak kecil dipotong daripada penjuru. Fakta penting: memotong petak kecil itu TIDAK mengubah perimeter keseluruhan! Ini kerana bahagian sisi yang hilang digantikan oleh panjang yang sama pada sisi baharu di dalam. Jadi, perimeter bentuk-L = perimeter segi empat tepat ASAL (sebelum dipotong) = 2 × (panjang + lebar).\n\nContoh harian: Sebuah taman berbentuk 'L' dibentuk daripada segi empat tepat 10 m × 6 m dengan petak 4 m × 3 m dipotong daripada satu penjuru. Perimeter taman itu = 2 × (10 + 6) = 32 m — saiz petak yang dipotong tidak penting!",
+      en: "An L-shaped composite shape is formed from a large rectangle with a small notch cut from one corner. Key fact: cutting that notch does NOT change the overall perimeter! This is because the side length that's removed is replaced by an equal length on a new inner side. So the L-shape's perimeter = the perimeter of the ORIGINAL rectangle (before cutting) = 2 × (length + width).\n\nEveryday example: An L-shaped garden is formed from a 10 m × 6 m rectangle with a 4 m × 3 m notch cut from one corner. The garden's perimeter = 2 × (10 + 6) = 32 m — the size of the cut-out notch doesn't matter!",
+    },
+    tips: [
+      { ms: "Jangan tertipu oleh saiz petak yang dipotong — ia TIDAK mengubah perimeter keseluruhan.", en: "Don't be fooled by the size of the cut-out notch — it does NOT change the overall perimeter." },
+      { ms: "Guna sahaja dimensi segi empat tepat BESAR (keseluruhan) untuk kira perimeter, abaikan petak kecil.", en: "Just use the LARGE (overall) rectangle's dimensions to calculate the perimeter — ignore the small notch." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti dimensi segi empat tepat BESAR (keseluruhan) — panjang dan lebar.", en: "Identify the LARGE (overall) rectangle's dimensions — length and width." },
+      { ms: "Kira perimeter menggunakan formula biasa: 2 × (panjang + lebar). Abaikan petak kecil yang dipotong.", en: "Calculate the perimeter using the normal formula: 2 × (length + width). Ignore the small cut-out notch." },
+    ],
+    workedExample: {
+      problem: "Segi empat tepat 10 m × 6 m dengan petak 4 m × 3 m dipotong daripada satu penjuru. Cari perimeter bentuk-L.",
+      steps: [
+        { ms: "Perimeter bentuk-L = perimeter segi empat tepat ASAL", en: "The L-shape's perimeter = the ORIGINAL rectangle's perimeter" },
+        { ms: "2 × (10 + 6) = 32 m", en: "2 × (10 + 6) = 32 m" },
+      ],
+      answer: "32 m",
+    },
+    commonMistakes: [
+      { mistakeType: "notch_assumed_to_reduce_perimeter", description: { ms: "Murid anggap memotong petak itu mengurangkan perimeter, lalu menolak perimeter petak kecil itu.", en: "The student assumes cutting the notch reduces the perimeter, and subtracts the notch's perimeter." } },
+      { mistakeType: "found_area_not_perimeter", description: { ms: "Murid kira LUAS bentuk-L berbanding perimeter.", en: "The student calculates the L-shape's AREA instead of its perimeter." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 6, max: 20 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 25 } },
+    ],
+  },
 };

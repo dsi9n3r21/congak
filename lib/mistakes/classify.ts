@@ -360,6 +360,78 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "volume_cuboid": {
+      const { length, width, correct } = question.context as unknown as { length: number; width: number; correct: number };
+      if (Number(answer) === length * width) {
+        return {
+          mistakeType: "treated_volume_as_area",
+          hint: {
+            ms: "Isi padu kuboid guna KETIGA-TIGA dimensi (panjang × lebar × tinggi), bukan hanya dua seperti luas.",
+            en: "A cuboid's volume uses ALL THREE dimensions (length × width × height), not just two like area.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Formula: Isi padu = panjang × lebar × tinggi.",
+          en: "Formula: Volume = length × width × height.",
+        },
+      };
+    }
+
+    case "volume_composite": {
+      const { volume1, correct } = question.context as unknown as { volume1: number; correct: number };
+      if (Number(answer) === volume1) {
+        return {
+          mistakeType: "forgot_second_cuboid",
+          hint: {
+            ms: "Jangan lupa kira isi padu KEDUA-DUA kuboid (panjang × lebar × tinggi setiap satu), kemudian tambah.",
+            en: "Don't forget to work out the volume of BOTH cuboids (length × width × height for each), then add them." ,
+          },
+        };
+      }
+      return {
+        mistakeType: "volume_addition_error",
+        hint: {
+          ms: "Kira isi padu setiap kuboid berasingan (panjang × lebar × tinggi), kemudian tambah kedua-duanya.",
+          en: "Calculate each cuboid's volume separately (length × width × height), then add the two together.",
+        },
+      };
+    }
+
+    case "perimeter_composite": {
+      const { overallLength, overallWidth, notchLength, notchWidth, correct } = question.context as unknown as {
+        overallLength: number; overallWidth: number; notchLength: number; notchWidth: number; correct: number;
+      };
+      const subtractedNotch = correct - 2 * (notchLength + notchWidth);
+      if (Number(answer) === Math.max(0, subtractedNotch)) {
+        return {
+          mistakeType: "notch_assumed_to_reduce_perimeter",
+          hint: {
+            ms: "Memotong petak kecil daripada penjuru TIDAK mengubah perimeter keseluruhan — bahagian sisi yang hilang digantikan dengan panjang yang sama pada sisi baharu. Perimeter bentuk-L = perimeter segi empat tepat asal.",
+            en: "Cutting a small notch out of the corner does NOT change the overall perimeter — the side length that's removed is replaced by an equal length on the new inner side. The L-shape's perimeter equals the original rectangle's.",
+          },
+        };
+      }
+      if (Number(answer) === overallLength * overallWidth - notchLength * notchWidth) {
+        return {
+          mistakeType: "found_area_not_perimeter",
+          hint: {
+            ms: "Soalan ini minta PERIMETER (jumlah panjang sempadan), bukan LUAS.",
+            en: "This question asks for the PERIMETER (total boundary length), not the AREA.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: `Perimeter bentuk-L = perimeter segi empat tepat asal = 2 × (${overallLength} + ${overallWidth}). Saiz petak yang dipotong tidak mengubah jawapan ini.`,
+          en: `The L-shape's perimeter = the original rectangle's perimeter = 2 × (${overallLength} + ${overallWidth}). The size of the cut-out notch doesn't change this answer.`,
+        },
+      };
+    }
+
     case "angles_triangle_sum": {
       const { angleA, angleB, correct } = question.context as { angleA: number; angleB: number; correct: number };
       if (Number(answer) === 360 - angleA - angleB) {
