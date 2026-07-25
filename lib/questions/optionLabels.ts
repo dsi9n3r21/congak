@@ -20,4 +20,9 @@ export const OPTION_LABELS: Record<string, Bilingual> = {
   liability: { ms: "Liabiliti", en: "Liability" },
   insurance: { ms: "Insurans", en: "Insurance" },
   takaful: { ms: "Takaful", en: "Takaful" },
+  prime: { ms: "Nombor Perdana", en: "Prime" },
+  composite: { ms: "Nombor Gubahan", en: "Composite" },
+  neither: { ms: "Bukan Kedua-duanya", en: "Neither" },
+  parallel: { ms: "Selari", en: "Parallel" },
+  perpendicular: { ms: "Serenjang", en: "Perpendicular" },
 };

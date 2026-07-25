@@ -965,6 +965,40 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "compound_interest": {
+      const { principalRM, rate, years, compoundInterestSen } = question.context as unknown as {
+        principalRM: number; rate: number; years: number; compoundInterestSen: number;
+      };
+      const answerSen = Math.round(parseFloat(answer.replace(/[^0-9.]/g, "")) * 100);
+      const simpleInterestSen = Math.round(((principalRM * 100) * rate * years) / 100);
+      if (Math.abs(answerSen - simpleInterestSen) < 5 && simpleInterestSen !== compoundInterestSen) {
+        return {
+          mistakeType: "used_simple_interest_formula",
+          hint: {
+            ms: "Ini faedah KOMPAUN, bukan faedah mudah — faedah setiap tahun dikira daripada jumlah TERKINI (termasuk faedah tahun lepas), bukan daripada prinsipal asal sahaja.",
+            en: "This is COMPOUND interest, not simple interest — each year's interest is calculated on the CURRENT total (including last year's interest), not just the original principal.",
+          },
+        };
+      }
+      const oneYearOnlySen = Math.round((principalRM * 100 * rate) / 100);
+      if (Math.abs(answerSen - oneYearOnlySen) < 5 && years > 1) {
+        return {
+          mistakeType: "stopped_compounding_early",
+          hint: {
+            ms: `Anda hanya kira faedah untuk 1 tahun — teruskan mengira untuk kesemua ${years} tahun, setiap kali menggunakan jumlah TERKINI.`,
+            en: `You only calculated 1 year's interest — keep going for all ${years} years, each time using the CURRENT total.`,
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Kira faedah setahun demi setahun — setiap tahun, faedah dikira daripada jumlah terkini, bukan prinsipal asal.",
+          en: "Work through it year by year — each year, interest is calculated on the current total, not the original principal.",
+        },
+      };
+    }
+
     case "profit_loss": {
       const { costSen, sellingSen, resultSen } = question.context as {
         costSen: number; sellingSen: number; resultSen: number;
@@ -1041,6 +1075,34 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
         hint: {
           ms: "Fikirkan: berapa banyak cara untuk berjaya, berbanding jumlah keseluruhan?",
           en: "Think about it: how many ways to succeed, compared to the total?",
+        },
+      };
+    }
+
+    case "prime_composite": {
+      const { n } = question.context as unknown as { n: number };
+      return {
+        mistakeType: "prime_composite_misconception",
+        hint: {
+          ms: `Semak semula: bolehkah ${n} dibahagi tepat dengan sebarang nombor selain 1 dan ${n} sendiri? Ingat juga 1 bukan nombor perdana mahupun nombor gubahan.`,
+          en: `Check again: can ${n} be divided exactly by any number other than 1 and ${n} itself? Also remember 1 is neither prime nor composite.`,
+        },
+      };
+    }
+
+    case "regular_polygon_angles": {
+      const { sides, variant } = question.context as unknown as { sides: number; variant: string };
+      return {
+        mistakeType: "polygon_angle_formula_error",
+        hint: {
+          ms:
+            variant === "each_angle"
+              ? `Formula: (${sides} − 2) × 180° ÷ ${sides}. Jangan lupa tolak 2 daripada bilangan sisi dahulu, kemudian bahagikan dengan ${sides}.`
+              : `Formula: (${sides} − 2) × 180°. Jangan lupa tolak 2 daripada bilangan sisi dahulu.`,
+          en:
+            variant === "each_angle"
+              ? `Formula: (${sides} − 2) × 180° ÷ ${sides}. Don't forget to subtract 2 from the number of sides first, then divide by ${sides}.`
+              : `Formula: (${sides} − 2) × 180°. Don't forget to subtract 2 from the number of sides first.`,
         },
       };
     }
@@ -1387,6 +1449,36 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
         hint: {
           ms: "Soalan ini minta BEZA (perbezaan), bukan jumlah — cari bilangan bagi setiap kumpulan dahulu, kemudian tolak.",
           en: "This question asks for the DIFFERENCE, not a total — find the count for each group first, then subtract.",
+        },
+      };
+    }
+
+    case "pictograph": {
+      const ctx = question.context as { variant: string; unitsPerIcon: number; correct: number };
+      if (ctx.variant === "count") {
+        return {
+          mistakeType: "forgot_pictograph_key",
+          hint: {
+            ms: `Jangan hanya kira bilangan ikon — darabkan bilangan ikon dengan kunci (setiap ikon = ${ctx.unitsPerIcon}) untuk dapat bilangan sebenar.`,
+            en: `Don't just count the icons — multiply the icon count by the key (each icon = ${ctx.unitsPerIcon}) to get the actual count.`,
+          },
+        };
+      }
+      return {
+        mistakeType: "subtracted_icons_not_units",
+        hint: {
+          ms: `Tukar bilangan ikon kepada unit sebenar (darab dengan ${ctx.unitsPerIcon}) untuk SETIAP peniaga dahulu, kemudian tolak.`,
+          en: `Convert icon counts to actual units (multiply by ${ctx.unitsPerIcon}) for EACH seller first, then subtract.`,
+        },
+      };
+    }
+
+    case "line_pair_classify": {
+      return {
+        mistakeType: "line_relationship_misconception",
+        hint: {
+          ms: "SELARI = dua garis yang tidak akan bertemu walaupun disambung (jarak sentiasa sama). SERENJANG = dua garis yang bersilang tepat pada 90°.",
+          en: "PARALLEL = two lines that never meet, even if extended (always the same distance apart). PERPENDICULAR = two lines that cross at exactly 90°.",
         },
       };
     }

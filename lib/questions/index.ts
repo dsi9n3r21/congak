@@ -1,8 +1,10 @@
 import { generateWholeNumbersAddition } from "./generators/wholeNumbers";
 import { generateFractionsSameDenominator } from "./generators/fractions";
-import { generateMoneyChange, generateMoneyAddSubtract, generateMoneyMultiplyDivide, generateSimpleInterest, generateProfitLoss, generateDiscount, generateServiceTax, generateDividend } from "./generators/money";
+import { generateMoneyChange, generateMoneyAddSubtract, generateMoneyMultiplyDivide, generateSimpleInterest, generateCompoundInterest, generateProfitLoss, generateDiscount, generateServiceTax, generateDividend } from "./generators/money";
 import { generatePerimeter } from "./generators/perimeter";
 import { generateLikelihood } from "./generators/likelihood";
+import { generatePrimeComposite } from "./generators/primeComposite";
+import { generateRegularPolygonAngles } from "./generators/regularPolygonAngles";
 import { generateProportion } from "./generators/proportion";
 import { generateAssetLiability } from "./generators/assetLiability";
 import { generateDecimalAddSubtract } from "./generators/decimals";
@@ -36,6 +38,8 @@ import { generateWholeNumbersMultiplication } from "./generators/wholeNumbersMul
 import { generateWholeNumbersDivision } from "./generators/wholeNumbersDivision";
 import { generateBarGraph } from "./generators/barGraph";
 import { generatePieChart } from "./generators/pieChart";
+import { generatePictograph } from "./generators/pictograph";
+import { generateLinePairClassify } from "./generators/linePairClassify";
 import { generateCoordinates } from "./generators/coordinates";
 import { generateWholeNumbersDivisionY5 } from "./generators/wholeNumbersDivisionY5";
 import { generateWholeNumbersMultiplicationY6 } from "./generators/wholeNumbersMultiplicationY6";
@@ -58,11 +62,14 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   money_add_subtract: generateMoneyAddSubtract,
   money_multiply_divide: generateMoneyMultiplyDivide,
   simple_interest: generateSimpleInterest,
+  compound_interest: generateCompoundInterest,
   profit_loss: generateProfitLoss,
   discount: generateDiscount,
   service_tax: generateServiceTax,
   dividend: generateDividend,
   likelihood: generateLikelihood,
+  prime_composite: generatePrimeComposite,
+  regular_polygon_angles: generateRegularPolygonAngles,
   proportion: generateProportion,
   asset_liability: generateAssetLiability,
   perimeter: generatePerimeter,
@@ -103,6 +110,8 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   whole_numbers_division: generateWholeNumbersDivision,
   bar_graph: generateBarGraph,
   pie_chart: generatePieChart,
+  pictograph: generatePictograph,
+  line_pair_classify: generateLinePairClassify,
   coordinates: generateCoordinates,
   whole_numbers_division_y5: generateWholeNumbersDivisionY5,
   whole_numbers_multiplication_y6: generateWholeNumbersMultiplicationY6,

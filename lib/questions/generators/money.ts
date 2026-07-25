@@ -215,6 +215,57 @@ export function generateSimpleInterest(params: GeneratorParams): GeneratedQuesti
   return question;
 }
 
+// Year 5 KSSR "Financial Literacy" — compound interest, computed the way
+// the real primary curriculum presents it (year-by-year compounding on
+// the running total), not the closed-form P(1+r)^t exponential formula,
+// which is beyond this level. Kept to 2-3 years so the manual
+// year-by-year calculation stays reasonable for a quiz answer.
+export function generateCompoundInterest(params: GeneratorParams): GeneratedQuestion {
+  const maxPrincipalRM = Number(params.maxPrincipalRM ?? 20);
+  const type = (params.type as "mcq" | "fill") ?? "mcq";
+
+  const principalRM = randInt(2, maxPrincipalRM) * 100; // clean hundreds, e.g. RM200-RM2000
+  const rate = pick([2, 4, 5, 8, 10]);
+  const years = randInt(2, 3);
+
+  let amountSen = principalRM * 100;
+  for (let y = 0; y < years; y++) {
+    amountSen += Math.round((amountSen * rate) / 100);
+  }
+  const compoundInterestSen = amountSen - principalRM * 100;
+
+  const question: GeneratedQuestion = {
+    prompt: {
+      ms: `Siti melabur RM${principalRM} pada kadar faedah kompaun ${rate}% setahun selama ${years} tahun. Setiap tahun, faedah dikira daripada jumlah TERKINI (termasuk faedah tahun sebelumnya). Berapakah jumlah faedah kompaun yang diperoleh Siti selepas ${years} tahun?`,
+      en: `Siti invests RM${principalRM} at a compound interest rate of ${rate}% per year for ${years} years. Each year, interest is calculated on the CURRENT total (including previous years' interest). How much total compound interest does Siti earn after ${years} years?`,
+    },
+    type,
+    correctAnswer: formatRM(compoundInterestSen),
+    context: { principalRM, rate, years, compoundInterestSen },
+    generatorKey: "compound_interest",
+    difficulty: 3,
+  };
+
+  if (type === "mcq") {
+    // Classic mistake: calculated it as SIMPLE interest instead (rate ×
+    // years applied only to the original principal, never compounding).
+    const simpleInterestSen = Math.round(((principalRM * 100) * rate * years) / 100);
+    // Classic mistake: only compounded for 1 year, forgetting the rest.
+    const oneYearOnlySen = Math.round((principalRM * 100 * rate) / 100);
+    const distractors = Array.from(
+      new Set([formatRM(simpleInterestSen), formatRM(oneYearOnlySen)].filter((d) => d !== formatRM(compoundInterestSen)))
+    );
+    question.options = shuffleOptions(formatRM(compoundInterestSen), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(0, compoundInterestSen + randInt(50, 500) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+  }
+
+  return question;
+}
+
 // Year 6 KSSR "Recognise Cost Price, Selling Price, Profit, and Loss".
 export function generateProfitLoss(params: GeneratorParams): GeneratedQuestion {
   const maxRM = Number(params.maxRM ?? 100);

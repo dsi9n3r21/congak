@@ -23,6 +23,8 @@ export interface GeneratedQuestion {
     | { kind: "circle"; radius: number }
     | { kind: "bar_chart"; labels: string[]; values: number[] }
     | { kind: "pie_chart"; segments: { label: string; numerator: number; denominator: number }[] }
+    | { kind: "pictograph"; segments: { label: string; iconCount: number }[]; unitsPerIcon: number }
+    | { kind: "line_pair"; relationship: "parallel" | "perpendicular" | "neither"; angleDeg: number }
     | { kind: "coordinate_grid"; x: number; y: number; gridSize: number };
 }
 

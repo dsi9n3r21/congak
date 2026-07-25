@@ -17,6 +17,8 @@ import { AnglesAtPointDiagram } from "@/components/student/diagrams/AnglesAtPoin
 import { CircleDiagram } from "@/components/student/diagrams/CircleDiagram";
 import { BarChartDiagram } from "@/components/student/diagrams/BarChartDiagram";
 import { PieChartDiagram } from "@/components/student/diagrams/PieChartDiagram";
+import { PictographDiagram } from "@/components/student/diagrams/PictographDiagram";
+import { LinePairDiagram } from "@/components/student/diagrams/LinePairDiagram";
 import { CoordinateGridDiagram } from "@/components/student/diagrams/CoordinateGridDiagram";
 
 type Status = "answering" | "correct" | "incorrect";
@@ -137,6 +139,16 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
         {question.diagram?.kind === "pie_chart" && (
           <div className="mt-4">
             <PieChartDiagram segments={question.diagram.segments} />
+          </div>
+        )}
+        {question.diagram?.kind === "pictograph" && (
+          <div className="mt-4">
+            <PictographDiagram segments={question.diagram.segments} unitsPerIcon={question.diagram.unitsPerIcon} />
+          </div>
+        )}
+        {question.diagram?.kind === "line_pair" && (
+          <div className="mt-4">
+            <LinePairDiagram relationship={question.diagram.relationship} angleDeg={question.diagram.angleDeg} />
           </div>
         )}
         {question.diagram?.kind === "coordinate_grid" && (

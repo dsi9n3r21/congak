@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0033 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0037 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0034**.
+should be **0038**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,16 +55,118 @@ should be **0034**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...073` (73 topics). Next new topic should start at `...074`.
+  `...078` (78 topics). Next new topic should start at `...079`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (73 topics — see note on the denominator)
+## Current curriculum coverage (78 topics — see note on the denominator)
 **Explicit instruction from Lynda: keep going until the real curriculum is
 fully covered.** Standing instruction, not a one-off batch.
 
-**Latest round (id `...073`):** Time Zones (`time_zones`, Y6 Measurement)
+**Round 15 (id `...078`):** Shipped Parallel Lines and Perpendicular
+Lines (`line_pair_classify`, Y4 Space, real ToC p.201) — the one Y4 gap
+flagged at the end of round 14. Added `LinePairDiagram.tsx` (parallel:
+offset lines with arrow-tick marks; perpendicular: crossing lines with a
+right-angle square marker, same convention as `AngleDiagram`; neither:
+crossing at a random other angle), the EIGHTH diagram kind. Word-based
+answer via the existing `optionLabels` convention (parallel/
+perpendicular/neither), same pattern as `likelihood`/`prime_composite`.
+
+**Remaining known open items** (none newly discovered this round — see
+round 14's entry below for how these were found): Perimeter/Volume of
+Composite Shapes (Y5 — Volume needs a cuboid-volume prerequisite that
+doesn't exist yet), Y5's standalone simpler Prime Numbers (lower
+priority), Y5's origin-distance coordinate sub-skill (not yet checked
+against the existing coordinates topic). Same caveat as before: these
+were found via targeted spot-checks against ToC lines that looked
+unfamiliar, not an exhaustive leaf-by-leaf audit — don't quote a
+percentage-complete to Lynda without that caveat.
+
+**Round 14 (id `...077`):** Closed the one blind spot flagged at the end
+of round 12-13 — Year 4's ToC topics 5-8 are now decoded and scoped
+(same `pdfplumber` CID-offset method). **All three years' full ToCs are
+now confirmed scoped against Congak's topic list — not just spot-checked.**
+Found two real Y4 gaps: Parallel/Perpendicular Lines (Space) and
+Pictographs (Data Handling). Shipped Pictographs (`pictograph`) — added
+`PictographDiagram.tsx` (icon rows + a key caption), the SEVENTH diagram
+kind. Deliberately distinct from `bar_graph`: the real skill being tested
+is applying the key (each icon = N units), so the actual unit count is
+never shown directly, only icon counts + the key — get the key wrong and
+every answer is wrong, which is exactly the point.
+
+**Parallel/Perpendicular Lines (Y4 Space) was a confirmed real gap here —
+shipped in round 15 (id `...078`), see above.**
+
+**Honest state of "how much more until complete":** all three years are
+now ToC-scoped, so there's no more blind spots at the topic-heading
+level. What's NOT done is an exhaustive leaf-by-leaf diff of literally
+every sub-bullet against all 77 Congak topics — gaps have been found by
+targeted `grep` checks against specific ToC lines that looked
+unfamiliar, not a mechanical line-for-line audit. Don't quote a
+percentage to Lynda without caveating that. Known open items so far:
+Parallel/Perpendicular Lines (Y4), Perimeter/Volume of Composite Shapes
+(Y5 — Volume needs a cuboid-volume prerequisite that doesn't exist yet),
+Y5's standalone simpler Prime Numbers, Y5's origin-distance coordinate
+sub-skill (not yet checked against the existing coordinates topic).
+
+**Rounds 12-13 (ids `...074`-`...076`) — first rounds with `Math.zip`
+(the real KSSR textbooks) actually available.** Extracted the real ToC
+for all three years. Y4 and Y5's ToC pages use an obfuscated custom font
+that garbles plain `pdftotext` output — solved by reading raw `(cid:N)`
+tokens via `pdfplumber` and solving a small linear offset per document
+(uppercase/digits use one offset, lowercase another; ranges don't overlap
+so decoding is unambiguous once solved). Y6's ToC happened to extract
+cleanly with no decoding needed. If a future round needs to re-derive
+this: open the PDF with `pdfplumber`, call `page.extract_text()` on the
+ToC page, and solve the offset from a known word like "PREFACE" (always
+the first ToC entry) — full method is in the round 12 chat transcript.
+Note: some headings render with each letter doubled/quadrupled in the
+raw CID text (e.g. "NNUUMMBBEERRSS") — that's the source PDF drawing
+bold/stylized headers as overlapping glyph repeats, not a decode bug.
+
+**Verified against the real book — already correct, no changes needed:**
+Y6 combined measurement (length+mass, length+volume, mass+volume), Y6
+time zones, Y6 pie charts, Y6 likelihood, division of fractions, Y5
+simple interest, Y5 mode/range/median/mean, Y5 area of composite shapes.
+
+**Shipped this round:**
+- Prime Numbers and Composite Numbers (`prime_composite`, Y6 Numbers,
+  real ToC p.42)
+- Interior Angles of Regular Polygons (`regular_polygon_angles`, Y6
+  Space, real ToC p.168-177) — Regular Heptagon deliberately excluded,
+  its interior angle (900/7 ≈ 128.57°) isn't a clean quiz answer and the
+  real book covers it as a hands-on measuring exercise anyway
+- Compound Interest (`compound_interest`, Y5 Money) — the real ToC lists
+  it as "Simple Interest and Compound Interest" together; Simple was
+  already covered, this was the missing sibling. Computed year-by-year
+  on the running total (matching how the real primary curriculum
+  presents it), not the closed-form exponential formula.
+
+**Confirmed real gaps found but NOT yet built:**
+- Perimeter of Composite Shapes and Volume of Composite Shapes (Y5
+  Space, real ToC p.217-224) — Area of Composite Shapes is covered,
+  these two siblings aren't. **Volume of Composite Shapes needs a
+  prerequisite that doesn't exist yet: Congak has NO basic solid-cuboid
+  volume topic at all (only liquid volume in ml/L).** Scope basic cuboid
+  volume (l × w × h) first, then composite. Perimeter of an orthogonal
+  composite (L-shape) shape has a neat property worth using: if the
+  shape is a bounding rectangle with a rectangular notch removed, the
+  perimeter always equals 2×(overall length + overall width) regardless
+  of notch size — but the real book's exercises may instead label every
+  edge directly, which would need a proper diagram (composite shapes
+  don't have one yet either). Scope the exact real-book exercise format
+  before building.
+- Y5 also has its own simpler "Prime Numbers" (no composite pairing) —
+  lower priority since Y6's version already covers the underlying
+  concept.
+- Y5 Coordinates also covers "Horizontal Distance and Vertical Distance
+  from the Origin" and "...Between Two Coordinates" as separate named
+  sub-skills from general distance-between-coordinates — not yet checked
+  whether Congak's existing coordinates topic already covers this
+  distinction or would need a variant.
+
+**The round before that (id `...073`):** Time Zones (`time_zones`, Y6 Measurement)
 — this was flagged several rounds back as the one remaining Y6 Time
 sub-topic once "combined measurement" was done. **Important caveat: this
 round did NOT have `Math.zip` (the real KSSR textbooks) available in its

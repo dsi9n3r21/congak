@@ -2861,4 +2861,173 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "fill", difficulty: 3, generatorKey: "time_zones", config: {} },
     ],
   },
+  "a1000000-0000-0000-0000-000000000074": {
+    id: "a1000000-0000-0000-0000-000000000074",
+    strand: { ms: "Nombor dan Operasi", en: "Numbers and Operations" },
+    title: { ms: "Nombor Perdana dan Nombor Gubahan", en: "Prime Numbers and Composite Numbers" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Nombor PERDANA hanya boleh dibahagi tepat dengan 1 dan dirinya sendiri (cth. 2, 3, 5, 7, 11). Nombor GUBAHAN mempunyai lebih daripada dua faktor (cth. 4, 6, 8, 9). Nombor 1 adalah istimewa — ia BUKAN nombor perdana MAHUPUN nombor gubahan, kerana ia hanya mempunyai SATU faktor (dirinya sendiri).\n\nContoh harian: 7 hanya boleh dibahagi tepat dengan 1 dan 7 — jadi 7 ialah nombor perdana. 8 boleh dibahagi tepat dengan 1, 2, 4, dan 8 — jadi 8 ialah nombor gubahan.",
+      en: "A PRIME number can only be divided exactly by 1 and itself (e.g. 2, 3, 5, 7, 11). A COMPOSITE number has more than two factors (e.g. 4, 6, 8, 9). The number 1 is special — it is NEITHER prime NOR composite, because it only has ONE factor (itself).\n\nEveryday example: 7 can only be divided exactly by 1 and 7 — so 7 is prime. 8 can be divided exactly by 1, 2, 4, and 8 — so 8 is composite.",
+    },
+    tips: [
+      { ms: "Cuba bahagikan nombor itu dengan 2, 3, 5, 7... Jika TIADA yang boleh bahagi tepat (selain 1 dan nombor itu sendiri), ia perdana.", en: "Try dividing the number by 2, 3, 5, 7... If NONE of them divide it exactly (other than 1 and the number itself), it's prime." },
+      { ms: "1 bukan perdana dan bukan gubahan — ramai murid tersilap anggap 1 itu perdana.", en: "1 is neither prime nor composite — many students mistakenly assume 1 is prime." },
+      { ms: "Semua nombor genap selain 2 adalah nombor gubahan (kerana boleh dibahagi dengan 2).", en: "Every even number except 2 is composite (since it can be divided by 2)." },
+    ],
+    howTo: [
+      { ms: "Senaraikan faktor-faktor nombor itu.", en: "List the number's factors." },
+      { ms: "Jika hanya ADA 2 faktor (1 dan dirinya sendiri), ia perdana.", en: "If it has EXACTLY 2 factors (1 and itself), it's prime." },
+      { ms: "Jika ada LEBIH daripada 2 faktor, ia gubahan. Jika HANYA 1 faktor (nombor itu ialah 1), ia bukan kedua-duanya.", en: "If it has MORE than 2 factors, it's composite. If it has ONLY 1 factor (the number is 1), it's neither." },
+    ],
+    workedExample: {
+      problem: "Adakah 9 nombor perdana atau nombor gubahan?",
+      steps: [
+        { ms: "Faktor bagi 9: 1, 3, 9", en: "Factors of 9: 1, 3, 9" },
+        { ms: "Terdapat 3 faktor (lebih daripada 2), jadi 9 ialah nombor gubahan", en: "There are 3 factors (more than 2), so 9 is composite" },
+      ],
+      answer: "composite",
+    },
+    commonMistakes: [
+      { mistakeType: "prime_composite_misconception", description: { ms: "Murid anggap 1 ialah nombor perdana, atau lupa semak semua faktor yang mungkin sebelum membuat kesimpulan.", en: "The student assumes 1 is prime, or forgets to check all possible factors before concluding." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "prime_composite", config: {} },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000075": {
+    id: "a1000000-0000-0000-0000-000000000075",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Sudut Pedalaman Poligon Sekata", en: "Interior Angles of Regular Polygons" },
+    yearLevel: 6,
+    explanation: {
+      ms: "Poligon sekata (regular polygon) mempunyai semua sisi dan semua sudut yang sama saiz. Jumlah semua sudut pedalaman = (bilangan sisi − 2) × 180°. Setiap sudut pedalaman = jumlah itu ÷ bilangan sisi.\n\nContoh harian: Sebuah pentagon sekata mempunyai 5 sisi. Jumlah sudut pedalaman = (5 − 2) × 180° = 540°. Setiap sudut = 540° ÷ 5 = 108°.",
+      en: "A regular polygon has all sides and all angles equal in size. The sum of all interior angles = (number of sides − 2) × 180°. Each interior angle = that sum ÷ number of sides.\n\nEveryday example: A regular pentagon has 5 sides. Sum of interior angles = (5 − 2) × 180° = 540°. Each angle = 540° ÷ 5 = 108°.",
+    },
+    tips: [
+      { ms: "Jangan lupa TOLAK 2 daripada bilangan sisi dahulu, sebelum darab dengan 180°.", en: "Don't forget to SUBTRACT 2 from the number of sides first, before multiplying by 180°." },
+      { ms: "Untuk cari SATU sudut, bahagikan jumlah keseluruhan dengan bilangan sisi.", en: "To find ONE angle, divide the total sum by the number of sides." },
+    ],
+    howTo: [
+      { ms: "Kira jumlah sudut pedalaman: (bilangan sisi − 2) × 180°.", en: "Calculate the sum of interior angles: (number of sides − 2) × 180°." },
+      { ms: "Jika soalan minta SATU sudut, bahagikan jumlah itu dengan bilangan sisi.", en: "If the question asks for ONE angle, divide that sum by the number of sides." },
+    ],
+    workedExample: {
+      problem: "Berapakah setiap sudut pedalaman bagi heksagon sekata (6 sisi)?",
+      steps: [
+        { ms: "Jumlah = (6 − 2) × 180° = 720°", en: "Sum = (6 − 2) × 180° = 720°" },
+        { ms: "Setiap sudut = 720° ÷ 6 = 120°", en: "Each angle = 720° ÷ 6 = 120°" },
+      ],
+      answer: "120",
+    },
+    commonMistakes: [
+      { mistakeType: "polygon_angle_formula_error", description: { ms: "Murid lupa tolak 2 daripada bilangan sisi, atau lupa bahagikan jumlah dengan bilangan sisi untuk dapatkan satu sudut.", en: "The student forgets to subtract 2 from the number of sides, or forgets to divide the sum by the number of sides to get one angle." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "regular_polygon_angles", config: {} },
+      { type: "fill", difficulty: 3, generatorKey: "regular_polygon_angles", config: {} },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000076": {
+    id: "a1000000-0000-0000-0000-000000000076",
+    strand: { ms: "Wang", en: "Money" },
+    title: { ms: "Faedah Kompaun", en: "Compound Interest" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Faedah KOMPAUN berbeza daripada faedah mudah — setiap tahun, faedah dikira daripada JUMLAH TERKINI (prinsipal + faedah tahun-tahun sebelumnya), bukan daripada prinsipal asal sahaja. Ini bermakna jumlah faedah bertambah lebih cepat setiap tahun.\n\nContoh harian: RM100 dilaburkan pada kadar 10% setahun. Tahun 1: faedah = RM10, jumlah = RM110. Tahun 2: faedah dikira daripada RM110 (bukan RM100) = RM11, jumlah = RM121. Jumlah faedah kompaun selepas 2 tahun = RM21.",
+      en: "COMPOUND interest is different from simple interest — each year, interest is calculated on the CURRENT total (principal + previous years' interest), not just the original principal. This means the total interest grows faster each year.\n\nEveryday example: RM100 is invested at 10% per year. Year 1: interest = RM10, total = RM110. Year 2: interest is calculated on RM110 (not RM100) = RM11, total = RM121. Total compound interest after 2 years = RM21.",
+    },
+    tips: [
+      { ms: "Kira faedah SATU TAHUN pada satu masa — jangan darab terus dengan bilangan tahun seperti faedah mudah.", en: "Calculate interest ONE YEAR at a time — don't multiply straight through by the number of years like simple interest." },
+      { ms: "Selepas setiap tahun, TAMBAHKAN faedah itu kepada jumlah sebelum mengira tahun seterusnya.", en: "After each year, ADD that interest to the total before calculating the next year." },
+    ],
+    howTo: [
+      { ms: "Kira faedah tahun 1: prinsipal × kadar ÷ 100. Tambahkan kepada prinsipal.", en: "Calculate year 1's interest: principal × rate ÷ 100. Add it to the principal." },
+      { ms: "Kira faedah tahun 2 daripada JUMLAH BAHARU itu (bukan prinsipal asal). Ulang untuk setiap tahun.", en: "Calculate year 2's interest from that NEW total (not the original principal). Repeat for every year." },
+      { ms: "Jumlah faedah kompaun = jumlah akhir − prinsipal asal.", en: "Total compound interest = final total − original principal." },
+    ],
+    workedExample: {
+      problem: "RM100 dilaburkan pada kadar faedah kompaun 10% setahun selama 2 tahun. Berapakah jumlah faedah kompaun?",
+      steps: [
+        { ms: "Tahun 1: RM100 × 10% = RM10 faedah. Jumlah = RM100 + RM10 = RM110", en: "Year 1: RM100 × 10% = RM10 interest. Total = RM100 + RM10 = RM110" },
+        { ms: "Tahun 2: RM110 × 10% = RM11 faedah. Jumlah = RM110 + RM11 = RM121", en: "Year 2: RM110 × 10% = RM11 interest. Total = RM110 + RM11 = RM121" },
+        { ms: "Jumlah faedah kompaun = RM121 − RM100 = RM21", en: "Total compound interest = RM121 − RM100 = RM21" },
+      ],
+      answer: "RM21.00",
+    },
+    commonMistakes: [
+      { mistakeType: "used_simple_interest_formula", description: { ms: "Murid guna formula faedah mudah (prinsipal × kadar × tahun) dan lupa faedah kompaun mengira daripada jumlah terkini setiap tahun.", en: "The student uses the simple interest formula (principal × rate × years) and forgets compound interest calculates from the current total each year." } },
+      { mistakeType: "stopped_compounding_early", description: { ms: "Murid hanya kira faedah untuk 1 tahun dan lupa teruskan untuk baki tahun.", en: "The student only calculates 1 year's interest and forgets to continue for the remaining years." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 20 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 15 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000077": {
+    id: "a1000000-0000-0000-0000-000000000077",
+    strand: { ms: "Statistik", en: "Statistics" },
+    title: { ms: "Membaca Piktograf", en: "Reading Pictographs" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Piktograf menggunakan IKON (gambar kecil) untuk mewakili data — tetapi setiap ikon tidak semestinya mewakili 1 sahaja. KUNCI piktograf (cth. \"= 5 unit\") memberitahu berapa banyak yang diwakili oleh SETIAP ikon. Untuk cari bilangan sebenar, darabkan bilangan ikon dengan kunci itu.\n\nContoh harian: Piktograf menunjukkan peniaga A mempunyai 4 ikon buah, dan kunci menunjukkan setiap ikon = 5 biji buah. Jadi peniaga A menjual 4 × 5 = 20 biji buah.",
+      en: "A pictograph uses ICONS (small pictures) to represent data — but each icon doesn't necessarily represent just 1. The pictograph's KEY (e.g. \"= 5 units\") tells you how much EACH icon represents. To find the actual count, multiply the icon count by that key.\n\nEveryday example: A pictograph shows seller A has 4 fruit icons, and the key shows each icon = 5 fruits. So seller A sold 4 × 5 = 20 fruits.",
+    },
+    tips: [
+      { ms: "SENTIASA semak kunci dahulu sebelum mengira — jangan anggap setiap ikon mewakili 1 sahaja.", en: "ALWAYS check the key first before calculating — don't assume each icon represents just 1." },
+      { ms: "Untuk soalan beza, tukar KEDUA-DUA baris kepada unit sebenar dahulu, kemudian tolak.", en: "For a difference question, convert BOTH rows to actual units first, then subtract." },
+    ],
+    howTo: [
+      { ms: "Kira bilangan ikon bagi kumpulan yang ditanya.", en: "Count the number of icons for the group being asked about." },
+      { ms: "Darabkan bilangan ikon itu dengan kunci (unit setiap ikon) untuk dapat bilangan sebenar.", en: "Multiply that icon count by the key (units per icon) to get the actual count." },
+    ],
+    workedExample: {
+      problem: "Peniaga A mempunyai 4 ikon. Kunci: setiap ikon = 5 biji buah. Berapakah bilangan buah peniaga A?",
+      steps: [
+        { ms: "Bilangan ikon = 4, kunci = 5 setiap ikon", en: "Icon count = 4, key = 5 per icon" },
+        { ms: "4 × 5 = 20", en: "4 × 5 = 20" },
+      ],
+      answer: 20,
+    },
+    commonMistakes: [
+      { mistakeType: "forgot_pictograph_key", description: { ms: "Murid berikan bilangan ikon sahaja tanpa mendarabkan dengan kunci.", en: "The student gives the icon count alone without multiplying by the key." } },
+      { mistakeType: "subtracted_icons_not_units", description: { ms: "Murid tolak bilangan ikon terus tanpa menukarkannya kepada unit sebenar dahulu.", en: "The student subtracts icon counts directly without converting them to actual units first." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "pictograph", config: {} },
+      { type: "fill", difficulty: 2, generatorKey: "pictograph", config: {} },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000078": {
+    id: "a1000000-0000-0000-0000-000000000078",
+    strand: { ms: "Ruang", en: "Space" },
+    title: { ms: "Garis Selari dan Garis Serenjang", en: "Parallel Lines and Perpendicular Lines" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Garis SELARI (parallel) ialah dua garis yang sentiasa berjarak sama antara satu sama lain dan TIDAK AKAN bertemu walaupun disambung sepanjang mana pun. Garis SERENJANG (perpendicular) ialah dua garis yang bersilang tepat pada sudut 90°. Jika dua garis bersilang tetapi BUKAN pada 90°, ia bukan kedua-duanya.\n\nContoh harian: Dua landasan kereta api adalah garis selari — sentiasa berjarak sama, tidak pernah bertemu. Sudut sebuah buku (tepi kertas) menunjukkan garis serenjang — bersilang tepat pada 90°.",
+      en: "PARALLEL lines are two lines that always stay the same distance apart and will NEVER meet, no matter how far they're extended. PERPENDICULAR lines are two lines that cross at exactly a 90° angle. If two lines cross but NOT at 90°, they're neither.\n\nEveryday example: Two railway tracks are parallel lines — always the same distance apart, never meeting. The corner of a book page shows perpendicular lines — crossing at exactly 90°.",
+    },
+    tips: [
+      { ms: "Cari petunjuk visual: garis selari kadangkala ditandakan dengan anak panah kecil yang sama arah pada kedua-dua garis.", en: "Look for visual clues: parallel lines are sometimes marked with small matching arrow ticks on both lines." },
+      { ms: "Garis serenjang selalunya ditandakan dengan petak kecil (□) di titik persilangan, menunjukkan sudut tepat 90°.", en: "Perpendicular lines are usually marked with a small square (□) at the crossing point, showing an exact 90° angle." },
+    ],
+    howTo: [
+      { ms: "Semak jika kedua-dua garis bersilang. Jika TIDAK bersilang dan berjarak sama, ia selari.", en: "Check if the two lines cross. If they DON'T cross and stay the same distance apart, they're parallel." },
+      { ms: "Jika garis BERSILANG, semak sudut persilangan itu. Jika tepat 90° (ada petanda petak), ia serenjang.", en: "If the lines DO cross, check the angle where they cross. If it's exactly 90° (marked with a square), they're perpendicular." },
+    ],
+    workedExample: {
+      problem: "Dua garis bersilang membentuk petak kecil (□) di titik persilangan. Apakah hubungan antara kedua-dua garis ini?",
+      steps: [
+        { ms: "Petak kecil menunjukkan sudut 90° tepat", en: "The small square shows an exact 90° angle" },
+        { ms: "Dua garis yang bersilang pada 90° ialah garis serenjang", en: "Two lines crossing at 90° are perpendicular lines" },
+      ],
+      answer: "perpendicular",
+    },
+    commonMistakes: [
+      { mistakeType: "line_relationship_misconception", description: { ms: "Murid keliru antara garis selari dan garis serenjang, atau anggap sebarang dua garis yang bersilang adalah serenjang walaupun bukan pada 90°.", en: "The student confuses parallel and perpendicular lines, or assumes any two crossing lines are perpendicular even when not at 90°." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "line_pair_classify", config: {} },
+    ],
+  },
 };
