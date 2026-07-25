@@ -666,6 +666,20 @@ changes needed:
    call case). The resulting pintar reply IS added to `historyRef` for
    subsequent turns, so later messages have a coherent history where
    Pintar spoke first.
+4. **Math symbol toolbar** (kids' request from the spring cleaning event,
+   `pintar_math_symbols_addon.md`) — a row of tappable buttons (+ − × ÷ =
+   ½ ⅓ ¼ ¾ % ° √ π) that insert at the current cursor position, for
+   symbols a touchscreen keyboard doesn't have. Built as one shared
+   `components/student/MathSymbolBar.tsx` (takes `inputRef`/`value`/
+   `onChange`/optional `disabled`) rather than duplicating it — Lynda
+   asked for it in Pintar's chat input specifically, but the same need
+   (typing `÷`, `½`, etc.) applies anywhere a student types a numeric
+   answer, so it's wired into all three fill-in-the-blank inputs:
+   `PintarChat.tsx`, `QuestionPlayer.tsx` (Latihan), and `ExamFlow.tsx`
+   (Exam). Deliberately NOT added to `QuizPlayer.tsx` — Lynda's request
+   named Latihan and Exam specifically, not Quiz; add it there too if she
+   wants it, same pattern. No engine-side change needed — Gemini/Groq/
+   OpenRouter already read/write these symbols fine as plain unicode text.
 
 ## Visual restyle (in progress — dashboard done, other screens not yet)
 Lynda decided to start visual polish early (not waiting for full

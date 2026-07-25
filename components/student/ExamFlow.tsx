@@ -9,6 +9,7 @@ import type { GeneratedQuestion } from "@/lib/questions/types";
 import type { Lang } from "@/lib/i18n/dictionary";
 import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
+import { MathSymbolBar } from "@/components/student/MathSymbolBar";
 
 // 90 minutes mirrors a real Malaysian primary school exam paper length
 // (roughly matching a combined Kertas 1 + Kertas 2 sitting); question count
@@ -50,6 +51,7 @@ export function ExamFlow({ lang }: { lang: Lang }) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [currentValue, setCurrentValue] = useState("");
+  const answerInputRef = useRef<HTMLInputElement>(null);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [result, setResult] = useState<ExamResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -203,13 +205,19 @@ export function ExamFlow({ lang }: { lang: Lang }) {
               ))}
             </div>
           ) : (
-            <input
-              type="text"
-              value={currentValue}
-              onChange={(e) => setCurrentValue(e.target.value)}
-              placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
-              className="mt-5 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-biru focus:outline-none"
-            />
+            <>
+              <div className="mt-5">
+                <MathSymbolBar inputRef={answerInputRef} value={currentValue} onChange={setCurrentValue} />
+              </div>
+              <input
+                ref={answerInputRef}
+                type="text"
+                value={currentValue}
+                onChange={(e) => setCurrentValue(e.target.value)}
+                placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
+                className="mt-2 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-biru focus:outline-none"
+              />
+            </>
           )}
 
           <button

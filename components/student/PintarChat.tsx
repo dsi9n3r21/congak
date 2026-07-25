@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import type { Lang } from "@/lib/i18n/dictionary";
 import { UI } from "@/lib/i18n/dictionary";
 import type { PintarAvatarState, PintarChatResponse, PintarHistoryEntry, PintarQuickReply } from "@/lib/pintar/types";
+import { MathSymbolBar } from "@/components/student/MathSymbolBar";
 
 interface DisplayMessage {
   role: "user" | "pintar";
@@ -65,6 +66,7 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
   const [quickReplies, setQuickReplies] = useState<PintarQuickReply[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Stable for the life of this page view. Not persisted — Pintar starts a
   // fresh session on every visit for now (see HANDOVER.md: history isn't
@@ -196,6 +198,10 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
         </div>
       )}
 
+      <div className="px-5 pt-2">
+        <MathSymbolBar inputRef={inputRef} value={input} onChange={setInput} disabled={sending} />
+      </div>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -204,6 +210,7 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
         className="flex items-center gap-2 px-5 pt-3"
       >
         <input
+          ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={lang === "en" ? UI.pintarPlaceholder.en : UI.pintarPlaceholder.ms}

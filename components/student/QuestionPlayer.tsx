@@ -20,6 +20,7 @@ import { PieChartDiagram } from "@/components/student/diagrams/PieChartDiagram";
 import { PictographDiagram } from "@/components/student/diagrams/PictographDiagram";
 import { LinePairDiagram } from "@/components/student/diagrams/LinePairDiagram";
 import { CoordinateGridDiagram } from "@/components/student/diagrams/CoordinateGridDiagram";
+import { MathSymbolBar } from "@/components/student/MathSymbolBar";
 
 type Status = "answering" | "correct" | "incorrect";
 
@@ -28,6 +29,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
   const [question, setQuestion] = useState<GeneratedQuestion>(() => generateFromTemplate(topic, 0));
   const [status, setStatus] = useState<Status>("answering");
   const [inputValue, setInputValue] = useState("");
+  const answerInputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [mistakeHint, setMistakeHint] = useState<Bilingual | null>(null);
   const [stats, setStats] = useState({ correct: 0, attempted: 0 });
@@ -181,14 +183,20 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
         )}
 
         {question.type !== "mcq" && (
-          <input
-            type="text"
-            value={inputValue}
-            disabled={status !== "answering"}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
-            className="mt-5 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-biru focus:outline-none"
-          />
+          <>
+            <div className="mt-5">
+              <MathSymbolBar inputRef={answerInputRef} value={inputValue} onChange={setInputValue} disabled={status !== "answering"} />
+            </div>
+            <input
+              ref={answerInputRef}
+              type="text"
+              value={inputValue}
+              disabled={status !== "answering"}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
+              className="mt-2 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-biru focus:outline-none"
+            />
+          </>
         )}
 
         {status === "answering" && (
