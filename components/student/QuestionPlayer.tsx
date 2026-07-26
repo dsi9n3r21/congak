@@ -29,6 +29,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
   const [question, setQuestion] = useState<GeneratedQuestion>(() => generateFromTemplate(topic, 0));
   const [status, setStatus] = useState<Status>("answering");
   const [inputValue, setInputValue] = useState("");
+  const [workingText, setWorkingText] = useState("");
   const answerInputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [mistakeHint, setMistakeHint] = useState<Bilingual | null>(null);
@@ -94,6 +95,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
       setQuestion(generateFromTemplate(topic, nextIndex));
       setStatus("answering");
       setInputValue("");
+      setWorkingText("");
       setSelected(null);
       setMistakeHint(null);
       questionStartRef.current = Date.now();
@@ -169,7 +171,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
                 className={clsx(
                   "rounded-kite border-2 px-4 py-3 text-left text-base min-h-[44px] transition-colors",
                   OPTION_LABELS[opt] ? "font-body" : "font-num",
-                  selected === opt && status === "answering" && "border-biru bg-biru-light",
+                  selected === opt && status === "answering" && "border-ungu bg-ungu-light",
                   selected !== opt && "border-ink/10",
                   status === "correct" && opt === question.correctAnswer && "border-pandan bg-pandan-light",
                   status === "incorrect" && opt === selected && "border-saga bg-saga-light",
@@ -185,6 +187,26 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
         {question.type !== "mcq" && (
           <>
             <div className="mt-5">
+              <label className="mb-1.5 block text-xs font-semibold text-ink/60">
+                <Bi text={UI.showWorking} lang={lang} />
+              </label>
+              <textarea
+                value={workingText}
+                disabled={status !== "answering"}
+                onChange={(e) => setWorkingText(e.target.value)}
+                placeholder={lang === "en" ? "Work it out here..." : "Buat kira-kira di sini..."}
+                rows={5}
+                className="w-full resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
+              />
+              <p className="mt-1 text-[11px] text-ink/40">
+                <Bi text={UI.showWorkingHint} lang={lang} />
+              </p>
+            </div>
+
+            <label className="mb-1.5 mt-4 block text-xs font-semibold text-ink/60">
+              <Bi text={UI.finalAnswer} lang={lang} />
+            </label>
+            <div className="mb-2">
               <MathSymbolBar inputRef={answerInputRef} value={inputValue} onChange={setInputValue} disabled={status !== "answering"} />
             </div>
             <input
@@ -193,8 +215,8 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
               value={inputValue}
               disabled={status !== "answering"}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
-              className="mt-2 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-biru focus:outline-none"
+              placeholder={lang === "en" ? "Type your final answer..." : "Taip jawapan akhir..."}
+              className="mt-2 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-ungu focus:outline-none"
             />
           </>
         )}
@@ -225,8 +247,8 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
       )}
 
       {status === "incorrect" && (
-        <div className="mt-4 rounded-kite border border-biru-light bg-biru-light/40 p-4">
-          <p className="font-display text-sm font-bold text-biru-dark">
+        <div className="mt-4 rounded-kite border border-ungu-light bg-ungu-light/40 p-4">
+          <p className="font-display text-sm font-bold text-ungu-dark">
             🦉 <Bi text={UI.professorNombor} lang={lang} />
           </p>
           {mistakeHint && <p className="mt-1 text-sm text-ink"><Bi text={mistakeHint} lang={lang} /></p>}
@@ -238,7 +260,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
           </p>
           <button
             onClick={() => nextQuestion(true)}
-            className="mt-3 w-full rounded-kite bg-biru py-3 font-display font-bold text-white min-h-[44px]"
+            className="mt-3 w-full rounded-kite bg-ungu py-3 font-display font-bold text-white min-h-[44px]"
           >
             <Bi text={UI.tryPro} lang={lang} /> →
           </button>

@@ -9,13 +9,15 @@ import type { RefObject } from "react";
 // answer inputs too, since those need the same symbols just as often.
 const MATH_SYMBOLS = ["+", "−", "×", "÷", "=", "½", "⅓", "¼", "¾", "%", "°", "√", "π"];
 
+type SymbolTargetElement = HTMLInputElement | HTMLTextAreaElement;
+
 export function MathSymbolBar({
   inputRef,
   value,
   onChange,
   disabled,
 }: {
-  inputRef: RefObject<HTMLInputElement>;
+  inputRef: RefObject<SymbolTargetElement>;
   value: string;
   onChange: (next: string) => void;
   disabled?: boolean;
@@ -34,14 +36,14 @@ export function MathSymbolBar({
   }
 
   return (
-    <div className="flex gap-1.5 overflow-x-auto pb-1">
+    <div className="flex gap-2 overflow-x-auto pb-1.5">
       {MATH_SYMBOLS.map((sym) => (
         <button
           key={sym}
           type="button"
           disabled={disabled}
           onClick={() => insertSymbol(sym)}
-          className="min-w-[36px] shrink-0 rounded-kite border border-ink/10 bg-paper px-2.5 py-1.5 font-num text-sm font-semibold text-ink transition-transform active:scale-[0.95] active:bg-kuning-light disabled:opacity-40"
+          className="min-w-[48px] shrink-0 rounded-kite border border-ink/10 bg-paper px-3 py-2.5 font-num text-lg font-semibold text-ink transition-transform active:scale-[0.95] active:bg-ungu-light disabled:opacity-40"
         >
           {sym}
         </button>

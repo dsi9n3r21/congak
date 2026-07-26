@@ -26,14 +26,17 @@ export default async function ProfilePage() {
           card there, so this page doesn't feel like a different app. */}
       <header className="relative overflow-hidden px-5 pt-6 pb-8">
         <div className="absolute right-3 -top-4 h-28 w-28 rounded-full bg-kuning-light/60" />
-        <div className="relative z-10 flex flex-col items-center rounded-kite bg-gradient-to-br from-biru to-biru-dark px-5 py-6 text-center text-paper shadow-card">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-kuning text-3xl">
-            {student?.avatar_id ?? "🙂"}
+        <div className="relative z-10 overflow-hidden rounded-kite bg-gradient-to-b from-biru to-biru-dark px-5 py-6 shadow-hero">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent" />
+          <div className="relative flex flex-col items-center text-center text-paper">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-kuning text-3xl">
+              {student?.avatar_id ?? "🙂"}
+            </div>
+            <h1 className="mt-3 font-display text-xl font-bold">{student?.display_name}</h1>
+            <p className="mt-0.5 text-xs opacity-80">
+              {lang === "en" ? "Year" : "Tahun"} {student?.year_level} · {user?.email}
+            </p>
           </div>
-          <h1 className="mt-3 font-display text-xl font-bold">{student?.display_name}</h1>
-          <p className="mt-0.5 text-xs opacity-80">
-            {lang === "en" ? "Year" : "Tahun"} {student?.year_level} · {user?.email}
-          </p>
         </div>
       </header>
 

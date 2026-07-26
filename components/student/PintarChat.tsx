@@ -67,7 +67,7 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
   const [quickReplies, setQuickReplies] = useState<PintarQuickReply[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Stable for the life of this page view. Not persisted — Pintar starts a
   // fresh session on every visit for now (see HANDOVER.md: history isn't
@@ -133,6 +133,7 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
       const trimmed = text.trim();
       if (!trimmed || sending) return;
       setInput("");
+      if (inputRef.current) inputRef.current.style.height = "auto";
       callEngine(trimmed, { showUserBubble: true });
     },
     [callEngine, sending]
@@ -214,15 +215,21 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
           e.preventDefault();
           send(input);
         }}
-        className="flex items-center gap-2 px-5 pt-3"
+        className="flex items-end gap-2 px-5 pt-3"
       >
-        <input
+        <textarea
           ref={inputRef}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            setInput(e.target.value);
+            const el = e.target;
+            el.style.height = "auto";
+            el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+          }}
           placeholder={lang === "en" ? UI.pintarPlaceholder.en : UI.pintarPlaceholder.ms}
           disabled={sending}
-          className="flex-1 rounded-kite border border-ink/10 bg-paper px-4 py-2.5 text-sm font-body text-ink outline-none focus:border-ungu disabled:opacity-50"
+          rows={1}
+          className="max-h-[120px] flex-1 resize-none overflow-y-auto rounded-kite border border-ink/10 bg-paper px-4 py-2.5 text-sm font-body text-ink outline-none focus:border-ungu disabled:opacity-50"
         />
         <button
           type="submit"

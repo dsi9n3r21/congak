@@ -23,27 +23,27 @@ const config: Config = {
         ink: "#1C2541",          // near-navy, used for all body text
         kuning: {                // marigold — primary brand / CTAs
           DEFAULT: "#F4A93B",
-          dark: "#D98C1F",
+          dark: "#C97A0F",
           light: "#FCE3B4",
         },
         biru: {                  // kite-string blue — links, secondary actions
           DEFAULT: "#2E6F9E",
-          dark: "#1F4E71",
+          dark: "#163A54",
           light: "#CFE4F2",
         },
         saga: {                  // kite red — errors, "needs improvement", alerts
           DEFAULT: "#E1543A",
-          dark: "#B93F28",
+          dark: "#9E3018",
           light: "#F9D9D0",
         },
         pandan: {                // success green — correct answers, mastery
           DEFAULT: "#3C9D6B",
-          dark: "#2A7350",
+          dark: "#1E5539",
           light: "#D3EEDF",
         },
         ungu: {                  // purple — primary brand accent (level/XP,
-          DEFAULT: "#6D4AC4",    // Pintar chat, selected states), per Lynda's
-          dark: "#4A2F8F",       // reference design; kuning stays for CTAs
+          DEFAULT: "#7C5CE0",    // Pintar chat, selected states), per Lynda's
+          dark: "#382266",       // reference design; kuning stays for CTAs
           light: "#E7E0FA",      // that still want the marigold warmth
         },
       },
@@ -57,6 +57,10 @@ const config: Config = {
       },
       boxShadow: {
         card: "0 2px 12px rgba(28,37,65,0.08)",
+        // Deeper drop shadow + a soft inset top edge — reads as a glossy,
+        // slightly-3D card rather than a flat color fill. Used on the
+        // gradient hero cards (dashboard level/XP, quests, profile).
+        hero: "0 10px 28px rgba(28,37,65,0.22), inset 0 1px 0 rgba(255,255,255,0.3)",
       },
     },
   },

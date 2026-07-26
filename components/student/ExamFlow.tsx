@@ -51,6 +51,7 @@ export function ExamFlow({ lang }: { lang: Lang }) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [currentValue, setCurrentValue] = useState("");
+  const [workingText, setWorkingText] = useState("");
   const answerInputRef = useRef<HTMLInputElement>(null);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [result, setResult] = useState<ExamResult | null>(null);
@@ -95,6 +96,7 @@ export function ExamFlow({ lang }: { lang: Lang }) {
     setIndex(0);
     setAnswers([]);
     setCurrentValue("");
+    setWorkingText("");
     setPhase("active");
   }
 
@@ -109,6 +111,7 @@ export function ExamFlow({ lang }: { lang: Lang }) {
     }
     setAnswers(updated);
     setCurrentValue("");
+    setWorkingText("");
     setIndex((i) => i + 1);
   }
 
@@ -180,7 +183,7 @@ export function ExamFlow({ lang }: { lang: Lang }) {
           <p className="text-xs font-num text-ink/50">
             {index + 1}/{questions.length}
           </p>
-          <p className={`font-num text-sm font-bold ${secondsLeft < 30 ? "text-saga" : "text-biru-dark"}`}>
+          <p className={`font-num text-sm font-bold ${secondsLeft < 30 ? "text-saga" : "text-ungu-dark"}`}>
             ⏱ {timeDisplay}
           </p>
         </div>
@@ -197,7 +200,7 @@ export function ExamFlow({ lang }: { lang: Lang }) {
                   key={opt}
                   onClick={() => setCurrentValue(opt)}
                   className={`rounded-kite border-2 px-4 py-3 text-left font-num text-base min-h-[44px] ${
-                    currentValue === opt ? "border-biru bg-biru-light" : "border-ink/10"
+                    currentValue === opt ? "border-ungu bg-ungu-light" : "border-ink/10"
                   }`}
                 >
                   {opt}
@@ -207,6 +210,24 @@ export function ExamFlow({ lang }: { lang: Lang }) {
           ) : (
             <>
               <div className="mt-5">
+                <label className="mb-1.5 block text-xs font-semibold text-ink/60">
+                  <Bi text={UI.showWorking} lang={lang} />
+                </label>
+                <textarea
+                  value={workingText}
+                  onChange={(e) => setWorkingText(e.target.value)}
+                  placeholder={lang === "en" ? "Work it out here..." : "Buat kira-kira di sini..."}
+                  rows={5}
+                  className="w-full resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
+                />
+                <p className="mt-1 text-[11px] text-ink/40">
+                  <Bi text={UI.showWorkingHint} lang={lang} />
+                </p>
+              </div>
+              <label className="mb-1.5 mt-4 block text-xs font-semibold text-ink/60">
+                <Bi text={UI.finalAnswer} lang={lang} />
+              </label>
+              <div className="mb-2">
                 <MathSymbolBar inputRef={answerInputRef} value={currentValue} onChange={setCurrentValue} />
               </div>
               <input
@@ -214,8 +235,8 @@ export function ExamFlow({ lang }: { lang: Lang }) {
                 type="text"
                 value={currentValue}
                 onChange={(e) => setCurrentValue(e.target.value)}
-                placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
-                className="mt-2 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-biru focus:outline-none"
+                placeholder={lang === "en" ? "Type your final answer..." : "Taip jawapan akhir..."}
+                className="mt-2 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-ungu focus:outline-none"
               />
             </>
           )}
@@ -274,8 +295,8 @@ export function ExamFlow({ lang }: { lang: Lang }) {
         </div>
       )}
 
-      <div className="mt-4 rounded-kite bg-biru-light/40 p-4">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-biru-dark">
+      <div className="mt-4 rounded-kite bg-ungu-light/40 p-4">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ungu-dark">
           <Bi text={UI.recommendedPath} lang={lang} />
         </p>
         <div className="space-y-2">

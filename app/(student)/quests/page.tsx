@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { Bi } from "@/lib/i18n/Bi";
 import type { Bilingual } from "@/lib/i18n/dictionary";
+import Image from "next/image";
 
 // Still a "coming soon" placeholder — Misi (daily missions/badges) is a
 // real feature build (its own migration + daily-reset logic + a design
@@ -41,12 +42,15 @@ export default async function QuestsPage() {
         </div>
       </header>
 
-      <section className="mx-5 rounded-kite bg-gradient-to-br from-pandan to-pandan-dark px-5 py-6 text-center text-paper shadow-card">
-        <p className="text-5xl">🪁</p>
-        <h2 className="mt-3 font-display text-lg font-bold">
+      <section className="relative mx-5 overflow-hidden rounded-kite bg-gradient-to-b from-pandan to-pandan-dark px-5 py-6 text-center text-paper shadow-hero">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent" />
+        <div className="relative mx-auto h-24 w-24">
+          <Image src="/pintar/reward.png" alt="" fill className="object-contain" />
+        </div>
+        <h2 className="relative mt-3 font-display text-lg font-bold">
           {lang === "en" ? "Adventure Mode is on its way!" : "Mod Pengembaraan sedang dibina!"}
         </h2>
-        <p className="mt-1.5 text-sm opacity-90">
+        <p className="relative mt-1.5 text-sm opacity-90">
           {lang === "en"
             ? "Daily missions, badges, and weekly challenges — built from your own real progress."
             : "Misi harian, lencana, dan cabaran mingguan — dibina daripada kemajuan sebenar anda."}

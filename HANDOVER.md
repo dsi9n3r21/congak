@@ -869,6 +869,113 @@ round(s):**
   single place to check tokens against — not built, just noted as a
   good idea worth doing once the palette settles further.
 
+**Round after that — 4 specific UX requests from Lynda, all shipped:**
+1. **More space for subjective (fill-in) answers, with clear
+   "show working" instruction.** Split the single answer box into TWO
+   fields everywhere a student types an answer (`QuestionPlayer.tsx`/
+   Latihan, `ExamFlow.tsx`/Exam, `QuizPlayer.tsx`/Quiz — Quiz got the
+   MathSymbolBar for the first time here too, extending the earlier
+   Latihan/Exam-only scoping since consistency matters more now that
+   Lynda's asking about the subjective-answer experience broadly): a
+   large `<textarea rows={5}>` labeled "Show your working" (explicitly
+   marked optional/ungraded — `UI.showWorkingHint`), and the existing
+   small graded answer field, now labeled "Final answer". **Important
+   architectural note for future rounds: the working-space text is
+   LOCAL COMPONENT STATE ONLY — never sent to the server, never
+   persisted, never graded.** This was a deliberate choice: the actual
+   grading logic does an exact string match against `correctAnswer`, so
+   letting students type free-form reasoning INTO the graded field would
+   break every mistake-classifier and mastery calculation in the app.
+   Two separate fields preserves grading correctness while still giving
+   real scratch space. If Lynda wants working shown to teachers later,
+   that needs a real `working_text` column + a teacher-facing view — a
+   new feature, not a styling tweak.
+2. **Enter goes down, not send** — for Pintar's chat input specifically
+   (the word "send" in the request pointed there, not the subjective
+   answer boxes, which don't have a "send" concept — they use a button).
+   Switched `PintarChat.tsx`'s input from a single-line `<input>` to an
+   auto-growing `<textarea rows={1} className="max-h-[120px] ...">` that
+   grows with content up to 120px then scrolls. Since forms only
+   auto-submit on Enter for single-line inputs (never textareas), this
+   was enough on its own — Enter now inserts a newline, only the circular
+   send button actually sends. Height resets to auto after sending.
+   `MathSymbolBar`'s `inputRef` prop type was generalized from
+   `RefObject<HTMLInputElement>` to `RefObject<HTMLInputElement |
+   HTMLTextAreaElement>` to support this (both element types share the
+   same `selectionStart`/`selectionEnd`/`setSelectionRange` API, so the
+   insert-at-cursor logic needed no changes, just the type).
+3. **Bigger math symbol buttons** — `MathSymbolBar.tsx`: `min-w-[36px]`
+   → `min-w-[48px]`, `text-sm` → `text-lg`, more padding. Also switched
+   its active-tap tint from `kuning-light` to `ungu-light` to match the
+   purple sweep.
+4. **Finished the purple sweep** on the three question-answering
+   surfaces while in there for the above — `QuestionPlayer.tsx`,
+   `ExamFlow.tsx`, and `QuizPlayer.tsx` all had leftover `biru` (blue)
+   selected-option borders, input focus rings, progress bars, and
+   feedback-panel colors from before `ungu` existed; all switched to
+   `ungu` now, so Practice/Exam/Quiz all read consistently purple like
+   the rest of the app.
+
+**Round after that — 3 more visual requests plus a curriculum check:**
+
+1. **New mascot character.** Lynda uploaded a 12-pose sprite sheet of a
+   new red-panda/fox character (replacing the earlier cat) on a black
+   background. Cropped and chroma-keyed each pose to a transparent PNG
+   (`PIL`/`numpy`, soft alpha ramp on brightness to avoid JPEG-compression
+   halos around the edges — see round's chat transcript for the exact
+   script if this needs redoing). Mapped 6 poses onto the EXISTING
+   filenames (`idle`/`thinking`/`showing`/`correct`/`wrong`/`confuse`) so
+   every existing reference in the app picked up the new character with
+   ZERO code changes, plus 2 new ones (`reward.png` — treasure chest,
+   used on the Quests hero; `studying.png` — hugging books, used on
+   Learn's header instead of reusing `showing.png`). **Caveat: `wrong`
+   and `confuse` were the hardest to map — the sprite sheet is all happy/
+   cheerful poses, no sad or frustrated one, so those two are best-guess
+   (sleeping/tired for `wrong`, magnifying-glass for `confuse`). Ask
+   Lynda to confirm or provide a better-fitting pose for those two
+   specifically if it comes up.**
+2. **Gradients + icons made "more 3D-ish."** Two changes:
+   - Widened the light→dark contrast on every gradient-card color pair
+     in `tailwind.config.ts` (`ungu`/`pandan`/`biru` DEFAULT brightened
+     slightly, `dark` variants darkened further) so the existing 2-stop
+     gradients read as more dramatic without restructuring the token
+     system. Added a `shadow-hero` boxShadow (deeper drop shadow + an
+     inset white top-edge highlight) and a `pointer-events-none` sheen
+     overlay div (`from-white/25 to-transparent`, top half only) on all
+     three gradient hero cards (dashboard level/XP, quests, profile) for
+     a glossy/embossed look. `saga`/`kuning` dark variants darkened too,
+     for the same visual family even though they're not used in
+     gradients yet — also improves text contrast anywhere `-dark` is
+     used for text, so this was a safe change everywhere.
+   - Icons "more 3D and prominent": lucide is a flat outline set with no
+     true 3D variant, so faked it the way most kid-friendly game UIs do:
+     colored rounded-square/circle backdrops behind icons (bumped from
+     10-11px squares to 11-12px, `shadow-sm`/`shadow-card` added),
+     bigger icon sizes throughout (`BottomNav`, dashboard icons,
+     `TopicYearBrowser` strand squares), bolder `strokeWidth` (2.25-2.5
+     instead of default 2), and the active bottom-nav tab now gets a
+     solid filled purple square behind it instead of just a color tint.
+3. **Checked against the real KSSR curriculum site** (`bpk.moe.gov.my`
+   itself blocks automated fetching — used a third-party mirror instead:
+   a "Panitia Matematik" Google Sites page links directly to the
+   official DSKP PDFs, hosted as flipbooks on `anyflip.com`, one level
+   removed from the blocked domain). **Confirmed the DSKP's own
+   "Bidang Pembelajaran → Tajuk" table matches exactly what was already
+   built against via `Math.zip`'s textbook ToCs**: Nombor dan Operasi →
+   Nombor Bulat/Pecahan-Perpuluhan-Peratus/Wang; Sukatan dan Geometri →
+   Masa dan Waktu/Ukuran dan Sukatan/Ruang; Perkaitan dan Algebra →
+   Koordinat-Nisbah-Kadaran; Statistik dan Kebarangkalian → Pengurusan
+   Data/Kebolehjadian. Also directly confirmed the DSKP's own wording for
+   Y6 Space says "poligon sekata **hingga lapan sisi**" (regular polygons
+   **up to eight sides**) — validates the earlier decision to cap
+   `regular_polygon_angles` at octagon and skip heptagon. **This was a
+   spot-check against the DSKP's top-level structure and a couple of
+   specific content standards, not an exhaustive standard-by-standard
+   diff** — that would mean fetching and reading all ~50-80 pages of
+   each of the three DSKP documents individually, which wasn't done here.
+   If Lynda wants that level of certainty, it's a bigger dedicated task,
+   not a quick check.
+
 ## Known deferred items (don't start these unprompted)
 - **Visual look-and-feel / branding polish**: Lynda explicitly asked to
   defer this until "everything is running smoothly" — she shared two

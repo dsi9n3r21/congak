@@ -16,8 +16,9 @@ const TABS = [
 
 // Bottom tab bar: primary nav lives in the thumb zone on mobile, not a top
 // header — matches how a 10-12 year old actually holds a phone one-handed.
-// Icons switched from emoji to lucide (outline, purple when active),
-// matching Lynda's reference design rather than the earlier emoji set.
+// Active icon gets a filled rounded-square backdrop + shadow (a "chunky
+// sticker" look) rather than just a color tint, per Lynda's request to
+// make icons feel more 3D and prominent for kids.
 export function BottomNav() {
   const pathname = usePathname();
 
@@ -34,13 +35,17 @@ export function BottomNav() {
             <li key={href} className="flex-1 md:flex-none">
               <Link
                 href={href}
-                className={clsx(
-                  "flex flex-col items-center gap-1 py-2.5 text-[11px] font-body min-h-[44px] justify-center",
-                  active ? "font-semibold text-ungu" : "text-ink/50"
-                )}
+                className="flex flex-col items-center gap-1 py-2 text-[11px] font-body min-h-[44px] justify-center"
               >
-                <Icon size={22} strokeWidth={active ? 2.5 : 2} className={active ? "text-ungu" : "text-ink/50"} />
-                {label}
+                <span
+                  className={clsx(
+                    "flex h-9 w-9 items-center justify-center rounded-xl transition-colors",
+                    active ? "bg-ungu shadow-card" : ""
+                  )}
+                >
+                  <Icon size={22} strokeWidth={active ? 2.5 : 2} className={active ? "text-paper" : "text-ink/50"} />
+                </span>
+                <span className={active ? "font-semibold text-ungu" : "text-ink/50"}>{label}</span>
               </Link>
             </li>
           );

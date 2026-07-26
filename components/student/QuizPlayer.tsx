@@ -9,6 +9,7 @@ import type { TopicContent } from "@/lib/content/topics";
 import type { Lang } from "@/lib/i18n/dictionary";
 import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
+import { MathSymbolBar } from "@/components/student/MathSymbolBar";
 
 const QUIZ_LENGTH = 5;
 
@@ -26,6 +27,8 @@ export function QuizPlayer({ topic, lang }: { topic: TopicContent; lang: Lang })
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [currentValue, setCurrentValue] = useState("");
+  const [workingText, setWorkingText] = useState("");
+  const answerInputRef = useRef<HTMLInputElement>(null);
   const [result, setResult] = useState<QuizResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const startRef = useRef(Date.now());
@@ -40,6 +43,7 @@ export function QuizPlayer({ topic, lang }: { topic: TopicContent; lang: Lang })
     if (!isLast) {
       setAnswers(updatedAnswers);
       setCurrentValue("");
+      setWorkingText("");
       setIndex((i) => i + 1);
       return;
     }
@@ -63,7 +67,7 @@ export function QuizPlayer({ topic, lang }: { topic: TopicContent; lang: Lang })
       </p>
       <div className="mb-4 h-1.5 w-full rounded-full bg-ink/10">
         <div
-          className="h-1.5 rounded-full bg-biru transition-all"
+          className="h-1.5 rounded-full bg-ungu transition-all"
           style={{ width: `${((index + 1) / questions.length) * 100}%` }}
         />
       </div>
@@ -80,7 +84,7 @@ export function QuizPlayer({ topic, lang }: { topic: TopicContent; lang: Lang })
                 key={opt}
                 onClick={() => setCurrentValue(opt)}
                 className={`rounded-kite border-2 px-4 py-3 text-left font-num text-base min-h-[44px] ${
-                  currentValue === opt ? "border-biru bg-biru-light" : "border-ink/10"
+                  currentValue === opt ? "border-ungu bg-ungu-light" : "border-ink/10"
                 }`}
               >
                 {opt}
@@ -88,13 +92,37 @@ export function QuizPlayer({ topic, lang }: { topic: TopicContent; lang: Lang })
             ))}
           </div>
         ) : (
-          <input
-            type="text"
-            value={currentValue}
-            onChange={(e) => setCurrentValue(e.target.value)}
-            placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
-            className="mt-5 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-biru focus:outline-none"
-          />
+          <>
+            <div className="mt-5">
+              <label className="mb-1.5 block text-xs font-semibold text-ink/60">
+                <Bi text={UI.showWorking} lang={lang} />
+              </label>
+              <textarea
+                value={workingText}
+                onChange={(e) => setWorkingText(e.target.value)}
+                placeholder={lang === "en" ? "Work it out here..." : "Buat kira-kira di sini..."}
+                rows={5}
+                className="w-full resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
+              />
+              <p className="mt-1 text-[11px] text-ink/40">
+                <Bi text={UI.showWorkingHint} lang={lang} />
+              </p>
+            </div>
+            <label className="mb-1.5 mt-4 block text-xs font-semibold text-ink/60">
+              <Bi text={UI.finalAnswer} lang={lang} />
+            </label>
+            <div className="mb-2">
+              <MathSymbolBar inputRef={answerInputRef} value={currentValue} onChange={setCurrentValue} />
+            </div>
+            <input
+              ref={answerInputRef}
+              type="text"
+              value={currentValue}
+              onChange={(e) => setCurrentValue(e.target.value)}
+              placeholder={lang === "en" ? "Type your final answer..." : "Taip jawapan akhir..."}
+              className="mt-2 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-ungu focus:outline-none"
+            />
+          </>
         )}
 
         <button
@@ -120,7 +148,7 @@ function QuizResults({ topic, result, lang }: { topic: TopicContent; result: Qui
         <p className="mt-2 font-display text-2xl font-bold text-ink">
           {result.score}/{result.total} <Bi text={UI.quizScore} lang={lang} />
         </p>
-        <p className="mt-1 font-num text-lg font-semibold text-biru-dark">
+        <p className="mt-1 font-num text-lg font-semibold text-ungu-dark">
           {result.accuracy}% <Bi text={UI.quizAccuracy} lang={lang} />
         </p>
         <p className="mt-1 text-xs text-ink/50 font-num">
@@ -146,7 +174,7 @@ function QuizResults({ topic, result, lang }: { topic: TopicContent; result: Qui
       <div className="mt-4 flex gap-2">
         <Link
           href={`/practice/${topic.id}`}
-          className="flex-1 rounded-kite bg-biru py-3 text-center font-display font-bold text-white min-h-[44px]"
+          className="flex-1 rounded-kite bg-ungu py-3 text-center font-display font-bold text-white min-h-[44px]"
         >
           <Bi text={UI.practiceMore} lang={lang} />
         </Link>
