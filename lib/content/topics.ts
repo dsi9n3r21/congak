@@ -3133,4 +3133,103 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 25 } },
     ],
   },
+  "a1000000-0000-0000-0000-000000000082": {
+    id: "a1000000-0000-0000-0000-000000000082",
+    strand: { ms: "Koordinat", en: "Coordinates" },
+    title: { ms: "Membaca Koordinat", en: "Reading Coordinates" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Setiap titik pada grid mempunyai koordinat (x, y) — nombor x menunjukkan berapa banyak ke KANAN, dan nombor y menunjukkan berapa banyak ke ATAS daripada asalan (0, 0).\n\nContoh harian: Sebuah titik terletak 3 petak ke kanan dan 2 petak ke atas daripada asalan. Koordinatnya ialah (3, 2).",
+      en: "Every point on a grid has coordinates (x, y) — the x number shows how far RIGHT, and the y number shows how far UP from the origin (0, 0).\n\nEveryday example: A point sits 3 squares to the right and 2 squares up from the origin. Its coordinates are (3, 2).",
+    },
+    tips: [
+      { ms: "Baca ATAS PANJANG (x) dahulu, kemudian NAIK (y). Susunan itu penting!", en: "Read ACROSS (x) first, then UP (y). The order matters!" },
+      { ms: "Mulakan mengira daripada asalan (0, 0), bukan daripada tepi grid.", en: "Start counting from the origin (0, 0), not from the edge of the grid." },
+    ],
+    howTo: [
+      { ms: "Kira berapa petak ke kanan daripada asalan — itulah nombor x.", en: "Count how many squares right from the origin — that's the x number." },
+      { ms: "Kira berapa petak ke atas daripada asalan — itulah nombor y.", en: "Count how many squares up from the origin — that's the y number." },
+      { ms: "Tuliskan sebagai (x, y).", en: "Write it as (x, y)." },
+    ],
+    workedExample: {
+      problem: "Sebuah titik terletak 3 petak ke kanan dan 2 petak ke atas daripada asalan.",
+      steps: [
+        { ms: "Ke kanan 3 petak → x = 3", en: "3 squares right → x = 3" },
+        { ms: "Ke atas 2 petak → y = 2", en: "2 squares up → y = 2" },
+      ],
+      answer: "(3, 2)",
+    },
+    commonMistakes: [
+      { mistakeType: "swapped_x_and_y", description: { ms: "Murid baca NAIK (y) dahulu, kemudian ATAS PANJANG (x), menyebabkan koordinat tertukar.", en: "The student reads UP (y) first, then ACROSS (x), swapping the coordinates." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 6 } },
+      { type: "fill", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 6 } },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000083": {
+    id: "a1000000-0000-0000-0000-000000000083",
+    strand: { ms: "Nisbah", en: "Ratio" },
+    title: { ms: "Nisbah", en: "Ratio" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Nisbah membandingkan dua kuantiti dan ditulis dalam bentuk a:b. Susunan penting — nisbah bagi \"A kepada B\" ditulis sebagai A:B, bukan B:A.\n\nContoh harian: Terdapat 6 epal dan 3 oren dalam sebuah bakul. Nisbah epal kepada oren ialah 6:3.",
+      en: "A ratio compares two quantities and is written as a:b. Order matters — the ratio of \"A to B\" is written as A:B, not B:A.\n\nEveryday example: There are 6 apples and 3 oranges in a basket. The ratio of apples to oranges is 6:3.",
+    },
+    tips: [
+      { ms: "Baca soalan dengan teliti — kenal pasti kuantiti MANA yang disebut dahulu. Itu ditulis dahulu dalam nisbah.", en: "Read the question carefully — identify WHICH quantity is named first. That one is written first in the ratio." },
+      { ms: "Nisbah bukan pecahan — jangan permudahkan melainkan diminta.", en: "A ratio isn't a fraction — don't simplify it unless asked." },
+    ],
+    howTo: [
+      { ms: "Kenal pasti kedua-dua kuantiti yang dibandingkan.", en: "Identify the two quantities being compared." },
+      { ms: "Tuliskan dalam susunan yang sama seperti yang ditanya dalam soalan: A:B.", en: "Write them in the same order the question asks: A:B." },
+    ],
+    workedExample: {
+      problem: "Terdapat 6 epal dan 3 oren. Tuliskan nisbah epal kepada oren.",
+      steps: [
+        { ms: "Bilangan epal = 6, bilangan oren = 3", en: "Number of apples = 6, number of oranges = 3" },
+        { ms: "Nisbah epal kepada oren = 6:3", en: "Ratio of apples to oranges = 6:3" },
+      ],
+      answer: "6:3",
+    },
+    commonMistakes: [
+      { mistakeType: "reversed_ratio_order", description: { ms: "Murid tulis nisbah dalam susunan terbalik (B:A dan bukannya A:B).", en: "The student writes the ratio in reversed order (B:A instead of A:B)." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "write_ratio", config: {} },
+    ],
+  },
+  "a1000000-0000-0000-0000-000000000084": {
+    id: "a1000000-0000-0000-0000-000000000084",
+    strand: { ms: "Nisbah", en: "Ratio" },
+    title: { ms: "Kadaran", en: "Proportion" },
+    yearLevel: 4,
+    explanation: {
+      ms: "Kadaran ialah cara untuk cari kuantiti baharu apabila kita tahu kadar (harga bagi satu unit). Cari harga SATU item dahulu (kaedah unit), kemudian darabkan dengan kuantiti yang ditanya.\n\nContoh harian: 2 batang pensel berharga RM4. Berapakah harga 5 batang pensel? Harga satu pensel = RM4 ÷ 2 = RM2. Harga 5 pensel = RM2 × 5 = RM10.",
+      en: "Proportion is a way to find a new quantity when we know a rate (the price for one unit). Find the price of ONE item first (the unitary method), then multiply by the quantity being asked about.\n\nEveryday example: 2 pencils cost RM4. How much do 5 pencils cost? Price of one pencil = RM4 ÷ 2 = RM2. Price of 5 pencils = RM2 × 5 = RM10.",
+    },
+    tips: [
+      { ms: "SENTIASA cari harga SATU item dahulu sebelum mengira kuantiti lain.", en: "ALWAYS find the price of ONE item first before working out a different quantity." },
+      { ms: "Jangan terus darabkan harga kumpulan dengan kuantiti baharu — itu akan memberi jawapan yang terlalu besar.", en: "Don't just multiply the group price by the new quantity directly — that gives an answer that's far too big." },
+    ],
+    howTo: [
+      { ms: "Bahagikan harga kumpulan dengan kuantiti asal untuk cari harga SATU item.", en: "Divide the group price by the original quantity to find the price of ONE item." },
+      { ms: "Darabkan harga satu item itu dengan kuantiti baharu yang ditanya.", en: "Multiply that one-item price by the new quantity being asked about." },
+    ],
+    workedExample: {
+      problem: "2 batang pensel berharga RM4. Berapakah harga 5 batang pensel?",
+      steps: [
+        { ms: "Harga satu pensel = RM4 ÷ 2 = RM2", en: "Price of one pencil = RM4 ÷ 2 = RM2" },
+        { ms: "Harga 5 pensel = RM2 × 5 = RM10", en: "Price of 5 pencils = RM2 × 5 = RM10" },
+      ],
+      answer: "RM10",
+    },
+    commonMistakes: [
+      { mistakeType: "skipped_unit_step", description: { ms: "Murid terus darabkan harga kumpulan asal dengan kuantiti baharu, tanpa cari harga satu item dahulu.", en: "The student directly multiplies the original group price by the new quantity, without finding the one-item price first." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 2, generatorKey: "unitary_proportion", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "unitary_proportion", config: {} },
+    ],
+  },
 };

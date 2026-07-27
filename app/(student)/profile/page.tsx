@@ -25,7 +25,7 @@ export default async function ProfilePage() {
           decorative blob + rounded avatar badge language as the level
           card there, so this page doesn't feel like a different app. */}
       <header className="relative overflow-hidden px-5 pt-6 pb-8">
-        <div className="absolute right-3 -top-4 h-28 w-28 rounded-full bg-kuning-light/60" />
+        <div className="decorative absolute right-3 -top-4 h-28 w-28 rounded-full bg-kuning-light/60" />
         <div className="relative z-10 overflow-hidden rounded-kite bg-gradient-to-b from-biru to-biru-dark px-5 py-6 shadow-hero">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent" />
           <div className="relative flex flex-col items-center text-center text-paper">

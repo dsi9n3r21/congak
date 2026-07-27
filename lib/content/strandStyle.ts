@@ -3,8 +3,8 @@ import { Calculator, PieChart, Percent, Divide, Clock, Coins, Ruler, BarChart3, 
 
 export interface StrandStyle {
   Icon: LucideIcon;
-  bg: string; // tailwind bg-* class, tinted (e.g. bg-biru/22)
-  fg: string; // tailwind text-* class for the icon itself
+  bg: string; // tailwind gradient classes — solid vivid fill, not a pale tint
+  fg: string; // icon color — white against the vivid fill
 }
 
 // Keyed by the strand's English name (stable across the app, unlike the
@@ -12,21 +12,23 @@ export interface StrandStyle {
 // all share blue and differ by icon; Money gets gold since it's the most
 // literal fit; Space/Coordinates/Ratio get the warm saga tone since
 // that's what's left and reads fine as a warm orange-red in this palette.
+// Solid gradient fills (not pale tints) per Lynda's feedback that the
+// icons needed to look more vivid/attractive/toy-like for kids.
 const STRAND_STYLES: Record<string, StrandStyle> = {
-  "Whole Numbers": { Icon: Calculator, bg: "bg-biru/22", fg: "text-biru-dark" },
-  "Numbers and Operations": { Icon: Calculator, bg: "bg-biru/22", fg: "text-biru-dark" },
-  "Fractions": { Icon: PieChart, bg: "bg-biru/22", fg: "text-biru-dark" },
-  "Decimals": { Icon: Divide, bg: "bg-biru/22", fg: "text-biru-dark" },
-  "Percentage": { Icon: Percent, bg: "bg-biru/22", fg: "text-biru-dark" },
-  "Measurement": { Icon: Clock, bg: "bg-pandan/22", fg: "text-pandan-dark" },
-  "Money": { Icon: Coins, bg: "bg-kuning/20", fg: "text-kuning-dark" },
-  "Space": { Icon: Ruler, bg: "bg-saga/22", fg: "text-saga-dark" },
-  "Statistics": { Icon: BarChart3, bg: "bg-ungu/22", fg: "text-ungu-dark" },
-  "Coordinates": { Icon: MapPin, bg: "bg-saga/22", fg: "text-saga-dark" },
-  "Ratio": { Icon: Scale, bg: "bg-biru/22", fg: "text-biru-dark" },
+  "Whole Numbers": { Icon: Calculator, bg: "bg-gradient-to-br from-biru to-biru-dark", fg: "text-paper" },
+  "Numbers and Operations": { Icon: Calculator, bg: "bg-gradient-to-br from-biru to-biru-dark", fg: "text-paper" },
+  "Fractions": { Icon: PieChart, bg: "bg-gradient-to-br from-biru to-biru-dark", fg: "text-paper" },
+  "Decimals": { Icon: Divide, bg: "bg-gradient-to-br from-biru to-biru-dark", fg: "text-paper" },
+  "Percentage": { Icon: Percent, bg: "bg-gradient-to-br from-biru to-biru-dark", fg: "text-paper" },
+  "Measurement": { Icon: Clock, bg: "bg-gradient-to-br from-pandan to-pandan-dark", fg: "text-paper" },
+  "Money": { Icon: Coins, bg: "bg-gradient-to-br from-kuning to-kuning-dark", fg: "text-paper" },
+  "Space": { Icon: Ruler, bg: "bg-gradient-to-br from-saga to-saga-dark", fg: "text-paper" },
+  "Statistics": { Icon: BarChart3, bg: "bg-gradient-to-br from-ungu to-ungu-dark", fg: "text-paper" },
+  "Coordinates": { Icon: MapPin, bg: "bg-gradient-to-br from-saga to-saga-dark", fg: "text-paper" },
+  "Ratio": { Icon: Scale, bg: "bg-gradient-to-br from-biru to-biru-dark", fg: "text-paper" },
 };
 
-const DEFAULT_STYLE: StrandStyle = { Icon: Calculator, bg: "bg-ink/10", fg: "text-ink/60" };
+const DEFAULT_STYLE: StrandStyle = { Icon: Calculator, bg: "bg-gradient-to-br from-ink/40 to-ink/60", fg: "text-paper" };
 
 export function getStrandStyle(strandEn: string): StrandStyle {
   return STRAND_STYLES[strandEn] ?? DEFAULT_STYLE;

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { TOPICS } from "@/lib/content/topics";
 import { LessonCard } from "@/components/student/LessonCard";
@@ -21,13 +22,19 @@ export default async function LearnTopicPage({ params }: { params: { topicId: st
 
   return (
     <main className="min-h-screen pb-24 md:pb-8">
-      <header className="px-5 pt-6 pb-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-kuning-dark">
-          <Bi text={topic.strand} lang={lang} />
-        </p>
-        <h1 className="font-display text-xl font-bold text-ink">
-          <Bi text={topic.title} lang={lang} />
-        </h1>
+      <header className="relative overflow-hidden px-5 pt-6 pb-4">
+        <div className="decorative absolute right-1 -top-6 h-32 w-32 rounded-full bg-kuning-light/50" />
+        <div className="absolute -right-3 top-0 h-32 w-32">
+          <Image src="/pintar/thinking.png" alt="" fill className="object-contain" />
+        </div>
+        <div className="relative z-10 max-w-[60%]">
+          <p className="text-xs font-semibold uppercase tracking-wide text-kuning-dark">
+            <Bi text={topic.strand} lang={lang} />
+          </p>
+          <h1 className="font-display text-xl font-bold text-ink">
+            <Bi text={topic.title} lang={lang} />
+          </h1>
+        </div>
       </header>
 
       <section className="mx-5">
@@ -43,7 +50,7 @@ export default async function LearnTopicPage({ params }: { params: { topicId: st
         </Link>
         <Link
           href={`/quiz/${topic.id}`}
-          className="flex-1 rounded-kite bg-biru px-5 py-4 text-center font-display text-base font-bold text-white shadow-card active:scale-[0.98] transition-transform"
+          className="flex-1 rounded-kite bg-ungu px-5 py-4 text-center font-display text-base font-bold text-white shadow-card active:scale-[0.98] transition-transform"
         >
           <Bi text={UI.startQuiz} lang={lang} /> →
         </Link>

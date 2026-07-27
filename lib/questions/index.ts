@@ -6,6 +6,7 @@ import { generateLikelihood } from "./generators/likelihood";
 import { generatePrimeComposite } from "./generators/primeComposite";
 import { generateRegularPolygonAngles } from "./generators/regularPolygonAngles";
 import { generateProportion } from "./generators/proportion";
+import { generateUnitaryProportion } from "./generators/unitaryProportion";
 import { generateAssetLiability } from "./generators/assetLiability";
 import { generateDecimalAddSubtract } from "./generators/decimals";
 import { generatePercentageOfQuantity } from "./generators/percentage";
@@ -44,6 +45,7 @@ import { generatePieChart } from "./generators/pieChart";
 import { generatePictograph } from "./generators/pictograph";
 import { generateLinePairClassify } from "./generators/linePairClassify";
 import { generateCoordinates } from "./generators/coordinates";
+import { generateWriteRatio } from "./generators/writeRatio";
 import { generateWholeNumbersDivisionY5 } from "./generators/wholeNumbersDivisionY5";
 import { generateWholeNumbersMultiplicationY6 } from "./generators/wholeNumbersMultiplicationY6";
 import { generateMixedOperations } from "./generators/mixedOperations";
@@ -74,6 +76,7 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   prime_composite: generatePrimeComposite,
   regular_polygon_angles: generateRegularPolygonAngles,
   proportion: generateProportion,
+  unitary_proportion: generateUnitaryProportion,
   asset_liability: generateAssetLiability,
   perimeter: generatePerimeter,
   decimal_add_subtract: generateDecimalAddSubtract,
@@ -119,6 +122,7 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   pictograph: generatePictograph,
   line_pair_classify: generateLinePairClassify,
   coordinates: generateCoordinates,
+  write_ratio: generateWriteRatio,
   whole_numbers_division_y5: generateWholeNumbersDivisionY5,
   whole_numbers_multiplication_y6: generateWholeNumbersMultiplicationY6,
   mixed_operations: generateMixedOperations,

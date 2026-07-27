@@ -39,11 +39,11 @@ export function BottomNav() {
               >
                 <span
                   className={clsx(
-                    "flex h-9 w-9 items-center justify-center rounded-xl transition-colors",
-                    active ? "bg-ungu shadow-card" : ""
+                    "flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
+                    active ? "bg-gradient-to-br from-ungu to-ungu-dark shadow-card" : ""
                   )}
                 >
-                  <Icon size={22} strokeWidth={active ? 2.5 : 2} className={active ? "text-paper" : "text-ink/50"} />
+                  <Icon size={23} strokeWidth={active ? 2.5 : 2} className={active ? "text-paper" : "text-ink/50"} />
                 </span>
                 <span className={active ? "font-semibold text-ungu" : "text-ink/50"}>{label}</span>
               </Link>

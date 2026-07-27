@@ -91,7 +91,7 @@ export function TopicYearBrowser({
                   href={topic.href}
                   className="flex items-center gap-3 rounded-kite bg-white p-4 shadow-card active:scale-[0.98] transition-transform"
                 >
-                  <span className={clsx("flex h-12 w-12 shrink-0 items-center justify-center rounded-kite shadow-sm", bg)}>
+                  <span className={clsx("flex h-12 w-12 shrink-0 items-center justify-center rounded-kite shadow-card", bg)}>
                     <Icon size={24} strokeWidth={2.25} className={fg} />
                   </span>
                   <div className="min-w-0 flex-1">

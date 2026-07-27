@@ -9,7 +9,12 @@
 }
 
 body {
-  @apply bg-paper text-ink font-body antialiased;
+  @apply text-ink font-body antialiased;
+  /* Soft warm gradient instead of a flat fill — reads gentler/more
+     soothing for kids than a stark solid background, while staying
+     subtle enough not to fight with card content. */
+  background: linear-gradient(180deg, #FFFDF7 0%, #FFF8EC 45%, #FFF3E0 100%);
+  background-attachment: fixed;
 }
 
 /* Accessibility: large text mode, toggled via a body class from Settings */

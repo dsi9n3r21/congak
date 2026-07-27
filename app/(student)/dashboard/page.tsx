@@ -57,7 +57,7 @@ export default async function DashboardPage() {
   return (
     <main className="min-h-screen pb-24 md:pb-8">
       <header className="relative overflow-hidden px-5 pt-6 pb-4">
-        <div className="relative z-10 max-w-[65%]">
+        <div className="relative z-10 max-w-[55%]">
           <h1 className="font-display text-2xl font-bold text-ink">
             <Bi text={greeting} lang={lang} />
           </h1>
@@ -65,8 +65,8 @@ export default async function DashboardPage() {
             <Bi text={UI.dashboardSubtitle} lang={lang} />
           </p>
         </div>
-        <div className="absolute right-3 -top-2 h-28 w-28 rounded-full bg-kuning-light/60" />
-        <div className="absolute right-4 top-1 h-24 w-24">
+        <div className="decorative absolute right-1 -top-6 h-32 w-32 rounded-full bg-kuning-light/60" />
+        <div className="absolute -right-3 top-0 h-36 w-36">
           <Image src="/pintar/idle.png" alt="" fill className="object-contain" priority />
         </div>
       </header>
@@ -120,8 +120,8 @@ export default async function DashboardPage() {
       {recommended && (
         <section className="mx-5 mt-4 rounded-kite bg-pandan-light px-5 py-4 shadow-card">
           <div className="flex items-start gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-pandan/22 shadow-sm">
-              <Target size={22} strokeWidth={2.25} className="text-pandan-dark" />
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-pandan to-pandan-dark shadow-card">
+              <Target size={22} strokeWidth={2.25} className="text-paper" />
             </span>
             <div className="flex-1">
               <p className="text-xs font-semibold uppercase tracking-wide text-pandan-dark">
@@ -137,8 +137,8 @@ export default async function DashboardPage() {
                 <Bi text={UI.continueLearning} lang={lang} /> →
               </a>
             </div>
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-pandan/15">
-              <Trophy size={22} className="text-pandan-dark" />
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-pandan to-pandan-dark shadow-sm">
+              <Trophy size={22} className="text-paper" />
             </span>
           </div>
         </section>
@@ -147,8 +147,8 @@ export default async function DashboardPage() {
       {weakTopics.length > 0 && (
         <section className="mx-5 mt-4 rounded-kite border border-saga-light bg-saga-light/40 px-5 py-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-saga/22">
-              <AlertTriangle size={18} strokeWidth={2.25} className="text-saga-dark" />
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-saga to-saga-dark shadow-sm">
+              <AlertTriangle size={18} strokeWidth={2.25} className="text-paper" />
             </span>
             <p className="text-xs font-semibold uppercase tracking-wide text-saga-dark">
               <Bi text={UI.needsAttention} lang={lang} />
@@ -167,8 +167,8 @@ export default async function DashboardPage() {
 
       {student?.link_code && (
         <section className="mx-5 mt-4 flex items-center gap-3 rounded-kite border-2 border-dashed border-biru-light bg-biru-light/30 px-5 py-4">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-biru/22 shadow-sm">
-            <Lock size={20} strokeWidth={2.25} className="text-biru-dark" />
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-biru to-biru-dark shadow-sm">
+            <Lock size={20} strokeWidth={2.25} className="text-paper" />
           </span>
           <div className="flex-1">
             <p className="text-xs text-ink/60">
@@ -188,8 +188,8 @@ export default async function DashboardPage() {
           className="flex items-center justify-between rounded-kite bg-kuning-light px-5 py-4 shadow-card active:scale-[0.98] transition-transform"
         >
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-kuning/30 shadow-sm">
-              <Timer size={24} strokeWidth={2.25} className="text-kuning-dark" />
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-kuning to-kuning-dark shadow-card">
+              <Timer size={24} strokeWidth={2.25} className="text-paper" />
             </span>
             <div>
               <p className="font-display text-sm font-bold text-kuning-dark">

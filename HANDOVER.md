@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0038 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0039 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0039**.
+should be **0040**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,14 +55,64 @@ should be **0039**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...081` (81 topics). Next new topic should start at `...082`.
+  `...084` (84 topics). Next new topic should start at `...085`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (81 topics — see note on the denominator)
+## Current curriculum coverage (84 topics — see note on the denominator)
 **Explicit instruction from Lynda: keep going until the real curriculum is
 fully covered.** Standing instruction, not a one-off batch.
+
+**Round 17 (ids `...082`-`...084`) — Lynda asked directly whether Year 4
+Coordinates/Ratio/Proportion were covered. They weren't, at all** — only
+Y5/Y6 versions existed, despite the real Y4 textbook explicitly listing
+this as Topic 7 back in round 14's scoping pass. That gap slipped through
+because round 14 only cross-checked Space and Data Handling for Y4, not
+Coordinates/Ratio/Proportion specifically — a good reminder that
+"scoped this year's ToC" doesn't mean "cross-checked every strand," and
+it's worth taking Lynda's specific questions seriously even after a year
+was marked as scoped. Added all three, each deliberately distinct from
+its later-year sibling so the progression makes sense:
+- **Reading Coordinates** (`coordinates` generator, reused with a smaller
+  `gridSize: 6` config — no new generator code needed) — Y5's version
+  uses a bigger default grid.
+- **Ratio** (new `write_ratio` generator) — write a ratio from a
+  real scenario (e.g. "6 apples and 3 oranges — write the ratio"),
+  distinct from Y6's "Simple Ratio" (simplifying to simplest form).
+- **Proportion** (new `unitary_proportion` generator) — the unitary
+  method: price-per-item scaling ("2 pencils cost RM4, how much do 5
+  cost?"), distinct from Y5's ratio-based proportion.
+
+**Same round, a big visual pass** (Lynda: "the cosmetics doesn't look
+quite soothing for kids yet. Placement of the new character needs to be
+big, icons need to look attractive and engaging"):
+- **`learn/[topicId]/page.tsx` had been completely missed** in every
+  earlier visual round — no header treatment, no mascot, and its Quiz
+  button was still blue (`bg-biru`) instead of purple. Fixed all three
+  (header blob + mascot, `bg-ungu` Quiz button).
+- **Mascot made substantially bigger** across Dashboard (24→36 units),
+  Learn index (20→32), Learn per-topic (28→32), Practice index (20→32),
+  and Quests hero (24→32) — repositioned as a real focal presence, not a
+  small corner decoration.
+- **Icons switched from pale flat tints (`bg-{color}/22`) to vivid solid
+  gradient fills (`bg-gradient-to-br from-{color} to-{color}-dark`) with
+  white icons** — both `strandStyle.ts` (topic list icon squares) and
+  every icon badge on the Dashboard (Target/Trophy/AlertTriangle/Lock/
+  Timer). Reads much more toy-like/saturated than the previous pastel
+  tint approach. `BottomNav`'s active-tab backdrop got the same
+  treatment.
+- **Background softened**: `body` went from a flat `bg-paper` fill to a
+  gentle warm vertical gradient (cream → soft peach, `background-
+  attachment: fixed`) in `globals.css` — direct response to "not
+  soothing enough."
+- **Housekeeping while touching every header's decorative blob div**:
+  none of them had the existing `decorative` class that the
+  low-distraction accessibility toggle depends on to hide non-essential
+  visual elements — added it everywhere so that toggle actually works
+  against the new decorative elements instead of silently missing them.
+- Quiz's math symbol bar — Lynda asked again, but this was already done
+  in an earlier round (confirmed still present, no changes needed).
 
 **Round 16 (ids `...079`-`...081`):** Closed the last two open items from
 round 12-15's scoping.

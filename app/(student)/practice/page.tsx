@@ -36,11 +36,11 @@ export default async function PracticeIndexPage() {
   return (
     <main className="min-h-screen pb-24 md:pb-8">
       <header className="relative overflow-hidden px-5 pt-6 pb-4">
-        <div className="absolute right-3 -top-4 h-24 w-24 rounded-full bg-kuning-light/50" />
-        <div className="absolute right-2 top-0 h-20 w-20">
+        <div className="decorative absolute right-1 -top-6 h-32 w-32 rounded-full bg-kuning-light/50" />
+        <div className="absolute -right-3 top-0 h-32 w-32">
           <Image src="/pintar/correct.png" alt="" fill className="object-contain" />
         </div>
-        <div className="relative z-10 max-w-[75%]">
+        <div className="relative z-10 max-w-[60%]">
           <h1 className="font-display text-xl font-bold text-ink">
             {lang === "en" ? "Practice — Choose a Topic" : "Latihan — Pilih Topik"}
           </h1>

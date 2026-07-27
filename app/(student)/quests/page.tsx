@@ -31,7 +31,7 @@ export default async function QuestsPage() {
   return (
     <main className="min-h-screen pb-24 md:pb-8">
       <header className="relative overflow-hidden px-5 pt-6 pb-4">
-        <div className="absolute right-3 -top-2 h-28 w-28 rounded-full bg-kuning-light/60" />
+        <div className="decorative absolute right-3 -top-2 h-28 w-28 rounded-full bg-kuning-light/60" />
         <div className="relative z-10 max-w-[70%]">
           <h1 className="font-display text-xl font-bold text-ink">
             {lang === "en" ? "Adventure Mode" : "Mod Pengembaraan"}
@@ -44,7 +44,7 @@ export default async function QuestsPage() {
 
       <section className="relative mx-5 overflow-hidden rounded-kite bg-gradient-to-b from-pandan to-pandan-dark px-5 py-6 text-center text-paper shadow-hero">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent" />
-        <div className="relative mx-auto h-24 w-24">
+        <div className="relative mx-auto h-32 w-32">
           <Image src="/pintar/reward.png" alt="" fill className="object-contain" />
         </div>
         <h2 className="relative mt-3 font-display text-lg font-bold">

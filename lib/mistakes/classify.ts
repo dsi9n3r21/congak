@@ -1297,6 +1297,46 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       };
     }
 
+    case "unitary_proportion": {
+      const { unitCost, targetQty } = question.context as unknown as { unitCost: number; targetQty: number };
+      if (Number(answer) === unitCost * targetQty) {
+        return {
+          mistakeType: "skipped_unit_step",
+          hint: {
+            ms: "Cari harga SATU item dahulu (bahagikan dengan kuantiti asal), kemudian darab dengan kuantiti baharu.",
+            en: "Find the price of ONE item first (divide by the original quantity), then multiply by the new quantity.",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Kaedah unit: cari harga satu item dahulu, kemudian darabkan dengan kuantiti yang ditanya.",
+          en: "Unitary method: find the price of one item first, then multiply by the quantity being asked about.",
+        },
+      };
+    }
+
+    case "write_ratio": {
+      const { a, b } = question.context as unknown as { a: number; b: number };
+      if (answer === `${b}:${a}`) {
+        return {
+          mistakeType: "reversed_ratio_order",
+          hint: {
+            ms: "Susunan nisbah penting — tulis mengikut urutan yang ditanya dalam soalan (yang pertama disebut, ditulis dahulu).",
+            en: "Order matters in a ratio — write it in the order the question asks (whichever is named first goes first).",
+          },
+        };
+      }
+      return {
+        mistakeType: "calculation_error",
+        hint: {
+          ms: "Nisbah membandingkan dua kuantiti dalam bentuk a:b — guna nombor sebenar, jangan tambah atau tolak.",
+          en: "A ratio compares two quantities as a:b — use the actual counts, don't add or subtract them.",
+        },
+      };
+    }
+
     case "asset_liability": {
       return {
         mistakeType: "asset_liability_misconception",
