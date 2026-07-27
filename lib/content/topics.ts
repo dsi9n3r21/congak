@@ -23,7 +23,20 @@ export interface TopicContent {
    * distinct from workedExample, which walks one specific set of numbers. */
   howTo: Bilingual[];
   workedExample: { problem: string; steps: Bilingual[]; answer: string | number };
-  commonMistakes: { mistakeType: string; description: Bilingual }[];
+  /** Optional additional worked examples beyond the first, shown as
+   * "Example 2", "Example 3" etc. in the same tab. Optional so existing
+   * topics keep working untouched while content gets filled in gradually. */
+  moreExamples?: { problem: string; steps: Bilingual[]; answer: string | number }[];
+  commonMistakes: {
+    mistakeType: string;
+    description: Bilingual;
+    /** The wrong way, step by step — shown in a red "❌ Don't do this" card.
+     * Optional: falls back to just the description when not yet filled in. */
+    wrongSteps?: Bilingual[];
+    /** The correct way for the same problem, step by step — shown in a
+     * green "✅ Do this instead" card right next to wrongSteps. */
+    correctSteps?: Bilingual[];
+  }[];
   questionTemplates: { type: "mcq" | "fill" | "word_problem"; difficulty: number; generatorKey: string; config: Record<string, unknown> }[];
 }
 
@@ -65,9 +78,49 @@ export const TOPICS: Record<string, TopicContent> = {
       ],
       answer: 51050,
     },
+    moreExamples: [
+      {
+        problem: "47250 + 6890",
+        steps: [
+          { ms: "Susun ikut nilai tempat", en: "Line up by place value" },
+          { ms: "0+0=0 (sa)", en: "0+0=0 (ones)" },
+          { ms: "5+9=14, tulis 4 simpan 1 (puluh)", en: "5+9=14, write 4 carry 1 (tens)" },
+          { ms: "2+8+1(simpan)=11, tulis 1 simpan 1 (ratus)", en: "2+8+1(carried)=11, write 1 carry 1 (hundreds)" },
+          { ms: "7+6+1(simpan)=14, tulis 4 simpan 1 (ribu)", en: "7+6+1(carried)=14, write 4 carry 1 (thousands)" },
+          { ms: "4+0+1(simpan)=5 (puluh ribu)", en: "4+0+1(carried)=5 (ten thousands)" },
+        ],
+        answer: 54140,
+      },
+    ],
     commonMistakes: [
-      { mistakeType: "place_value_misalignment", description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." } },
-      { mistakeType: "forgot_carry", description: { ms: "Murid terlupa \"simpan\" apabila jumlah lajur melebihi 9.", en: "The student forgets to \"carry\" when a column's total is more than 9." } },
+      {
+        mistakeType: "place_value_misalignment",
+        description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." },
+        wrongSteps: [
+          { ms: "3245 + 186 disusun sa bertentang sa dengan sa terakhir sahaja:", en: "3245 + 186 lined up flush-right by digit count, not place value:" },
+          { ms: "  3245", en: "  3245" },
+          { ms: "+  186", en: "+  186" },
+          { ms: "= 5105 ✗ (silap — 1 disamakan dengan lajur ratus)", en: "= 5105 ✗ (wrong — the 1 got matched to the hundreds column)" },
+        ],
+        correctSteps: [
+          { ms: "Susun ikut nilai tempat sebenar (sa di bawah sa):", en: "Line up by actual place value (ones under ones):" },
+          { ms: "  3245", en: "  3245" },
+          { ms: "+ 0186", en: "+ 0186" },
+          { ms: "= 3431 ✓", en: "= 3431 ✓" },
+        ],
+      },
+      {
+        mistakeType: "forgot_carry",
+        description: { ms: "Murid terlupa \"simpan\" apabila jumlah lajur melebihi 9.", en: "The student forgets to \"carry\" when a column's total is more than 9." },
+        wrongSteps: [
+          { ms: "4+6=10 di lajur ratus, tulis \"10\" terus tanpa simpan", en: "4+6=10 in the hundreds column, writes \"10\" straight down without carrying" },
+          { ms: "Jawapan jadi bercampur digit — jumlah akhir salah", en: "The answer ends up with a stray extra digit — final total is wrong" },
+        ],
+        correctSteps: [
+          { ms: "4+6=10 — tulis 0, simpan 1 ke lajur ribu", en: "4+6=10 — write down 0, carry the 1 to the thousands column" },
+          { ms: "Tambah 1 (simpan) itu bersama lajur ribu seterusnya", en: "Add that carried 1 into the next (thousands) column's total" },
+        ],
+      },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_addition", config: { min: 15000, max: 45000 } },

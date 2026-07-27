@@ -232,9 +232,6 @@ export function ExamFlow({ lang }: { lang: Lang }) {
               <label className="mb-1.5 mt-4 block text-xs font-semibold text-ink/60">
                 <Bi text={UI.finalAnswer} lang={lang} />
               </label>
-              <div className="mb-2">
-                <MathSymbolBar inputRef={answerInputRef} value={currentValue} onChange={setCurrentValue} />
-              </div>
               <input
                 ref={answerInputRef}
                 type="text"

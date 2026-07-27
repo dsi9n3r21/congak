@@ -60,6 +60,8 @@ export const UI: Record<string, Bilingual> = {
   showWorking: { ms: "Tunjukkan cara kerja anda", en: "Show your working" },
   showWorkingHint: { ms: "Pilihan — ruang untuk kira-kira anda, tidak dinilai", en: "Optional — space for your calculations, not graded" },
   finalAnswer: { ms: "Jawapan akhir", en: "Final answer" },
+  mistakeWrongWay: { ms: "Jangan buat begini", en: "Don't do this" },
+  mistakeRightWay: { ms: "Buat begini", en: "Do this instead" },
   recommendedToday: { ms: "Cadangan hari ini", en: "Recommended today" },
   continueLearning: { ms: "Sambung belajar", en: "Continue learning" },
   needsAttention: { ms: "Perlu perhatian", en: "Needs attention" },
