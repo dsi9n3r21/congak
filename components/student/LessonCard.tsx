@@ -67,18 +67,29 @@ export function LessonCard({ topic, lang }: { topic: TopicContent; lang: Lang })
 
         {tab === "learnTabExample" && (
           <div>
-            <p className="font-num text-lg font-bold text-biru-dark">{topic.workedExample.problem}</p>
-            <ol className="mt-3 space-y-2">
+            <div className="rounded-kite border-2 border-biru-light bg-biru-light/40 px-4 py-5 text-center">
+              <p className="font-num text-xl font-bold tracking-wide text-biru-dark sm:text-2xl">
+                {topic.workedExample.problem}
+              </p>
+            </div>
+            <ol className="mt-4 space-y-3">
               {topic.workedExample.steps.map((step, i) => (
-                <li key={i} className="flex gap-2 text-sm text-ink">
-                  <span className="font-num font-semibold text-biru">{i + 1}.</span>
-                  <Bi text={step} lang={lang} />
+                <li key={i} className="flex items-start gap-3 rounded-kite bg-paper px-4 py-3.5 shadow-card">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-biru font-num text-sm font-bold text-white">
+                    {i + 1}
+                  </span>
+                  <span className="pt-0.5 font-num text-[15px] font-semibold leading-relaxed text-ink">
+                    <Bi text={step} lang={lang} />
+                  </span>
                 </li>
               ))}
             </ol>
-            <p className="mt-4 rounded-lg bg-biru-light px-3 py-2 font-num text-base font-bold text-biru-dark">
-              <Bi text={UI.answerLabel} lang={lang} />: {topic.workedExample.answer}
-            </p>
+            <div className="mt-5 flex items-center justify-between rounded-kite bg-biru px-4 py-3.5">
+              <span className="font-body text-sm font-semibold text-white/80">
+                <Bi text={UI.answerLabel} lang={lang} />
+              </span>
+              <span className="font-num text-xl font-extrabold text-white">{topic.workedExample.answer}</span>
+            </div>
           </div>
         )}
 

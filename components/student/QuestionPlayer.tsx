@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { generateQuestion } from "@/lib/questions";
 import { classifyMistake } from "@/lib/mistakes/classify";
+import { isAnswerCorrect, formatAnswerForDisplay } from "@/lib/questions/grading";
 import { startPracticeSession, recordAttempt } from "@/lib/actions/practice";
 import type { GeneratedQuestion } from "@/lib/questions/types";
 import type { TopicContent } from "@/lib/content/topics";
@@ -31,6 +32,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
   const [inputValue, setInputValue] = useState("");
   const [workingText, setWorkingText] = useState("");
   const answerInputRef = useRef<HTMLInputElement>(null);
+  const workingTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [mistakeHint, setMistakeHint] = useState<Bilingual | null>(null);
   const [stats, setStats] = useState({ correct: 0, attempted: 0 });
@@ -47,7 +49,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
 
   const submit = useCallback(() => {
     if (!currentAnswer) return;
-    const isCorrect = currentAnswer.trim() === question.correctAnswer;
+    const isCorrect = isAnswerCorrect(currentAnswer, question.correctAnswer);
     const timeTakenSeconds = Math.round((Date.now() - questionStartRef.current) / 1000);
 
     setStats((s) => ({ correct: s.correct + (isCorrect ? 1 : 0), attempted: s.attempted + 1 }));
@@ -190,13 +192,17 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
               <label className="mb-1.5 block text-xs font-semibold text-ink/60">
                 <Bi text={UI.showWorking} lang={lang} />
               </label>
+              <div className="mb-2">
+                <MathSymbolBar inputRef={workingTextareaRef} value={workingText} onChange={setWorkingText} disabled={status !== "answering"} />
+              </div>
               <textarea
+                ref={workingTextareaRef}
                 value={workingText}
                 disabled={status !== "answering"}
                 onChange={(e) => setWorkingText(e.target.value)}
                 placeholder={lang === "en" ? "Work it out here..." : "Buat kira-kira di sini..."}
-                rows={5}
-                className="w-full resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
+                rows={10}
+                className="w-full min-h-[220px] resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
               />
               <p className="mt-1 text-[11px] text-ink/40">
                 <Bi text={UI.showWorkingHint} lang={lang} />
@@ -272,7 +278,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
 
 function OptionLabel({ value, lang }: { value: string; lang: Lang }) {
   const entry = OPTION_LABELS[value];
-  if (!entry) return <>{value}</>;
+  if (!entry) return <>{formatAnswerForDisplay(value)}</>;
   return <Bi text={entry} lang={lang} />;
 }
 

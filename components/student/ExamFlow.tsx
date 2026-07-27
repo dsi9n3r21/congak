@@ -53,6 +53,7 @@ export function ExamFlow({ lang }: { lang: Lang }) {
   const [currentValue, setCurrentValue] = useState("");
   const [workingText, setWorkingText] = useState("");
   const answerInputRef = useRef<HTMLInputElement>(null);
+  const workingTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [result, setResult] = useState<ExamResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -213,12 +214,16 @@ export function ExamFlow({ lang }: { lang: Lang }) {
                 <label className="mb-1.5 block text-xs font-semibold text-ink/60">
                   <Bi text={UI.showWorking} lang={lang} />
                 </label>
+                <div className="mb-2">
+                  <MathSymbolBar inputRef={workingTextareaRef} value={workingText} onChange={setWorkingText} />
+                </div>
                 <textarea
+                  ref={workingTextareaRef}
                   value={workingText}
                   onChange={(e) => setWorkingText(e.target.value)}
                   placeholder={lang === "en" ? "Work it out here..." : "Buat kira-kira di sini..."}
-                  rows={5}
-                  className="w-full resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
+                  rows={10}
+                  className="w-full min-h-[220px] resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
                 />
                 <p className="mt-1 text-[11px] text-ink/40">
                   <Bi text={UI.showWorkingHint} lang={lang} />

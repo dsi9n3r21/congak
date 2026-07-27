@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { classifyMistake } from "@/lib/mistakes/classify";
+import { isAnswerCorrect } from "@/lib/questions/grading";
 import { updateStreak } from "./streak";
 import type { GeneratedQuestion } from "@/lib/questions/types";
 import type { Bilingual } from "@/lib/i18n/dictionary";
@@ -52,7 +53,7 @@ export async function submitExam(
   const questionResults: QuestionReviewEntry[] = [];
 
   for (const { topicId, question, studentAnswer } of answers) {
-    const isCorrect = studentAnswer.trim() === question.correctAnswer;
+    const isCorrect = isAnswerCorrect(studentAnswer, question.correctAnswer);
     const entry = perTopic.get(topicId) ?? { correct: 0, total: 0 };
     entry.total += 1;
 

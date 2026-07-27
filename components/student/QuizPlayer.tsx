@@ -29,6 +29,7 @@ export function QuizPlayer({ topic, lang }: { topic: TopicContent; lang: Lang })
   const [currentValue, setCurrentValue] = useState("");
   const [workingText, setWorkingText] = useState("");
   const answerInputRef = useRef<HTMLInputElement>(null);
+  const workingTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [result, setResult] = useState<QuizResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const startRef = useRef(Date.now());
@@ -97,12 +98,16 @@ export function QuizPlayer({ topic, lang }: { topic: TopicContent; lang: Lang })
               <label className="mb-1.5 block text-xs font-semibold text-ink/60">
                 <Bi text={UI.showWorking} lang={lang} />
               </label>
+              <div className="mb-2">
+                <MathSymbolBar inputRef={workingTextareaRef} value={workingText} onChange={setWorkingText} />
+              </div>
               <textarea
+                ref={workingTextareaRef}
                 value={workingText}
                 onChange={(e) => setWorkingText(e.target.value)}
                 placeholder={lang === "en" ? "Work it out here..." : "Buat kira-kira di sini..."}
-                rows={5}
-                className="w-full resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
+                rows={10}
+                className="w-full min-h-[220px] resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
               />
               <p className="mt-1 text-[11px] text-ink/40">
                 <Bi text={UI.showWorkingHint} lang={lang} />
