@@ -10,7 +10,7 @@ import { generateUnitaryProportion } from "./generators/unitaryProportion";
 import { generateAssetLiability } from "./generators/assetLiability";
 import { generateDecimalAddSubtract } from "./generators/decimals";
 import { generatePercentageOfQuantity } from "./generators/percentage";
-import { generateTimeDuration, generateTimeAddSubtract, generateTimeUnitAddSubtract, generateTimeZones } from "./generators/time";
+import { generateTimeDuration, generateTimeAddSubtract, generateTimeUnitAddSubtract, generateTimeFormatConvert, generateTimeZones } from "./generators/time";
 import { generateCoordinateDistance } from "./generators/coordinateDistance";
 import { generateModeRangeMedianMean } from "./generators/statistics";
 import { generateCreditVsCash } from "./generators/creditVsCash";
@@ -84,6 +84,7 @@ const REGISTRY: Record<string, (params: GeneratorParams) => GeneratedQuestion> =
   time_duration: generateTimeDuration,
   time_add_subtract: generateTimeAddSubtract,
   time_unit_add_subtract: generateTimeUnitAddSubtract,
+  time_format_convert: generateTimeFormatConvert,
   time_zones: generateTimeZones,
   coordinate_distance: generateCoordinateDistance,
   mode_range_median_mean: generateModeRangeMedianMean,

@@ -13,9 +13,9 @@ throughout. Accessibility toggles (large text, dyslexia font via Lexend,
 low distraction) work and persist. Real streak tracking (Malaysia
 timezone). PWA installable.
 
-## Migrations: run 0001 through 0039 already (in Supabase SQL Editor, in
+## Migrations: run 0001 through 0040 already (in Supabase SQL Editor, in
 order — never skip ahead, each depends on the last). Next new migration
-should be **0040**.
+should be **0041**.
 
 ## Architecture patterns (follow these for consistency)
 - **Bilingual everywhere**: `Bilingual` type = `{ ms: string; en: string }`
@@ -55,14 +55,32 @@ should be **0040**.
   seed) is stale/unused — the app never reads it, known and accepted debt,
   don't bother syncing it.
 - Topic IDs used so far: `a1000000-0000-0000-0000-000000000001` through
-  `...084` (84 topics). Next new topic should start at `...085`.
+  `...085` (85 topics). Next new topic should start at `...086`.
 - **Verify before shipping**: `cd congak && npx tsc --noEmit` (must show
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
-## Current curriculum coverage (84 topics — see note on the denominator)
+## Current curriculum coverage (85 topics — see note on the denominator)
 **Explicit instruction from Lynda: keep going until the real curriculum is
 fully covered.** Standing instruction, not a one-off batch.
+
+**Round 18 (id `...085`) — a curriculum-architect-style brief (elaborate
+`learnContent`/`howToSteps`/`workedExamples[]` JSON schema, framed as if a
+separate developer would implement it) surfaced one real, previously
+undocumented gap: Y5 Time only covered clock-time+duration (`...007`) and
+duration+duration (`...043`/`...048`/`...049`/`...064`) — nothing for
+**converting between 12-hour and 24-hour format**. The brief's schema
+itself didn't match `TopicContent`/the 3 actual question `type`s
+(mcq/fill/word_problem) or existing diagram kinds (no clock/timeline
+diagram component exists) — adapted the *pedagogy* (misconception-targeted
+distractors, multi-step word problems with an irrelevant-info decoy,
+bilingual, real Malaysian bus-schedule context) into the real schema
+instead of building unrendered fields. New generator
+`time_format_convert` in `lib/questions/generators/time.ts` covers both
+directions, the noon/midnight special case (0000/1200, the single most
+common student mix-up), a bus-schedule word-problem wrapper, an
+error-spotting variant, and a reverse problem chained with duration
+addition. Smoke-tested 12,000 generations, 0 failures.
 
 **Round 17 (ids `...082`-`...084`) — Lynda asked directly whether Year 4
 Coordinates/Ratio/Proportion were covered. They weren't, at all** — only

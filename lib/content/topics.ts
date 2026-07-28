@@ -3285,4 +3285,50 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "unitary_proportion", config: {} },
     ],
   },
+  "a1000000-0000-0000-0000-000000000085": {
+    id: "a1000000-0000-0000-0000-000000000085",
+    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    title: { ms: "Format 12 Jam dan 24 Jam", en: "12-Hour and 24-Hour Time" },
+    yearLevel: 5,
+    explanation: {
+      ms: "Format 24 jam digunakan dalam jadual bas, keretapi, dan penerbangan supaya tiada kekeliruan antara pagi dan petang. Ia menggunakan 4 digit (0000-2359), tanpa a.m./p.m.\n\nPeraturan asas: 12 tengah malam = 0000, 12 tengah hari = 1200. Untuk waktu petang/malam (selepas 12 tengah hari, bukan 12 tengah hari itu sendiri), tambah 12 pada jamnya.\n\nContoh harian: Jadual bas sekolah menunjukkan bas ke Ipoh bertolak pada 1445. Pukul berapakah ini dalam format 12 jam?",
+      en: "24-hour format is used on bus, train, and flight timetables so there's no confusion between morning and evening. It uses 4 digits (0000-2359), no a.m./p.m.\n\nBase rule: 12 midnight = 0000, 12 noon = 1200. For afternoon/evening times (after noon, not noon itself), add 12 to the hour.\n\nEveryday example: the school bus timetable shows the Ipoh bus departs at 1445. What time is that in 12-hour format?",
+    },
+    tips: [
+      { ms: "Petang tambah dua-belas, pagi kekal — kecuali tengah malam jadi kosong-kosong!", en: "Afternoon add twelve, morning stays the same — except midnight becomes zero-zero!" },
+      { ms: "JANGAN buat ini: 12:30 t.hari → 0030. SALAH — 12 t.hari ialah 1200, bukan 0000. 12 tengah malam pula ialah 0000, bukan 1200.", en: "DON'T do this: 12:30 p.m. → 0030. WRONG — 12 noon is 1200, not 0000. 12 midnight is 0000, not 1200." },
+      { ms: "Untuk tukar 24 jam ke 12 jam: jika jam melebihi 12, tolak 12 dan letak 'petang'.", en: "To convert 24-hour to 12-hour: if the hour is above 12, subtract 12 and label it 'p.m.'" },
+    ],
+    howTo: [
+      { ms: "Kenal pasti sama ada waktu itu pagi (a.m.) atau petang/malam (p.m.).", en: "Identify whether the time is a.m. or p.m." },
+      { ms: "Jika p.m. dan bukan 12 tengah hari, tambah 12 pada jam.", en: "If it's p.m. and not 12 noon, add 12 to the hour." },
+      { ms: "Kes khas: 12 tengah malam → 0000. 12 tengah hari → kekal 1200.", en: "Special cases: 12 midnight → 0000. 12 noon → stays 1200." },
+      { ms: "Tulis dalam 4 digit, minit dikekalkan sama.", en: "Write as 4 digits, minutes stay the same." },
+      { ms: "Semak: waktu selepas 1200 sepatutnya jatuh pada petang/malam sahaja.", en: "Check: any time after 1200 should only fall in the afternoon/evening." },
+    ],
+    workedExample: {
+      problem: "Tukar 2:45 petang kepada format 24 jam",
+      steps: [
+        { ms: "2:45 petang ialah p.m. dan bukan 12 tengah hari.", en: "2:45 p.m. is p.m. and not 12 noon." },
+        { ms: "Tambah 12 pada jam: 2 + 12 = 14", en: "Add 12 to the hour: 2 + 12 = 14" },
+        { ms: "Minit kekal 45.", en: "Minutes stay 45." },
+        { ms: "Jawapan: 1445", en: "Answer: 1445" },
+      ],
+      answer: "1445",
+    },
+    commonMistakes: [
+      { mistakeType: "noon_midnight_confusion", description: { ms: "Murid menganggap 12 t.hari = 0000 dan 12 tgh malam = 1200 (bertukar).", en: "Student swaps 12 noon (thinks it's 0000) with 12 midnight (thinks it's 1200)." } },
+      { mistakeType: "added_12_to_am", description: { ms: "Murid menambah 12 walaupun waktu itu pagi (a.m.).", en: "Student adds 12 even though the time is a.m." } },
+      { mistakeType: "forgot_leading_zero", description: { ms: "Murid menulis 145 bukan 0145 untuk 1:45 pagi.", en: "Student writes 145 instead of 0145 for 1:45 a.m." } },
+      { mistakeType: "subtracted_instead_of_added", description: { ms: "Semasa tukar 12 jam ke 24 jam, murid menolak 12 bukan menambah.", en: "Converting 12-hour to 24-hour, student subtracts 12 instead of adding." } },
+    ],
+    questionTemplates: [
+      { type: "mcq", difficulty: 1, generatorKey: "time_format_convert", config: { direction: "to24", excludeNoonMidnight: true } },
+      { type: "fill", difficulty: 2, generatorKey: "time_format_convert", config: { direction: "to24", includeNoonMidnight: true } },
+      { type: "fill", difficulty: 2, generatorKey: "time_format_convert", config: { direction: "to12" } },
+      { type: "word_problem", difficulty: 2, generatorKey: "time_format_convert", config: { direction: "to24", context: "bus_schedule", extraInfoChance: 0.3 } },
+      { type: "mcq", difficulty: 3, generatorKey: "time_format_convert", config: { direction: "to24", errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_format_convert", config: { reverseProblem: true } },
+    ],
+  },
 };

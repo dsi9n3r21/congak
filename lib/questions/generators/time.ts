@@ -214,6 +214,209 @@ const TIME_ZONE_CITIES = [
   { name: "Karachi", offset: 5 },
 ];
 
+// Year 5 KSSR "12-Hour and 24-Hour Time" — converting between the two
+// formats, the genuinely missing Time sub-topic flagged in HANDOVER.md
+// (Congak had clock-time+duration and duration+duration, but nothing for
+// format conversion). Deliberately keeps the graded answer
+// language-neutral: 24-hour answers are always a bare 4-digit string
+// ("1445"), 12-hour answers always use the standard "a.m."/"p.m."
+// abbreviation (never spelled-out Malay/English words) — same reasoning
+// as time_add_subtract's "2j 45m" convention, since MCQ options/fill
+// answers are shown regardless of language_pref.
+function pad2(n: number): string {
+  return String(n).padStart(2, "0");
+}
+
+function to24String(hour24: number, minute: number): string {
+  return `${pad2(hour24)}${pad2(minute)}`;
+}
+
+function to12Parts(hour24: number): { hour12: number; isPM: boolean } {
+  const isPM = hour24 >= 12;
+  let hour12 = hour24 % 12;
+  if (hour12 === 0) hour12 = 12;
+  return { hour12, isPM };
+}
+
+function to12String(hour24: number, minute: number): string {
+  const { hour12, isPM } = to12Parts(hour24);
+  return `${hour12}:${pad2(minute)} ${isPM ? "p.m." : "a.m."}`;
+}
+
+// Bilingual period phrase for use INSIDE the bilingual prompt text only
+// (never in the graded answer) — noon/midnight get their own special
+// wording, matching this topic's "12 tengah hari"/"12 tengah malam"
+// special-case rule.
+function periodPhrase(hour24: number, minute: number, lang: "ms" | "en"): string {
+  const { hour12, isPM } = to12Parts(hour24);
+  const timeStr = `${hour12}:${pad2(minute)}`;
+  if (hour24 === 0 && minute === 0) return lang === "ms" ? "12 tengah malam" : "12 midnight";
+  if (hour24 === 12 && minute === 0) return lang === "ms" ? "12 tengah hari" : "12 noon";
+  const period = lang === "ms" ? (isPM ? "petang" : "pagi") : isPM ? "p.m." : "a.m.";
+  return `${timeStr} ${period}`;
+}
+
+function randomHour24(includeNoonMidnight: boolean, excludeNoonMidnight: boolean): number {
+  if (includeNoonMidnight) return pick([0, 12]);
+  let hour: number;
+  do {
+    hour = randInt(0, 23);
+  } while (excludeNoonMidnight && (hour === 0 || hour === 12));
+  return hour;
+}
+
+export function generateTimeFormatConvert(params: GeneratorParams): GeneratedQuestion {
+  const direction = (params.direction as "to24" | "to12" | "mixed") ?? "to24";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const includeNoonMidnight = Boolean(params.includeNoonMidnight);
+  const excludeNoonMidnight = Boolean(params.excludeNoonMidnight);
+  const busSchedule = params.context === "bus_schedule";
+  const extraInfoChance = Number(params.extraInfoChance ?? 0);
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+
+  const hour24 = randomHour24(includeNoonMidnight, excludeNoonMidnight);
+  const minute = pick([0, 15, 30, 45]);
+  const { hour12, isPM } = to12Parts(hour24);
+
+  // ---- reverseProblem: chains with the existing duration-addition skill.
+  // Given a 24-hour departure time and a duration, find the 12-hour
+  // arrival time. Deliberately the hardest template (difficulty 3).
+  if (reverseProblem) {
+    const durationMinutes = pick([30, 45, 60, 90, 120]);
+    const totalMinutes = hour24 * 60 + minute + durationMinutes;
+    const arrivalHour24 = Math.floor(totalMinutes / 60) % 24;
+    const arrivalMinute = totalMinutes % 60;
+    const correct = to12String(arrivalHour24, arrivalMinute);
+
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Bas bertolak dari stesen pada ${to24String(hour24, minute)} (format 24 jam) dan perjalanan mengambil masa ${durationMinutes} minit. Pukul berapakah bas tiba, dalam format 12 jam?`,
+        en: `A bus departs the station at ${to24String(hour24, minute)} (24-hour format) and the journey takes ${durationMinutes} minutes. What time does it arrive, in 12-hour format?`,
+      },
+      type: "word_problem",
+      correctAnswer: correct,
+      context: { hour24, minute, durationMinutes, arrivalHour24, arrivalMinute },
+      generatorKey: "time_format_convert",
+      difficulty: 3,
+    };
+
+    // Classic mistake: converted the departure time to 12-hour but forgot
+    // to add the duration at all.
+    const forgotDuration = to12String(hour24, minute);
+    // Classic mistake: added the duration's minutes but didn't carry the
+    // extra hour (same base-60 carry error as time_duration/time_add_subtract).
+    const noHourCarry = to12String(hour24, (minute + durationMinutes) % 60);
+    const distractors = Array.from(new Set([forgotDuration, noHourCarry].filter((d) => d !== correct)));
+    question.options = shuffleOptions(correct, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const bumpMinutes = totalMinutes + randInt(5, 40) * (Math.random() > 0.5 ? 1 : -1);
+      const bumpHour = Math.floor(((bumpMinutes % 1440) + 1440) / 60) % 24;
+      const bumpMin = ((bumpMinutes % 60) + 60) % 60;
+      const candidate = to12String(bumpHour, bumpMin);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown a documented wrong conversion, must give the
+  // correct one. Always uses the to24 direction since the noon/midnight
+  // swap and added-12-to-am mistakes are clearest in that direction.
+  if (errorSpotting) {
+    const correct = to24String(hour24, minute);
+    let wrong: string;
+    if (hour24 === 0) wrong = "1200"; // noon/midnight swap
+    else if (hour24 === 12) wrong = "0000"; // noon/midnight swap
+    else if (!isPM) wrong = to24String(hour24 + 12, minute); // added 12 to an a.m. hour
+    else wrong = to24String(hour12, minute); // forgot to add 12 to a p.m. hour
+
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Ali menukar ${periodPhrase(hour24, minute, "ms")} kepada format 24 jam dan mendapat ${wrong}. Apakah jawapan yang betul?`,
+        en: `Ali converted ${periodPhrase(hour24, minute, "en")} to 24-hour format and got ${wrong}. What is the correct answer?`,
+      },
+      type: "mcq",
+      correctAnswer: correct,
+      context: { hour24, minute, wrongShown: wrong },
+      generatorKey: "time_format_convert",
+      difficulty: 3,
+    };
+    const distractors = [wrong];
+    question.options = shuffleOptions(correct, distractors);
+    while (question.options.length < 3) {
+      const bump = randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1);
+      const candidate = to24String((((hour24 + bump) % 24) + 24) % 24, minute);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- base case: straightforward to24 / to12 conversion, optionally
+  // wrapped in a bus-schedule word problem with an irrelevant-info decoy.
+  const actualDirection: "to24" | "to12" = direction === "mixed" ? pick(["to24", "to12"] as const) : direction;
+  const correct = actualDirection === "to24" ? to24String(hour24, minute) : to12String(hour24, minute);
+
+  let promptMs: string;
+  let promptEn: string;
+  if (busSchedule) {
+    const destination = pick(["Ipoh", "Kuantan", "Melaka", "Kuala Terengganu"]);
+    const withDecoy = Math.random() < extraInfoChance;
+    const priceRM = pick([8, 10, 12, 15, 18]);
+    const decoyMs = withDecoy ? ` Harga tiket ialah RM${priceRM}.` : "";
+    const decoyEn = withDecoy ? ` The ticket costs RM${priceRM}.` : "";
+    if (actualDirection === "to24") {
+      const msTime = periodPhrase(hour24, minute, "ms");
+      const enTime = periodPhrase(hour24, minute, "en");
+      const enSentence = `The bus to ${destination} departs at ${enTime}`;
+      promptMs = `Bas ke ${destination} bertolak pada ${msTime}.${decoyMs} Nyatakan waktu ini dalam format 24 jam.`;
+      promptEn = `${enSentence.endsWith(".") ? enSentence : `${enSentence}.`}${decoyEn} State this time in 24-hour format.`;
+    } else {
+      promptMs = `Papan jadual bas menunjukkan bas ke ${destination} bertolak pada ${to24String(hour24, minute)}.${decoyMs} Nyatakan waktu ini dalam format 12 jam.`;
+      promptEn = `The bus timetable shows the bus to ${destination} departs at ${to24String(hour24, minute)}.${decoyEn} State this time in 12-hour format.`;
+    }
+  } else if (actualDirection === "to24") {
+    promptMs = `Tukar ${periodPhrase(hour24, minute, "ms")} kepada format 24 jam.`;
+    promptEn = `Convert ${periodPhrase(hour24, minute, "en")} to 24-hour format.`;
+  } else {
+    promptMs = `Tukar ${to24String(hour24, minute)} kepada format 12 jam.`;
+    promptEn = `Convert ${to24String(hour24, minute)} to 12-hour format.`;
+  }
+
+  const question: GeneratedQuestion = {
+    prompt: { ms: promptMs, en: promptEn },
+    type: busSchedule ? "word_problem" : type,
+    correctAnswer: correct,
+    context: { hour24, minute, isPM: isPM ? "yes" : "no", direction: actualDirection },
+    generatorKey: "time_format_convert",
+    difficulty: hour24 === 0 || hour24 === 12 ? 2 : 1,
+  };
+
+  if (question.type === "mcq" || question.type === "word_problem") {
+    let distractors: string[];
+    if (actualDirection === "to24") {
+      const noonMidnightSwap = hour24 === 0 ? "1200" : hour24 === 12 ? "0000" : null;
+      const addedToAM = !isPM ? to24String(hour24 + 12, minute) : null;
+      const forgotToAddPM = isPM && hour24 !== 12 ? to24String(hour12, minute) : null;
+      distractors = [noonMidnightSwap, addedToAM, forgotToAddPM].filter((d): d is string => d !== null && d !== correct);
+    } else {
+      const noonMidnightSwap = hour24 === 0 ? to12String(12, minute) : hour24 === 12 ? to12String(0, minute) : null;
+      const wrongPeriod = to12Parts(hour24).isPM
+        ? `${hour12}:${pad2(minute)} a.m.`
+        : `${hour12}:${pad2(minute)} p.m.`;
+      distractors = [noonMidnightSwap, wrongPeriod].filter((d): d is string => d !== null && d !== correct);
+    }
+    question.options = shuffleOptions(correct, Array.from(new Set(distractors)).slice(0, 3));
+    while (question.options.length < 3) {
+      const bump = randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1);
+      const candidateHour = (((hour24 + bump) % 24) + 24) % 24;
+      const candidate = actualDirection === "to24" ? to24String(candidateHour, minute) : to12String(candidateHour, minute);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+  }
+
+  return question;
+}
+
 export function generateTimeZones(params: GeneratorParams): GeneratedQuestion {
   const type = (params.type as "mcq" | "fill") ?? "mcq";
 
