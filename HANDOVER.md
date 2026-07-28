@@ -110,7 +110,17 @@ version along the way: distractor MCQ options were seeded from `Ali` only
 with a single weak distractor — now varies names/companies and maps
 distractors to `wrong_operation`/`unit_confusion`.
 
-**Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
+**Post-Round-19 fix:** shipped a broken build. Moved `audit-content-gaps.ts`
+into `scripts/` but didn't update its relative import (`./lib/content/topics`
+→ needed `../lib/content/topics`) or re-run `npx tsc --noEmit` after the
+move — the check I ran right before was against the *old* file location,
+so it didn't catch it. **Lesson: re-verify after every file move/rename,
+not just after content edits — moving a file changes its relative
+imports even when the content is untouched.** Also added
+`"scripts"` to `tsconfig.json`'s `exclude` so future dev-only scripts
+in that folder never get type-checked as part of the Next.js build
+(this only surfaced now because Round 19 was the first time a script was
+kept in the repo instead of being deleted after use).
 get the current ranked list (`...061`, `...068`, `...078`, `...083` are
 next at score 16), keep working down the list. No DB/UI schema changes
 needed for this — `challengeExample` from the original brief was folded

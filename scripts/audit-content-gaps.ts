@@ -1,4 +1,4 @@
-import { TOPICS } from "./lib/content/topics";
+import { TOPICS } from "../lib/content/topics";
 
 type Row = {
   id: string;
