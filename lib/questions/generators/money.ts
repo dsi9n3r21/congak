@@ -389,30 +389,104 @@ export function generateServiceTax(params: GeneratorParams): GeneratedQuestion {
 
 // Year 6 KSSR "Interest and Dividend" — dividend = number of shares ×
 // dividend rate per share.
+// Year 6 KSSR "Dividend" — total dividend = number of shares × dividend
+// per share. Retrofitted per the Round 19 content standard: was always
+// "Ali", always the same sentence, one weak distractor. Now varies names,
+// adds an irrelevant-info decoy, and distractors map to documented
+// misconceptions (wrong_operation, unit_confusion between sen and RM).
 export function generateDividend(params: GeneratorParams): GeneratedQuestion {
   const maxShares = Number(params.maxShares ?? 500);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const extraInfoChance = Number(params.extraInfoChance ?? 0);
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
 
   const shares = randInt(5, maxShares / 10) * 10; // round lot sizes
   const dividendPerShareSen = pick([5, 10, 15, 20, 25]); // sen per share
   const totalSen = shares * dividendPerShareSen;
+  const name = pick(["Ali", "Siti", "Hakim", "Mei Ling", "Priya", "Faisal", "Nurul"]);
+  const company = pick(["Syarikat ABC", "Syarikat Maju Jaya", "Syarikat Sinar Bistari"]);
+
+  // ---- reverseProblem: given the total dividend and number of shares,
+  // find the dividend per share (division, not multiplication).
+  if (reverseProblem) {
+    const perShareCorrect = dividendPerShareSen;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} memiliki ${shares} unit saham dalam ${company} dan menerima jumlah dividen ${formatRM(totalSen)}. Berapakah dividen bagi setiap saham?`,
+        en: `${name} owns ${shares} shares in ${company} and receives a total dividend of ${formatRM(totalSen)}. What is the dividend per share?`,
+      },
+      type: "word_problem",
+      correctAnswer: formatRM(perShareCorrect),
+      context: { shares, totalSen, perShareCorrect },
+      generatorKey: "dividend",
+      difficulty: 3,
+    };
+    // Classic mistake: multiplied instead of dividing.
+    const multipliedInstead = formatRM(shares * totalSen);
+    const distractors = [multipliedInstead].filter((d) => d !== formatRM(perShareCorrect));
+    question.options = shuffleOptions(formatRM(perShareCorrect), distractors);
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(1, perShareCorrect + randInt(1, 5) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown a documented wrong working, must give the
+  // correct total.
+  if (errorSpotting) {
+    const wrongTotal = shares + dividendPerShareSen; // added instead of multiplied
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} mengira dividen ${shares} unit saham pada ${formatRM(dividendPerShareSen)} setiap saham dan mendapat RM${wrongTotal}.00. Apakah jawapan yang betul?`,
+        en: `${name} calculated the dividend for ${shares} shares at ${formatRM(dividendPerShareSen)} per share and got RM${wrongTotal}.00. What is the correct answer?`,
+      },
+      type: "mcq",
+      correctAnswer: formatRM(totalSen),
+      context: { shares, dividendPerShareSen, totalSen, wrongTotal },
+      generatorKey: "dividend",
+      difficulty: 3,
+    };
+    const distractors = [`RM${wrongTotal}.00`].filter((d) => d !== formatRM(totalSen));
+    question.options = shuffleOptions(formatRM(totalSen), distractors);
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(0, totalSen + randInt(50, 500) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- base case: direct calculation, optionally with an
+  // irrelevant-info decoy (e.g. the share purchase price, which isn't
+  // needed to find the dividend).
+  const withDecoy = Math.random() < extraInfoChance;
+  const purchasePriceSen = pick([80, 100, 150, 200]) * 100; // RM0.80-RM2.00 per share, in sen
+  const decoyMs = withDecoy ? ` ${name} membeli saham itu pada harga ${formatRM(purchasePriceSen)} bagi setiap saham.` : "";
+  const decoyEn = withDecoy ? ` ${name} bought the shares at ${formatRM(purchasePriceSen)} per share.` : "";
 
   const question: GeneratedQuestion = {
     prompt: {
-      ms: `Ali memiliki ${shares} unit saham. Syarikat itu mengisytiharkan dividen ${formatRM(dividendPerShareSen)} bagi setiap saham. Berapakah jumlah dividen yang Ali terima?`,
-      en: `Ali owns ${shares} shares. The company declares a dividend of ${formatRM(dividendPerShareSen)} per share. How much total dividend does Ali receive?`,
+      ms: `${name} memiliki ${shares} unit saham dalam ${company}.${decoyMs} Syarikat itu mengisytiharkan dividen ${formatRM(dividendPerShareSen)} bagi setiap saham. Berapakah jumlah dividen yang ${name} terima?`,
+      en: `${name} owns ${shares} shares in ${company}.${decoyEn} The company declares a dividend of ${formatRM(dividendPerShareSen)} per share. How much total dividend does ${name} receive?`,
     },
-    type,
+    type: withDecoy ? "word_problem" : type,
     correctAnswer: formatRM(totalSen),
     context: { shares, dividendPerShareSen, totalSen },
     generatorKey: "dividend",
     difficulty: 3,
   };
 
-  if (type === "mcq") {
-    const addedInstead = formatRM(shares * 100 + dividendPerShareSen);
-    const distractors = Array.from(new Set([addedInstead].filter((d) => d !== formatRM(totalSen))));
-    question.options = shuffleOptions(formatRM(totalSen), distractors);
+  if (question.type === "mcq" || question.type === "word_problem") {
+    // wrong_operation: added instead of multiplied.
+    const addedInstead = `RM${shares + dividendPerShareSen}.00`;
+    // unit_confusion: multiplied using the sen value as if it were RM
+    // (e.g. treated 15 sen as RM15), so the answer is 100x too large.
+    const senAsRM = formatRM(totalSen * 100);
+    const distractors = Array.from(new Set([addedInstead, senAsRM].filter((d) => d !== formatRM(totalSen))));
+    question.options = shuffleOptions(formatRM(totalSen), distractors.slice(0, 2));
     while (question.options.length < 3) {
       const candidateSen = Math.max(0, totalSen + randInt(50, 500) * (Math.random() > 0.5 ? 1 : -1));
       const candidate = formatRM(candidateSen);

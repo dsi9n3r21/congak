@@ -82,7 +82,41 @@ common student mix-up), a bus-schedule word-problem wrapper, an
 error-spotting variant, and a reverse problem chained with duration
 addition. Smoke-tested 12,000 generations, 0 failures.
 
-**Round 17 (ids `...082`-`...084`) — Lynda asked directly whether Year 4
+**Round 19 (retrofit, in progress) — Lynda sent a "retrofit every topic to
+the ...085 gold standard" brief.** Ran `npx tsx scripts/audit-content-gaps.ts`
+(kept permanently — re-run it anytime to re-rank topics by gap: tip
+count/type, mistake count, template count) and confirmed **all 85 topics
+score below the standard** — this predates the brief, it's not new
+regression. Retrofitting content fields (explanation/tips/howTo/
+workedExample/commonMistakes) is pure content work. Retrofitting
+questionTemplates to add misconception-mapped distractors and
+challenge/error-spotting/reverse-problem variants requires touching the
+underlying generator too — there are 79 distinct generatorKeys across the
+85 topics, so this is realistically ~79 small generator upgrades, not a
+content-only pass. Doing all 85 in one sitting isn't realistic without
+rushing and shipping worse content than the current baseline — retrofitting
+in ranked batches instead (worst-scoring first), same "verify every
+round" discipline as every other round: `npx tsc --noEmit` clean +
+smoke-test (~2000x per template config) before packaging.
+
+Batch 1 done this round: `...056` (Tambah & Tolak Peratus) and `...060`
+(Faedah dan Dividen), both previously worst-scoring (score 17). Each got:
+full Learn-tab rewrite with a Malaysian scenario opener, 3 typed tips
+(mnemonic/warning/shortcut), 4 commonMistakes across ≥2 of the mandated
+categories, and questionTemplates expanded to 6 (added errorSpotting +
+reverseProblem variants to `generatePercentageAddSubtract` and
+`generateDividend`). One real bug caught in `generateDividend`'s original
+version along the way: distractor MCQ options were seeded from `Ali` only
+with a single weak distractor — now varies names/companies and maps
+distractors to `wrong_operation`/`unit_confusion`.
+
+**Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
+get the current ranked list (`...061`, `...068`, `...078`, `...083` are
+next at score 16), keep working down the list. No DB/UI schema changes
+needed for this — `challengeExample` from the original brief was folded
+into `questionTemplates`' `reverseProblem`/`errorSpotting` configs instead
+of a new object field, since that's already how `...085` and this round's
+two topics work and needs no type changes.
 Coordinates/Ratio/Proportion were covered. They weren't, at all** — only
 Y5/Y6 versions existed, despite the real Y4 textbook explicitly listing
 this as Topic 7 back in round 14's scoping pass. That gap slipped through
