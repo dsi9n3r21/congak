@@ -6,17 +6,132 @@ function formatTime(hour: number, minute: number): string {
   return `${h}:${String(minute).padStart(2, "0")}`;
 }
 
+// Year 5 KSSR "Time & Duration" — start time + duration = end time.
+// Retrofitted per the Round 19 content standard: added real Malaysian
+// word_problem scenarios (was previously a generic "A class starts at…"
+// regardless of type), an errorSpotting variant, and a reverseProblem
+// variant (given the end time and duration, find the start time —
+// subtraction, the natural reverse of this topic's addition skill).
 export function generateTimeDuration(params: GeneratorParams): GeneratedQuestion {
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
 
   const startHour = randInt(1, 12);
   const startMinute = pick([0, 15, 30, 45]);
   const durationMinutes = pick([15, 30, 45, 60, 75, 90, 105, 120]);
 
-  let totalMinutes = startHour * 60 + startMinute + durationMinutes;
+  const totalMinutes = startHour * 60 + startMinute + durationMinutes;
   const endHour = Math.floor(totalMinutes / 60) % 12 || 12;
   const endMinute = totalMinutes % 60;
   const correct = formatTime(endHour, endMinute);
+
+  // ---- reverseProblem: given the end time and duration, find the start
+  // time (subtracting the duration back off the end time).
+  if (reverseProblem) {
+    const name = pick(names);
+    const startMinutesTotal = startHour * 60 + startMinute;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Kelas tuisyen ${name} tamat pada pukul ${correct} selepas berlangsung selama ${durationMinutes} minit. Pukul berapakah kelas itu bermula?`,
+        en: `${name}'s tuition class ends at ${correct} after lasting ${durationMinutes} minutes. What time did the class start?`,
+      },
+      type: "word_problem",
+      correctAnswer: formatTime(startHour, startMinute),
+      context: { startHour, startMinute, durationMinutes, correct },
+      generatorKey: "time_duration",
+      difficulty: 3,
+    };
+    // Classic mistake: added the duration to the end time instead of subtracting.
+    const addedInstead = totalMinutes + durationMinutes;
+    const addedHour = Math.floor(addedInstead / 60) % 12 || 12;
+    const addedMinute = addedInstead % 60;
+    const distractor1 = formatTime(addedHour, addedMinute);
+    question.options = shuffleOptions(formatTime(startHour, startMinute), [distractor1].filter((d) => d !== formatTime(startHour, startMinute)));
+    while (question.options.length < 3) {
+      const offsetMinutes = startMinutesTotal + randInt(5, 50) * (Math.random() > 0.5 ? 1 : -1);
+      const candidateHour = Math.floor(((offsetMinutes % 720) + 720) / 60) % 12 || 12;
+      const candidateMinute = ((offsetMinutes % 60) + 60) % 60;
+      const candidate = formatTime(candidateHour, candidateMinute);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "forgot to carry the hour"
+  // mistake, must give the correct end time. Only meaningful when the
+  // duration actually pushes minutes past 60 — otherwise there's no carry
+  // to forget, and the "wrong" answer would trivially equal the correct
+  // one. Resample duration (keeping the same startMinute) until a genuine
+  // carry occurs.
+  if (errorSpotting) {
+    const name = pick(names);
+    let esDuration = durationMinutes;
+    while (startMinute + esDuration < 60) {
+      esDuration = pick([15, 30, 45, 60, 75, 90, 105, 120]);
+    }
+    const esTotalMinutes = startHour * 60 + startMinute + esDuration;
+    const esEndHour = Math.floor(esTotalMinutes / 60) % 12 || 12;
+    const esEndMinute = esTotalMinutes % 60;
+    const esCorrect = formatTime(esEndHour, esEndMinute);
+    const wrongAnswer = formatTime(startHour, (startMinute + esDuration) % 60);
+    return {
+      prompt: {
+        ms: `${name} mengira kelas yang bermula pada ${formatTime(startHour, startMinute)} dan berlangsung ${esDuration} minit, lalu mendapat jawapan ${wrongAnswer}. Apakah jawapan yang betul?`,
+        en: `${name} calculated a class starting at ${formatTime(startHour, startMinute)} lasting ${esDuration} minutes, and got the answer ${wrongAnswer}. What is the correct answer?`,
+      },
+      type: "mcq",
+      correctAnswer: esCorrect,
+      context: { startHour, startMinute, durationMinutes: esDuration, correct: esCorrect, wrongAnswer },
+      generatorKey: "time_duration",
+      difficulty: 3,
+      options: shuffleOptions(esCorrect, [wrongAnswer].filter((d) => d !== esCorrect)),
+    };
+  }
+
+  // ---- word_problem: real Malaysian classroom/community scenarios.
+  if (type === "word_problem") {
+    const name = pick(names);
+    const scenario = pick(["tuition", "assembly", "recess", "tv"] as const);
+    const prompt = {
+      tuition: {
+        ms: `Kelas tuisyen ${name} bermula pada ${formatTime(startHour, startMinute)} dan berlangsung selama ${durationMinutes} minit. Pukul berapakah kelas itu tamat?`,
+        en: `${name}'s tuition class starts at ${formatTime(startHour, startMinute)} and lasts ${durationMinutes} minutes. What time does it end?`,
+      },
+      assembly: {
+        ms: `Perhimpunan sekolah ${name} bermula pada ${formatTime(startHour, startMinute)} dan mengambil masa ${durationMinutes} minit. Pukul berapakah ia tamat?`,
+        en: `${name}'s school assembly starts at ${formatTime(startHour, startMinute)} and takes ${durationMinutes} minutes. What time does it end?`,
+      },
+      recess: {
+        ms: `Waktu rehat di sekolah ${name} bermula pada ${formatTime(startHour, startMinute)} dan berlangsung selama ${durationMinutes} minit. Pukul berapakah waktu rehat tamat?`,
+        en: `Recess at ${name}'s school starts at ${formatTime(startHour, startMinute)} and lasts ${durationMinutes} minutes. What time does recess end?`,
+      },
+      tv: {
+        ms: `Rancangan televisyen kegemaran ${name} bermula pada ${formatTime(startHour, startMinute)} dan berlangsung ${durationMinutes} minit. Pukul berapakah ia tamat?`,
+        en: `${name}'s favourite TV programme starts at ${formatTime(startHour, startMinute)} and lasts ${durationMinutes} minutes. What time does it end?`,
+      },
+    }[scenario];
+    const question: GeneratedQuestion = {
+      prompt,
+      type: "word_problem",
+      correctAnswer: correct,
+      context: { startHour, startMinute, durationMinutes, correct },
+      generatorKey: "time_duration",
+      difficulty: 2,
+    };
+    const noHourCarry = formatTime(startHour, (startMinute + durationMinutes) % 60);
+    const droppedMinutes = formatTime(startHour + Math.floor(durationMinutes / 60), startMinute);
+    question.options = shuffleOptions(correct, [noHourCarry, droppedMinutes].filter((d) => d !== correct));
+    while (question.options.length < 3) {
+      const offsetMinutes = totalMinutes + randInt(5, 50) * (Math.random() > 0.5 ? 1 : -1);
+      const candidateHour = Math.floor(((offsetMinutes % 720) + 720) / 60) % 12 || 12;
+      const candidateMinute = ((offsetMinutes % 60) + 60) % 60;
+      const candidate = formatTime(candidateHour, candidateMinute);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const question: GeneratedQuestion = {
     prompt: {

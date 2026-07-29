@@ -73,18 +73,114 @@ export function generateDecimalAddSubtractY4(params: GeneratorParams): Generated
   return question;
 }
 
+// Year 5 KSSR "Adding & Subtracting Decimals" (2 decimal places). Retrofitted
+// per the Round 19 content standard: added a real shopping-context
+// word_problem (this was previously mcq/fill only — the explanation text
+// already used a shopping example, so this generator gets the matching
+// scenario), plus errorSpotting and reverseProblem variants.
 export function generateDecimalAddSubtract(params: GeneratorParams): GeneratedQuestion {
   const maxWhole = Number(params.maxWhole ?? 20);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
-  const op = pick(["add", "subtract"] as const);
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+  const items = ["buku", "pensel", "beg sekolah", "botol air", "payung"] as const;
+  const itemsEn: Record<(typeof items)[number], string> = {
+    buku: "book",
+    pensel: "pencil",
+    "beg sekolah": "school bag",
+    "botol air": "water bottle",
+    payung: "umbrella",
+  };
 
+  const op = pick(["add", "subtract"] as const);
   let a = randomDecimal(maxWhole);
   let b = randomDecimal(maxWhole);
-  if (op === "subtract" && b > a) [a, b] = [b, a]; // keep it non-negative for this level
-
+  if (op === "subtract" && b > a) [a, b] = [b, a];
   const correct = op === "add" ? Math.round((a + b) * 100) / 100 : Math.round((a - b) * 100) / 100;
-  const symbol = op === "add" ? "+" : "−";
 
+  // ---- reverseProblem: given the total spent and the price of one item,
+  // find the price of the other (subtraction, framed as missing price).
+  if (reverseProblem) {
+    const name = pick(names);
+    const item1 = pick(items);
+    const item2 = pick(items.filter((i) => i !== item1));
+    const total = Math.round((a + b) * 100) / 100;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membeli sebuah ${item1} dan sebuah ${item2}, dan membayar sejumlah RM${total.toFixed(2)}. Jika ${item1} berharga RM${a.toFixed(2)}, berapakah harga ${item2}?`,
+        en: `${name} buys a ${itemsEn[item1]} and a ${itemsEn[item2]}, paying a total of RM${total.toFixed(2)}. If the ${itemsEn[item1]} costs RM${a.toFixed(2)}, what does the ${itemsEn[item2]} cost?`,
+      },
+      type: "word_problem",
+      correctAnswer: `RM${b.toFixed(2)}`,
+      context: { a, b, total },
+      generatorKey: "decimal_add_subtract",
+      difficulty: 3,
+    };
+    const addedInstead = `RM${(total + a).toFixed(2)}`; // wrong_operation
+    const gaveTotal = `RM${total.toFixed(2)}`;
+    const distractors = Array.from(new Set([addedInstead, gaveTotal])).filter((d) => d !== `RM${b.toFixed(2)}`);
+    question.options = finalizeOptions(`RM${b.toFixed(2)}`, distractors, () =>
+      `RM${Math.max(0, Math.round((b + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 100) / 100).toFixed(2)}`
+    );
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "no carry across the decimal
+  // point" mistake, must give the correct answer.
+  if (errorSpotting) {
+    const name = pick(names);
+    const wrongAnswer = Math.round((correct + (op === "add" ? -0.1 : 0.1)) * 100) / 100;
+    const symbol = op === "add" ? "+" : "−";
+    return {
+      prompt: {
+        ms: `${name} mengira RM${a.toFixed(2)} ${symbol} RM${b.toFixed(2)} dan mendapat RM${wrongAnswer.toFixed(2)}. Apakah jawapan yang betul?`,
+        en: `${name} calculated RM${a.toFixed(2)} ${symbol} RM${b.toFixed(2)} and got RM${wrongAnswer.toFixed(2)}. What is the correct answer?`,
+      },
+      type: "mcq",
+      correctAnswer: `RM${correct.toFixed(2)}`,
+      context: { a, b, correct, wrongAnswer, op },
+      generatorKey: "decimal_add_subtract",
+      difficulty: 3,
+      options: finalizeOptions(`RM${correct.toFixed(2)}`, [`RM${wrongAnswer.toFixed(2)}`], () =>
+        `RM${Math.max(0, Math.round((correct + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 100) / 100).toFixed(2)}`
+      ),
+    };
+  }
+
+  // ---- word_problem: shopping scenario, matches this topic's explanation text.
+  if (type === "word_problem") {
+    const name = pick(names);
+    const item1 = pick(items);
+    const item2 = pick(items.filter((i) => i !== item1));
+    const question: GeneratedQuestion = {
+      prompt:
+        op === "add"
+          ? {
+              ms: `${name} membeli sebuah ${item1} berharga RM${a.toFixed(2)} dan sebuah ${item2} berharga RM${b.toFixed(2)}. Berapakah jumlah perbelanjaan ${name}?`,
+              en: `${name} buys a ${itemsEn[item1]} for RM${a.toFixed(2)} and a ${itemsEn[item2]} for RM${b.toFixed(2)}. How much did ${name} spend in total?`,
+            }
+          : {
+              ms: `${name} ada simpanan RM${a.toFixed(2)}. ${name} membeli sebuah ${item1} berharga RM${b.toFixed(2)}. Berapakah baki wang ${name}?`,
+              en: `${name} has RM${a.toFixed(2)} in savings. ${name} buys a ${itemsEn[item1]} for RM${b.toFixed(2)}. How much money does ${name} have left?`,
+            },
+      type: "word_problem",
+      correctAnswer: `RM${correct.toFixed(2)}`,
+      context: { a, b, correct, op },
+      generatorKey: "decimal_add_subtract",
+      difficulty: 2,
+    };
+    const misaligned = Math.round((correct + (Math.random() > 0.5 ? 0.9 : -0.9)) * 100) / 100;
+    const noCarryAcrossPoint = Math.round((correct + (op === "add" ? -0.1 : 0.1)) * 100) / 100;
+    question.options = finalizeOptions(
+      `RM${correct.toFixed(2)}`,
+      [`RM${misaligned.toFixed(2)}`, `RM${noCarryAcrossPoint.toFixed(2)}`],
+      () => `RM${Math.max(0, Math.round((correct + randInt(1, 9) * (Math.random() > 0.5 ? 0.01 : -0.01)) * 100) / 100).toFixed(2)}`
+    );
+    return question;
+  }
+
+  const symbol = op === "add" ? "+" : "−";
   const question: GeneratedQuestion = {
     prompt: { ms: `${a} ${symbol} ${b} = ?`, en: `${a} ${symbol} ${b} = ?` },
     type,

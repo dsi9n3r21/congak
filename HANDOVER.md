@@ -152,8 +152,20 @@ worst-scoring list — a topic can score fine on the audit (has the right
 count of templates) while one of its `word_problem` templates is still
 just cosmetic.
 
+**Batch 4 done:** `...005` (Tambah & Tolak Perpuluhan), `...007` (Waktu
+dan Masa), `...015` (Jenis-Jenis Sudut). Caught a real bug via the
+mandatory smoke test on `time_duration`'s new `errorSpotting` variant:
+it always demonstrated the "forgot to carry the hour" mistake regardless
+of whether a carry was actually needed by the random duration — when it
+wasn't, the "wrong" answer trivially equaled the correct one and the
+distractor list collapsed to a single option (386/10,000 failures on
+first run). Fixed by resampling the duration until a genuine carry
+occurs. Lesson, again: the smoke test isn't a formality — it caught a
+real bug here that `tsc` and casual review both missed, exactly like it
+was designed to.
+
 **Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
-get the current ranked list — a large tier of ~40 topics sits at the
+get the current ranked list — a large tier of topics sits at the
 original baseline (score 14: 2 tips, 1 mistake, 2 templates), so this is
 several more rounds of work, not close to done. No DB/UI schema changes
 needed for any of this — `challengeExample` from the original brief was
