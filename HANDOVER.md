@@ -121,12 +121,47 @@ imports even when the content is untouched.** Also added
 in that folder never get type-checked as part of the Next.js build
 (this only surfaced now because Round 19 was the first time a script was
 kept in the repo instead of being deleted after use).
-get the current ranked list (`...061`, `...068`, `...078`, `...083` are
-next at score 16), keep working down the list. No DB/UI schema changes
-needed for this — `challengeExample` from the original brief was folded
-into `questionTemplates`' `reverseProblem`/`errorSpotting` configs instead
-of a new object field, since that's already how `...085` and this round's
-two topics work and needs no type changes.
+
+**Batch 2 done:** `...061` (Aset dan Liabiliti), `...068` (Insurans dan
+Takaful), `...078` (Garis Selari dan Garis Serenjang), `...083` (Nisbah).
+`...083` was a genuine DSKP violation, not just weak content — verified
+via web search that Y4's ratio standard (7.2.1) is unitary-only (1:n, up
+to 1:1000); the shipped content taught general a:b ratios, which is
+actually Y5 content (already correctly covered by `...058`). Rewrote
+`write_ratio` and the topic content to teach the real Y4 standard. Also
+hit and fixed a real bilingual-grading trap: word-based canonical answers
+("asset"/"liability", "insurance"/"takaful") can only ever be MCQ type in
+this app — a free-text "fill" blank would mark a BM-typing student wrong,
+since grading.ts only lowercases/trims, it never translates BM↔EN. Every
+classification generator in this codebase (likelihood, angles_classify,
+asset_liability, insurance_takaful) shares this constraint — don't add
+"fill" to any of them.
+
+**Batch 3 done:** `...002` (Tambah Pecahan Penyebut Sama), `...032`
+(Tambah Tiga Nombor Bulat), `...033` (Tolak Daripada Nombor Bulat). Found
+a widespread pattern bug while doing these: several generators
+(`whole_numbers_addition_y6`, `whole_numbers_subtraction_y6`, and
+probably others not yet audited) had a `questionTemplates` entry typed
+`word_problem`, correctly wired through by the runner (`{ ...config,
+type }` in `lib/questions/index.ts`), but the generator itself never
+branched on it — it just returned the bare equation regardless, so
+"word problems" were silently just fill-in equations with no scenario.
+Fixed both; **worth checking for this same bug in every remaining
+generator during future batches**, not just the ones on the audit's
+worst-scoring list — a topic can score fine on the audit (has the right
+count of templates) while one of its `word_problem` templates is still
+just cosmetic.
+
+**Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
+get the current ranked list — a large tier of ~40 topics sits at the
+original baseline (score 14: 2 tips, 1 mistake, 2 templates), so this is
+several more rounds of work, not close to done. No DB/UI schema changes
+needed for any of this — `challengeExample` from the original brief was
+folded into `questionTemplates`' `reverseProblem`/`errorSpotting` configs
+instead of a new object field, since that's already how `...085` and
+every retrofitted topic since works and needs no type changes.
+
+**Round 17 (ids `...082`-`...084`) — Lynda asked directly whether Year 4
 Coordinates/Ratio/Proportion were covered. They weren't, at all** — only
 Y5/Y6 versions existed, despite the real Y4 textbook explicitly listing
 this as Topic 7 back in round 14's scoping pass. That gap slipped through

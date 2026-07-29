@@ -1,4 +1,4 @@
-import { pick } from "../utils";
+import { pick, randInt, shuffleOptions } from "../utils";
 import type { GeneratedQuestion, GeneratorParams } from "../types";
 
 // Year 6 KSSR "Recognise Asset, Liability, Insurance, and Takaful" — the
@@ -6,7 +6,12 @@ import type { GeneratedQuestion, GeneratorParams } from "../types";
 // principle (conventional premium-based vs. Shariah-compliant mutual
 // contribution/mudharabah, no riba) — each scenario states that principle
 // explicitly, since that's the actual distinguishing fact being taught,
-// not something guessable from context alone.
+// not something guessable from context alone. Retrofitted per the Round
+// 19 content standard: added a difficulty-pooled mcq, a list-counting
+// word_problem, an errorSpotting variant, and a reverseProblem variant.
+// Deliberately no "fill" type — same bilingual-grading constraint as
+// asset_liability.ts (canonical keys are English, grading never
+// translates BM↔EN, so free text would mark a BM-typing student wrong).
 const SCENARIOS = [
   {
     ms: "Sebuah pelan perlindungan yang dikendalikan berdasarkan prinsip Syariah, di mana peserta saling membantu melalui sumbangan (tabarru') tanpa unsur riba",
@@ -30,8 +35,103 @@ const SCENARIOS = [
   },
 ] as const;
 
-export function generateInsuranceTakaful(_params: GeneratorParams): GeneratedQuestion {
-  const scenario = pick(SCENARIOS);
+const NAMES = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal", "Priya"];
+
+function pickDistinctScenarios(n: number): (typeof SCENARIOS)[number][] {
+  const shuffled = [...SCENARIOS].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, Math.min(n, SCENARIOS.length));
+}
+
+export function generateInsuranceTakaful(params: GeneratorParams): GeneratedQuestion {
+  const type = (params.type as "mcq" | "word_problem") ?? "mcq";
+  const listSize = Number(params.listSize ?? 3);
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const name = pick(NAMES);
+
+  // ---- reverseProblem: given a total plan count and how many are
+  // takaful, find how many are conventional insurance (subtraction).
+  if (reverseProblem) {
+    const total = randInt(5, 9);
+    const takafulCount = randInt(2, total - 2);
+    const insuranceCount = total - takafulCount;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membandingkan ${total} pelan perlindungan. ${takafulCount} daripadanya berasaskan prinsip Takaful. Berapakah bilangan pelan Insurans konvensional?`,
+        en: `${name} compares ${total} protection plans. ${takafulCount} of them are based on Takaful principles. How many are conventional Insurance plans?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(insuranceCount),
+      context: { total, takafulCount, insuranceCount },
+      generatorKey: "insurance_takaful",
+      difficulty: 3,
+    };
+    const wrongOperation = String(total + takafulCount);
+    const gaveTotal = String(total);
+    const distractors = Array.from(new Set([wrongOperation, gaveTotal].filter((d) => d !== String(insuranceCount))));
+    question.options = shuffleOptions(String(insuranceCount), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(0, insuranceCount + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: a documented misconception — students latch onto
+  // "there's a regular payment" as the distinguishing feature, when BOTH
+  // insurance premiums and takaful contributions are paid regularly. The
+  // real distinguishing feature is the Shariah/mutual-vs-conventional
+  // principle, not the presence of a payment.
+  if (errorSpotting) {
+    const scenario = pick(SCENARIOS.filter((s) => s.answer === "takaful"));
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} berkata "${scenario.ms}" ialah insurans kerana ada bayaran secara berkala. Apakah klasifikasi yang betul?`,
+        en: `${name} says "${scenario.en}" is insurance because there's a regular payment. What is the correct classification?`,
+      },
+      type: "mcq",
+      correctAnswer: "takaful",
+      context: { descriptionEn: scenario.en },
+      generatorKey: "insurance_takaful",
+      difficulty: 3,
+      options: ["takaful", "insurance"],
+    };
+    return question;
+  }
+
+  // ---- word_problem: a short list of plan descriptions, count how many
+  // are Takaful.
+  if (type === "word_problem") {
+    const scenarios = pickDistinctScenarios(listSize);
+    const takafulCount = scenarios.filter((s) => s.answer === "takaful").length;
+    const listMs = scenarios.map((s, i) => `(${i + 1}) ${s.ms}`).join("; ");
+    const listEn = scenarios.map((s, i) => `(${i + 1}) ${s.en}`).join("; ");
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membandingkan pelan berikut: ${listMs}. Berapakah bilangan pelan TAKAFUL dalam senarai itu?`,
+        en: `${name} compares the following plans: ${listEn}. How many TAKAFUL plans are in the list?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(takafulCount),
+      context: { listSize: scenarios.length, takafulCount },
+      generatorKey: "insurance_takaful",
+      difficulty: 3,
+    };
+    const insuranceCount = scenarios.length - takafulCount;
+    const distractors = Array.from(new Set([String(insuranceCount), String(scenarios.length)].filter((d) => d !== String(takafulCount))));
+    question.options = shuffleOptions(String(takafulCount), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(0, takafulCount + randInt(1, 2) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- guided/independent mcq: same classification task, pooled by
+  // difficulty (single-answer pool = more guided; mixed = independent).
+  const pool = params.pool as "takaful" | "insurance" | "mixed" | undefined;
+  const scenarioPool = pool && pool !== "mixed" ? SCENARIOS.filter((s) => s.answer === pool) : SCENARIOS;
+  const scenario = pick(scenarioPool);
   const wrongAnswer = scenario.answer === "insurance" ? "takaful" : "insurance";
 
   return {
