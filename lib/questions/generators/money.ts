@@ -77,18 +77,145 @@ export function generateMoneyChange(params: GeneratorParams): GeneratedQuestion 
   return question;
 }
 
+// Year 4 KSSR "Adding & Subtracting Money" (RM/sen, 2 decimal places).
+// Retrofitted per the Round 19 content standard: the "word_problem"
+// config previously returned the same bare "RM8.50 + RM12.30 = ?" prompt
+// regardless of type — same pattern bug as whole_numbers_addition_y6/
+// decimal_add_subtract. Added a real Malaysian shopping scenario,
+// errorSpotting, and reverseProblem (given the total and one price, find
+// the other).
 export function generateMoneyAddSubtract(params: GeneratorParams): GeneratedQuestion {
   const maxRM = Number(params.maxRM ?? 20);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
-  const op = pick(["add", "subtract"] as const);
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+  const items = ["sayur", "ikan", "beras", "buah-buahan", "roti"] as const;
+  const itemsEn: Record<(typeof items)[number], string> = {
+    sayur: "vegetables",
+    ikan: "fish",
+    beras: "rice",
+    "buah-buahan": "fruit",
+    roti: "bread",
+  };
 
   let aSen = randInt(100, maxRM * 100);
   let bSen = randInt(100, maxRM * 100);
-  if (op === "subtract" && bSen > aSen) [aSen, bSen] = [bSen, aSen]; // keep non-negative
-
+  const op = pick(["add", "subtract"] as const);
+  if (op === "subtract" && bSen > aSen) [aSen, bSen] = [bSen, aSen];
   const correctSen = op === "add" ? aSen + bSen : aSen - bSen;
-  const symbol = op === "add" ? "+" : "−";
 
+  // ---- reverseProblem: given the total spent and one item's price, find
+  // the other item's price (subtraction, framed as a missing price).
+  if (reverseProblem) {
+    const name = pick(names);
+    const item1 = pick(items);
+    const item2 = pick(items.filter((i) => i !== item1));
+    const totalSen = aSen + bSen;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membeli ${item1} dan ${item2}, dan membayar sejumlah ${formatRM(totalSen)}. Jika ${item1} berharga ${formatRM(aSen)}, berapakah harga ${item2}?`,
+        en: `${name} buys ${itemsEn[item1]} and ${itemsEn[item2]}, paying a total of ${formatRM(totalSen)}. If the ${itemsEn[item1]} costs ${formatRM(aSen)}, what does the ${itemsEn[item2]} cost?`,
+      },
+      type: "word_problem",
+      correctAnswer: formatRM(bSen),
+      context: { aSen, bSen, totalSen },
+      generatorKey: "money_add_subtract",
+      difficulty: 2,
+    };
+    const addedInstead = formatRM(totalSen + aSen);
+    const gaveTotal = formatRM(totalSen);
+    const distractors = Array.from(new Set([addedInstead, gaveTotal])).filter((d) => d !== formatRM(bSen));
+    question.options = shuffleOptions(formatRM(bSen), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(0, bSen + randInt(10, 200) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "no carry across RM/sen" mistake.
+  // Only meaningful when a genuine carry/borrow actually occurs — resample
+  // until one does, the same fix applied to time_duration's errorSpotting
+  // (a "mistake" that produces the same value as the correct answer isn't
+  // a mistake to spot).
+  if (errorSpotting) {
+    const name = pick(names);
+    let esA = aSen;
+    let esB = bSen;
+    let esCorrect = correctSen;
+    let esWrong = "";
+    let esCorrectStr = "";
+    for (let guard = 0; guard < 30; guard++) {
+      const noCarrySen =
+        op === "add"
+          ? (Math.floor(esA / 100) + Math.floor(esB / 100)) * 100 + ((esA % 100) + (esB % 100)) % 100
+          : Math.abs(Math.floor(esA / 100) - Math.floor(esB / 100)) * 100 + Math.abs((esA % 100) - (esB % 100));
+      esWrong = formatRM(noCarrySen);
+      esCorrectStr = formatRM(esCorrect);
+      if (esWrong !== esCorrectStr) break;
+      esA = randInt(100, maxRM * 100);
+      esB = randInt(100, maxRM * 100);
+      if (op === "subtract" && esB > esA) [esA, esB] = [esB, esA];
+      esCorrect = op === "add" ? esA + esB : esA - esB;
+    }
+    const symbol = op === "add" ? "+" : "−";
+    return {
+      prompt: {
+        ms: `${name} mengira ${formatRM(esA)} ${symbol} ${formatRM(esB)} dan mendapat ${esWrong}. Apakah jawapan yang betul?`,
+        en: `${name} calculated ${formatRM(esA)} ${symbol} ${formatRM(esB)} and got ${esWrong}. What is the correct answer?`,
+      },
+      type: "mcq",
+      correctAnswer: esCorrectStr,
+      context: { aSen: esA, bSen: esB, correctSen: esCorrect, wrongAnswer: esWrong },
+      generatorKey: "money_add_subtract",
+      difficulty: 3,
+      options: shuffleOptions(esCorrectStr, [esWrong].filter((d) => d !== esCorrectStr)),
+    };
+  }
+
+  // ---- word_problem: real Malaysian shopping scenario.
+  if (type === "word_problem") {
+    const name = pick(names);
+    const item1 = pick(items);
+    const item2 = pick(items.filter((i) => i !== item1));
+    const question: GeneratedQuestion = {
+      prompt:
+        op === "add"
+          ? {
+              ms: `${name} membeli ${item1} berharga ${formatRM(aSen)} dan ${item2} berharga ${formatRM(bSen)}. Berapakah jumlah perbelanjaan ${name}?`,
+              en: `${name} buys ${itemsEn[item1]} for ${formatRM(aSen)} and ${itemsEn[item2]} for ${formatRM(bSen)}. How much did ${name} spend in total?`,
+            }
+          : {
+              ms: `${name} ada wang ${formatRM(aSen)}. ${name} membeli ${item1} berharga ${formatRM(bSen)}. Berapakah baki wang ${name}?`,
+              en: `${name} has ${formatRM(aSen)}. ${name} buys ${itemsEn[item1]} for ${formatRM(bSen)}. How much money does ${name} have left?`,
+            },
+      type: "word_problem",
+      correctAnswer: formatRM(correctSen),
+      context: { aSen, bSen, correctSen, op },
+      generatorKey: "money_add_subtract",
+      difficulty: 2,
+    };
+    // Classic mistake: for addition, dropping the carry when cents overflow
+    // 100 instead of regrouping it into the ringgit column (writing just
+    // the last two digits of the cents sum). For subtraction, subtracting
+    // each column's absolute difference instead of borrowing.
+    const noCarrySen =
+      op === "add"
+        ? (Math.floor(aSen / 100) + Math.floor(bSen / 100)) * 100 + ((aSen % 100) + (bSen % 100)) % 100
+        : Math.abs(Math.floor(aSen / 100) - Math.floor(bSen / 100)) * 100 + Math.abs((aSen % 100) - (bSen % 100));
+    const distractors = Array.from(new Set([formatRM(noCarrySen)].filter((d) => d !== formatRM(correctSen))));
+    question.options = shuffleOptions(formatRM(correctSen), distractors);
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(0, correctSen + randInt(10, 200) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  const symbol = op === "add" ? "+" : "−";
   const question: GeneratedQuestion = {
     prompt: { ms: `${formatRM(aSen)} ${symbol} ${formatRM(bSen)} = ?`, en: `${formatRM(aSen)} ${symbol} ${formatRM(bSen)} = ?` },
     type,
@@ -102,9 +229,10 @@ export function generateMoneyAddSubtract(params: GeneratorParams): GeneratedQues
     // Classic mistake: forgetting to carry/borrow across the RM/sen
     // boundary (100 sen = RM1) — treats ringgit and sen as independent
     // base-10 columns instead of regrouping at 100.
-    const ringgitPart = op === "add" ? Math.floor(aSen / 100) + Math.floor(bSen / 100) : Math.abs(Math.floor(aSen / 100) - Math.floor(bSen / 100));
-    const senPart = op === "add" ? (aSen % 100) + (bSen % 100) : Math.abs((aSen % 100) - (bSen % 100));
-    const noCarrySen = ringgitPart * 100 + senPart;
+    const noCarrySen =
+      op === "add"
+        ? (Math.floor(aSen / 100) + Math.floor(bSen / 100)) * 100 + ((aSen % 100) + (bSen % 100)) % 100
+        : Math.abs(Math.floor(aSen / 100) - Math.floor(bSen / 100)) * 100 + Math.abs((aSen % 100) - (bSen % 100));
     const distractors = Array.from(new Set([formatRM(noCarrySen)].filter((d) => d !== formatRM(correctSen))));
     question.options = shuffleOptions(formatRM(correctSen), distractors);
     while (question.options.length < 3) {

@@ -164,6 +164,28 @@ occurs. Lesson, again: the smoke test isn't a formality — it caught a
 real bug here that `tsc` and casual review both missed, exactly like it
 was designed to.
 
+**Batch 5 done:** `...039` (Tambah & Tolak Wang). Found and fixed a real
+math bug in `money_add_subtract`'s "no-carry" distractor, present since
+the retrofit — not a rare edge case, a bug that fires ~50% of the time
+(whenever `op === "add"`). The formula was `[floor(a/100)+floor(b/100)]
+*100 + [(a%100)+(b%100)]` — this is mathematically IDENTICAL to `a+b`
+always (it's just decomposing and recombining by place value; nothing
+about it drops a carry), so for addition the "wrong" answer trivially
+equaled the correct one on every single generation, not just some.
+Fixed by making the addition mistake actually drop the overflow (`%
+100` on the cents sum, no `+1` carried into ringgit) instead of silently
+preserving it. **Lesson: when constructing a "classic mistake" formula
+by decomposing a number into parts and recombining them, check whether
+the recombination is actually mathematically distinct from the correct
+answer — decomposing and reassembling via place value is a no-op, not a
+mistake, unless something is deliberately dropped/altered in between.**
+This also means my two immediately-preceding "fixes" for a caught
+collapse (the `if (wrongAnswer === correct)` guard, then a broken
+"forced pair" formula) were treating a symptom without diagnosing the
+cause — worth remembering that a persistent collapse across many
+generations is a sign to re-derive the formula, not just special-case
+around it. Same 50,000-generation re-verification this time: 0 failures.
+
 **Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
 get the current ranked list — a large tier of topics sits at the
 original baseline (score 14: 2 tips, 1 mistake, 2 templates), so this is

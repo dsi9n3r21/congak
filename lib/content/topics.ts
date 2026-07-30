@@ -1728,35 +1728,40 @@ export const TOPICS: Record<string, TopicContent> = {
       en: "Money in Ringgit Malaysia (RM) is written with 2 decimal places (sen). 100 sen = RM1. To add or subtract money, line up the decimal points, just like regular decimal numbers.\n\nEveryday example: Mother buys vegetables for RM8.50 and fish for RM12.30. What's her total spending?",
     },
     tips: [
-      {
-        ms: "Susun titik perpuluhan (antara ringgit dan sen) lurus sebelum mengira.",
-        en: "Line up the decimal point (between ringgit and sen) before calculating.",
-      },
-      {
-        ms: "Apabila sen mencapai 100 atau lebih, tukar 100 sen kepada RM1 dan \"simpan\" ke lajur ringgit.",
-        en: "When the sen reaches 100 or more, convert 100 sen into RM1 and carry it into the ringgit column.",
-      },
+      { ms: "Seratus sen sama dengan satu ringgit — simpan 1 ringgit apabila sen mencecah 100!", en: "A hundred sen equals one ringgit — carry 1 ringgit whenever the sen reaches 100!" },
+      { ms: "JANGAN buat ini: RM8.50 + RM12.30 dikira sebagai 850 + 1230 = 2080, terus ditulis RM20.80 tanpa semak sen. SALAH secara kebetulan sahaja di sini — tambah sen dan ringgit BERASINGAN dahulu (50+30=80 sen, 8+12=20 ringgit), baru gabungkan; jangan hanya sambungkan digit.", en: "DON'T do this: RM8.50 + RM12.30 calculated as 850 + 1230 = 2080, written straight as RM20.80 without checking the sen. This only happens to work here — add the sen and ringgit SEPARATELY first (50+30=80 sen, 8+12=20 ringgit), then combine; don't just concatenate digits." },
+      { ms: "Semak jawapan anda: tolak salah satu jumlah asal daripada jawapan — ia mesti kembali kepada jumlah yang satu lagi.", en: "Check your answer: subtract one of the original amounts from your answer — it should return the other original amount." },
     ],
     howTo: [
+      { ms: "Kenal pasti kedua-dua jumlah wang yang perlu dikira.", en: "Identify both money amounts to be calculated." },
       { ms: "Susun kedua-dua jumlah wang supaya titik perpuluhan sejajar.", en: "Line up both amounts so the decimal points align." },
       { ms: "Tambah atau tolak sen dahulu, kemudian ringgit.", en: "Add or subtract the sen first, then the ringgit." },
       { ms: "Jika sen melebihi 100, simpan 1 ke lajur ringgit (sama seperti nombor perpuluhan biasa).", en: "If the sen total is 100 or more, carry 1 into the ringgit column (same as regular decimals)." },
+      { ms: "Semak: tolak salah satu jumlah asal daripada jawapan anda — ia mesti sama dengan jumlah asal yang satu lagi.", en: "Check: subtract one of the original amounts from your answer — it should equal the other original amount." },
     ],
     workedExample: {
       problem: "RM8.50 + RM12.30",
       steps: [
+        { ms: "Kenal pasti: RM8.50 dan RM12.30.", en: "Identify: RM8.50 and RM12.30." },
         { ms: "Tambah sen: 50 + 30 = 80 sen", en: "Add the sen: 50 + 30 = 80 sen" },
         { ms: "Tambah ringgit: 8 + 12 = 20", en: "Add the ringgit: 8 + 12 = 20" },
         { ms: "Jawapan: RM20.80", en: "Answer: RM20.80" },
+        { ms: "Semak: RM20.80 − RM12.30 = RM8.50 ✓", en: "Check: RM20.80 − RM12.30 = RM8.50 ✓" },
       ],
       answer: "RM20.80",
     },
     commonMistakes: [
-      { mistakeType: "ringgit_sen_carry_error", description: { ms: "Murid tidak \"simpan\"/\"pinjam\" dengan betul apabila sen melebihi 100.", en: "The student doesn't carry/borrow correctly when the sen total passes 100." } },
+      { mistakeType: "special_case_error", description: { ms: "Murid tidak \"simpan\"/\"pinjam\" dengan betul apabila jumlah sen mencecah atau melebihi 100, meninggalkan sen sebagai nombor 3 digit dalam jawapan (contohnya RM8.124 bukan RM9.24).", en: "Student doesn't carry/borrow correctly when the sen total reaches or exceeds 100, leaving the sen as a 3-digit number in the answer (e.g. RM8.124 instead of RM9.24)." } },
+      { mistakeType: "unit_confusion", description: { ms: "Murid mencampurkan ringgit dan sen sebagai satu nombor bulat (contohnya RM8.50 dikira sebagai 850) tanpa mengekalkan tempat perpuluhan yang betul.", en: "Student merges ringgit and sen into one whole number (e.g. RM8.50 treated as 850) without keeping the correct decimal place." } },
+      { mistakeType: "place_value_error", description: { ms: "Murid tidak menyusun titik perpuluhan segaris semasa mengira secara menegak, menyebabkan sen dan ringgit tercampur pada lajur yang salah.", en: "Student doesn't align the decimal points when calculating vertically, causing sen and ringgit to mix into the wrong columns." } },
+      { mistakeType: "wrong_operation", description: { ms: "Semasa menolak, murid tidak pinjam daripada ringgit apabila sen yang ditolak lebih besar daripada sen asal.", en: "While subtracting, student doesn't borrow from the ringgit when the sen being subtracted is larger than the original sen." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "money_add_subtract", config: { maxRM: 20 } },
-      { type: "word_problem", difficulty: 1, generatorKey: "money_add_subtract", config: { maxRM: 15 } },
+      { type: "fill", difficulty: 2, generatorKey: "money_add_subtract", config: { maxRM: 15 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "money_add_subtract", config: { type: "word_problem", maxRM: 15 } },
+      { type: "mcq", difficulty: 3, generatorKey: "money_add_subtract", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "money_add_subtract", config: { reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000040": {
