@@ -9,6 +9,7 @@ import type { GeneratedQuestion } from "@/lib/questions/types";
 import type { Lang } from "@/lib/i18n/dictionary";
 import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
+import { renderMathText } from "@/lib/ui/mathText";
 import { MathSymbolBar } from "@/components/student/MathSymbolBar";
 
 // 90 minutes mirrors a real Malaysian primary school exam paper length
@@ -204,7 +205,7 @@ export function ExamFlow({ lang }: { lang: Lang }) {
                     currentValue === opt ? "border-ungu bg-ungu-light" : "border-ink/10"
                   }`}
                 >
-                  {opt}
+                  {renderMathText(opt)}
                 </button>
               ))}
             </div>

@@ -9,6 +9,7 @@ import type { TopicContent } from "@/lib/content/topics";
 import type { Lang } from "@/lib/i18n/dictionary";
 import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
+import { renderMathText } from "@/lib/ui/mathText";
 import { MathSymbolBar } from "@/components/student/MathSymbolBar";
 
 const QUIZ_LENGTH = 5;
@@ -88,7 +89,7 @@ export function QuizPlayer({ topic, lang }: { topic: TopicContent; lang: Lang })
                   currentValue === opt ? "border-ungu bg-ungu-light" : "border-ink/10"
                 }`}
               >
-                {opt}
+                {renderMathText(opt)}
               </button>
             ))}
           </div>

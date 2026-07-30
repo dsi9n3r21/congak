@@ -12,6 +12,7 @@ import type { Bilingual, Lang } from "@/lib/i18n/dictionary";
 import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
 import { OPTION_LABELS } from "@/lib/questions/optionLabels";
+import { renderMathText } from "@/lib/ui/mathText";
 import { AngleDiagram } from "@/components/student/diagrams/AngleDiagram";
 import { TriangleDiagram } from "@/components/student/diagrams/TriangleDiagram";
 import { AnglesAtPointDiagram } from "@/components/student/diagrams/AnglesAtPointDiagram";
@@ -275,7 +276,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
 
 function OptionLabel({ value, lang }: { value: string; lang: Lang }) {
   const entry = OPTION_LABELS[value];
-  if (!entry) return <>{formatAnswerForDisplay(value)}</>;
+  if (!entry) return <>{renderMathText(formatAnswerForDisplay(value))}</>;
   return <Bi text={entry} lang={lang} />;
 }
 

@@ -60,6 +60,39 @@ should be **0041**.
   zero output) before packaging any zip. This has caught real errors
   every round — don't skip it.
 
+## UI: stacked fraction rendering (not part of the content retrofit numbering)
+Lynda flagged that fractions rendered as flat "2/5" text are hard for a
+Y4-6 student to parse — they see stacked notation (numerator over a
+dividing bar over denominator) on paper and in their textbooks. Added
+`lib/ui/mathText.tsx` (`renderMathText`) — a regex-based inline
+re-typesetter, not a new content field or schema change. It scans any
+string for `\d+/\d+` (optionally preceded by a whole-number part for
+mixed numbers like "3 2/7") and swaps each match for a small stacked
+`<span>` — everything else in the string renders unchanged.
+
+Wired into every surface that shows fraction text to a student:
+`lib/i18n/Bi.tsx` (covers tips/howTo/explanation/mistakes/worked-example
+steps/question prompts in one place, since they all route through `Bi`),
+`LessonCard.tsx`'s `ExampleCard` (the raw `problem`/`answer` strings,
+which are NOT `Bilingual` and bypass `Bi`), and the MCQ option-rendering
+in `QuestionPlayer.tsx`, `QuizPlayer.tsx`, and `ExamFlow.tsx` (three
+separate components that each render `question.options` independently —
+QuizPlayer/ExamFlow don't even use the `OptionLabel` helper
+QuestionPlayer has, they render `{opt}` raw, so all three needed the fix
+individually). Free-text answer *inputs* are deliberately left alone —
+only display surfaces get the stacked treatment, never the field a
+student types into.
+
+Verified: regex parsing tested directly against representative content
+(bare fractions, mixed numbers, prose with a fraction mid-sentence) and
+deliberate near-misses (`1:10` ratio notation, `km/h` units) — no false
+positives. Could not get a visual screenshot in this environment (no
+browser available, network is allowlisted and doesn't reach Chrome's
+download CDN for Puppeteer) — Tailwind classes used are standard
+utilities already present elsewhere in this codebase (inline-flex, flex
+column, border-current), no new tokens invented, but **worth Lynda
+actually eyeballing this on her dev server before considering it done.**
+
 ## Current curriculum coverage (85 topics — see note on the denominator)
 **Explicit instruction from Lynda: keep going until the real curriculum is
 fully covered.** Standing instruction, not a one-off batch.

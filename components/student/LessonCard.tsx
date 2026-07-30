@@ -6,6 +6,7 @@ import type { TopicContent } from "@/lib/content/topics";
 import type { Lang, Bilingual } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
 import { UI } from "@/lib/i18n/dictionary";
+import { renderMathText } from "@/lib/ui/mathText";
 
 const TAB_KEYS = ["learnTabLearn", "learnTabHowTo", "learnTabTips", "learnTabExample", "learnTabMistakes"] as const;
 type TabKey = (typeof TAB_KEYS)[number];
@@ -154,7 +155,7 @@ function ExampleCard({
     <div>
       {label && <p className="mb-2 font-display text-sm font-bold text-biru-dark">{label}</p>}
       <div className="rounded-kite border-2 border-biru-light bg-biru-light/40 px-4 py-5 text-center">
-        <p className="font-num text-xl font-bold tracking-wide text-biru-dark sm:text-2xl">{example.problem}</p>
+        <p className="font-num text-xl font-bold tracking-wide text-biru-dark sm:text-2xl">{renderMathText(example.problem)}</p>
       </div>
       <ol className="mt-4 space-y-3">
         {example.steps.map((step, i) => (
@@ -172,7 +173,7 @@ function ExampleCard({
         <span className="font-body text-sm font-semibold text-white/80">
           <Bi text={UI.answerLabel} lang={lang} />
         </span>
-        <span className="font-num text-xl font-extrabold text-white">{example.answer}</span>
+        <span className="font-num text-xl font-extrabold text-white">{renderMathText(String(example.answer))}</span>
       </div>
     </div>
   );
