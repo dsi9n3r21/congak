@@ -86,12 +86,37 @@ student types into.
 Verified: regex parsing tested directly against representative content
 (bare fractions, mixed numbers, prose with a fraction mid-sentence) and
 deliberate near-misses (`1:10` ratio notation, `km/h` units) — no false
-positives. Could not get a visual screenshot in this environment (no
-browser available, network is allowlisted and doesn't reach Chrome's
-download CDN for Puppeteer) — Tailwind classes used are standard
-utilities already present elsewhere in this codebase (inline-flex, flex
-column, border-current), no new tokens invented, but **worth Lynda
-actually eyeballing this on her dev server before considering it done.**
+positives.
+
+**Real bug Lynda caught via screenshot after this shipped:** the
+dividing bar wasn't rendering at all — just two stacked numbers with no
+line between them. My first two attempts (thicker height-div, then a
+border-based divider) were both treating the symptom. **The actual
+cause: `tailwind.config.ts`'s `content` glob only scanned `./app/**` and
+`./components/**` — `lib/ui/mathText.tsx` lives under `./lib/`, so
+Tailwind's JIT compiler never scanned it, meaning every class used
+there (the divider bar, the stacked-fraction layout, all of it) was
+silently absent from the compiled CSS.** Fixed by adding
+`"./lib/**/*.{ts,tsx}"` to the content array. Proved the fix rather than
+assuming it: compiled the actual CSS via `npx tailwindcss -i
+./app/globals.css -o out.css` with and without the `lib/` glob —
+`.border-t-2` produces zero matches without it, one with it.
+
+**This same bug silently affected `lib/i18n/Bi.tsx` too** — it's also
+under `lib/`, predates this session entirely, and its `text-[0.85em]`
+class (used for the muted English subtitle line in "both languages"
+mode) had the same problem: that exact arbitrary-value class doesn't
+appear anywhere under `app/` or `components/`, so it was never generated
+either. The English subtitle has likely been rendering at full size
+instead of smaller/muted this whole time. Fixed as a side effect of the
+same content-glob fix — worth Lynda glancing at the "both languages"
+toggle to confirm the subtitle now actually looks smaller/muted.
+
+**Lesson for any future `lib/`-based component with Tailwind classes:**
+don't just check that classes look reasonable — compile the actual CSS
+and grep for the specific class, the way this was eventually confirmed.
+`tsc --noEmit` passing says nothing about whether Tailwind's JIT
+actually generated the styles a component depends on.
 
 ## Current curriculum coverage (85 topics — see note on the denominator)
 **Explicit instruction from Lynda: keep going until the real curriculum is

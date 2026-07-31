@@ -34,10 +34,10 @@ export function renderMathText(text: string): ReactNode {
     nodes.push(
       <span key={`f-${key++}`} className="mx-[2px] inline-flex items-center gap-[3px] align-middle">
         {wholePart && <span>{wholePart.trim()}</span>}
-        <span className="inline-flex flex-col items-stretch text-center leading-[1.15]">
-          <span className="px-[2px] text-[0.78em]">{num}</span>
-          <span className="h-[1.5px] w-full bg-current" />
-          <span className="px-[2px] text-[0.78em]">{den}</span>
+        <span className="inline-flex min-w-[1em] flex-col items-stretch text-center leading-[1.15]">
+          <span className="px-[1px] text-[0.78em]">{num}</span>
+          <span className="border-t-2 border-current" />
+          <span className="px-[1px] text-[0.78em]">{den}</span>
         </span>
       </span>
     );

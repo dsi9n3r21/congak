@@ -8,7 +8,7 @@ import type { Config } from "tailwindcss";
 // game-like) — used for level/XP, Pintar chat, and selected states; kuning
 // stays for CTAs and everyday warmth so the palette doesn't go all-purple.
 const config: Config = {
-  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     // Mobile-first: base styles target ~360px, breakpoints scale UP from there.
     screens: {
