@@ -244,6 +244,51 @@ cause — worth remembering that a persistent collapse across many
 generations is a sign to re-derive the formula, not just special-case
 around it. Same 50,000-generation re-verification this time: 0 failures.
 
+**Batch 6 done:** `...035` (Tambah & Tolak Perpuluhan 1dp), `...040`
+(Darab & Bahagi Wang), `...041` (Faedah Mudah). No new architectural
+bugs this round — `decimal_add_subtract_y4` already used the shared
+`finalizeOptions` helper (dedup+pad), so it didn't have the money.ts-
+style recombination flaw. Same pattern bug as prior batches did show up
+again in `money_multiply_divide` (word_problem config returning the bare
+equation) — fixed with real bookstore/canteen scenarios for both
+multiply and divide. `simple_interest` was always "Ali" with one
+context; added name/context variety plus errorSpotting and reverseProblem
+(solving for the rate, still just division — no new formula). One
+distractor caught and fixed before shipping: `reverseProblem`'s first
+draft used `totalSen × priceSen` as a distractor, which produces a
+unit-mismatched, obviously-too-large number rather than a genuine
+misconception — replaced with "picked the wrong given value" distractors
+instead. 14 topics retrofitted total across 6 batches.
+
+**Batch 7 done:** `...010` (Isipadu Cecair), `...042` (Untung dan Rugi),
+`...050` (Diskaun). One real bug this round, genuinely sneaky — worth
+remembering the pattern:
+
+`generateDiscount`'s errorSpotting distractor ("gave the discount amount
+instead of the final price") failed on **nearly every single generation**
+when `discountPct === 50` — not a rare collision, a permanent
+mathematical identity: at exactly half off, the amount taken off and the
+amount left over are, by definition, the same number, for *any* price.
+No amount of resampling the price fixes this — only avoiding that one
+percentage does. Caught because the smoke test's failure output was
+overwhelmingly `discountPct: 50` once you looked at more than a couple of
+examples; fixed by excluding 50% specifically from that one branch's
+percent pool (the base mcq/word_problem branches keep using 50% — it's
+only a problem for the "what's the classic mistake" framing, not for
+the question itself). **General lesson: when a distractor formula
+depends on more than one random input, check whether any single input
+value creates a structural identity between "correct" and "wrong"
+regardless of the others — 50% here, addition's carry in batch 5 — these
+aren't edge cases, they're the whole distribution for that slice of the
+input space.**
+
+Second, smaller thing worth noting: `generateVolume` was rebuilt this
+round with subtraction, context variety, and a reverse-problem variant on
+top of the original addition-only version — no bug found in it this
+time, but it's new enough code that it's worth an extra look in a future
+pass rather than assuming it's as battle-tested as the older generators.
+17 topics retrofitted total across 7 batches.
+
 **Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
 get the current ranked list — a large tier of topics sits at the
 original baseline (score 14: 2 tips, 1 mistake, 2 templates), so this is

@@ -245,24 +245,123 @@ export function generateMoneyAddSubtract(params: GeneratorParams): GeneratedQues
   return question;
 }
 
+// Year 4 KSSR "Multiplying & Dividing Money" by a whole number. Retrofitted
+// per the Round 19 content standard: the "word_problem" config previously
+// returned the bare "RM4.50 × 3 = ?" prompt regardless of type — same
+// pattern bug as several other generators this round. Added a real
+// bookstore/canteen scenario for both operations, an errorSpotting
+// variant, and a reverseProblem variant (division framed as "how many
+// items", the natural reverse of the multiply case).
 export function generateMoneyMultiplyDivide(params: GeneratorParams): GeneratedQuestion {
   const maxRM = Number(params.maxRM ?? 10);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
   const op = pick(["multiply", "divide"] as const);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+  const items = ["buku", "pensel", "roti canai", "tiket bas"] as const;
+  const itemsEn: Record<(typeof items)[number], string> = {
+    buku: "book",
+    pensel: "pencil",
+    "roti canai": "roti canai",
+    "tiket bas": "bus ticket",
+  };
+
+  // ---- reverseProblem: given the total spent and price per item, find
+  // how many items were bought — a division question with a "how many"
+  // framing instead of the bare quotient framing the base divide case uses.
+  if (reverseProblem) {
+    const name = pick(names);
+    const item = pick(items);
+    const priceSen = randInt(100, maxRM * 100);
+    const qty = randInt(2, 9);
+    const totalSen = priceSen * qty;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membelanjakan ${formatRM(totalSen)} untuk beberapa ${item}, masing-masing berharga ${formatRM(priceSen)}. Berapakah bilangan ${item} yang dibeli?`,
+        en: `${name} spends ${formatRM(totalSen)} on some ${itemsEn[item]}s, each costing ${formatRM(priceSen)}. How many ${itemsEn[item]}s were bought?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(qty),
+      context: { priceSen, qty, totalSen },
+      generatorKey: "money_multiply_divide",
+      difficulty: 3,
+    };
+    // Classic mistakes: mixing up which given number is the answer —
+    // writing down the price (in RM) or the total (in RM) instead of
+    // actually dividing to find the quantity.
+    const gavePriceInstead = String(Math.round(priceSen / 100));
+    const gaveTotalInstead = String(Math.round(totalSen / 100));
+    const distractors = Array.from(new Set([gavePriceInstead, gaveTotalInstead])).filter((d) => d !== String(qty));
+    question.options = shuffleOptions(String(qty), distractors);
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, qty + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "misplaced decimal point after
+  // multiplying/dividing as if whole numbers" mistake.
+  if (errorSpotting) {
+    const name = pick(names);
+    if (op === "multiply") {
+      const priceSen = randInt(100, maxRM * 100);
+      const qty = randInt(2, 9);
+      const correctSen = priceSen * qty;
+      const wrongSen = correctSen * 10; // classic: forgot to shift the decimal back, off by a factor of 10
+      return {
+        prompt: {
+          ms: `${name} mengira ${formatRM(priceSen)} × ${qty} dan mendapat ${formatRM(wrongSen)}. Apakah jawapan yang betul?`,
+          en: `${name} calculated ${formatRM(priceSen)} × ${qty} and got ${formatRM(wrongSen)}. What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer: formatRM(correctSen),
+        context: { priceSen, qty, correctSen, wrongSen },
+        generatorKey: "money_multiply_divide",
+        difficulty: 3,
+        options: shuffleOptions(formatRM(correctSen), [formatRM(wrongSen)]),
+      };
+    }
+    const quotientSen = randInt(100, maxRM * 100);
+    const divisor = randInt(2, 9);
+    const totalSen = quotientSen * divisor;
+    const wrongSen = Math.round(quotientSen / 10); // classic: misplaced decimal the other way
+    return {
+      prompt: {
+        ms: `${name} mengira ${formatRM(totalSen)} ÷ ${divisor} dan mendapat ${formatRM(wrongSen)}. Apakah jawapan yang betul?`,
+        en: `${name} calculated ${formatRM(totalSen)} ÷ ${divisor} and got ${formatRM(wrongSen)}. What is the correct answer?`,
+      },
+      type: "mcq",
+      correctAnswer: formatRM(quotientSen),
+      context: { totalSen, divisor, quotientSen, wrongSen },
+      generatorKey: "money_multiply_divide",
+      difficulty: 3,
+      options: shuffleOptions(formatRM(quotientSen), [formatRM(wrongSen)].filter((d) => d !== formatRM(quotientSen))),
+    };
+  }
 
   if (op === "multiply") {
     const priceSen = randInt(100, maxRM * 100);
     const qty = randInt(2, 9);
     const correctSen = priceSen * qty;
+    const item = pick(items);
+    const name = pick(names);
     const question: GeneratedQuestion = {
-      prompt: { ms: `${formatRM(priceSen)} × ${qty} = ?`, en: `${formatRM(priceSen)} × ${qty} = ?` },
-      type,
+      prompt:
+        type === "word_problem"
+          ? {
+              ms: `Sebuah ${item} berharga ${formatRM(priceSen)}. Berapakah kos untuk ${qty} buah ${item} yang dibeli ${name}?`,
+              en: `A ${itemsEn[item]} costs ${formatRM(priceSen)}. How much do ${qty} ${itemsEn[item]}s cost, bought by ${name}?`,
+            }
+          : { ms: `${formatRM(priceSen)} × ${qty} = ?`, en: `${formatRM(priceSen)} × ${qty} = ?` },
+      type: type === "word_problem" ? "word_problem" : type,
       correctAnswer: formatRM(correctSen),
       context: { priceSen, qty, correctSen, op },
       generatorKey: "money_multiply_divide",
       difficulty: 2,
     };
-    if (type === "mcq") {
+    if (question.type === "mcq" || question.type === "word_problem") {
       const addedInstead = formatRM(priceSen + qty * 100);
       const distractors = Array.from(new Set([addedInstead].filter((d) => d !== formatRM(correctSen))));
       question.options = shuffleOptions(formatRM(correctSen), distractors);
@@ -279,15 +378,23 @@ export function generateMoneyMultiplyDivide(params: GeneratorParams): GeneratedQ
   const quotientSen = randInt(100, maxRM * 100);
   const divisor = randInt(2, 9);
   const totalSen = quotientSen * divisor;
+  const item = pick(items);
+  const name = pick(names);
   const question: GeneratedQuestion = {
-    prompt: { ms: `${formatRM(totalSen)} ÷ ${divisor} = ?`, en: `${formatRM(totalSen)} ÷ ${divisor} = ?` },
-    type,
+    prompt:
+      type === "word_problem"
+        ? {
+            ms: `${name} membayar ${formatRM(totalSen)} untuk ${divisor} keping ${item} yang harganya sama. Berapakah harga bagi setiap ${item}?`,
+            en: `${name} pays ${formatRM(totalSen)} for ${divisor} equally-priced ${itemsEn[item]}s. What is the price of each ${itemsEn[item]}?`,
+          }
+        : { ms: `${formatRM(totalSen)} ÷ ${divisor} = ?`, en: `${formatRM(totalSen)} ÷ ${divisor} = ?` },
+    type: type === "word_problem" ? "word_problem" : type,
     correctAnswer: formatRM(quotientSen),
     context: { totalSen, divisor, quotientSen, op },
     generatorKey: "money_multiply_divide",
     difficulty: 2,
   };
-  if (type === "mcq") {
+  if (question.type === "mcq" || question.type === "word_problem") {
     const subtractedInstead = formatRM(Math.max(0, totalSen - divisor * 100));
     const distractors = Array.from(new Set([subtractedInstead].filter((d) => d !== formatRM(quotientSen))));
     question.options = shuffleOptions(formatRM(quotientSen), distractors);
@@ -301,31 +408,89 @@ export function generateMoneyMultiplyDivide(params: GeneratorParams): GeneratedQ
 }
 
 // Year 5 KSSR "Financial Literacy" — simple interest: I = P × R × T / 100.
+// Retrofitted per the Round 19 content standard: was always "Ali", one
+// context, no errorSpotting/reverseProblem. Added name/context variety,
+// an errorSpotting variant reusing the two documented mistakes already
+// used as MCQ distractors, and a reverseProblem variant (given the
+// interest earned, principal, and years, solve for the rate — division,
+// not a new formula, appropriately just past what the base case asks).
 export function generateSimpleInterest(params: GeneratorParams): GeneratedQuestion {
   const maxPrincipalRM = Number(params.maxPrincipalRM ?? 20);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+  const contexts = ["melabur", "menyimpan wang"] as const;
+  const contextsEn: Record<(typeof contexts)[number], string> = { melabur: "invests", "menyimpan wang": "saves" };
 
   const principalRM = randInt(2, maxPrincipalRM) * 100; // clean hundreds, e.g. RM200-RM2000
   const rate = pick([2, 4, 5, 8, 10]);
   const years = randInt(1, 4);
-  const interestSen = Math.round(((principalRM * 100) * rate * years) / 100);
+  const interestSen = Math.round((principalRM * 100 * rate * years) / 100);
 
+  // ---- reverseProblem: given the interest earned, principal, and years,
+  // solve for the rate (division, not a new formula).
+  if (reverseProblem) {
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} melabur RM${principalRM} selama ${years} tahun dan memperoleh faedah ${formatRM(interestSen)}. Berapakah kadar faedah setahun?`,
+        en: `${name} invests RM${principalRM} for ${years} years and earns ${formatRM(interestSen)} in interest. What is the annual interest rate?`,
+      },
+      type: "word_problem",
+      correctAnswer: `${rate}%`,
+      context: { principalRM, rate, years, interestSen },
+      generatorKey: "simple_interest",
+      difficulty: 3,
+    };
+    const forgotYearsRate = `${Math.round((rate * years * 10)) / 10}%`; // treated years as folded into rate
+    const distractors = [forgotYearsRate].filter((d) => d !== `${rate}%`);
+    question.options = shuffleOptions(`${rate}%`, distractors);
+    while (question.options.length < 3) {
+      const candidate = `${Math.max(1, rate + pick([-3, -2, -1, 1, 2, 3]))}%`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown one of the two documented mistakes already
+  // used as MCQ distractors below, must give the correct interest.
+  if (errorSpotting) {
+    const name = pick(names);
+    const forgotYears = Math.round(principalRM * 100 * rate) / 100;
+    const wrongSen = Math.round(principalRM * 100 * rate);
+    return {
+      prompt: {
+        ms: `${name} mengira faedah untuk RM${principalRM} pada ${rate}% selama ${years} tahun, tetapi terlupa darab dengan bilangan tahun, lalu mendapat ${formatRM(wrongSen)}. Apakah jawapan yang betul?`,
+        en: `${name} calculated the interest for RM${principalRM} at ${rate}% for ${years} years, but forgot to multiply by the number of years, getting ${formatRM(wrongSen)}. What is the correct answer?`,
+      },
+      type: "mcq",
+      correctAnswer: formatRM(interestSen),
+      context: { principalRM, rate, years, interestSen, forgotYears },
+      generatorKey: "simple_interest",
+      difficulty: 3,
+      options: shuffleOptions(formatRM(interestSen), [formatRM(wrongSen)].filter((d) => d !== formatRM(interestSen))),
+    };
+  }
+
+  const name = pick(names);
+  const context = pick(contexts);
   const question: GeneratedQuestion = {
     prompt: {
-      ms: `Ali melabur RM${principalRM} pada kadar faedah ${rate}% setahun selama ${years} tahun. Berapakah faedah yang diperoleh Ali?`,
-      en: `Ali invests RM${principalRM} at an interest rate of ${rate}% per year for ${years} years. How much interest does Ali earn?`,
+      ms: `${name} ${context} RM${principalRM} pada kadar faedah ${rate}% setahun selama ${years} tahun. Berapakah faedah yang diperoleh ${name}?`,
+      en: `${name} ${contextsEn[context]} RM${principalRM} at an interest rate of ${rate}% per year for ${years} years. How much interest does ${name} earn?`,
     },
-    type,
+    type: type === "word_problem" ? "word_problem" : type,
     correctAnswer: formatRM(interestSen),
     context: { principalRM, rate, years, interestSen },
     generatorKey: "simple_interest",
     difficulty: 3,
   };
 
-  if (type === "mcq") {
+  if (question.type === "mcq" || question.type === "word_problem") {
     // Classic mistake: forgetting to multiply by the number of years
     // (computing as if it were only a single year).
-    const forgotYears = formatRM(Math.round(((principalRM * 100) * rate) / 100));
+    const forgotYears = formatRM(Math.round((principalRM * 100 * rate) / 100));
     // Classic mistake: forgetting to divide by 100 (treating rate as a
     // whole-number multiplier instead of a percentage).
     const forgotDivideBy100 = formatRM(Math.round(principalRM * 100 * rate * years));
@@ -395,29 +560,87 @@ export function generateCompoundInterest(params: GeneratorParams): GeneratedQues
 }
 
 // Year 6 KSSR "Recognise Cost Price, Selling Price, Profit, and Loss".
+// Year 6 KSSR "Profit and Loss". Retrofitted per the Round 19 content
+// standard: was always "basikal", no errorSpotting/reverseProblem.
 export function generateProfitLoss(params: GeneratorParams): GeneratedQuestion {
   const maxRM = Number(params.maxRM ?? 100);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+  const items = ["basikal", "telefon terpakai", "kerusi kayu", "jam tangan"] as const;
+  const itemsEn: Record<(typeof items)[number], string> = {
+    basikal: "bicycle",
+    "telefon terpakai": "used phone",
+    "kerusi kayu": "wooden chair",
+    "jam tangan": "watch",
+  };
 
   const costSen = randInt(500, maxRM * 100);
   const isProfit = Math.random() > 0.5;
   const diffSen = randInt(50, Math.max(costSen - 100, 100)); // stay well clear of RM0 selling price
   const sellingSen = isProfit ? costSen + diffSen : Math.max(costSen - diffSen, 50);
   const resultSen = Math.abs(sellingSen - costSen);
+  const name = pick(names);
+  const item = pick(items);
+
+  // ---- reverseProblem: given the selling price and the profit/loss
+  // amount, find the cost price.
+  if (reverseProblem) {
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} menjual sebuah ${item} pada harga ${formatRM(sellingSen)} dan mendapat ${isProfit ? "untung" : "rugi"} ${formatRM(resultSen)}. Berapakah harga kos ${item} itu?`,
+        en: `${name} sells a ${itemsEn[item]} for ${formatRM(sellingSen)} and makes a ${isProfit ? "profit" : "loss"} of ${formatRM(resultSen)}. What was the cost price of the ${itemsEn[item]}?`,
+      },
+      type: "word_problem",
+      correctAnswer: formatRM(costSen),
+      context: { costSen, sellingSen, resultSen, isProfit: isProfit ? "profit" : "loss" },
+      generatorKey: "profit_loss",
+      difficulty: 3,
+    };
+    // Classic mistake: applied the profit/loss in the wrong direction
+    // (added when it was a profit meaning cost < selling, so should subtract; and vice versa).
+    const wrongDirection = formatRM(isProfit ? sellingSen + resultSen : sellingSen - resultSen);
+    const distractors = [wrongDirection].filter((d) => d !== formatRM(costSen));
+    question.options = shuffleOptions(formatRM(costSen), distractors);
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(50, costSen + randInt(50, 300) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "added instead of subtracted" mistake.
+  if (errorSpotting) {
+    const wrongAnswer = costSen + sellingSen;
+    return {
+      prompt: {
+        ms: `${name} mengira ${isProfit ? "untung" : "rugi"} untuk ${item} dengan harga kos ${formatRM(costSen)} dan harga jualan ${formatRM(sellingSen)}, lalu mendapat ${formatRM(wrongAnswer)}. Apakah jawapan yang betul?`,
+        en: `${name} calculated the ${isProfit ? "profit" : "loss"} for a ${itemsEn[item]} with cost price ${formatRM(costSen)} and selling price ${formatRM(sellingSen)}, and got ${formatRM(wrongAnswer)}. What is the correct answer?`,
+      },
+      type: "mcq",
+      correctAnswer: formatRM(resultSen),
+      context: { costSen, sellingSen, resultSen, wrongAnswer },
+      generatorKey: "profit_loss",
+      difficulty: 3,
+      options: shuffleOptions(formatRM(resultSen), [formatRM(wrongAnswer)].filter((d) => d !== formatRM(resultSen))),
+    };
+  }
 
   const question: GeneratedQuestion = {
     prompt: {
-      ms: `Harga kos sebuah basikal ialah ${formatRM(costSen)}. Harga jualannya ialah ${formatRM(sellingSen)}. Berapakah ${isProfit ? "untung" : "rugi"}?`,
-      en: `A bicycle's cost price is ${formatRM(costSen)}. Its selling price is ${formatRM(sellingSen)}. What is the ${isProfit ? "profit" : "loss"}?`,
+      ms: `Harga kos sebuah ${item} ialah ${formatRM(costSen)}. Harga jualannya ialah ${formatRM(sellingSen)}. Berapakah ${isProfit ? "untung" : "rugi"}?`,
+      en: `A ${itemsEn[item]}'s cost price is ${formatRM(costSen)}. Its selling price is ${formatRM(sellingSen)}. What is the ${isProfit ? "profit" : "loss"}?`,
     },
-    type,
+    type: type === "word_problem" ? "word_problem" : type,
     correctAnswer: formatRM(resultSen),
     context: { costSen, sellingSen, resultSen, isProfit: isProfit ? "profit" : "loss" },
     generatorKey: "profit_loss",
     difficulty: 2,
   };
 
-  if (type === "mcq") {
+  if (question.type === "mcq" || question.type === "word_problem") {
     // Classic mistake: added cost and selling price instead of finding the difference.
     const addedInstead = formatRM(costSen + sellingSen);
     const distractors = Array.from(new Set([addedInstead].filter((d) => d !== formatRM(resultSen))));
@@ -433,28 +656,95 @@ export function generateProfitLoss(params: GeneratorParams): GeneratedQuestion {
 }
 
 // Year 6 KSSR "Discount" — original price minus a percentage discount.
+// Retrofitted per the Round 19 content standard: was always "baju", no
+// errorSpotting/reverseProblem, and word_problem type wasn't handled
+// distinctly (though the base prompt was already narrative-styled).
 export function generateDiscount(params: GeneratorParams): GeneratedQuestion {
   const maxRM = Number(params.maxRM ?? 100);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+  const items = ["baju", "kasut", "beg sekolah", "jam tangan"] as const;
+  const itemsEn: Record<(typeof items)[number], string> = {
+    baju: "shirt",
+    kasut: "shoes",
+    "beg sekolah": "school bag",
+    "jam tangan": "watch",
+  };
 
   const priceRM = randInt(2, maxRM / 2) * 2; // even RM value keeps percentages clean
   const discountPct = pick([10, 20, 25, 50]);
   const discountSen = Math.round((priceRM * 100 * discountPct) / 100);
   const finalSen = priceRM * 100 - discountSen;
+  const name = pick(names);
+  const item = pick(items);
+
+  // ---- reverseProblem: given the final price and the discount percent,
+  // find the original price.
+  if (reverseProblem) {
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membeli sebuah ${item} pada harga ${formatRM(finalSen)} selepas diskaun ${discountPct}%. Berapakah harga asal ${item} itu?`,
+        en: `${name} buys a ${itemsEn[item]} for ${formatRM(finalSen)} after a ${discountPct}% discount. What was the original price of the ${itemsEn[item]}?`,
+      },
+      type: "word_problem",
+      correctAnswer: `RM${priceRM}`,
+      context: { priceRM, discountPct, discountSen, finalSen },
+      generatorKey: "discount",
+      difficulty: 3,
+    };
+    // Classic mistake: added the discount percent as a flat RM amount to the final price.
+    const flatAdded = `RM${priceRM + discountPct}`;
+    // Classic mistake: treated the final price as already the original.
+    const gaveFinal = formatRM(finalSen);
+    const distractors = Array.from(new Set([flatAdded, gaveFinal])).filter((d) => d !== `RM${priceRM}`);
+    question.options = shuffleOptions(`RM${priceRM}`, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = `RM${Math.max(2, priceRM + randInt(2, 20) * (Math.random() > 0.5 ? 1 : -1))}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "gave the discount amount, not
+  // the final price" mistake. Excludes 50% specifically — at exactly
+  // half off, the discount AMOUNT always equals the FINAL PRICE for any
+  // price (half taken off = half remaining = the same number), so the
+  // "wrong" answer would trivially equal the correct one. This is a
+  // permanent identity of the 50% case, not something resampling the
+  // price could ever fix — only a different percentage avoids it.
+  if (errorSpotting) {
+    const esDiscountPct = pick([10, 20, 25]);
+    const esDiscountSen = Math.round((priceRM * 100 * esDiscountPct) / 100);
+    const esFinalSen = priceRM * 100 - esDiscountSen;
+    return {
+      prompt: {
+        ms: `${name} mengira harga ${item} berharga RM${priceRM} selepas diskaun ${esDiscountPct}%, lalu menjawab ${formatRM(esDiscountSen)}. Apakah jawapan yang betul?`,
+        en: `${name} calculated the price of a ${itemsEn[item]} costing RM${priceRM} after a ${esDiscountPct}% discount, and answered ${formatRM(esDiscountSen)}. What is the correct answer?`,
+      },
+      type: "mcq",
+      correctAnswer: formatRM(esFinalSen),
+      context: { priceRM, discountPct: esDiscountPct, discountSen: esDiscountSen, finalSen: esFinalSen },
+      generatorKey: "discount",
+      difficulty: 3,
+      options: shuffleOptions(formatRM(esFinalSen), [formatRM(esDiscountSen)].filter((d) => d !== formatRM(esFinalSen))),
+    };
+  }
 
   const question: GeneratedQuestion = {
     prompt: {
-      ms: `Sebuah baju berharga RM${priceRM}. Kedai memberi diskaun ${discountPct}%. Berapakah harga selepas diskaun?`,
-      en: `A shirt costs RM${priceRM}. The shop gives a ${discountPct}% discount. What is the price after the discount?`,
+      ms: `Sebuah ${item} berharga RM${priceRM}. Kedai memberi diskaun ${discountPct}%. Berapakah harga selepas diskaun?`,
+      en: `A ${itemsEn[item]} costs RM${priceRM}. The shop gives a ${discountPct}% discount. What is the price after the discount?`,
     },
-    type,
+    type: type === "word_problem" ? "word_problem" : type,
     correctAnswer: formatRM(finalSen),
     context: { priceRM, discountPct, discountSen, finalSen },
     generatorKey: "discount",
     difficulty: 3,
   };
 
-  if (type === "mcq") {
+  if (question.type === "mcq" || question.type === "word_problem") {
     // Classic mistake: gives the discount AMOUNT instead of the final
     // price after the discount.
     const gaveDiscountAmount = formatRM(discountSen);
