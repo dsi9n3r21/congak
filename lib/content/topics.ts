@@ -1219,25 +1219,37 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Bulatkan atau garisi bahagi darab dalam soalan itu dahulu supaya anda tidak terlepas pandang untuk buat itu dahulu.",
         en: "Circle or underline the multiplication part of the question first so you don't accidentally skip doing it first.",
       },
+      {
+        ms: "JANGAN buat ini: 15 + 4 × 10 dikira sebagai (15 + 4) × 10 = 190. SALAH — kiri-ke-kanan bukan susunan yang betul. Darab dahulu: 4 × 10 = 40, baru tambah 15 + 40 = 55.",
+        en: "DON'T do this: 15 + 4 × 10 calculated as (15 + 4) × 10 = 190. WRONG — left-to-right isn't the correct order. Multiply first: 4 × 10 = 40, then add 15 + 40 = 55.",
+      },
     ],
     howTo: [
       { ms: "Cari bahagi darab (atau bahagi) dalam soalan itu dan selesaikan itu dahulu.", en: "Find the multiplication (or division) part of the question and solve that first." },
       { ms: "Kemudian buat penambahan (atau penolakan) menggunakan hasil daripada langkah pertama.", en: "Then do the addition (or subtraction) using the result from the first step." },
+      { ms: "Semak: adakah anda buat pendaraban/pembahagian dahulu sebelum tambah/tolak?", en: "Check: did you do the multiplication/division before the addition/subtraction?" },
     ],
     workedExample: {
       problem: "15 + 4 × 10",
       steps: [
         { ms: "Darab dahulu: 4 × 10 = 40", en: "Multiply first: 4 × 10 = 40" },
         { ms: "Kemudian tambah: 15 + 40 = 55", en: "Then add: 15 + 40 = 55" },
+        { ms: "Jawapan: 55", en: "Answer: 55" },
       ],
       answer: 55,
     },
     commonMistakes: [
       { mistakeType: "ignored_order_of_operations", description: { ms: "Murid mengira dari kiri ke kanan (tambah dahulu, kemudian darab) berbanding ikut susunan operasi yang betul.", en: "The student calculates strictly left to right (adds first, then multiplies) instead of following the correct order of operations." } },
+      { mistakeType: "gave_multiplication_only", description: { ms: "Murid selesai selepas mengira bahagi darab sahaja, lupa tambah nombor pertama.", en: "The student stops after computing the multiplication part alone, forgetting to add the first number." } },
+      { mistakeType: "arithmetic_error_in_step", description: { ms: "Murid ikut susunan operasi yang betul tetapi tersilap kira semasa mendarab atau menambah.", en: "The student follows the correct order of operations but makes an arithmetic slip while multiplying or adding." } },
+      { mistakeType: "misidentified_operation", description: { ms: "Murid keliru nombor mana patut didarab, cth. darab nombor pertama dan kedua berbanding nombor kedua dan ketiga.", en: "The student confuses which numbers to multiply, e.g. multiplies the first and second numbers instead of the second and third." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80 } },
+      { type: "fill", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80 } },
       { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50 } },
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000028": {
@@ -1621,11 +1633,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Anggarkan jawapan dahulu (cth. 1.5 × 4 ≈ 2 × 4 = 8) untuk semak jawapan akhir masuk akal.",
         en: "Estimate the answer first (e.g. 1.5 × 4 ≈ 2 × 4 = 8) to check your final answer makes sense.",
       },
+      {
+        ms: "JANGAN buat ini: 1.5 × 4 dijawab sebagai 60 (darab 15 × 4 tetapi lupa letak titik semula). SALAH — 1.5 ada 1 tempat perpuluhan, jadi jawapan MESTI juga ada 1 tempat perpuluhan: 6.0.",
+        en: "DON'T do this: 1.5 × 4 answered as 60 (multiplying 15 × 4 but forgetting to put the point back). WRONG — 1.5 has 1 decimal place, so the answer MUST also have 1 decimal place: 6.0.",
+      },
     ],
     howTo: [
       { ms: "Darab kedua-dua nombor seolah-olah nombor bulat, abaikan titik perpuluhan.", en: "Multiply both numbers as if they were whole numbers, ignoring the decimal point." },
       { ms: "Kira semula berapa tempat perpuluhan patut ada dalam jawapan.", en: "Work out how many decimal places the answer should have." },
       { ms: "Letakkan titik perpuluhan pada kedudukan yang betul.", en: "Place the decimal point in the correct position." },
+      { ms: "Semak dengan anggaran: adakah jawapan anda hampir dengan anggaran kasar?", en: "Check with an estimate: is your answer close to a rough estimate?" },
     ],
     workedExample: {
       problem: "1.5 × 4",
@@ -1633,15 +1650,22 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Darab seolah-olah nombor bulat: 15 × 4 = 60", en: "Multiply as whole numbers: 15 × 4 = 60" },
         { ms: "1.5 ada 1 tempat perpuluhan, jadi letakkan titik: 6.0", en: "1.5 has 1 decimal place, so place the point: 6.0" },
         { ms: "Jawapan: 6.0", en: "Answer: 6.0" },
+        { ms: "Semak: 1.5 × 4 ≈ 2 × 4 = 8, dan 6.0 hampir dengan anggaran itu ✓", en: "Check: 1.5 × 4 ≈ 2 × 4 = 8, and 6.0 is close to that estimate ✓" },
       ],
       answer: "6.0",
     },
     commonMistakes: [
       { mistakeType: "ignored_decimal_point", description: { ms: "Murid darab dengan betul tetapi lupa letakkan semula titik perpuluhan pada jawapan.", en: "The student multiplies correctly but forgets to place the decimal point back into the answer." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
+      { mistakeType: "misplaced_decimal_point", description: { ms: "Murid letakkan titik perpuluhan pada kedudukan yang salah (cth. dua tempat perpuluhan berbanding satu).", en: "The student places the decimal point in the wrong position (e.g. two decimal places instead of one)." } },
+      { mistakeType: "arithmetic_error_in_multiplication", description: { ms: "Murid abaikan titik perpuluhan dengan betul tetapi tersilap kira pendaraban asas itu sendiri.", en: "The student correctly ignores the decimal point but makes an error in the basic multiplication itself." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "decimal_multiply", config: { maxWhole: 10 } },
+      { type: "fill", difficulty: 2, generatorKey: "decimal_multiply", config: { maxWhole: 10 } },
       { type: "word_problem", difficulty: 2, generatorKey: "decimal_multiply", config: { maxWhole: 8 } },
+      { type: "mcq", difficulty: 3, generatorKey: "decimal_multiply", config: { maxWhole: 10, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "decimal_multiply", config: { maxWhole: 8, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000037": {
@@ -1662,6 +1686,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Semak jawapan anda: darabkan jawapan dengan pembahagi — ia MESTI menyamai nombor asal.",
         en: "Check your answer: multiply your answer by the divisor — it MUST equal the original number.",
       },
+      {
+        ms: "JANGAN buat ini: 7.2 ÷ 3 dijawab sebagai 24 (bahagi 72 ÷ 3 tetapi lupa letak titik semula). SALAH — jawapan MESTI juga ada 1 tempat perpuluhan, sama seperti nombor asal: 2.4.",
+        en: "DON'T do this: 7.2 ÷ 3 answered as 24 (dividing 72 ÷ 3 but forgetting to put the point back). WRONG — the answer MUST also have 1 decimal place, same as the original number: 2.4.",
+      },
     ],
     howTo: [
       { ms: "Letakkan titik perpuluhan pada jawapan, terus di atas titik perpuluhan bahagi.", en: "Place the decimal point in the answer, directly above the decimal point being divided." },
@@ -1675,15 +1703,22 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "7 ÷ 3 = 2, baki 1", en: "7 ÷ 3 = 2, remainder 1" },
         { ms: "12 ÷ 3 = 4 (bawa turun 2 persepuluhan)", en: "12 ÷ 3 = 4 (bring down the 2 tenths)" },
         { ms: "Jawapan: 2.4", en: "Answer: 2.4" },
+        { ms: "Semak: 2.4 × 3 = 7.2 ✓", en: "Check: 2.4 × 3 = 7.2 ✓" },
       ],
       answer: "2.4",
     },
     commonMistakes: [
       { mistakeType: "ignored_decimal_point", description: { ms: "Murid membahagi dengan betul tetapi lupa letakkan semula titik perpuluhan pada jawapan.", en: "The student divides correctly but forgets to place the decimal point back into the answer." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid mendarab kedua-dua nombor berbanding membahagikannya.", en: "The student multiplies the two numbers instead of dividing them." } },
+      { mistakeType: "misplaced_decimal_point", description: { ms: "Murid letakkan titik perpuluhan pada kedudukan yang salah dalam jawapan.", en: "The student places the decimal point in the wrong position in the answer." } },
+      { mistakeType: "remainder_confusion", description: { ms: "Murid berhenti selepas langkah pertama pembahagian dan tidak bawa turun digit persepuluhan yang berbaki.", en: "The student stops after the first division step and doesn't bring down the remaining tenths digit." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "decimal_divide", config: { maxQuotientWhole: 10 } },
+      { type: "fill", difficulty: 2, generatorKey: "decimal_divide", config: { maxQuotientWhole: 10 } },
       { type: "word_problem", difficulty: 2, generatorKey: "decimal_divide", config: { maxQuotientWhole: 8 } },
+      { type: "mcq", difficulty: 3, generatorKey: "decimal_divide", config: { maxQuotientWhole: 10, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "decimal_divide", config: { maxQuotientWhole: 8, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000038": {

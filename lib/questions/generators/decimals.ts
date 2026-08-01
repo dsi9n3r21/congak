@@ -300,13 +300,100 @@ export function generateDecimalAddSubtract(params: GeneratorParams): GeneratedQu
   return question;
 }
 
+// Year 5 KSSR "Multiplying Decimals" (decimal × 1-digit whole number).
+// Retrofitted per the Round 19 content standard: added a real bottled-drink
+// word_problem (matches this topic's explanation text), errorSpotting, and
+// reverseProblem.
 export function generateDecimalMultiply(params: GeneratorParams): GeneratedQuestion {
   const maxWhole = Number(params.maxWhole ?? 10);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+  const liquids = ["jus", "susu", "air kelapa"] as const;
+  const liquidsEn: Record<(typeof liquids)[number], string> = {
+    jus: "juice",
+    susu: "milk",
+    "air kelapa": "coconut water",
+  };
 
   const a = randomDecimal1dp(Math.max(maxWhole, 1)) || 0.1; // avoid a=0, which collapses every distractor to 0
   const b = randInt(2, 9);
   const correct = Math.round(a * b * 10) / 10;
+
+  // ---- reverseProblem: given the per-bottle amount and the total, find how
+  // many bottles there are (the whole-number factor).
+  if (reverseProblem) {
+    const name = pick(names);
+    const liquid = pick(liquids);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Setiap botol mengandungi ${a} liter ${liquid}. ${name} mempunyai jumlah ${correct} liter ${liquid} kesemuanya. Berapa botol yang ${name} ada?`,
+        en: `Each bottle holds ${a} litres of ${liquidsEn[liquid]}. ${name} has a total of ${correct} litres of ${liquidsEn[liquid]} altogether. How many bottles does ${name} have?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(b),
+      context: { a, b, correct },
+      generatorKey: "decimal_multiply",
+      difficulty: 3,
+    };
+    // Classic mistake: off-by-one on the bottle count.
+    const offByOne = Math.max(1, b + (Math.random() > 0.5 ? 1 : -1));
+    question.options = finalizeOptions(String(b), [String(offByOne)], () =>
+      String(Math.max(1, b + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1)))
+    );
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "ignored the decimal point"
+  // mistake, must give the correct answer.
+  if (errorSpotting) {
+    const name = pick(names);
+    const wrongAnswer = Math.round(a * 10) * b;
+    const wrongStr = wrongAnswer.toFixed(1);
+    const correctStr = correct.toFixed(1);
+    if (wrongStr !== correctStr) {
+      return {
+        prompt: {
+          ms: `${name} mengira ${a} × ${b} dan mendapat ${wrongStr}. Apakah jawapan yang betul?`,
+          en: `${name} calculated ${a} × ${b} and got ${wrongStr}. What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer: correctStr,
+        context: { a, b, correct, wrongAnswer },
+        generatorKey: "decimal_multiply",
+        difficulty: 3,
+        options: finalizeOptions(correctStr, [wrongStr], () =>
+          (Math.round((correct + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 10) / 10).toFixed(1)
+        ),
+      };
+    }
+  }
+
+  // ---- word_problem: bottled-drink scenario, matches this topic's
+  // explanation text.
+  if (type === "word_problem") {
+    const liquid = pick(liquids);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebotol ${liquid} mengandungi ${a} liter. Berapa liter ${liquid} dalam ${b} botol?`,
+        en: `A bottle of ${liquidsEn[liquid]} holds ${a} litres. How many litres of ${liquidsEn[liquid]} are in ${b} bottles?`,
+      },
+      type: "word_problem",
+      correctAnswer: correct.toFixed(1),
+      context: { a, b, correct },
+      generatorKey: "decimal_multiply",
+      difficulty: 2,
+    };
+    const ignoredPoint = Math.round(a * 10) * b;
+    const addedInstead = Math.round((a + b) * 10) / 10;
+    question.options = finalizeOptions(
+      correct.toFixed(1),
+      [ignoredPoint.toFixed(1), addedInstead.toFixed(1)],
+      () => (Math.round((correct + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 10) / 10).toFixed(1)
+    );
+    return question;
+  }
 
   const question: GeneratedQuestion = {
     prompt: { ms: `${a} × ${b} = ?`, en: `${a} × ${b} = ?` },
@@ -333,9 +420,23 @@ export function generateDecimalMultiply(params: GeneratorParams): GeneratedQuest
   return question;
 }
 
+// Year 5 KSSR "Dividing Decimals" (decimal ÷ 1-digit whole number, no
+// remainder). Retrofitted per the Round 19 content standard: added a real
+// rope-cutting word_problem (matches this topic's explanation text),
+// errorSpotting, and reverseProblem.
 export function generateDecimalDivide(params: GeneratorParams): GeneratedQuestion {
   const maxQuotientWhole = Number(params.maxQuotientWhole ?? 10);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+  const materials = ["tali", "reben", "wayar", "kain"] as const;
+  const materialsEn: Record<(typeof materials)[number], string> = {
+    tali: "rope",
+    reben: "ribbon",
+    wayar: "wire",
+    kain: "cloth",
+  };
 
   // Build from the quotient backwards (in tenths) so the division comes out
   // exact — Year 5 level: decimal ÷ 1-digit whole number, no remainder.
@@ -346,6 +447,82 @@ export function generateDecimalDivide(params: GeneratorParams): GeneratedQuestio
   const dividendTenths = quotientTenths * divisor;
   const dividend = Math.round(dividendTenths) / 10;
   const quotient = Math.round(quotientTenths) / 10;
+
+  // ---- reverseProblem: given the piece length and how many pieces, find
+  // the original total length (multiplication back through division).
+  if (reverseProblem) {
+    const name = pick(names);
+    const material = pick(materials);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} memotong seutas ${material} kepada ${divisor} bahagian sama panjang. Setiap bahagian panjangnya ${quotient} meter. Berapakah panjang asal ${material} itu?`,
+        en: `${name} cuts a piece of ${materialsEn[material]} into ${divisor} equal pieces. Each piece is ${quotient} metres long. What was the original length of the ${materialsEn[material]}?`,
+      },
+      type: "word_problem",
+      correctAnswer: dividend.toFixed(1),
+      context: { dividend, divisor, quotient },
+      generatorKey: "decimal_divide",
+      difficulty: 3,
+    };
+    // Classic mistake: gave the per-piece length again, instead of the total.
+    const gavePieceLength = quotient.toFixed(1);
+    // Classic mistake: added the divisor to the quotient instead of multiplying.
+    const addedInstead = (quotient + divisor).toFixed(1);
+    question.options = finalizeOptions(dividend.toFixed(1), [gavePieceLength, addedInstead], () =>
+      (Math.round((dividend + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 10) / 10).toFixed(1)
+    );
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "ignored the decimal point"
+  // mistake, must give the correct answer.
+  if (errorSpotting) {
+    const name = pick(names);
+    const wrongAnswer = Math.round(dividend * 10) / divisor;
+    const wrongStr = wrongAnswer.toFixed(1);
+    const correctStr = quotient.toFixed(1);
+    if (wrongStr !== correctStr) {
+      return {
+        prompt: {
+          ms: `${name} mengira ${dividend} ÷ ${divisor} dan mendapat ${wrongStr}. Apakah jawapan yang betul?`,
+          en: `${name} calculated ${dividend} ÷ ${divisor} and got ${wrongStr}. What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer: correctStr,
+        context: { dividend, divisor, quotient, wrongAnswer },
+        generatorKey: "decimal_divide",
+        difficulty: 3,
+        options: finalizeOptions(correctStr, [wrongStr], () =>
+          (Math.round((quotient + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 10) / 10).toFixed(1)
+        ),
+      };
+    }
+  }
+
+  // ---- word_problem: rope-cutting scenario, matches this topic's
+  // explanation text.
+  if (type === "word_problem") {
+    const material = pick(materials);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Seutas ${material} sepanjang ${dividend} meter dipotong sama rata kepada ${divisor} bahagian. Berapakah panjang setiap bahagian?`,
+        en: `A piece of ${materialsEn[material]} that is ${dividend} metres long is cut equally into ${divisor} pieces. How long is each piece?`,
+      },
+      type: "word_problem",
+      correctAnswer: quotient.toFixed(1),
+      context: { dividend, divisor, quotient },
+      generatorKey: "decimal_divide",
+      difficulty: 2,
+    };
+    const ignoredPoint = Math.round(dividend * 10) / divisor;
+    const addedInstead = Math.round((dividend + divisor) * 10) / 10;
+    question.options = finalizeOptions(
+      quotient.toFixed(1),
+      [ignoredPoint.toFixed(1), addedInstead.toFixed(1)],
+      () => (Math.round((quotient + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 10) / 10).toFixed(1)
+    );
+    return question;
+  }
 
   const question: GeneratedQuestion = {
     prompt: { ms: `${dividend} ÷ ${divisor} = ?`, en: `${dividend} ÷ ${divisor} = ?` },

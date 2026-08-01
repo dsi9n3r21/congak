@@ -289,14 +289,29 @@ time, but it's new enough code that it's worth an extra look in a future
 pass rather than assuming it's as battle-tested as the older generators.
 17 topics retrofitted total across 7 batches.
 
+**Batch 8 done:** `...027` (Operasi Bergabung Tanpa Kurungan), `...036`
+(Darab Perpuluhan), `...037` (Bahagi Perpuluhan). One real bug this
+round: the new `mixed_operations` errorSpotting branch only ever
+returned 2 options (`shuffleOptions(correct, [wrongAnswer])` with no
+padding) — every other generator in the file pads to at least 3 via a
+`while (options.length < 3)` loop, this one branch was written without
+it and the smoke test caught it immediately (6 failures in the first
+1000 generations). Fixed by adding the same padding loop. 20 topics
+retrofitted total across 8 batches.
+
 **Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
-get the current ranked list — a large tier of topics sits at the
+get the current ranked list — a large tier of topics still sits at the
 original baseline (score 14: 2 tips, 1 mistake, 2 templates), so this is
-several more rounds of work, not close to done. No DB/UI schema changes
-needed for any of this — `challengeExample` from the original brief was
-folded into `questionTemplates`' `reverseProblem`/`errorSpotting` configs
-instead of a new object field, since that's already how `...085` and
-every retrofitted topic since works and needs no type changes.
+several more rounds of work, not close to done. The next weakest cluster
+is unit-conversion-heavy: `...043`–`...049` (Tambah & Tolak Masa, Tambah
+& Tolak Panjang, Tukar Unit Panjang/Jisim/Isipadu Cecair/Masa, Tukar Unit
+Masa Lanjutan) — worth doing as a themed batch since they likely share a
+similar "convert between units, classic mistake = used the wrong
+conversion factor" shape. No DB/UI schema changes needed for any of
+this — `challengeExample` from the original brief was folded into
+`questionTemplates`' `reverseProblem`/`errorSpotting` configs instead of
+a new object field, since that's already how `...085` and every
+retrofitted topic since works and needs no type changes.
 
 **Round 17 (ids `...082`-`...084`) — Lynda asked directly whether Year 4
 Coordinates/Ratio/Proportion were covered. They weren't, at all** — only
