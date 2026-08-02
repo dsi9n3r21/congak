@@ -2,10 +2,17 @@ import { pick, randInt, shuffleOptions } from "../utils";
 import type { GeneratedQuestion, GeneratorParams } from "../types";
 
 // Y6 KSSR "Likelihood" — certain/impossible, equally likely, and more/less
-// likely, all via a simple "bag of coloured balls" scenario. Word-based
+// likely, all via a simple "container of coloured items" scenario. Word-based
 // answer (not numeric) — correctAnswer/options are canonical keys, styled
 // through lib/questions/optionLabels.ts (OPTION_LABELS), same convention
 // as angles_classify.
+//
+// Retrofitted per the Round 19 content standard: added a sweets-jar
+// word_problem variant (re-skinned scenario for variety, not just the
+// bag-of-marbles framing) and an errorSpotting variant targeting the
+// documented misconception (assuming "equally likely" without checking
+// the counts). No reverseProblem — there's no numeric reverse for a
+// categorical likelihood judgement, same reasoning as angles_classify.ts.
 const COLORS = [
   { ms: "merah", en: "red" },
   { ms: "biru", en: "blue" },
@@ -13,7 +20,40 @@ const COLORS = [
   { ms: "hijau", en: "green" },
 ] as const;
 
-export function generateLikelihood(_params: GeneratorParams): GeneratedQuestion {
+const CONTAINERS = {
+  marbles: { ms: "beg", en: "bag", item: { ms: "biji guli", en: "marbles" } },
+  sweets: { ms: "balang", en: "jar", item: { ms: "biji gula-gula", en: "sweets" } },
+} as const;
+
+export function generateLikelihood(params: GeneratorParams): GeneratedQuestion {
+  const type = (params.type as "mcq" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- errorSpotting: shown the classic "assumed equally likely without
+  // checking the counts" mistake, must give the correct answer.
+  if (errorSpotting) {
+    const colorA = pick(COLORS);
+    const colorB = pick(COLORS.filter((c) => c.en !== colorA.en));
+    const countA = randInt(5, 9);
+    const countB = randInt(1, 4);
+    const name = pick(names);
+    const correctAnswer = "more_likely";
+    return {
+      prompt: {
+        ms: `Sebuah beg mengandungi ${countA} biji guli ${colorA.ms} dan ${countB} biji guli ${colorB.ms}. ${name} berkata kemungkinan mengeluarkan guli ${colorA.ms} dan guli ${colorB.ms} adalah SAMA. ${name} silap. Apakah kemungkinan yang betul untuk mengeluarkan guli ${colorA.ms}?`,
+        en: `A bag contains ${countA} ${colorA.en} marbles and ${countB} ${colorB.en} marbles. ${name} says the likelihood of picking a ${colorA.en} marble and a ${colorB.en} marble is the SAME. ${name} is wrong. What is the correct likelihood of picking a ${colorA.en} marble?`,
+      },
+      type: "mcq",
+      correctAnswer,
+      context: { countA, countB, colorA: colorA.en, colorB: colorB.en },
+      generatorKey: "likelihood",
+      difficulty: 3,
+      options: shuffleOptions(correctAnswer, ["equally_likely", "less_likely"]),
+    };
+  }
+
+  const container = type === "word_problem" ? CONTAINERS.sweets : CONTAINERS.marbles;
   const scenario = pick(["certain_impossible", "equally_likely", "more_less"] as const);
 
   if (scenario === "certain_impossible") {
@@ -23,10 +63,10 @@ export function generateLikelihood(_params: GeneratorParams): GeneratedQuestion 
     if (askCertain) {
       return {
         prompt: {
-          ms: `Sebuah beg mengandungi ${n} biji guli, semuanya berwarna ${color.ms}. Apakah kemungkinan untuk mengeluarkan guli berwarna ${color.ms}?`,
-          en: `A bag contains ${n} marbles, all coloured ${color.en}. What is the likelihood of picking out a ${color.en} marble?`,
+          ms: `Sebuah ${container.ms} mengandungi ${n} ${container.item.ms}, semuanya berwarna ${color.ms}. Apakah kemungkinan untuk mengeluarkan ${container.item.ms} berwarna ${color.ms}?`,
+          en: `A ${container.en} contains ${n} ${container.item.en}, all coloured ${color.en}. What is the likelihood of picking out a ${color.en} one?`,
         },
-        type: "mcq",
+        type,
         correctAnswer: "certain",
         context: { n, color: color.en, scenario },
         generatorKey: "likelihood",
@@ -37,10 +77,10 @@ export function generateLikelihood(_params: GeneratorParams): GeneratedQuestion 
     const otherColor = pick(COLORS.filter((c) => c.en !== color.en));
     return {
       prompt: {
-        ms: `Sebuah beg mengandungi ${n} biji guli, semuanya berwarna ${color.ms}. Apakah kemungkinan untuk mengeluarkan guli berwarna ${otherColor.ms}?`,
-        en: `A bag contains ${n} marbles, all coloured ${color.en}. What is the likelihood of picking out a ${otherColor.en} marble?`,
+        ms: `Sebuah ${container.ms} mengandungi ${n} ${container.item.ms}, semuanya berwarna ${color.ms}. Apakah kemungkinan untuk mengeluarkan ${container.item.ms} berwarna ${otherColor.ms}?`,
+        en: `A ${container.en} contains ${n} ${container.item.en}, all coloured ${color.en}. What is the likelihood of picking out a ${otherColor.en} one?`,
       },
-      type: "mcq",
+      type,
       correctAnswer: "impossible",
       context: { n, color: color.en, otherColor: otherColor.en, scenario },
       generatorKey: "likelihood",
@@ -54,10 +94,10 @@ export function generateLikelihood(_params: GeneratorParams): GeneratedQuestion 
     const n = randInt(2, 6);
     return {
       prompt: {
-        ms: `Sebuah beg mengandungi ${n} biji guli ${colorA.ms} dan ${n} biji guli ${colorB.ms}. Apakah kemungkinan untuk mengeluarkan guli ${colorA.ms} berbanding ${colorB.ms}?`,
-        en: `A bag contains ${n} ${colorA.en} marbles and ${n} ${colorB.en} marbles. What is the likelihood of picking a ${colorA.en} marble compared to a ${colorB.en} one?`,
+        ms: `Sebuah ${container.ms} mengandungi ${n} ${container.item.ms} ${colorA.ms} dan ${n} ${container.item.ms} ${colorB.ms}. Apakah kemungkinan untuk mengeluarkan yang ${colorA.ms} berbanding ${colorB.ms}?`,
+        en: `A ${container.en} contains ${n} ${colorA.en} ${container.item.en} and ${n} ${colorB.en} ${container.item.en}. What is the likelihood of picking a ${colorA.en} one compared to a ${colorB.en} one?`,
       },
-      type: "mcq",
+      type,
       correctAnswer: "equally_likely",
       context: { n, colorA: colorA.en, colorB: colorB.en, scenario },
       generatorKey: "likelihood",
@@ -77,10 +117,10 @@ export function generateLikelihood(_params: GeneratorParams): GeneratedQuestion 
 
   return {
     prompt: {
-      ms: `Sebuah beg mengandungi ${countA} biji guli ${colorA.ms} dan ${countB} biji guli ${colorB.ms}. Apakah kemungkinan untuk mengeluarkan guli ${askedColor.ms}?`,
-      en: `A bag contains ${countA} ${colorA.en} marbles and ${countB} ${colorB.en} marbles. What is the likelihood of picking a ${askedColor.en} marble?`,
+      ms: `Sebuah ${container.ms} mengandungi ${countA} ${container.item.ms} ${colorA.ms} dan ${countB} ${container.item.ms} ${colorB.ms}. Apakah kemungkinan untuk mengeluarkan yang ${askedColor.ms}?`,
+      en: `A ${container.en} contains ${countA} ${colorA.en} ${container.item.en} and ${countB} ${colorB.en} ${container.item.en}. What is the likelihood of picking a ${askedColor.en} one?`,
     },
-    type: "mcq",
+    type,
     correctAnswer,
     context: { countA, countB, colorA: colorA.en, colorB: colorB.en, scenario },
     generatorKey: "likelihood",

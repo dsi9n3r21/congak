@@ -201,17 +201,153 @@ function formatDurationWords(totalMinutes: number, lang: "ms" | "en"): string {
   return `${h} hr ${m} min`;
 }
 
+// Year 4 KSSR "Adding & Subtracting Time" (hours/minutes, regrouping at 60
+// min = 1 hr — the base-60 counterpart to money's base-100 regrouping).
+// Retrofitted per the Round 19 content standard: added a real studying-two-
+// subjects word_problem (matches this topic's explanation text),
+// errorSpotting, and reverseProblem.
 export function generateTimeAddSubtract(params: GeneratorParams): GeneratedQuestion {
   const maxHours = Number(params.maxHours ?? 5);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
-  const op = pick(["add", "subtract"] as const);
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+  const subjects = ["Matematik", "Sains", "Bahasa Melayu", "Bahasa Inggeris"] as const;
+  const subjectsEn: Record<(typeof subjects)[number], string> = {
+    Matematik: "Maths",
+    Sains: "Science",
+    "Bahasa Melayu": "Malay",
+    "Bahasa Inggeris": "English",
+  };
 
+  const op = pick(["add", "subtract"] as const);
   let aMinutes = randInt(1, maxHours) * 60 + pick([0, 15, 30, 45]);
   let bMinutes = randInt(1, maxHours) * 60 + pick([0, 15, 30, 45]);
   if (op === "subtract" && bMinutes > aMinutes) [aMinutes, bMinutes] = [bMinutes, aMinutes];
 
   const correctMinutes = op === "add" ? aMinutes + bMinutes : aMinutes - bMinutes;
   const symbol = op === "add" ? "+" : "−";
+
+  // ---- reverseProblem: given the total study time and one subject's time,
+  // find the other subject's time (subtraction).
+  if (reverseProblem) {
+    const name = pick(names);
+    const subjectA = pick(subjects);
+    const subjectB = pick(subjects.filter((s) => s !== subjectA));
+    const total = aMinutes + bMinutes;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} belajar ${subjectA} dan ${subjectB} selama jumlah ${formatDurationWords(total, "ms")}. ${name} belajar ${subjectA} selama ${formatDurationWords(aMinutes, "ms")}. Berapa lamakah ${name} belajar ${subjectB}?`,
+        en: `${name} studies ${subjectsEn[subjectA]} and ${subjectsEn[subjectB]} for a total of ${formatDurationWords(total, "en")}. ${name} studies ${subjectsEn[subjectA]} for ${formatDurationWords(aMinutes, "en")}. How long does ${name} study ${subjectsEn[subjectB]}?`,
+      },
+      type: "word_problem",
+      correctAnswer: formatDurationNeutral(bMinutes),
+      context: { aMinutes, bMinutes, total },
+      generatorKey: "time_add_subtract",
+      difficulty: 3,
+    };
+    // Classic mistake: added the total and the given subject's time instead of subtracting.
+    const addedInstead = formatDurationNeutral(total + aMinutes);
+    // Classic mistake: gave the total again instead of the difference.
+    const gaveTotal = formatDurationNeutral(total);
+    const distractors = Array.from(new Set([addedInstead, gaveTotal])).filter(
+      (d) => d !== formatDurationNeutral(bMinutes)
+    );
+    question.options = shuffleOptions(formatDurationNeutral(bMinutes), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidateMinutes = Math.max(0, bMinutes + randInt(5, 40) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatDurationNeutral(candidateMinutes);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "treated minutes as base-10"
+  // mistake, must give the correct answer. Only meaningful when a genuine
+  // carry/borrow actually occurs — resample until one does.
+  if (errorSpotting) {
+    const name = pick(names);
+    let esA = aMinutes;
+    let esB = bMinutes;
+    let guard = 0;
+    while (guard < 20) {
+      const aM = esA % 60, bM = esB % 60;
+      const genuineCarry = op === "add" ? aM + bM >= 60 : aM < bM;
+      if (genuineCarry) break;
+      esA = randInt(1, maxHours) * 60 + pick([0, 15, 30, 45]);
+      esB = randInt(1, maxHours) * 60 + pick([0, 15, 30, 45]);
+      if (op === "subtract" && esB > esA) [esA, esB] = [esB, esA];
+      guard++;
+    }
+    const esCorrectMinutes = op === "add" ? esA + esB : esA - esB;
+    const esAH = Math.floor(esA / 60), esAM = esA % 60;
+    const esBH = Math.floor(esB / 60), esBM = esB % 60;
+    const wrongH = op === "add" ? esAH + esBH : Math.abs(esAH - esBH);
+    const wrongM = op === "add" ? esAM + esBM : Math.abs(esAM - esBM);
+    const wrongAnswer = `${wrongH}j ${wrongM}m`;
+    const correctAnswer = formatDurationNeutral(esCorrectMinutes);
+    if (wrongAnswer !== correctAnswer) {
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} mengira ${formatDurationWords(esA, "ms")} ${op === "add" ? "+" : "−"} ${formatDurationWords(esB, "ms")} dan mendapat ${wrongAnswer}. Apakah jawapan yang betul?`,
+          en: `${name} calculated ${formatDurationWords(esA, "en")} ${op === "add" ? "+" : "−"} ${formatDurationWords(esB, "en")} and got ${wrongAnswer}. What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer,
+        context: { aMinutes: esA, bMinutes: esB, correctMinutes: esCorrectMinutes, op, wrongAnswer },
+        generatorKey: "time_add_subtract",
+        difficulty: 3,
+        options: shuffleOptions(correctAnswer, [wrongAnswer]),
+      };
+      // Pad to at least 3 options — errorSpotting only naturally supplies
+      // one distractor (the no-carry mistake itself).
+      while (question.options!.length < 3) {
+        const candidateMinutes = Math.max(0, esCorrectMinutes + randInt(5, 40) * (Math.random() > 0.5 ? 1 : -1));
+        const candidate = formatDurationNeutral(candidateMinutes);
+        if (!question.options!.includes(candidate)) question.options!.push(candidate);
+      }
+      return question;
+    }
+  }
+
+  // ---- word_problem: two-subjects studying scenario, matches this topic's
+  // explanation text.
+  if (type === "word_problem") {
+    const name = pick(names);
+    const subjectA = pick(subjects);
+    const subjectB = pick(subjects.filter((s) => s !== subjectA));
+    const prompt =
+      op === "add"
+        ? {
+            ms: `${name} belajar ${subjectA} selama ${formatDurationWords(aMinutes, "ms")}, kemudian belajar ${subjectB} selama ${formatDurationWords(bMinutes, "ms")}. Berapakah jumlah masa belajar ${name}?`,
+            en: `${name} studies ${subjectsEn[subjectA]} for ${formatDurationWords(aMinutes, "en")}, then studies ${subjectsEn[subjectB]} for ${formatDurationWords(bMinutes, "en")}. What is ${name}'s total study time?`,
+          }
+        : {
+            ms: `${name} merancang belajar selama ${formatDurationWords(aMinutes, "ms")}. Setakat ini ${name} sudah belajar ${subjectA} selama ${formatDurationWords(bMinutes, "ms")}. Berapa lama lagi masa belajar yang tinggal?`,
+            en: `${name} plans to study for ${formatDurationWords(aMinutes, "en")}. So far ${name} has studied ${subjectsEn[subjectA]} for ${formatDurationWords(bMinutes, "en")}. How much study time is left?`,
+          };
+    const question: GeneratedQuestion = {
+      prompt,
+      type: "word_problem",
+      correctAnswer: formatDurationNeutral(correctMinutes),
+      context: { aMinutes, bMinutes, correctMinutes, op },
+      generatorKey: "time_add_subtract",
+      difficulty: 2,
+    };
+    const aH = Math.floor(aMinutes / 60), aM = aMinutes % 60;
+    const bH = Math.floor(bMinutes / 60), bM = bMinutes % 60;
+    const noCarryH = op === "add" ? aH + bH : Math.abs(aH - bH);
+    const noCarryM = op === "add" ? aM + bM : Math.abs(aM - bM);
+    const noCarryLabel = `${noCarryH}j ${noCarryM}m`;
+    const distractors = Array.from(new Set([noCarryLabel].filter((d) => d !== question.correctAnswer)));
+    question.options = shuffleOptions(question.correctAnswer, distractors);
+    while (question.options.length < 3) {
+      const candidateMinutes = Math.max(0, correctMinutes + randInt(5, 40) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatDurationNeutral(candidateMinutes);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const question: GeneratedQuestion = {
     prompt: {

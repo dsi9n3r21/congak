@@ -1965,11 +1965,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Tambah atau tolak minit dahulu, kemudian jam.",
         en: "Add or subtract the minutes first, then the hours.",
       },
+      {
+        ms: "JANGAN buat ini: 1 jam 45 minit + 50 minit dijawab sebagai 1 jam 95 minit. SALAH — minit tidak boleh melebihi 59! 95 minit MESTI ditukar kepada 1 jam 35 minit dahulu, jadi jawapan sebenar ialah 2 jam 35 minit.",
+        en: "DON'T do this: 1 hour 45 minutes + 50 minutes answered as 1 hour 95 minutes. WRONG — minutes can't exceed 59! 95 minutes MUST be converted into 1 hour 35 minutes first, so the real answer is 2 hours 35 minutes.",
+      },
     ],
     howTo: [
       { ms: "Tambah atau tolak minit dahulu.", en: "Add or subtract the minutes first." },
       { ms: "Jika minit mencapai 60 atau lebih, tukar 60 minit kepada 1 jam dan simpan ke lajur jam.", en: "If the minutes reach 60 or more, convert 60 minutes into 1 hour and carry it into the hours column." },
       { ms: "Tambah atau tolak jam.", en: "Add or subtract the hours." },
+      { ms: "Semak: adakah bahagian minit dalam jawapan anda kurang daripada 60?", en: "Check: is the minutes part of your answer less than 60?" },
     ],
     workedExample: {
       problem: "1 jam 45 minit + 50 minit",
@@ -1983,10 +1988,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "time_base60_carry_error", description: { ms: "Murid mengira minit seperti nombor berasaskan 10, tidak menukar 60 minit kepada 1 jam.", en: "The student treats minutes like base-10 numbers, not converting 60 minutes into 1 hour." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid menambah berbanding menolak (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student adds instead of subtracting (or vice versa) when solving the problem." } },
+      { mistakeType: "borrow_error", description: { ms: "Semasa menolak, murid tidak pinjam 60 minit daripada jam apabila minit yang ditolak lebih besar.", en: "When subtracting, the student doesn't borrow 60 minutes from the hours when the minutes being subtracted is larger." } },
+      { mistakeType: "arithmetic_error_in_step", description: { ms: "Murid ikut kaedah yang betul tetapi tersilap kira semasa menambah atau menolak minit/jam.", en: "The student follows the correct method but makes an arithmetic slip while adding or subtracting the minutes or hours." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "time_add_subtract", config: { maxHours: 5 } },
+      { type: "fill", difficulty: 2, generatorKey: "time_add_subtract", config: { maxHours: 5 } },
       { type: "word_problem", difficulty: 2, generatorKey: "time_add_subtract", config: { maxHours: 3 } },
+      { type: "mcq", difficulty: 3, generatorKey: "time_add_subtract", config: { maxHours: 5, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_add_subtract", config: { maxHours: 3, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000044": {
@@ -2007,11 +2018,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Tambah atau tolak cm dahulu, kemudian meter.",
         en: "Add or subtract the centimetres first, then the metres.",
       },
+      {
+        ms: "JANGAN buat ini: 2 m 40 cm + 1 m 75 cm dijawab sebagai 3 m 115 cm. SALAH — cm tidak boleh melebihi 99! 115 cm MESTI ditukar kepada 1 m 15 cm dahulu, jadi jawapan sebenar ialah 4 m 15 cm.",
+        en: "DON'T do this: 2 m 40 cm + 1 m 75 cm answered as 3 m 115 cm. WRONG — cm can't exceed 99! 115 cm MUST be converted into 1 m 15 cm first, so the real answer is 4 m 15 cm.",
+      },
     ],
     howTo: [
       { ms: "Tambah atau tolak cm dahulu.", en: "Add or subtract the centimetres first." },
       { ms: "Jika cm mencapai 100 atau lebih, tukar 100 cm kepada 1 m dan simpan ke lajur meter.", en: "If the cm reach 100 or more, convert 100 cm into 1 m and carry it into the metres column." },
       { ms: "Tambah atau tolak meter.", en: "Add or subtract the metres." },
+      { ms: "Semak: adakah bahagian cm dalam jawapan anda kurang daripada 100?", en: "Check: is the cm part of your answer less than 100?" },
     ],
     workedExample: {
       problem: "2 m 40 cm + 1 m 75 cm",
@@ -2025,10 +2041,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "length_base100_carry_error", description: { ms: "Murid tidak menukar 100 cm kepada 1 m apabila jumlah cm melebihi 100.", en: "The student doesn't convert 100 cm into 1 m when the total cm exceeds 100." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid menambah berbanding menolak (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student adds instead of subtracting (or vice versa) when solving the problem." } },
+      { mistakeType: "borrow_error", description: { ms: "Semasa menolak, murid tidak pinjam 100 cm daripada meter apabila cm yang ditolak lebih besar.", en: "When subtracting, the student doesn't borrow 100 cm from the metres when the cm being subtracted is larger." } },
+      { mistakeType: "arithmetic_error_in_step", description: { ms: "Murid ikut kaedah yang betul tetapi tersilap kira semasa menambah atau menolak cm/meter.", en: "The student follows the correct method but makes an arithmetic slip while adding or subtracting the cm or metres." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "length_add_subtract", config: { maxMetres: 10 } },
+      { type: "fill", difficulty: 2, generatorKey: "length_add_subtract", config: { maxMetres: 10 } },
       { type: "word_problem", difficulty: 2, generatorKey: "length_add_subtract", config: { maxMetres: 6 } },
+      { type: "mcq", difficulty: 3, generatorKey: "length_add_subtract", config: { maxMetres: 10, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "length_add_subtract", config: { maxMetres: 6, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000045": {
@@ -2043,16 +2065,22 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Unit lebih kecil = nombor lebih besar. Darab apabila menukar daripada unit besar kepada unit kecil.", en: "Smaller unit = bigger number. Multiply when converting from a larger unit to a smaller one." },
       { ms: "Unit lebih besar = nombor lebih kecil. Bahagi apabila menukar daripada unit kecil kepada unit besar.", en: "Larger unit = smaller number. Divide when converting from a smaller unit to a larger one." },
+      {
+        ms: "JANGAN buat ini: 15 cm ditukar kepada mm dengan mendarab ×100 dan mendapat 1500 mm. SALAH — cm ke mm ialah ×10, BUKAN ×100 (itu faktor untuk m ke cm). Jawapan yang betul ialah 150 mm.",
+        en: "DON'T do this: 15 cm converted to mm by multiplying ×100 and getting 1500 mm. WRONG — cm to mm is ×10, NOT ×100 (that's the factor for m to cm). The correct answer is 150 mm.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti unit asal dan unit yang dikehendaki.", en: "Identify the starting unit and the target unit." },
       { ms: "Ingat faktor penukaran: 10 mm=1cm, 100cm=1m, 1000m=1km.", en: "Remember the conversion factor: 10 mm=1cm, 100cm=1m, 1000m=1km." },
       { ms: "Darab (unit besar → kecil) atau bahagi (unit kecil → besar).", en: "Multiply (large→small unit) or divide (small→large unit)." },
+      { ms: "Semak: adakah jawapan anda munasabah? (unit kecil sepatutnya beri nombor lebih besar)", en: "Check: does your answer make sense? (a smaller unit should give a bigger number)" },
     ],
     workedExample: {
       problem: "15 cm = ? mm",
       steps: [
         { ms: "cm ke mm ialah unit besar ke kecil, jadi darab", en: "cm to mm is large unit to small, so multiply" },
+        { ms: "Faktor penukaran ialah 10 (10 mm = 1 cm)", en: "The conversion factor is 10 (10 mm = 1 cm)" },
         { ms: "15 × 10 = 150", en: "15 × 10 = 150" },
         { ms: "Jawapan: 150 mm", en: "Answer: 150 mm" },
       ],
@@ -2060,10 +2088,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah (cth. ×100 bukan ×10) atau darab/bahagi ke arah yang salah.", en: "The student uses the wrong conversion factor (e.g. ×100 instead of ×10) or converts in the wrong direction." } },
+      { mistakeType: "wrong_direction", description: { ms: "Murid darab apabila patut bahagi (atau sebaliknya), cth. bahagi apabila menukar unit besar kepada unit kecil.", en: "The student multiplies when they should divide (or vice versa), e.g. dividing when converting a large unit to a small one." } },
+      { mistakeType: "confused_which_units", description: { ms: "Murid keliru unit mana lebih besar antara dua unit yang diberi.", en: "The student is confused about which of the two given units is larger." } },
+      { mistakeType: "arithmetic_error_in_conversion", description: { ms: "Murid guna faktor dan arah yang betul tetapi tersilap kira semasa mendarab atau membahagi.", en: "The student uses the correct factor and direction but makes an arithmetic slip while multiplying or dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "cm", small: "mm", factor: 10 }, { big: "m", small: "cm", factor: 100 }], maxBig: 12 } },
       { type: "fill", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "km", small: "m", factor: 1000 }], maxBig: 8 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "cm", small: "mm", factor: 10 }, { big: "m", small: "cm", factor: 100 }, { big: "km", small: "m", factor: 1000 }], maxBig: 8, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "cm", small: "mm", factor: 10 }, { big: "m", small: "cm", factor: 100 }], maxBig: 12, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "cm", small: "mm", factor: 10 }, { big: "m", small: "cm", factor: 100 }, { big: "km", small: "m", factor: 1000 }], maxBig: 8, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000046": {
@@ -2078,10 +2112,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "1000 g = 1 kg — sama seperti 1000 m = 1 km.", en: "1000 g = 1 kg — same relationship as 1000 m = 1 km." },
       { ms: "kg ke g: darab dengan 1000. g ke kg: bahagi dengan 1000.", en: "kg to g: multiply by 1000. g to kg: divide by 1000." },
+      {
+        ms: "JANGAN buat ini: 2 kg ditukar kepada g dengan mendarab ×100 dan mendapat 200 g. SALAH — faktor penukaran ialah ×1000, BUKAN ×100. Jawapan yang betul ialah 2000 g.",
+        en: "DON'T do this: 2 kg converted to g by multiplying ×100 and getting 200 g. WRONG — the conversion factor is ×1000, NOT ×100. The correct answer is 2000 g.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti unit asal dan unit yang dikehendaki.", en: "Identify the starting unit and the target unit." },
       { ms: "Darab dengan 1000 (kg → g) atau bahagi dengan 1000 (g → kg).", en: "Multiply by 1000 (kg → g) or divide by 1000 (g → kg)." },
+      { ms: "Semak: adakah jawapan anda munasabah? (g sepatutnya beri nombor lebih besar daripada kg)", en: "Check: does your answer make sense? (g should give a bigger number than kg)" },
     ],
     workedExample: {
       problem: "2 kg = ? g",
@@ -2093,11 +2132,17 @@ export const TOPICS: Record<string, TopicContent> = {
       answer: "2000",
     },
     commonMistakes: [
-      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah atau darab/bahagi ke arah yang salah.", en: "The student uses the wrong conversion factor or converts in the wrong direction." } },
+      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah (cth. ×100 bukan ×1000).", en: "The student uses the wrong conversion factor (e.g. ×100 instead of ×1000)." } },
+      { mistakeType: "wrong_direction", description: { ms: "Murid darab apabila patut bahagi (atau sebaliknya), cth. bahagi apabila menukar kg kepada g.", en: "The student multiplies when they should divide (or vice versa), e.g. dividing when converting kg to g." } },
+      { mistakeType: "confused_which_units", description: { ms: "Murid keliru unit mana lebih besar antara kg dan g.", en: "The student is confused about which unit is larger, kg or g." } },
+      { mistakeType: "arithmetic_error_in_conversion", description: { ms: "Murid guna faktor dan arah yang betul tetapi tersilap kira semasa mendarab atau membahagi dengan 1000.", en: "The student uses the correct factor and direction but makes an arithmetic slip while multiplying or dividing by 1000." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 10 } },
-      { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 6 } },
+      { type: "fill", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 10 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 6, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 10, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 6, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000047": {
@@ -2112,10 +2157,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "1000 ml = 1 l — sama seperti 1000 g = 1 kg.", en: "1000 ml = 1 l — same relationship as 1000 g = 1 kg." },
       { ms: "l ke ml: darab dengan 1000. ml ke l: bahagi dengan 1000.", en: "l to ml: multiply by 1000. ml to l: divide by 1000." },
+      {
+        ms: "JANGAN buat ini: 3 l ditukar kepada ml dengan mendarab ×100 dan mendapat 300 ml. SALAH — faktor penukaran ialah ×1000, BUKAN ×100. Jawapan yang betul ialah 3000 ml.",
+        en: "DON'T do this: 3 l converted to ml by multiplying ×100 and getting 300 ml. WRONG — the conversion factor is ×1000, NOT ×100. The correct answer is 3000 ml.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti unit asal dan unit yang dikehendaki.", en: "Identify the starting unit and the target unit." },
       { ms: "Darab dengan 1000 (l → ml) atau bahagi dengan 1000 (ml → l).", en: "Multiply by 1000 (l → ml) or divide by 1000 (ml → l)." },
+      { ms: "Semak: adakah jawapan anda munasabah? (ml sepatutnya beri nombor lebih besar daripada l)", en: "Check: does your answer make sense? (ml should give a bigger number than l)" },
     ],
     workedExample: {
       problem: "3 l = ? ml",
@@ -2127,11 +2177,17 @@ export const TOPICS: Record<string, TopicContent> = {
       answer: "3000",
     },
     commonMistakes: [
-      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah atau darab/bahagi ke arah yang salah.", en: "The student uses the wrong conversion factor or converts in the wrong direction." } },
+      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah (cth. ×100 bukan ×1000).", en: "The student uses the wrong conversion factor (e.g. ×100 instead of ×1000)." } },
+      { mistakeType: "wrong_direction", description: { ms: "Murid darab apabila patut bahagi (atau sebaliknya), cth. bahagi apabila menukar l kepada ml.", en: "The student multiplies when they should divide (or vice versa), e.g. dividing when converting l to ml." } },
+      { mistakeType: "confused_which_units", description: { ms: "Murid keliru unit mana lebih besar antara l dan ml.", en: "The student is confused about which unit is larger, l or ml." } },
+      { mistakeType: "arithmetic_error_in_conversion", description: { ms: "Murid guna faktor dan arah yang betul tetapi tersilap kira semasa mendarab atau membahagi dengan 1000.", en: "The student uses the correct factor and direction but makes an arithmetic slip while multiplying or dividing by 1000." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 8 } },
-      { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 5 } },
+      { type: "fill", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 8 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 5, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 8, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 5, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000048": {
@@ -2146,10 +2202,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "24 jam = 1 hari. 7 hari = 1 minggu.", en: "24 hours = 1 day. 7 days = 1 week." },
       { ms: "Unit lebih besar ke unit lebih kecil = darab. Unit lebih kecil ke unit lebih besar = bahagi.", en: "Larger unit to smaller unit = multiply. Smaller unit to larger unit = divide." },
+      {
+        ms: "JANGAN buat ini: 2 minggu ditukar kepada hari dengan mendarab ×10 dan mendapat 20 hari. SALAH — faktor penukaran ialah ×7 (7 hari = 1 minggu), BUKAN ×10. Jawapan yang betul ialah 14 hari.",
+        en: "DON'T do this: 2 weeks converted to days by multiplying ×10 and getting 20 days. WRONG — the conversion factor is ×7 (7 days = 1 week), NOT ×10. The correct answer is 14 days.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti unit asal dan unit yang dikehendaki.", en: "Identify the starting unit and the target unit." },
       { ms: "Darab (hari → jam, minggu → hari) atau bahagi (jam → hari, hari → minggu).", en: "Multiply (day → hour, week → day) or divide (hour → day, day → week)." },
+      { ms: "Semak: adakah jawapan anda munasabah? (unit lebih kecil sepatutnya beri nombor lebih besar)", en: "Check: does your answer make sense? (a smaller unit should give a bigger number)" },
     ],
     workedExample: {
       problem: "2 minggu = ? hari",
@@ -2161,11 +2222,17 @@ export const TOPICS: Record<string, TopicContent> = {
       answer: "14",
     },
     commonMistakes: [
-      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah atau darab/bahagi ke arah yang salah.", en: "The student uses the wrong conversion factor or converts in the wrong direction." } },
+      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah (cth. ×10 bukan ×7).", en: "The student uses the wrong conversion factor (e.g. ×10 instead of ×7)." } },
+      { mistakeType: "wrong_direction", description: { ms: "Murid darab apabila patut bahagi (atau sebaliknya), cth. bahagi apabila menukar minggu kepada hari.", en: "The student multiplies when they should divide (or vice versa), e.g. dividing when converting weeks to days." } },
+      { mistakeType: "confused_which_units", description: { ms: "Murid keliru unit mana lebih besar antara dua unit yang diberi.", en: "The student is confused about which of the two given units is larger." } },
+      { mistakeType: "arithmetic_error_in_conversion", description: { ms: "Murid guna faktor dan arah yang betul tetapi tersilap kira semasa mendarab atau membahagi.", en: "The student uses the correct factor and direction but makes an arithmetic slip while multiplying or dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "day", small: "hr", factor: 24 }, { big: "wk", small: "day", factor: 7 }], maxBig: 6 } },
-      { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "wk", small: "day", factor: 7 }], maxBig: 4 } },
+      { type: "fill", difficulty: 1, generatorKey: "unit_convert", config: { pairs: [{ big: "day", small: "hr", factor: 24 }, { big: "wk", small: "day", factor: 7 }], maxBig: 6 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "day", small: "hr", factor: 24 }, { big: "wk", small: "day", factor: 7 }], maxBig: 4, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "day", small: "hr", factor: 24 }, { big: "wk", small: "day", factor: 7 }], maxBig: 6, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "day", small: "hr", factor: 24 }, { big: "wk", small: "day", factor: 7 }], maxBig: 4, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000049": {
@@ -2180,11 +2247,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "60 minit=1 jam, 12 bulan=1 tahun, 10 tahun=1 dekad, 10 dekad=1 abad.", en: "60 minutes=1 hour, 12 months=1 year, 10 years=1 decade, 10 decades=1 century." },
       { ms: "Unit lebih besar ke unit lebih kecil = darab. Unit lebih kecil ke unit lebih besar = bahagi.", en: "Larger unit to smaller unit = multiply. Smaller unit to larger unit = divide." },
+      {
+        ms: "JANGAN buat ini: 3 abad ditukar kepada dekad dengan mendarab ×100 dan mendapat 300 dekad. SALAH — 1 abad = 10 dekad, jadi faktornya ×10, BUKAN ×100. Jawapan yang betul ialah 30 dekad.",
+        en: "DON'T do this: 3 centuries converted to decades by multiplying ×100 and getting 300 decades. WRONG — 1 century = 10 decades, so the factor is ×10, NOT ×100. The correct answer is 30 decades.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti unit asal dan unit yang dikehendaki.", en: "Identify the starting unit and the target unit." },
       { ms: "Ingat faktor penukaran yang betul untuk pasangan unit itu.", en: "Recall the correct conversion factor for that unit pair." },
       { ms: "Darab atau bahagi ikut arah penukaran.", en: "Multiply or divide depending on the direction of conversion." },
+      { ms: "Semak: adakah jawapan anda munasabah? (unit lebih kecil sepatutnya beri nombor lebih besar)", en: "Check: does your answer make sense? (a smaller unit should give a bigger number)" },
     ],
     workedExample: {
       problem: "3 abad = ? dekad",
@@ -2197,10 +2269,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah (banyak pasangan unit berbeza tahun ini) atau arah yang salah.", en: "The student uses the wrong conversion factor (many different unit pairs this year) or the wrong direction." } },
+      { mistakeType: "wrong_direction", description: { ms: "Murid darab apabila patut bahagi (atau sebaliknya), cth. bahagi apabila menukar tahun kepada bulan.", en: "The student multiplies when they should divide (or vice versa), e.g. dividing when converting years to months." } },
+      { mistakeType: "confused_which_units", description: { ms: "Murid keliru unit mana lebih besar antara dua unit yang diberi, terutamanya bagi dekad dan abad yang kurang biasa digunakan.", en: "The student is confused about which of the two given units is larger, especially for the less familiar decade and century." } },
+      { mistakeType: "arithmetic_error_in_conversion", description: { ms: "Murid guna faktor dan arah yang betul tetapi tersilap kira semasa mendarab atau membahagi.", en: "The student uses the correct factor and direction but makes an arithmetic slip while multiplying or dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "hr", small: "min", factor: 60 }, { big: "yr", small: "mth", factor: 12 }], maxBig: 6 } },
-      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "dec", small: "yr", factor: 10 }, { big: "c", small: "dec", factor: 10 }], maxBig: 5 } },
+      { type: "fill", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "dec", small: "yr", factor: 10 }, { big: "c", small: "dec", factor: 10 }], maxBig: 5 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "hr", small: "min", factor: 60 }, { big: "yr", small: "mth", factor: 12 }], maxBig: 4, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "hr", small: "min", factor: 60 }, { big: "yr", small: "mth", factor: 12 }, { big: "dec", small: "yr", factor: 10 }, { big: "c", small: "dec", factor: 10 }], maxBig: 6, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "hr", small: "min", factor: 60 }, { big: "yr", small: "mth", factor: 12 }, { big: "dec", small: "yr", factor: 10 }, { big: "c", small: "dec", factor: 10 }], maxBig: 5, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000050": {
@@ -2266,6 +2344,7 @@ export const TOPICS: Record<string, TopicContent> = {
     howTo: [
       { ms: "Kira bilangan setiap jenis item dalam situasi itu.", en: "Count how many of each item type are in the situation." },
       { ms: "Bandingkan bilangan itu untuk tentukan kategori kebarangkalian yang betul.", en: "Compare those counts to determine the correct likelihood category." },
+      { ms: "Semak: adakah bilangan bagi setiap jenis item benar-benar sama sebelum memilih 'sama kemungkinan'?", en: "Check: are the counts for each item type actually equal before choosing 'equally likely'?" },
     ],
     workedExample: {
       problem: "Beg mengandungi 10 guli merah sahaja. Kebarangkalian mengeluarkan guli biru?",
@@ -2277,9 +2356,15 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "likelihood_misconception", description: { ms: "Murid keliru antara kategori kebarangkalian (cth. anggap sama kemungkinan walaupun bilangan tidak sama).", en: "The student confuses the likelihood categories (e.g. assumes equally likely even when the counts aren't equal)." } },
+      { mistakeType: "ignored_the_counts", description: { ms: "Murid tidak kira bilangan setiap jenis item sebelum membuat kesimpulan, hanya meneka.", en: "The student doesn't count each item type before concluding, just guesses." } },
+      { mistakeType: "confused_more_and_certain", description: { ms: "Murid anggap 'lebih berkemungkinan' bermaksud 'pasti', walaupun item lain masih wujud dalam kumpulan itu.", en: "The student assumes 'more likely' means 'certain', even though the other item type still exists in the group." } },
+      { mistakeType: "confused_impossible_and_less_likely", description: { ms: "Murid anggap sesuatu yang mustahil hanyalah 'kurang berkemungkinan', tidak sedar bahawa 'mustahil' bermaksud LANGSUNG tiada peluang.", en: "The student thinks something impossible is merely 'less likely', not realising 'impossible' means NO chance at all." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "likelihood", config: {} },
+      { type: "mcq", difficulty: 3, generatorKey: "likelihood", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "likelihood", config: { type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "likelihood", config: { errorSpotting: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000052": {
@@ -2294,10 +2379,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Ingat peratus biasa: 50%=separuh, 25%=suku, 10%=sepersepuluh.", en: "Remember common percentages: 50%=half, 25%=quarter, 10%=one-tenth." },
       { ms: "Formula: Kuantiti × Peratus ÷ 100.", en: "Formula: Quantity × Percentage ÷ 100." },
+      {
+        ms: "JANGAN buat ini: 25% daripada 20 dikira sebagai 25 × 20 = 500 dan berhenti di situ. SALAH — anda MESTI bahagi dengan 100 selepas darab. Jawapan yang betul ialah 500 ÷ 100 = 5.",
+        en: "DON'T do this: 25% of 20 calculated as 25 × 20 = 500 and stopping there. WRONG — you MUST divide by 100 after multiplying. The correct answer is 500 ÷ 100 = 5.",
+      },
     ],
     howTo: [
       { ms: "Darabkan kuantiti dengan peratus itu.", en: "Multiply the quantity by the percentage." },
       { ms: "Bahagikan hasilnya dengan 100.", en: "Divide the result by 100." },
+      { ms: "Semak: adakah jawapan anda kurang daripada kuantiti asal (untuk peratus di bawah 100%)?", en: "Check: is your answer smaller than the original quantity (for percentages under 100%)?" },
     ],
     workedExample: {
       problem: "25% daripada 20",
@@ -2310,10 +2400,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "calculation_error", description: { ms: "Murid lupa bahagi dengan 100 selepas darab.", en: "The student forgets to divide by 100 after multiplying." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid bahagikan kuantiti dengan peratus, bukan darab dan bahagi dengan 100.", en: "The student divides the quantity by the percentage, instead of multiplying and dividing by 100." } },
+      { mistakeType: "confused_part_and_whole", description: { ms: "Murid keliru antara kuantiti asal dan bahagian yang dicari, terutamanya dalam soalan berbalik.", en: "The student confuses the original quantity with the part being found, especially in reverse-style questions." } },
+      { mistakeType: "arithmetic_error_in_step", description: { ms: "Murid ikut kaedah yang betul tetapi tersilap kira semasa mendarab atau membahagi.", en: "The student follows the correct method but makes an arithmetic slip while multiplying or dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "percentage_of_quantity", config: { percentages: [10, 20, 25, 50], maxQuantity: 40 } },
-      { type: "word_problem", difficulty: 1, generatorKey: "percentage_of_quantity", config: { percentages: [10, 25, 50], maxQuantity: 30 } },
+      { type: "fill", difficulty: 1, generatorKey: "percentage_of_quantity", config: { percentages: [10, 20, 25, 50], maxQuantity: 40 } },
+      { type: "word_problem", difficulty: 1, generatorKey: "percentage_of_quantity", config: { percentages: [10, 25, 50], maxQuantity: 30, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "percentage_of_quantity", config: { percentages: [10, 20, 25, 50], maxQuantity: 40, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "percentage_of_quantity", config: { percentages: [10, 25, 50], maxQuantity: 30, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000053": {
@@ -2328,11 +2424,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Fikir: berapa kali penyebut itu perlu didarab untuk jadi 100?", en: "Think: how many times does the denominator need to be multiplied to become 100?" },
       { ms: "Darabkan pengangka dan penyebut dengan nombor yang sama itu.", en: "Multiply the numerator and denominator by that same number." },
+      {
+        ms: "JANGAN buat ini: 3/4 ditukar kepada peratus dengan menulis terus \"3%\". SALAH — anda MESTI skalakan penyebut kepada 100 dahulu (4 × 25 = 100), kemudian darab pengangka dengan faktor yang sama (3 × 25 = 75). Jawapan yang betul ialah 75%.",
+        en: "DON'T do this: 3/4 converted to a percentage by writing \"3%\" directly. WRONG — you MUST scale the denominator to 100 first (4 × 25 = 100), then multiply the numerator by the same factor (3 × 25 = 75). The correct answer is 75%.",
+      },
     ],
     howTo: [
       { ms: "Cari nombor yang menukar penyebut kepada 100.", en: "Find the number that turns the denominator into 100." },
       { ms: "Darabkan pengangka dengan nombor yang sama.", en: "Multiply the numerator by that same number." },
       { ms: "Pengangka yang baru itu ialah peratusnya.", en: "The new numerator is the percentage." },
+      { ms: "Semak: adakah penyebut baru anda betul-betul 100?", en: "Check: is your new denominator exactly 100?" },
     ],
     workedExample: {
       problem: "3/4 = ?%",
@@ -2345,10 +2446,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "fraction_percentage_conversion_error", description: { ms: "Murid guna pengangka terus sebagai peratus, mengabaikan penyebut.", en: "The student uses the numerator directly as the percentage, ignoring the denominator." } },
+      { mistakeType: "wrong_scale_factor", description: { ms: "Murid guna faktor skala yang salah untuk menukar penyebut kepada 100.", en: "The student uses the wrong scale factor to turn the denominator into 100." } },
+      { mistakeType: "scaled_numerator_only", description: { ms: "Murid darab pengangka dengan faktor tetapi lupa penyebut juga perlu diskalakan (walaupun ia menjadi 100 secara automatik apabila betul).", en: "The student multiplies the numerator by the factor but loses track of why the denominator needed scaling too." } },
+      { mistakeType: "arithmetic_error_in_scaling", description: { ms: "Murid guna faktor skala yang betul tetapi tersilap kira semasa mendarab.", en: "The student uses the correct scale factor but makes an arithmetic slip while multiplying." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "fractions_percentage_convert", config: { denominators: [2, 4, 5, 10, 20, 25, 50] } },
       { type: "fill", difficulty: 3, generatorKey: "fractions_percentage_convert", config: { denominators: [4, 5, 10, 20, 25] } },
+      { type: "word_problem", difficulty: 2, generatorKey: "fractions_percentage_convert", config: { denominators: [2, 4, 5, 10, 20], type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "fractions_percentage_convert", config: { denominators: [2, 4, 5, 10, 20, 25, 50], errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_percentage_convert", config: { denominators: [2, 4, 5, 10, 20, 25, 50], reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000054": {
@@ -2399,10 +2506,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Perpuluhan ke peratus: anjak titik perpuluhan 2 tempat ke KANAN.", en: "Decimal to percentage: shift the decimal point 2 places RIGHT." },
       { ms: "Peratus ke perpuluhan: anjak titik perpuluhan 2 tempat ke KIRI.", en: "Percentage to decimal: shift the decimal point 2 places LEFT." },
+      {
+        ms: "JANGAN buat ini: 0.85 ditukar kepada peratus dengan anjak 1 tempat sahaja dan mendapat 8.5%. SALAH — anda MESTI anjak 2 tempat (darab dengan 100). Jawapan yang betul ialah 85%.",
+        en: "DON'T do this: 0.85 converted to a percentage by shifting only 1 place and getting 8.5%. WRONG — you MUST shift 2 places (multiply by 100). The correct answer is 85%.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti arah penukaran (perpuluhan ke peratus, atau sebaliknya).", en: "Identify the conversion direction (decimal to percentage, or the reverse)." },
       { ms: "Darab dengan 100 (ke peratus) atau bahagi dengan 100 (ke perpuluhan).", en: "Multiply by 100 (to percentage) or divide by 100 (to decimal)." },
+      { ms: "Semak: adakah anda anjak titik perpuluhan tepat 2 tempat?", en: "Check: did you shift the decimal point exactly 2 places?" },
     ],
     workedExample: {
       problem: "0.85 = ?%",
@@ -2414,10 +2526,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "decimal_percentage_scale_error", description: { ms: "Murid anjak titik perpuluhan ke arah yang salah, atau salah bilangan tempat.", en: "The student shifts the decimal point in the wrong direction, or by the wrong number of places." } },
+      { mistakeType: "shifted_one_place_only", description: { ms: "Murid anjak titik perpuluhan 1 tempat sahaja berbanding 2 tempat (darab/bahagi dengan 10 bukan 100).", en: "The student shifts the decimal point only 1 place instead of 2 (multiplying/dividing by 10 instead of 100)." } },
+      { mistakeType: "confused_direction", description: { ms: "Murid keliru arah penukaran — anjak ke kanan apabila patut ke kiri (atau sebaliknya).", en: "The student confuses the conversion direction — shifting right when they should shift left (or vice versa)." } },
+      { mistakeType: "misplaced_decimal_point", description: { ms: "Murid guna faktor 100 yang betul tetapi letakkan titik perpuluhan pada kedudukan yang salah dalam jawapan akhir.", en: "The student uses the correct factor of 100 but places the decimal point in the wrong position in the final answer." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "decimal_percentage_convert", config: { maxWhole: 0 } },
       { type: "fill", difficulty: 3, generatorKey: "decimal_percentage_convert", config: { maxWhole: 1 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "decimal_percentage_convert", config: { maxWhole: 0, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "decimal_percentage_convert", config: { maxWhole: 1, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "decimal_percentage_convert", config: { maxWhole: 0, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000056": {
@@ -2479,11 +2597,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Tukar nombor bercampur kepada pecahan tak wajar dahulu — jangan bahagi bahagian pecahan sahaja.", en: "Convert the mixed number to an improper fraction first — don't divide only the fraction part." },
       { ms: "Selepas tukar, gunakan peraturan biasa: (a/b) ÷ c = a/(b × c).", en: "After converting, use the regular rule: (a/b) ÷ c = a/(b × c)." },
+      {
+        ms: "JANGAN buat ini: 2 1/2 ÷ 5 dikira sebagai 1/(2×5) = 1/10 (hanya bahagikan bahagian pecahan, terlepas pandang nombor bulat 2). SALAH — tukar 2 1/2 kepada 5/2 dahulu, jadi jawapan yang betul ialah 5/(2×5) = 1/2.",
+        en: "DON'T do this: 2 1/2 ÷ 5 calculated as 1/(2×5) = 1/10 (dividing only the fraction part, ignoring the whole number 2). WRONG — convert 2 1/2 to 5/2 first, so the correct answer is 5/(2×5) = 1/2.",
+      },
     ],
     howTo: [
       { ms: "Tukar nombor bercampur kepada pecahan tak wajar: (bulat × penyebut + pengangka)/penyebut.", en: "Convert the mixed number to an improper fraction: (whole × denominator + numerator)/denominator." },
       { ms: "Darabkan penyebut dengan nombor bulat pembahagi.", en: "Multiply the denominator by the whole-number divisor." },
       { ms: "Permudahkan jawapan jika boleh.", en: "Simplify the answer if possible." },
+      { ms: "Semak: adakah anda tukar kepada pecahan tak wajar SEBELUM membahagi?", en: "Check: did you convert to an improper fraction BEFORE dividing?" },
     ],
     workedExample: {
       problem: "2 1/2 ÷ 5",
@@ -2496,10 +2619,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "ignored_whole_number_part", description: { ms: "Murid tidak tukar kepada pecahan tak wajar, hanya membahagikan bahagian pecahan sahaja.", en: "The student doesn't convert to an improper fraction, only dividing the fraction part." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid darab berbanding membahagikan.", en: "The student multiplies instead of dividing." } },
+      { mistakeType: "forgot_to_simplify", description: { ms: "Murid dapat jawapan yang betul tetapi lupa permudahkan pecahan itu.", en: "The student gets the correct answer but forgets to simplify the fraction." } },
+      { mistakeType: "arithmetic_error_in_conversion", description: { ms: "Murid tukar kepada pecahan tak wajar dengan salah (cth. darab atau tambah nombor yang salah).", en: "The student converts to an improper fraction incorrectly (e.g. multiplying or adding the wrong numbers)." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4, 5, 6] } },
-      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4] } },
+      { type: "fill", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4, 5, 6] } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4], type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4, 5, 6], errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4], reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000058": {
@@ -2514,11 +2643,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Faktor skala = kuantiti diketahui ÷ nombor nisbah yang sepadan.", en: "Scale factor = known quantity ÷ the matching ratio number." },
       { ms: "Darabkan nombor nisbah yang satu lagi dengan faktor skala yang sama.", en: "Multiply the other ratio number by that same scale factor." },
+      {
+        ms: "JANGAN buat ini: nisbah 2:3, terdapat 8 ekor kucing, dikira sebagai 8 + (3-2) = 9 ekor anjing. SALAH — kadaran bukan tambah beza, ia PENSKALAAN. Faktor skala ialah 8÷2=4, jadi anjing = 3×4 = 12.",
+        en: "DON'T do this: ratio 2:3, 8 cats, calculated as 8 + (3-2) = 9 dogs. WRONG — proportion isn't adding the difference, it's SCALING. The scale factor is 8÷2=4, so dogs = 3×4 = 12.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti nombor nisbah yang sepadan dengan kuantiti yang diketahui.", en: "Identify which ratio number corresponds to the known quantity." },
       { ms: "Cari faktor skala: kuantiti diketahui ÷ nombor nisbah itu.", en: "Find the scale factor: known quantity ÷ that ratio number." },
       { ms: "Darabkan nombor nisbah yang satu lagi dengan faktor skala.", en: "Multiply the other ratio number by the scale factor." },
+      { ms: "Semak: adakah nisbah jawapan anda kepada kuantiti yang diketahui SAMA dengan nisbah asal?", en: "Check: is the ratio of your answer to the known quantity the SAME as the original ratio?" },
     ],
     workedExample: {
       problem: "Nisbah 2:3, kucing=8 ekor. Berapa anjing?",
@@ -2530,10 +2664,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "added_instead_of_scaled", description: { ms: "Murid menambah beza antara nombor nisbah berbanding mencari faktor skala.", en: "The student adds the difference between the ratio numbers instead of finding the scale factor." } },
+      { mistakeType: "used_wrong_ratio_number", description: { ms: "Murid guna nombor nisbah yang salah sebagai faktor skala, mengabaikan kuantiti mana yang sepadan dengan yang mana.", en: "The student uses the wrong ratio number as the scale factor, mixing up which quantity corresponds to which." } },
+      { mistakeType: "swapped_ratio_order", description: { ms: "Murid tertukar susunan nisbah (cth. anggap 2:3 sebagai anjing:kucing berbanding kucing:anjing).", en: "The student swaps the ratio order (e.g. treats 2:3 as dogs:cats instead of cats:dogs)." } },
+      { mistakeType: "arithmetic_error_in_scaling", description: { ms: "Murid kenal pasti faktor skala dengan betul tetapi tersilap kira semasa mendarab.", en: "The student correctly identifies the scale factor but makes an arithmetic slip while multiplying." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "proportion", config: { maxScale: 6 } },
-      { type: "word_problem", difficulty: 3, generatorKey: "proportion", config: { maxScale: 5 } },
+      { type: "fill", difficulty: 3, generatorKey: "proportion", config: { maxScale: 6 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "proportion", config: { maxScale: 5, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "proportion", config: { maxScale: 6, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "proportion", config: { maxScale: 5, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000059": {
@@ -2674,11 +2814,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Peraturan: (a/b) ÷ (c/d) = (a/b) × (d/c).", en: "The rule: (a/b) ÷ (c/d) = (a/b) × (d/c)." },
       { ms: "Selepas terbalik, darabkan pengangka dengan pengangka, dan penyebut dengan penyebut.", en: "After flipping, multiply numerator by numerator, and denominator by denominator." },
+      {
+        ms: "JANGAN buat ini: 3/4 ÷ 1/8 dikira sebagai 3/4 × 1/8 = 3/32 (darab terus tanpa terbalikkan pecahan kedua). SALAH — anda MESTI terbalikkan 1/8 kepada 8/1 dahulu. Jawapan yang betul ialah 3/4 × 8/1 = 6.",
+        en: "DON'T do this: 3/4 ÷ 1/8 calculated as 3/4 × 1/8 = 3/32 (multiplying straight across without flipping the second fraction). WRONG — you MUST flip 1/8 to 8/1 first. The correct answer is 3/4 × 8/1 = 6.",
+      },
     ],
     howTo: [
       { ms: "Terbalikkan pecahan kedua (tukar pengangka dan penyebut).", en: "Flip the second fraction (swap numerator and denominator)." },
       { ms: "Tukar tanda bahagi kepada darab.", en: "Change the division sign to multiplication." },
       { ms: "Darabkan kedua-dua pecahan, kemudian permudahkan.", en: "Multiply the two fractions, then simplify." },
+      { ms: "Semak: adakah anda terbalikkan pecahan KEDUA sahaja, bukan yang pertama?", en: "Check: did you flip only the SECOND fraction, not the first?" },
     ],
     workedExample: {
       problem: "3/4 ÷ 1/8",
@@ -2691,10 +2836,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "forgot_to_flip", description: { ms: "Murid darab terus tanpa terbalikkan pecahan kedua.", en: "The student multiplies straight across without flipping the second fraction." } },
+      { mistakeType: "flipped_wrong_fraction", description: { ms: "Murid terbalikkan pecahan PERTAMA berbanding yang kedua.", en: "The student flips the FIRST fraction instead of the second one." } },
+      { mistakeType: "forgot_to_simplify", description: { ms: "Murid dapat jawapan yang betul tetapi lupa permudahkan pecahan itu.", en: "The student gets the correct answer but forgets to simplify the fraction." } },
+      { mistakeType: "arithmetic_error_in_multiplication", description: { ms: "Murid terbalikkan dengan betul tetapi tersilap kira semasa mendarab.", en: "The student flips correctly but makes an arithmetic slip while multiplying." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4, 5, 6] } },
-      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4] } },
+      { type: "fill", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4, 5, 6] } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4], type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4, 5, 6], errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4], reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000063": {
@@ -2709,11 +2860,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Tukar nombor bercampur kepada pecahan tak wajar dahulu — ini langkah yang paling mudah terlepas pandang.", en: "Convert the mixed number to an improper fraction first — this is the step most often skipped." },
       { ms: "Selepas tukar, gunakan peraturan biasa: terbalik dan darab.", en: "After converting, use the usual rule: flip and multiply." },
+      {
+        ms: "JANGAN buat ini: 1 1/2 ÷ 1/4 dikira dengan terbalik dan darab bahagian pecahan sahaja (1/2 × 4/1 = 2), lupa nombor bulat 1. SALAH — tukar 1 1/2 kepada 3/2 dahulu. Jawapan yang betul ialah 3/2 × 4/1 = 6.",
+        en: "DON'T do this: 1 1/2 ÷ 1/4 calculated by flipping and multiplying only the fraction part (1/2 × 4/1 = 2), forgetting the whole number 1. WRONG — convert 1 1/2 to 3/2 first. The correct answer is 3/2 × 4/1 = 6.",
+      },
     ],
     howTo: [
       { ms: "Tukar nombor bercampur kepada pecahan tak wajar.", en: "Convert the mixed number to an improper fraction." },
       { ms: "Terbalikkan pecahan kedua dan tukar bahagi kepada darab.", en: "Flip the second fraction and change division to multiplication." },
       { ms: "Darabkan dan permudahkan.", en: "Multiply and simplify." },
+      { ms: "Semak: adakah anda tukar kepada pecahan tak wajar SEBELUM terbalik dan darab?", en: "Check: did you convert to an improper fraction BEFORE flipping and multiplying?" },
     ],
     workedExample: {
       problem: "1 1/2 ÷ 1/4",
@@ -2726,10 +2882,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "fraction_calculation_error", description: { ms: "Murid tidak tukar kepada pecahan tak wajar sebelum terbalik dan darab.", en: "The student doesn't convert to an improper fraction before flipping and multiplying." } },
+      { mistakeType: "forgot_to_flip", description: { ms: "Murid tukar kepada pecahan tak wajar dengan betul tetapi lupa terbalikkan pecahan kedua.", en: "The student correctly converts to an improper fraction but forgets to flip the second fraction." } },
+      { mistakeType: "forgot_to_simplify", description: { ms: "Murid dapat jawapan yang betul tetapi lupa permudahkan pecahan itu.", en: "The student gets the correct answer but forgets to simplify the fraction." } },
+      { mistakeType: "arithmetic_error_in_conversion", description: { ms: "Murid tukar kepada pecahan tak wajar dengan salah (cth. darab atau tambah nombor yang salah).", en: "The student converts to an improper fraction incorrectly (e.g. multiplying or adding the wrong numbers)." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4, 5, 6] } },
-      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4] } },
+      { type: "fill", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4, 5, 6] } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4], type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4, 5, 6], errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4], reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000064": {
@@ -2780,10 +2942,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Cari nilai koordinat yang SAMA — itu petunjuk sama ada jarak itu mendatar atau menegak.", en: "Find the coordinate value that's the SAME — that tells you whether the distance is horizontal or vertical." },
       { ms: "Jarak = beza (tolak) antara nilai koordinat yang BERBEZA.", en: "Distance = the difference (subtraction) between the coordinate values that DIFFER." },
+      {
+        ms: "JANGAN buat ini: jarak antara (2, 3) dan (2, 9) dikira sebagai 3 + 9 = 12. SALAH — jarak ialah BEZA, bukan jumlah. Jawapan yang betul ialah 9 − 3 = 6.",
+        en: "DON'T do this: the distance between (2, 3) and (2, 9) calculated as 3 + 9 = 12. WRONG — distance is the DIFFERENCE, not the sum. The correct answer is 9 − 3 = 6.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti sama ada nilai-x atau nilai-y adalah sama untuk kedua-dua titik.", en: "Identify whether the x-values or y-values are the same for both points." },
       { ms: "Tolak nilai koordinat yang berbeza untuk dapatkan jarak.", en: "Subtract the differing coordinate values to get the distance." },
+      { ms: "Semak: adakah jawapan anda beza (tolak), bukan jumlah (tambah)?", en: "Check: is your answer a difference (subtraction), not a sum (addition)?" },
     ],
     workedExample: {
       problem: "A(2, 3) dan B(2, 9)",
@@ -2795,10 +2962,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "added_instead_of_subtracted", description: { ms: "Murid menambah dua nilai koordinat berbanding mencari beza.", en: "The student adds the two coordinate values instead of finding the difference." } },
+      { mistakeType: "compared_wrong_values", description: { ms: "Murid tolak nilai koordinat yang SAMA berbanding yang berbeza.", en: "The student subtracts the coordinate values that are the SAME instead of the ones that differ." } },
+      { mistakeType: "wrong_axis_confusion", description: { ms: "Murid keliru sama ada jarak itu mendatar (nilai-y sama) atau menegak (nilai-x sama).", en: "The student confuses whether the distance is horizontal (same y-value) or vertical (same x-value)." } },
+      { mistakeType: "arithmetic_error_in_subtraction", description: { ms: "Murid kenal pasti nilai yang betul untuk ditolak tetapi tersilap kira.", en: "The student identifies the correct values to subtract but makes an arithmetic slip." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "coordinate_distance", config: { maxCoord: 12 } },
       { type: "fill", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 15 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "coordinate_distance", config: { maxCoord: 12, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 12, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 12, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000066": {
@@ -2814,11 +2987,13 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Mod = nilai yang MUNCUL PALING KERAP.", en: "Mode = the value that APPEARS MOST OFTEN." },
       { ms: "Julat = nilai TERBESAR tolak nilai TERKECIL.", en: "Range = the LARGEST value minus the SMALLEST value." },
       { ms: "Median: susun data mengikut turutan dahulu, kemudian cari nilai TENGAH.", en: "Median: sort the data in order first, then find the MIDDLE value." },
+      { ms: "Min: tambah SEMUA nilai, kemudian bahagikan dengan BILANGAN nilai.", en: "Mean: add ALL the values, then divide by the NUMBER of values." },
     ],
     howTo: [
       { ms: "Kenal pasti yang mana satu diminta: mod, julat, median, atau min.", en: "Identify which one is being asked for: mode, range, median, or mean." },
       { ms: "Susun data mengikut turutan jika perlu (untuk median atau julat).", en: "Sort the data in order if needed (for median or range)." },
       { ms: "Kira ikut definisi yang betul untuk statistik itu.", en: "Calculate using the correct definition for that statistic." },
+      { ms: "Semak: adakah jawapan anda sepadan dengan statistik yang DITANYA, bukan yang lain?", en: "Check: does your answer match the statistic that was ASKED for, not a different one?" },
     ],
     workedExample: {
       problem: "12, 15, 12, 18, 20 — cari mod",
@@ -2830,10 +3005,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "confused_statistic_type", description: { ms: "Murid keliru antara mod, julat, median, dan min.", en: "The student confuses mode, range, median, and mean." } },
+      { mistakeType: "forgot_to_sort", description: { ms: "Murid cari median tanpa menyusun data mengikut turutan dahulu.", en: "The student finds the median without sorting the data in order first." } },
+      { mistakeType: "arithmetic_error_in_mean", description: { ms: "Murid tambah nilai dengan betul tetapi bahagi dengan bilangan yang salah, atau tersilap kira jumlah.", en: "The student adds the values correctly but divides by the wrong count, or makes a sum error." } },
+      { mistakeType: "mode_with_no_repeat", description: { ms: "Murid anggap set data itu ada mod walaupun tiada nilai yang berulang, atau salah kenal pasti nilai yang berulang.", en: "The student assumes a data set has a mode even when no value repeats, or misidentifies the repeated value." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "mode_range_median_mean", config: { maxValue: 20 } },
       { type: "fill", difficulty: 3, generatorKey: "mode_range_median_mean", config: { maxValue: 30 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "mode_range_median_mean", config: { maxValue: 20, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "mode_range_median_mean", config: { maxValue: 20, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mode_range_median_mean", config: { maxValue: 20, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000067": {
@@ -2928,10 +3109,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Baca soalan dengan teliti — kenal pasti kuantiti MANA yang sebenarnya ditanya (panjang atau berat).", en: "Read the question carefully — identify which quantity is actually being asked for (length or weight)." },
       { ms: "Selesaikan panjang dan jisim secara berasingan — jangan campurkan kedua-duanya.", en: "Solve length and mass separately — don't mix the two together." },
+      {
+        ms: "JANGAN buat ini: soalan tanya berat setiap bahagian, tetapi anda kira dan jawab panjang setiap bahagian. SALAH — sentiasa semak semula kuantiti yang DITANYA sebelum menulis jawapan akhir.",
+        en: "DON'T do this: the question asks for the weight of each piece, but you calculate and answer with the length of each piece instead. WRONG — always double-check which quantity was ASKED before writing your final answer.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti kuantiti yang ditanya: panjang atau berat.", en: "Identify the quantity being asked for: length or weight." },
       { ms: "Bahagikan jumlah kuantiti itu (panjang ATAU berat) dengan bilangan bahagian.", en: "Divide that total quantity (length OR weight) by the number of pieces." },
+      { ms: "Semak semula: adakah jawapan anda untuk kuantiti yang betul-betul ditanya?", en: "Double-check: is your answer for the quantity that was actually asked?" },
     ],
     workedExample: {
       problem: "Tali 3 m, 1.2 kg, dipotong kepada 4 bahagian. Panjang setiap bahagian?",
@@ -2943,10 +3129,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "mixed_up_measurement_quantity", description: { ms: "Murid jawab kuantiti yang salah (berat berbanding panjang, atau sebaliknya).", en: "The student answers the wrong quantity (weight instead of length, or vice versa)." } },
+      { mistakeType: "gave_total_instead_of_per_piece", description: { ms: "Murid beri jumlah keseluruhan, lupa bahagikan dengan bilangan bahagian.", en: "The student gives the overall total, forgetting to divide by the number of pieces." } },
+      { mistakeType: "forgot_to_divide_back", description: { ms: "Dalam soalan berbalik, murid beri nilai setiap bahagian semula, lupa darab untuk cari jumlah asal.", en: "In reverse-style questions, the student gives the per-piece value again, forgetting to multiply to find the original total." } },
+      { mistakeType: "unit_conversion_error", description: { ms: "Murid tersilap semasa menukar unit (cth. m ke cm atau kg ke g) sebelum membahagi.", en: "The student makes a unit-conversion error (e.g. m to cm or kg to g) before dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 6 } },
+      { type: "fill", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 6 } },
       { type: "word_problem", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 4 } },
+      { type: "mcq", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 6, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 4, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000070": {
@@ -2961,10 +3153,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Baca soalan dengan teliti — kenal pasti kuantiti MANA yang sebenarnya ditanya (panjang atau isipadu).", en: "Read the question carefully — identify which quantity is actually being asked for (length or volume)." },
       { ms: "Selesaikan panjang dan isipadu secara berasingan — jangan campurkan kedua-duanya.", en: "Solve length and volume separately — don't mix the two together." },
+      {
+        ms: "JANGAN buat ini: soalan tanya isipadu setiap bahagian, tetapi anda kira dan jawab panjang setiap bahagian. SALAH — sentiasa semak semula kuantiti yang DITANYA sebelum menulis jawapan akhir.",
+        en: "DON'T do this: the question asks for the volume of each section, but you calculate and answer with the length of each section instead. WRONG — always double-check which quantity was ASKED before writing your final answer.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti kuantiti yang ditanya: panjang atau isipadu.", en: "Identify the quantity being asked for: length or volume." },
       { ms: "Bahagikan jumlah kuantiti itu (panjang ATAU isipadu) dengan bilangan bahagian.", en: "Divide that total quantity (length OR volume) by the number of sections." },
+      { ms: "Semak semula: adakah jawapan anda untuk kuantiti yang betul-betul ditanya?", en: "Double-check: is your answer for the quantity that was actually asked?" },
     ],
     workedExample: {
       problem: "Hos 6 m, baja 1 L 200 ml, dibahagikan kepada 3 bahagian. Panjang setiap bahagian?",
@@ -2976,10 +3173,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "mixed_up_measurement_quantity", description: { ms: "Murid jawab kuantiti yang salah (isipadu berbanding panjang, atau sebaliknya).", en: "The student answers the wrong quantity (volume instead of length, or vice versa)." } },
+      { mistakeType: "gave_total_instead_of_per_section", description: { ms: "Murid beri jumlah keseluruhan, lupa bahagikan dengan bilangan bahagian.", en: "The student gives the overall total, forgetting to divide by the number of sections." } },
+      { mistakeType: "forgot_to_divide_back", description: { ms: "Dalam soalan berbalik, murid beri nilai setiap bahagian semula, lupa darab untuk cari jumlah asal.", en: "In reverse-style questions, the student gives the per-section value again, forgetting to multiply to find the original total." } },
+      { mistakeType: "unit_conversion_error", description: { ms: "Murid tersilap semasa menukar unit (cth. m ke cm atau L ke ml) sebelum membahagi.", en: "The student makes a unit-conversion error (e.g. m to cm or L to ml) before dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 6 } },
+      { type: "fill", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 6 } },
       { type: "word_problem", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 4 } },
+      { type: "mcq", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 6, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 4, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000071": {
@@ -2994,10 +3197,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Baca soalan dengan teliti — kenal pasti kuantiti MANA yang sebenarnya ditanya (berat tepung atau isipadu susu).", en: "Read the question carefully — identify which quantity is actually being asked for (mass of flour or volume of milk)." },
       { ms: "Selesaikan jisim dan isipadu secara berasingan — jangan campurkan kedua-duanya.", en: "Solve mass and volume separately — don't mix the two together." },
+      {
+        ms: "JANGAN buat ini: soalan tanya isipadu susu setiap bahagian, tetapi anda kira dan jawab berat tepung. SALAH — sentiasa semak semula kuantiti yang DITANYA sebelum menulis jawapan akhir.",
+        en: "DON'T do this: the question asks for the volume of milk per batch, but you calculate and answer with the mass of flour instead. WRONG — always double-check which quantity was ASKED before writing your final answer.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti kuantiti yang ditanya: berat tepung atau isipadu susu.", en: "Identify the quantity being asked for: mass of flour or volume of milk." },
       { ms: "Bahagikan jumlah kuantiti itu dengan bilangan bahagian.", en: "Divide that total quantity by the number of batches." },
+      { ms: "Semak semula: adakah jawapan anda untuk kuantiti yang betul-betul ditanya?", en: "Double-check: is your answer for the quantity that was actually asked?" },
     ],
     workedExample: {
       problem: "Tepung 900 g, susu 1 L 500 ml, dibahagikan kepada 3 bahagian. Berat tepung setiap bahagian?",
@@ -3009,10 +3217,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "mixed_up_measurement_quantity", description: { ms: "Murid jawab kuantiti yang salah (isipadu susu berbanding berat tepung, atau sebaliknya).", en: "The student answers the wrong quantity (volume of milk instead of mass of flour, or vice versa)." } },
+      { mistakeType: "gave_total_instead_of_per_batch", description: { ms: "Murid beri jumlah keseluruhan, lupa bahagikan dengan bilangan bahagian.", en: "The student gives the overall total, forgetting to divide by the number of batches." } },
+      { mistakeType: "forgot_to_multiply_back", description: { ms: "Dalam soalan berbalik, murid beri nilai setiap bahagian semula, lupa darab untuk cari jumlah asal.", en: "In reverse-style questions, the student gives the per-batch value again, forgetting to multiply to find the original total." } },
+      { mistakeType: "unit_conversion_error", description: { ms: "Murid tersilap semasa menukar unit (cth. kg ke g atau L ke ml) sebelum membahagi.", en: "The student makes a unit-conversion error (e.g. kg to g or L to ml) before dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 6 } },
+      { type: "fill", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 6 } },
       { type: "word_problem", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 4 } },
+      { type: "mcq", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 6, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 4, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000072": {
@@ -3113,9 +3327,15 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "prime_composite_misconception", description: { ms: "Murid anggap 1 ialah nombor perdana, atau lupa semak semua faktor yang mungkin sebelum membuat kesimpulan.", en: "The student assumes 1 is prime, or forgets to check all possible factors before concluding." } },
+      { mistakeType: "incomplete_factor_check", description: { ms: "Murid berhenti menyemak faktor terlalu awal dan terlepas faktor yang membuktikan nombor itu gubahan.", en: "The student stops checking factors too early and misses a factor that would prove the number is composite." } },
+      { mistakeType: "confused_even_and_composite", description: { ms: "Murid anggap semua nombor genap adalah gubahan, terlepas pandang bahawa 2 itu sendiri adalah perdana.", en: "The student assumes all even numbers are composite, overlooking that 2 itself is prime." } },
+      { mistakeType: "assumed_large_numbers_are_composite", description: { ms: "Murid anggap nombor yang besar semestinya gubahan tanpa menyemak faktornya, terlepas pandang nombor perdana yang besar seperti 97.", en: "The student assumes a large number must be composite without checking its factors, overlooking large primes like 97." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "prime_composite", config: {} },
+      { type: "mcq", difficulty: 2, generatorKey: "prime_composite", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "prime_composite", config: { type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "prime_composite", config: { errorSpotting: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000075": {
@@ -3382,11 +3602,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Baca ATAS PANJANG (x) dahulu, kemudian NAIK (y). Susunan itu penting!", en: "Read ACROSS (x) first, then UP (y). The order matters!" },
       { ms: "Mulakan mengira daripada asalan (0, 0), bukan daripada tepi grid.", en: "Start counting from the origin (0, 0), not from the edge of the grid." },
+      {
+        ms: "JANGAN buat ini: titik yang 3 petak ke kanan dan 2 petak ke atas ditulis sebagai (2, 3). SALAH — nombor ATAS PANJANG (x) MESTI ditulis dahulu. Jawapan yang betul ialah (3, 2).",
+        en: "DON'T do this: a point that is 3 squares right and 2 squares up written as (2, 3). WRONG — the ACROSS number (x) MUST be written first. The correct answer is (3, 2).",
+      },
     ],
     howTo: [
       { ms: "Kira berapa petak ke kanan daripada asalan — itulah nombor x.", en: "Count how many squares right from the origin — that's the x number." },
       { ms: "Kira berapa petak ke atas daripada asalan — itulah nombor y.", en: "Count how many squares up from the origin — that's the y number." },
       { ms: "Tuliskan sebagai (x, y).", en: "Write it as (x, y)." },
+      { ms: "Semak: adakah nombor pertama yang anda tulis untuk pergerakan ATAS PANJANG (kanan), bukan NAIK (atas)?", en: "Check: is the first number you wrote for the ACROSS (right) movement, not the UP movement?" },
     ],
     workedExample: {
       problem: "Sebuah titik terletak 3 petak ke kanan dan 2 petak ke atas daripada asalan.",
@@ -3398,10 +3623,15 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "swapped_x_and_y", description: { ms: "Murid baca NAIK (y) dahulu, kemudian ATAS PANJANG (x), menyebabkan koordinat tertukar.", en: "The student reads UP (y) first, then ACROSS (x), swapping the coordinates." } },
+      { mistakeType: "miscounted_squares", description: { ms: "Murid tersilap kira bilangan petak, biasanya terlepas atau kira dua kali garisan grid.", en: "The student miscounts the number of squares, usually skipping or double-counting a grid line." } },
+      { mistakeType: "started_from_wrong_point", description: { ms: "Murid mula mengira daripada tepi grid atau titik lain, bukan daripada asalan (0, 0).", en: "The student starts counting from the edge of the grid or another point, not from the origin (0, 0)." } },
+      { mistakeType: "confused_axis_direction", description: { ms: "Murid keliru arah paksi-x (mendatar) dengan paksi-y (menegak).", en: "The student confuses the direction of the x-axis (horizontal) with the y-axis (vertical)." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 6 } },
       { type: "fill", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 6 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 6, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "coordinates", config: { gridSize: 6, errorSpotting: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000083": {
@@ -3462,10 +3692,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "SENTIASA cari harga SATU item dahulu sebelum mengira kuantiti lain.", en: "ALWAYS find the price of ONE item first before working out a different quantity." },
       { ms: "Jangan terus darabkan harga kumpulan dengan kuantiti baharu — itu akan memberi jawapan yang terlalu besar.", en: "Don't just multiply the group price by the new quantity directly — that gives an answer that's far too big." },
+      {
+        ms: "JANGAN buat ini: 2 pensel = RM4, berapa harga 5 pensel? Dikira sebagai RM4 × 5 = RM20. SALAH — RM4 itu harga UNTUK 2 batang, bukan untuk SATU batang. Cari harga satu dahulu: RM4 ÷ 2 = RM2, jadi 5 batang = RM2 × 5 = RM10.",
+        en: "DON'T do this: 2 pencils = RM4, what's the price of 5 pencils? Calculated as RM4 × 5 = RM20. WRONG — RM4 is the price FOR 2 pencils, not for ONE. Find the one-item price first: RM4 ÷ 2 = RM2, so 5 pencils = RM2 × 5 = RM10.",
+      },
     ],
     howTo: [
       { ms: "Bahagikan harga kumpulan dengan kuantiti asal untuk cari harga SATU item.", en: "Divide the group price by the original quantity to find the price of ONE item." },
       { ms: "Darabkan harga satu item itu dengan kuantiti baharu yang ditanya.", en: "Multiply that one-item price by the new quantity being asked about." },
+      { ms: "Semak: adakah anda cari harga SATU item dahulu, sebelum darab?", en: "Check: did you find the price of ONE item first, before multiplying?" },
     ],
     workedExample: {
       problem: "2 batang pensel berharga RM4. Berapakah harga 5 batang pensel?",
@@ -3477,10 +3712,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "skipped_unit_step", description: { ms: "Murid terus darabkan harga kumpulan asal dengan kuantiti baharu, tanpa cari harga satu item dahulu.", en: "The student directly multiplies the original group price by the new quantity, without finding the one-item price first." } },
+      { mistakeType: "added_instead_of_scaled", description: { ms: "Murid tambah beza kuantiti kepada harga kumpulan berbanding mengira secara berkadar.", en: "The student adds the quantity difference to the group price instead of scaling proportionally." } },
+      { mistakeType: "divided_by_wrong_quantity", description: { ms: "Murid bahagikan harga kumpulan dengan kuantiti BAHARU berbanding kuantiti ASAL semasa cari harga satu item.", en: "The student divides the group price by the NEW quantity instead of the ORIGINAL quantity when finding the one-item price." } },
+      { mistakeType: "arithmetic_error_in_step", description: { ms: "Murid ikut kaedah unit yang betul tetapi tersilap kira semasa membahagi atau mendarab.", en: "The student follows the correct unitary method but makes an arithmetic slip while dividing or multiplying." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "unitary_proportion", config: {} },
-      { type: "word_problem", difficulty: 2, generatorKey: "unitary_proportion", config: {} },
+      { type: "fill", difficulty: 2, generatorKey: "unitary_proportion", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "unitary_proportion", config: { type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "unitary_proportion", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unitary_proportion", config: { reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000085": {

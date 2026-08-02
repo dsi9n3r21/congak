@@ -299,19 +299,197 @@ it and the smoke test caught it immediately (6 failures in the first
 1000 generations). Fixed by adding the same padding loop. 20 topics
 retrofitted total across 8 batches.
 
+**Batch 9 done:** `...043` (Tambah & Tolak Masa), `...044` (Tambah & Tolak
+Panjang), `...045` (Tukar Unit Panjang). This batch touched `unit_convert`,
+a generator shared across many topics (length/mass/volume/time-unit
+conversions all reuse it via a `pairs` config) — retrofitting it once
+benefits `...046`/`...047` (kg/g, l/ml already covered by its new
+`unitContext` lookup) for free when those get picked up. Two more
+instances of last round's exact bug class: `time_add_subtract`'s and
+`length_add_subtract`'s new errorSpotting branches both returned only 2
+options (same `shuffleOptions(correct, [wrong])`-with-no-padding pattern
+as `mixed_operations` in batch 8) — the smoke test caught both immediately
+(6 failures each in the first 1000 generations). This is now the third
+time this exact bug has shown up in a freshly-written errorSpotting
+branch; **worth double-checking padding explicitly in every new
+errorSpotting/reverseProblem branch going forward, not just relying on
+the smoke test to catch it retroactively.** 23 topics retrofitted total
+across 9 batches.
+
+**Batch 10 done:** `...046` (Tukar Unit Jisim), `...047` (Tukar Unit
+Isipadu Cecair). As predicted, pure `topics.ts` content work — both
+already used `unit_convert` with `kg/g`/`l/ml` pairs, which the batch 9
+retrofit of that generator already covers via `unitContext`. No generator
+changes needed; smoke-tested the exact `factor: 1000` configs anyway
+(kg/g and l/ml, all 5 template variants) as a sanity check rather than
+assuming coverage from the broader batch 9 test — all clean, zero new
+bugs. 28 topics retrofitted total across 10 batches.
+
+**Batch 11 done:** `...048` (Tukar Unit Masa), `...049` (Tukar Unit Masa
+Lanjutan) — closes out the unit-conversion cluster (`...043`–`...049`,
+7 topics, batches 9–11). Decided to add real narrative context rather
+than leave the time-unit pairs on the generic fallback: extended
+`unit_convert`'s `unitContext`/`measurePhrase` with a new `"duration"`
+kind ("berlangsung selama" / "lasts") and item nouns for `day/hr`
+(flight), `wk/day` (family holiday), `hr/min` (tuition class), `yr/mth`
+(rental contract) — spot-checked the actual generated sentences ("A
+flight lasts 2 day. How many hr is that?") to confirm the phrasing reads
+naturally before shipping, not just that it type-checked. Deliberately
+left `dec/yr` and `c/dec` on the generic fallback — "a historic building
+lasts 3 century" doesn't fit the same phrasing pattern as the others,
+and forcing an "age" framing into the same template would've read worse
+than the plain fallback sentence. No new bugs this round — the
+padding-loop bug that hit 3 batches running (mixed_operations,
+time_add_subtract, length_add_subtract) never applies to `unit_convert`
+since its errorSpotting/reverseProblem branches always had a full 3+
+option padding loop from the start. 30 topics retrofitted total across
+11 batches.
+
+**Batch 12 done:** `...052` (Peratus Suatu Kuantiti (Asas)), `...053`
+(Tukar Pecahan dan Peratus), `...055` (Tukar Perpuluhan dan Peratus). Not
+one shared generator this time — three separate ones (`percentage_of_quantity`,
+`fractions_percentage_convert`, `decimal_percentage_convert`), each retrofitted
+individually. Found another instance of the "prompt never branches on `type`"
+bug (same class as an earlier round): `percentage_of_quantity`'s word_problem
+config silently rendered the identical bare "Find X% of Y" prompt as mcq —
+fixed with a real rotten-items-in-a-basket word_problem. Also found and fixed
+a smaller correctness gap while retrofitting it: its `type` union was typed
+`"mcq" | "word_problem"`, missing `"fill"`, even though a `fill` template now
+exists for it in `topics.ts` — widened to match the other generators. No
+options-padding bugs this round — all three generators' new errorSpotting/
+reverseProblem branches were written with the padding loop from the start,
+and the smoke test came back clean on the first pass for all 15 variants (3
+topics × 5 templates). 33 topics retrofitted total across 12 batches.
+
+**Batch 13 done:** `...051` (Kebarangkalian), `...074` (Nombor Perdana dan
+Nombor Gubahan). Both are categorical-answer generators (likelihood
+category / prime-composite-neither, not a number) — no `reverseProblem`
+possible for either, same reasoning already established in
+`angles_classify.ts`: added `word_problem` (sweets-jar re-skin for
+likelihood, locker-numbers framing for prime/composite) and
+`errorSpotting` (the single most-documented misconception for each —
+"equally likely without checking counts", "1 is prime") instead. First
+pass only wrote 3 `commonMistakes` each on the assumption that matched
+the categorical-generator precedent — audit still scored them at 3, not
+gold, because the `mistakes>=4` threshold is universal regardless of
+category; confirmed by checking `...015` (angles_classify's topic) has 4
+mistakes too. Added a 4th mistake to each and re-ran the audit to
+confirm score 1. Also caught a missing `pick` import in
+`primeComposite.ts` — `tsc` caught it immediately, fixed before the
+smoke test. 35 topics retrofitted total across 13 batches.
+
+**Batch 14 done:** `...069` (Panjang dan Jisim Bergabung), `...070`
+(Panjang dan Isipadu Bergabung), `...071` (Jisim dan Isipadu Bergabung).
+Wrote `combined_length_mass` in full, then mirrored the exact structure
+to the other two — worked well, all three retrofits were nearly
+mechanical once the first was right. Found two real **pre-existing**
+bugs while retrofitting (not introduced this round, but caught because
+touching the file triggered the mandatory smoke test):
+1. The base generator's `word_problem` type never got `options` at
+   all — the option-building block was gated `if (type === "mcq")` only,
+   so every `word_problem` template for these three topics has been
+   silently rendering with zero answer choices since whenever they were
+   first written. This is now the **third** distinct instance of the
+   "output silently doesn't branch on `type` the way `topics.ts` expects"
+   bug family (earlier ones: `percentage_of_quantity`'s word_problem
+   prompt in batch 12, `mixed_operations` originally). Worth explicitly
+   checking this shape — a `type`-gated block that only fires for one
+   type when `topics.ts` configures several — whenever retrofitting an
+   old, not-yet-audited generator, not just the ones already flagged by
+   the audit script.
+2. All three errorSpotting branches were missing the options-padding
+   loop (the by-now-familiar bug from batches 8–9) — fixed the same way.
+   Widened the base options guard to `type === "mcq" || type ===
+   "word_problem"` and added the padding loop to all three errorSpotting
+   branches; smoke test came back clean after the fix (15/15 variants).
+38 topics retrofitted total across 14 batches.
+
+**Batch 15 done:** `...057` (Bahagi Nombor Bercampur Dengan Nombor Bulat),
+`...062` (Bahagi Pecahan Dengan Pecahan), `...063` (Bahagi Nombor
+Bercampur Dengan Pecahan) — the fraction-division family (three separate
+generators across two files, `fractionsDivide.ts` and
+`fractionsDivideMixed.ts`, not shared code, but structurally similar
+enough that the same word_problem/errorSpotting/reverseProblem shape
+worked for all three). Word problems: flour-bag sharing for
+mixed÷whole, paint-jar "how many bottles fit" for fraction÷fraction,
+ribbon-cutting for mixed÷fraction — all genuine real-world framings of
+what fraction division actually means, not generic restatements.
+reverseProblem for each multiplies back to find the original total
+given the per-unit result — same "reverse of the base division" shape
+used in batch 14. No bugs this round — all three generators were written
+fresh with the padding loop and the `type === "mcq" || type ===
+"word_problem"` options guard from the start, informed directly by the
+two bugs found last round. 41 topics retrofitted total across 15
+batches.
+
+**Batch 16 done:** `...065` (Jarak Antara Dua Koordinat), `...082`
+(Membaca Koordinat) — the coordinates pair. `...065` (`coordinate_distance`)
+is numeric so got a full reverseProblem (given point A, the shared axis,
+and the distance, find point B — constrained so B is further from the
+origin, keeping the answer unambiguous). `...082` (`coordinates`) reads a
+single point off a diagram — deliberately skipped reverseProblem there,
+documented in the generator's own comment: this app's MCQ/text-option
+architecture has no way to offer several diagram images as answer
+choices, so there's no clean numeric "reverse" the way there is for
+`coordinate_distance`, same reasoning as `angles_classify.ts`. Read the
+"Round 17" note first as planned — confirmed `...082`'s Y4 distinctness
+constraint (grid-reading only, no ratio/proportion content) wasn't
+touched by this retrofit. No new bugs this round — both generators
+written with the padding loop and widened `type` guard from the start;
+065's 5 variants and 082's 4 variants (no reverseProblem there) all came
+back clean on the first smoke test pass. 43 topics retrofitted total
+across 16 batches. **Investigated the score-11 anomaly noticed above:**
+it's `...066` (Mod, Julat, Median, dan Min, Y5 statistics) — tips=3,
+mistakes=1, templates=2, so it got a partial pass at some point (same
+shape as `...051`/`...074` in batch 13) but was never finished. Wasn't
+on the "remaining baseline" radar because its score (11) sits just
+above the score-14 baseline tier this round's search was focused on —
+worth occasionally checking for partial-pass stragglers like this, not
+just the literal baseline score.
+
+**Batch 17 done:** `...058` (Perkadaran Untuk Cari Nilai), `...066` (Mod,
+Julat, Median, dan Min), `...084` (Kadaran) — folded the score-11
+straggler in as planned. Two more pre-existing instances of the
+"`word_problem` template configured in `topics.ts` but the generator
+never actually gives it options" bug (now the family's most common
+recurring issue by count): `proportion.ts` gated options `if (type ===
+"mcq")` only, same as `combinedMeasurement.ts` in batch 14; and
+`unitaryProportion.ts` was worse — it ignored `params` entirely and
+hard-coded `type: "mcq"` on every return, so its `word_problem` template
+had *always* rendered as mcq-typed output regardless of what
+`topics.ts` asked for. Both fixed. Kept `...084`'s unitary-method
+framing (price-per-item, never revealing a bare ratio) fully intact
+through every new variant, including a reverseProblem that stays in that
+same framing (given the group price and a total spent, find how many
+items were bought — still requires finding the one-item price first,
+just applied via division instead of the base's multiplication) rather
+than reaching for a generic ratio-style reverse that would have blurred
+the deliberate Y4/Y5 distinction documented in the "Round 17" note
+below. `...066`'s reverseProblem is a genuine "find the missing value
+given the mean" question — a real, common exam format, not an arbitrary
+inversion. 46 topics retrofitted total across 17 batches — the score-14
+baseline tier is down to 5 topics, all confirmed one-offs with no shared
+generators.
+
 **Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
-get the current ranked list — a large tier of topics still sits at the
-original baseline (score 14: 2 tips, 1 mistake, 2 templates), so this is
-several more rounds of work, not close to done. The next weakest cluster
-is unit-conversion-heavy: `...043`–`...049` (Tambah & Tolak Masa, Tambah
-& Tolak Panjang, Tukar Unit Panjang/Jisim/Isipadu Cecair/Masa, Tukar Unit
-Masa Lanjutan) — worth doing as a themed batch since they likely share a
-similar "convert between units, classic mistake = used the wrong
-conversion factor" shape. No DB/UI schema changes needed for any of
-this — `challengeExample` from the original brief was folded into
-`questionTemplates`' `reverseProblem`/`errorSpotting` configs instead of
-a new object field, since that's already how `...085` and every
-retrofitted topic since works and needs no type changes.
+get the current ranked list (46 at gold/score 1, 34 at score 12, 5 still
+at the original baseline score 14: `...059` (`service_tax`), `...064`
+(`time_unit_add_subtract`), `...067` (`credit_vs_cash`), `...075`
+(`regular_polygon_angles`), `...079` (`volume_cuboid`)). No shared
+generators among these — expect individual work, one retrofit each,
+probably fits in a single batch of ~3-5 given how mechanical the pattern
+has become by now (read the generator fully, widen the `type` union if
+needed, add errorSpotting/reverseProblem with the padding loop from the
+start, write 2 more mistakes + 3 more templates in `topics.ts`, smoke
+test, audit, ship). Once these 5 are done, every topic at or below the
+original baseline score will be cleared — worth a full audit re-run at
+that point to confirm the score-12 tier (34 topics) is genuinely next,
+not another undiscovered pocket like `...066` turned out to be. No
+DB/UI schema changes needed for any of this — `challengeExample` from
+the original brief was folded into `questionTemplates`'
+`reverseProblem`/`errorSpotting` configs instead of a new object field,
+since that's already how `...085` and every retrofitted topic since
+works and needs no type changes.
 
 **Round 17 (ids `...082`-`...084`) — Lynda asked directly whether Year 4
 Coordinates/Ratio/Proportion were covered. They weren't, at all** — only
