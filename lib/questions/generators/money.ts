@@ -765,14 +765,89 @@ export function generateDiscount(params: GeneratorParams): GeneratedQuestion {
 }
 
 // Year 6 KSSR "Receipt and Service Tax" — total payable = amount + tax.
+// Year 6 KSSR "Invoice, Receipt, and Service Tax" (SST) — total payable
+// = invoice amount + tax amount.
+//
+// Retrofitted per the Round 19 content standard: the base prompt was
+// already a real scenario for every `type`, but options were only ever
+// built `if (type === "mcq")` — so the `word_problem` template already
+// configured for this topic in topics.ts had been silently rendering
+// with zero answer choices (same bug family caught repeatedly since
+// batch 14). Fixed by widening that guard, and added errorSpotting plus
+// a reverseProblem variant that finds the original invoice amount given
+// the total payable and tax rate (dividing back through the tax).
 export function generateServiceTax(params: GeneratorParams): GeneratedQuestion {
   const maxRM = Number(params.maxRM ?? 200);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- reverseProblem: given the total payable and the tax rate, find
+  // the original invoice amount — dividing back through the tax.
+  if (reverseProblem) {
+    const amountRM = randInt(10, maxRM);
+    const taxRate = pick([6, 8, 10]);
+    const taxSen = Math.round((amountRM * 100 * taxRate) / 100);
+    const totalSen = amountRM * 100 + taxSen;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Selepas cukai perkhidmatan ${taxRate}% ditambah, jumlah perlu dibayar ialah ${formatRM(totalSen)}. Berapakah jumlah invois asal sebelum cukai?`,
+        en: `After a ${taxRate}% service tax is added, the total amount payable is ${formatRM(totalSen)}. What was the original invoice amount before tax?`,
+      },
+      type: "word_problem",
+      correctAnswer: formatRM(amountRM * 100),
+      context: { amountRM, taxRate, taxSen, totalSen },
+      generatorKey: "service_tax",
+      difficulty: 3,
+    };
+    // Classic mistake: gave the total again, forgetting to subtract the tax.
+    const gaveTotalAgain = formatRM(totalSen);
+    // Classic mistake: subtracted the tax percentage directly from the total instead of dividing back.
+    const subtractedPercentFromTotal = formatRM(Math.round(totalSen * (1 - taxRate / 100)));
+    const distractors = Array.from(
+      new Set([gaveTotalAgain, subtractedPercentFromTotal].filter((d) => d !== formatRM(amountRM * 100)))
+    );
+    question.options = shuffleOptions(formatRM(amountRM * 100), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(0, amountRM * 100 + randInt(50, 500) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const amountRM = randInt(10, maxRM);
   const taxRate = pick([6, 8, 10]); // common Malaysian SST-style rates
   const taxSen = Math.round((amountRM * 100 * taxRate) / 100);
   const totalSen = amountRM * 100 + taxSen;
+
+  // ---- errorSpotting: shown the documented "gave tax only" mistake,
+  // must give the correct total.
+  if (errorSpotting) {
+    const name = pick(names);
+    const wrongAnswer = formatRM(taxSen);
+    if (wrongAnswer !== formatRM(totalSen)) {
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `Sebuah invois berjumlah RM${amountRM}. Cukai perkhidmatan ${taxRate}% dikenakan. ${name} menjawab ${wrongAnswer}. Apakah jawapan yang betul untuk jumlah perlu dibayar?`,
+          en: `An invoice totals RM${amountRM}. A ${taxRate}% service tax is charged. ${name} answered ${wrongAnswer}. What is the correct total amount payable?`,
+        },
+        type: "mcq",
+        correctAnswer: formatRM(totalSen),
+        context: { amountRM, taxRate, taxSen, totalSen, wrongAnswer },
+        generatorKey: "service_tax",
+        difficulty: 3,
+        options: shuffleOptions(formatRM(totalSen), [wrongAnswer]),
+      };
+      while (question.options!.length < 3) {
+        const candidateSen = Math.max(0, totalSen + randInt(50, 500) * (Math.random() > 0.5 ? 1 : -1));
+        const candidate = formatRM(candidateSen);
+        if (!question.options!.includes(candidate)) question.options!.push(candidate);
+      }
+      return question;
+    }
+  }
 
   const question: GeneratedQuestion = {
     prompt: {
@@ -786,7 +861,7 @@ export function generateServiceTax(params: GeneratorParams): GeneratedQuestion {
     difficulty: 3,
   };
 
-  if (type === "mcq") {
+  if (type === "mcq" || type === "word_problem") {
     // Classic mistake: gives just the tax amount, not the total payable.
     const gaveTaxOnly = formatRM(taxSen);
     // Classic mistake: subtracted the tax instead of adding it.

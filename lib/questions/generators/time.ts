@@ -392,13 +392,74 @@ interface TimeUnitPair {
   factor: number; // how many `small` units make 1 `big` unit
 }
 
+// Year 5 KSSR "Adding & Subtracting Time (Bigger Units)" — same base-`factor`
+// regrouping idea as time_add_subtract (hours/minutes), generalised to
+// whichever bigger unit pair the topic config supplies (years/months,
+// decades/years, centuries/decades).
+//
+// Retrofitted per the Round 19 content standard: the prompt was a bare
+// equation for every `type` — the `word_problem` template already
+// configured for this topic in topics.ts had been rendering with no
+// scenario AND no options (the two most common bug shapes from this
+// round, both present here at once). Fixed with a real building-age
+// word_problem (matches this topic's explanation text), errorSpotting,
+// and a reverseProblem that finds one duration given the total and the
+// other.
 export function generateTimeUnitAddSubtract(params: GeneratorParams): GeneratedQuestion {
   const pairs = (params.pairs as TimeUnitPair[]) ?? [{ big: "yr", small: "mth", factor: 12 }];
   const maxBig = Number(params.maxBig ?? 8);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
-  const op = pick(["add", "subtract"] as const);
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
 
+  const fmtFor = (factor: number, big: string, small: string) => (totalSmall: number) => {
+    const bigVal = Math.floor(totalSmall / factor);
+    const smallVal = totalSmall % factor;
+    if (bigVal === 0) return `${smallVal}${small}`;
+    if (smallVal === 0) return `${bigVal}${big}`;
+    return `${bigVal}${big} ${smallVal}${small}`;
+  };
+
+  // ---- reverseProblem: given the total age and one duration, find the
+  // other duration (subtraction) — same shape as time_add_subtract's
+  // reverseProblem.
+  if (reverseProblem) {
+    const { big, small, factor } = pick(pairs);
+    const fmt = fmtFor(factor, big, small);
+    const aSmall = randInt(1, maxBig) * factor + randInt(0, factor - 1);
+    const bSmall = randInt(1, maxBig) * factor + randInt(0, factor - 1);
+    const totalSmall = aSmall + bSmall;
+    const name = pick(names);
+
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah bangunan berumur ${fmt(totalSmall)} sekarang, selepas dibina ${fmt(aSmall)} lalu ditambah baik lagi ${fmt(bSmall)}. Berapa lamakah tempoh pertama sebelum ditambah baik? (Jawapan: ${fmt(aSmall)})`,
+        en: `${name} says a building is ${fmt(totalSmall)} old in total, made up of ${fmt(bSmall)} since its last renovation plus the years before that. How long was the period before the renovation?`,
+      },
+      type: "word_problem",
+      correctAnswer: fmt(aSmall),
+      context: { big, small, factor, aSmall, bSmall, totalSmall },
+      generatorKey: "time_unit_add_subtract",
+      difficulty: 3,
+    };
+    // Classic mistake: gave the total again, forgetting to subtract.
+    const gaveTotal = fmt(totalSmall);
+    // Classic mistake: gave the other known duration instead of solving for the unknown one.
+    const gaveOtherDuration = fmt(bSmall);
+    const distractors = Array.from(new Set([gaveTotal, gaveOtherDuration].filter((d) => d !== fmt(aSmall))));
+    question.options = shuffleOptions(fmt(aSmall), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidateSmall = Math.max(0, aSmall + randInt(1, factor - 1) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = fmt(candidateSmall);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  const op = pick(["add", "subtract"] as const);
   const { big, small, factor } = pick(pairs);
+  const fmt = fmtFor(factor, big, small);
   let aSmall = randInt(1, maxBig) * factor + randInt(0, factor - 1);
   let bSmall = randInt(1, maxBig) * factor + randInt(0, factor - 1);
   if (op === "subtract" && bSmall > aSmall) [aSmall, bSmall] = [bSmall, aSmall];
@@ -406,13 +467,78 @@ export function generateTimeUnitAddSubtract(params: GeneratorParams): GeneratedQ
   const correctSmall = op === "add" ? aSmall + bSmall : aSmall - bSmall;
   const symbol = op === "add" ? "+" : "−";
 
-  const fmt = (totalSmall: number) => {
-    const bigVal = Math.floor(totalSmall / factor);
-    const smallVal = totalSmall % factor;
-    if (bigVal === 0) return `${smallVal}${small}`;
-    if (smallVal === 0) return `${bigVal}${big}`;
-    return `${bigVal}${big} ${smallVal}${small}`;
-  };
+  // ---- errorSpotting: shown the classic "treated the small unit as
+  // base-10" mistake, must give the correct answer. Only meaningful when
+  // a genuine carry/borrow actually occurs.
+  if (errorSpotting) {
+    const name = pick(names);
+    const aRem = aSmall % factor, bRem = bSmall % factor;
+    const genuineCarry = op === "add" ? aRem + bRem >= factor : aRem < bRem;
+    if (genuineCarry) {
+      const aBig = Math.floor(aSmall / factor), bBig = Math.floor(bSmall / factor);
+      const wrongBig = op === "add" ? aBig + bBig : Math.abs(aBig - bBig);
+      const wrongSmall = op === "add" ? aRem + bRem : Math.abs(aRem - bRem);
+      const wrongAnswer = `${wrongBig}${big} ${wrongSmall}${small}`;
+      const correctAnswer = fmt(correctSmall);
+      if (wrongAnswer !== correctAnswer) {
+        const question: GeneratedQuestion = {
+          prompt: {
+            ms: `${name} mengira ${fmt(aSmall)} ${symbol} ${fmt(bSmall)} dan mendapat ${wrongAnswer}. Apakah jawapan yang betul?`,
+            en: `${name} calculated ${fmt(aSmall)} ${symbol} ${fmt(bSmall)} and got ${wrongAnswer}. What is the correct answer?`,
+          },
+          type: "mcq",
+          correctAnswer,
+          context: { big, small, factor, aSmall, bSmall, correctSmall, op, wrongAnswer },
+          generatorKey: "time_unit_add_subtract",
+          difficulty: 3,
+          options: shuffleOptions(correctAnswer, [wrongAnswer]),
+        };
+        while (question.options!.length < 3) {
+          const candidateSmall = Math.max(0, correctSmall + randInt(1, factor - 1) * (Math.random() > 0.5 ? 1 : -1));
+          const candidate = fmt(candidateSmall);
+          if (!question.options!.includes(candidate)) question.options!.push(candidate);
+        }
+        return question;
+      }
+    }
+  }
+
+  // ---- word_problem: building-age scenario, matches this topic's
+  // explanation text.
+  if (type === "word_problem") {
+    const name = pick(names);
+    const prompt =
+      op === "add"
+        ? {
+            ms: `Sebuah bangunan berumur ${fmt(aSmall)}. ${fmt(bSmall)} kemudian, berapakah umurnya?`,
+            en: `A building is ${fmt(aSmall)} old. ${fmt(bSmall)} later, how old will it be?`,
+          }
+        : {
+            ms: `${name} mensasarkan projek selama ${fmt(aSmall)}. Setakat ini sudah berlalu ${fmt(bSmall)}. Berapa lama lagi tempoh yang tinggal?`,
+            en: `${name} plans a project lasting ${fmt(aSmall)}. So far ${fmt(bSmall)} has passed. How much time is left?`,
+          };
+    const question: GeneratedQuestion = {
+      prompt,
+      type: "word_problem",
+      correctAnswer: fmt(correctSmall),
+      context: { big, small, factor, aSmall, bSmall, correctSmall, op },
+      generatorKey: "time_unit_add_subtract",
+      difficulty: 3,
+    };
+    const aBig = Math.floor(aSmall / factor), aRem = aSmall % factor;
+    const bBig = Math.floor(bSmall / factor), bRem = bSmall % factor;
+    const noCarryBig = op === "add" ? aBig + bBig : Math.abs(aBig - bBig);
+    const noCarrySmall = op === "add" ? aRem + bRem : Math.abs(aRem - bRem);
+    const noCarryLabel = `${noCarryBig}${big} ${noCarrySmall}${small}`;
+    const distractors = Array.from(new Set([noCarryLabel].filter((d) => d !== question.correctAnswer)));
+    question.options = shuffleOptions(question.correctAnswer, distractors);
+    while (question.options.length < 3) {
+      const candidateSmall = Math.max(0, correctSmall + randInt(1, factor - 1) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = fmt(candidateSmall);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const question: GeneratedQuestion = {
     prompt: { ms: `${fmt(aSmall)} ${symbol} ${fmt(bSmall)} = ?`, en: `${fmt(aSmall)} ${symbol} ${fmt(bSmall)} = ?` },

@@ -471,25 +471,113 @@ inversion. 46 topics retrofitted total across 17 batches — the score-14
 baseline tier is down to 5 topics, all confirmed one-offs with no shared
 generators.
 
+## Bug fix (post-batch-18): worked-example "problem" statement ignored language setting
+
+Lynda reported (with a screenshot) that on the Belajar (Learn) tab's
+"Example" section, the problem statement stayed in Malay even with the
+student's language set to English, while the steps below it correctly
+switched to English. Root cause: `workedExample.problem` (and
+`moreExamples[].problem`) were typed as plain `string` in
+`TopicContent`, not `Bilingual` — every one of the 85 topics had its
+problem statement authored in Malay only, since that's the language
+used when writing content, and `ExampleCard` in `LessonCard.tsx`
+rendered it directly via `renderMathText(example.problem)` with no
+`lang`-awareness at all, unlike every other field on that screen (all
+of which go through `<Bi text={...} lang={lang} />`). This affected
+every topic that has a worked example, i.e. all 85 — not a scope issue
+specific to Simple Interest, that screenshot just happened to be the
+one Lynda tested.
+
+Fix: changed `problem` to `Bilingual` in the `TopicContent` interface
+(both `workedExample` and `moreExamples`), updated `ExampleCard` to
+render it through `<Bi text={example.problem} lang={lang} />`, and
+bulk-converted all 86 `problem:` fields across `topics.ts` (85 topics ×
+1 `workedExample` each, plus 1 topic with a `moreExamples` entry) from
+plain strings to `{ ms, en }` pairs. Did this as one script pass keyed
+on exact match position (not string search-and-replace) to avoid any
+collision between duplicate problem strings across different topics —
+verified the replacement count matched the scan count (86) before and
+after. 37 of the 86 are pure math/symbolic ("32450 + 18600", "3/8 +
+2/8") where `ms` and `en` are identical by design (nothing to
+translate, not a residual bug — same non-issue confirmed during the
+copyright/translation-quality check earlier in this round); the other
+49 contain real Malay sentences and got proper English translations
+(e.g. "RM500 pada 4% setahun selama 2 tahun" → "RM500 at 4% per year
+for 2 years" — the exact one from the screenshot). `example.answer`
+was deliberately left as plain `string | number`, not `Bilingual` — it's
+either a bare number or a short unit-suffixed string (`"26 cm"`,
+`"RM53.00"`) where the unit abbreviations are identical in both
+languages, so there's nothing to actually translate there. `tsc
+--noEmit` clean across the whole file after the change; re-ran the
+audit script too (unaffected, as expected — this is a rendering/schema
+fix, not a content-completeness change, so the score distribution
+`{ '1': 51, '12': 34 }` is unchanged).
+
+**Also worth knowing:** while investigating, checked whether Pintar
+(the AI chat tutor) respects language preference — found that when a
+student's `language_pref` is `"both"` (the default), Pintar's live AI
+responses come back Malay-only because `toEngineLanguage()` in
+`PintarChat.tsx` collapses `"both"` down to `"bm"` before calling the
+AI, while the rest of the UI in `"both"` mode shows Malay-with-English-
+underneath everywhere else. Did NOT fix this — flagging it here since
+it's the opposite-direction version of the same class of bug (bilingual
+inconsistency), but Pintar's actual response-generation logic lives on
+the Basrim server, outside this repo, so only the `toEngineLanguage()`
+call site here could be touched, and it wasn't clear that was the
+actually wrong side of the inconsistency without checking what the
+Basrim server expects. Worth a deliberate decision (not a quick fix)
+on whether `"both"` should mean "AI replies in both languages" or "AI
+replies in Malay, rest of UI shows both" before touching it.
+
+**Batch 18 done — closes the original baseline tier entirely:**
+`...059` (Invois, Resit, dan Cukai Perkhidmatan), `...064` (Tambah &
+Tolak Masa Unit Lebih Besar), `...067` (Beli Secara Tunai atau Ansuran),
+`...075` (Sudut Pedalaman Poligon Sekata), `...079` (Isi Padu Kuboid) —
+5 topics, 5 separate generators, no shared code, done as one batch since
+each was small and the pattern is now fully mechanical. Two more
+instances of the "`word_problem` template configured but the generator
+never gives it options" bug (`service_tax`, `credit_vs_cash` — same
+`if (type === "mcq")`-only gating as every prior instance), and
+`time_unit_add_subtract` had BOTH recurring bugs at once — bare-equation
+prompt AND missing options — fixed with a real building-age word_problem
+plus the options guard. Every generator got a genuine reverseProblem:
+service_tax and credit_vs_cash divide back through the tax/instalment
+math; time_unit_add_subtract mirrors time_add_subtract's "find one
+duration given the total and the other"; regular_polygon_angles goes
+sides→angle in reverse (given one interior angle, find how many sides);
+volume_cuboid divides the volume back through two known dimensions to
+find the third. All 25 variants (5 topics × 5 templates) came back clean
+on the first smoke test pass. **51 topics retrofitted total across 18
+batches — every topic at or below the original baseline score (14) is
+now cleared.**
+
+**Phase transition:** the audit's score distribution is now a clean
+`{ '1': 51, '12': 34 }` — no more stragglers or partial passes hiding
+between tiers (unlike the `...066` surprise before batch 17). The
+remaining 34 all sit at exactly tips=2, mistakes=2, templates=2 — a more
+uniform, lighter-weight starting point than the batches 1-18 baseline
+(which started at tips=2, mistakes=1, templates=2). Expect these to go
+faster per-topic on average: one more tip and two more mistakes needed
+per topic (vs. the original one more tip and three more mistakes), and
+still 3 more templates each (word_problem, errorSpotting, reverseProblem
+— same shape as every batch so far). Spot-checked the first 20 in the
+audit output — spans nearly every strand (Tambah/Tolak, Peratus, Nisbah,
+Luas, Sudut, Graf, Koordinat) with no obvious generator-sharing cluster
+in that sample; worth checking `generatorKey`s per-topic same as recent
+batches rather than assuming.
+
 **Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
-get the current ranked list (46 at gold/score 1, 34 at score 12, 5 still
-at the original baseline score 14: `...059` (`service_tax`), `...064`
-(`time_unit_add_subtract`), `...067` (`credit_vs_cash`), `...075`
-(`regular_polygon_angles`), `...079` (`volume_cuboid`)). No shared
-generators among these — expect individual work, one retrofit each,
-probably fits in a single batch of ~3-5 given how mechanical the pattern
-has become by now (read the generator fully, widen the `type` union if
-needed, add errorSpotting/reverseProblem with the padding loop from the
-start, write 2 more mistakes + 3 more templates in `topics.ts`, smoke
-test, audit, ship). Once these 5 are done, every topic at or below the
-original baseline score will be cleared — worth a full audit re-run at
-that point to confirm the score-12 tier (34 topics) is genuinely next,
-not another undiscovered pocket like `...066` turned out to be. No
-DB/UI schema changes needed for any of this — `challengeExample` from
-the original brief was folded into `questionTemplates`'
-`reverseProblem`/`errorSpotting` configs instead of a new object field,
-since that's already how `...085` and every retrofitted topic since
-works and needs no type changes.
+confirm the current ranked list, then pick ~3 from the score-12 tier
+(34 topics — see the sample above: `...001`, `...003`, `...004`,
+`...006`, `...008`, `...009`, `...011`, `...012`, `...013`, `...014`,
+`...016`, `...017`, `...018`, `...019`, `...020`, `...021`, `...022`,
+`...023`, `...024`, `...025`, and 14 more not shown in the top-20
+printout — run the audit and check the full list rather than assuming
+these are all of them). No DB/UI schema changes needed for any of
+this — `challengeExample` from the original brief was folded into
+`questionTemplates`' `reverseProblem`/`errorSpotting` configs instead of
+a new object field, since that's already how `...085` and every
+retrofitted topic since works and needs no type changes.
 
 **Round 17 (ids `...082`-`...084`) — Lynda asked directly whether Year 4
 Coordinates/Ratio/Proportion were covered. They weren't, at all** — only

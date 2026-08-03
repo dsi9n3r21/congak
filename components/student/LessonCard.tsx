@@ -148,14 +148,16 @@ function ExampleCard({
   lang,
 }: {
   label?: string;
-  example: { problem: string; steps: Bilingual[]; answer: string | number };
+  example: { problem: Bilingual; steps: Bilingual[]; answer: string | number };
   lang: Lang;
 }) {
   return (
     <div>
       {label && <p className="mb-2 font-display text-sm font-bold text-biru-dark">{label}</p>}
       <div className="rounded-kite border-2 border-biru-light bg-biru-light/40 px-4 py-5 text-center">
-        <p className="font-num text-xl font-bold tracking-wide text-biru-dark sm:text-2xl">{renderMathText(example.problem)}</p>
+        <p className="font-num text-xl font-bold tracking-wide text-biru-dark sm:text-2xl">
+          <Bi text={example.problem} lang={lang} />
+        </p>
       </div>
       <ol className="mt-4 space-y-3">
         {example.steps.map((step, i) => (

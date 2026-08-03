@@ -22,11 +22,11 @@ export interface TopicContent {
   /** General, number-free method steps ("how to solve this type of question") —
    * distinct from workedExample, which walks one specific set of numbers. */
   howTo: Bilingual[];
-  workedExample: { problem: string; steps: Bilingual[]; answer: string | number };
+  workedExample: { problem: Bilingual; steps: Bilingual[]; answer: string | number };
   /** Optional additional worked examples beyond the first, shown as
    * "Example 2", "Example 3" etc. in the same tab. Optional so existing
    * topics keep working untouched while content gets filled in gradually. */
-  moreExamples?: { problem: string; steps: Bilingual[]; answer: string | number }[];
+  moreExamples?: { problem: Bilingual; steps: Bilingual[]; answer: string | number }[];
   commonMistakes: {
     mistakeType: string;
     description: Bilingual;
@@ -67,7 +67,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Ulang proses ini bagi setiap lajur sehingga ke kiri sekali.", en: "Repeat this for every column, moving left, until you reach the last one." },
     ],
     workedExample: {
-      problem: "32450 + 18600",
+      problem: { ms: "32450 + 18600", en: "32450 + 18600" },
       steps: [
         { ms: "Susun ikut nilai tempat", en: "Line up by place value" },
         { ms: "0+0=0 (sa)", en: "0+0=0 (ones)" },
@@ -80,7 +80,7 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     moreExamples: [
       {
-        problem: "47250 + 6890",
+        problem: { ms: "47250 + 6890", en: "47250 + 6890" },
         steps: [
           { ms: "Susun ikut nilai tempat", en: "Line up by place value" },
           { ms: "0+0=0 (sa)", en: "0+0=0 (ones)" },
@@ -149,7 +149,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: penyebut jawapan anda mesti SAMA seperti penyebut asal, tidak digandakan.", en: "Check: your answer's denominator must be the SAME as the original denominator, not doubled." },
     ],
     workedExample: {
-      problem: "3/8 + 2/8",
+      problem: { ms: "3/8 + 2/8", en: "3/8 + 2/8" },
       steps: [
         { ms: "Semak penyebut: kedua-duanya 8, jadi sama.", en: "Check the denominators: both are 8, so they match." },
         { ms: "Penyebut sama, kekalkan 8.", en: "Same denominator, keep it as 8." },
@@ -199,7 +199,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Tukar jawapan itu balik kepada format RM.", en: "Convert the answer back into RM format." },
     ],
     workedExample: {
-      problem: "RM10.00 - RM6.30",
+      problem: { ms: "RM10.00 - RM6.30", en: "RM10.00 - RM6.30" },
       steps: [
         { ms: "Tukar kepada sen: 1000 sen - 630 sen", en: "Convert to sen: 1000 sen - 630 sen" },
         { ms: "= 370 sen", en: "= 370 sen" },
@@ -242,7 +242,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Sertakan unit ukuran (cm, m) dalam jawapan akhir.", en: "Include the unit of measurement (cm, m) in your final answer." },
     ],
     workedExample: {
-      problem: "Segi empat tepat 8 cm × 5 cm",
+      problem: { ms: "Segi empat tepat 8 cm × 5 cm", en: "Rectangle 8 cm × 5 cm" },
       steps: [
         { ms: "Perimeter = 2 × (panjang + lebar)", en: "Perimeter = 2 × (length + width)" },
         { ms: "= 2 × (8 + 5)", en: "= 2 × (8 + 5)" },
@@ -281,7 +281,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: letakkan titik perpuluhan dalam jawapan pada kedudukan yang sama segaris dengan soalan.", en: "Check: place the decimal point in your answer in the same lined-up position as the question." },
     ],
     workedExample: {
-      problem: "12.50 + 3.20",
+      problem: { ms: "12.50 + 3.20", en: "12.50 + 3.20" },
       steps: [
         { ms: "Kenal pasti: 12.50 dan 3.20, kedua-duanya sudah 2 tempat perpuluhan.", en: "Identify: 12.50 and 3.20, both already 2 decimal places." },
         { ms: "Susun titik perpuluhan segaris.", en: "Line up the decimal points." },
@@ -331,7 +331,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Permudahkan pengiraan itu untuk dapatkan jawapan.", en: "Simplify the calculation to get the answer." },
     ],
     workedExample: {
-      problem: "20% daripada 50",
+      problem: { ms: "20% daripada 50", en: "20% of 50" },
       steps: [
         { ms: "Tukar peratus kepada pecahan: 20/100", en: "Convert percent to a fraction: 20/100" },
         { ms: "Darab dengan kuantiti: (20/100) × 50", en: "Multiply by the quantity: (20/100) × 50" },
@@ -370,7 +370,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: jika jumlah minit mencapai 60 atau lebih, tukar kepada 1 jam dan laraskan waktu.", en: "Check: if the minutes reach 60 or more, convert into an extra hour and adjust the time." },
     ],
     workedExample: {
-      problem: "2:30 + 90 minit",
+      problem: { ms: "2:30 + 90 minit", en: "2:30 + 90 minutes" },
       steps: [
         { ms: "Kenal pasti: masa mula 2:30, tempoh 90 minit.", en: "Identify: start time 2:30, duration 90 minutes." },
         { ms: "90 minit = 1 jam 30 minit", en: "90 minutes = 1 hour 30 minutes" },
@@ -420,7 +420,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Bahagikan jumlah itu dengan bilangan nilai.", en: "Divide the total by the number of values." },
     ],
     workedExample: {
-      problem: "70, 80, 75, 75",
+      problem: { ms: "70, 80, 75, 75", en: "70, 80, 75, 75" },
       steps: [
         { ms: "Jumlah = 70+80+75+75 = 300", en: "Sum = 70+80+75+75 = 300" },
         { ms: "Bilangan nilai = 4", en: "Number of values = 4" },
@@ -462,7 +462,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak sama ada nisbah itu sudah dalam bentuk paling ringkas.", en: "Check that the ratio is now in its simplest form." },
     ],
     workedExample: {
-      problem: "12:18",
+      problem: { ms: "12:18", en: "12:18" },
       steps: [
         { ms: "Bahagi kedua-dua bahagian dengan 6", en: "Divide both parts by 6" },
         { ms: "12÷6 : 18÷6", en: "12÷6 : 18÷6" },
@@ -501,7 +501,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah anda tukar SEMUA nilai liter kepada ml sebelum mengira, bukan selepas?", en: "Check: did you convert ALL litre values to ml before calculating, not after?" },
     ],
     workedExample: {
-      problem: "1 L 250 ml + 300 ml",
+      problem: { ms: "1 L 250 ml + 300 ml", en: "1 L 250 ml + 300 ml" },
       steps: [
         { ms: "Kenal pasti: 1 L 250 ml ditambah 300 ml.", en: "Identify: 1 L 250 ml plus 300 ml." },
         { ms: "1 L = 1000 ml", en: "1 L = 1000 ml" },
@@ -550,7 +550,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Tulis jawapan dengan unit persegi yang betul (cm², m²).", en: "Write the answer with the correct squared unit (cm², m²)." },
     ],
     workedExample: {
-      problem: "Segi empat tepat 7 cm × 4 cm",
+      problem: { ms: "Segi empat tepat 7 cm × 4 cm", en: "Rectangle 7 cm × 4 cm" },
       steps: [
         { ms: "Luas = panjang × lebar", en: "Area = length × width" },
         { ms: "= 7 × 4", en: "= 7 × 4" },
@@ -592,7 +592,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Jawapan itu ialah sudut satu lagi.", en: "The result is the other angle." },
     ],
     workedExample: {
-      problem: "Satu sudut ialah 65° pada garis lurus",
+      problem: { ms: "Satu sudut ialah 65° pada garis lurus", en: "One angle is 65° on a straight line" },
       steps: [
         { ms: "Jumlah sudut pada garis lurus = 180°", en: "Total of angles on a straight line = 180°" },
         { ms: "180° − 65° = 115°", en: "180° − 65° = 115°" },
@@ -633,7 +633,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Tambahkan semua luas itu untuk dapatkan jumlah keseluruhan.", en: "Add all those areas together to get the total." },
     ],
     workedExample: {
-      problem: "Segi Empat Tepat A: 6 cm × 3 cm, Segi Empat Tepat B: 4 cm × 2 cm",
+      problem: { ms: "Segi Empat Tepat A: 6 cm × 3 cm, Segi Empat Tepat B: 4 cm × 2 cm", en: "Rectangle A: 6 cm × 3 cm, Rectangle B: 4 cm × 2 cm" },
       steps: [
         { ms: "Luas A = 6 × 3 = 18 cm²", en: "Area A = 6 × 3 = 18 cm²" },
         { ms: "Luas B = 4 × 2 = 8 cm²", en: "Area B = 4 × 2 = 8 cm²" },
@@ -675,7 +675,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Tolak jumlah itu daripada 180°.", en: "Subtract that total from 180°." },
     ],
     workedExample: {
-      problem: "Dua sudut: 50° dan 60°",
+      problem: { ms: "Dua sudut: 50° dan 60°", en: "Two angles: 50° and 60°" },
       steps: [
         { ms: "Tambah dua sudut: 50° + 60° = 110°", en: "Add the two angles: 50° + 60° = 110°" },
         { ms: "180° − 110° = 70°", en: "180° − 110° = 70°" },
@@ -713,7 +713,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: jika ia antara 90° dan 180°, ia Cakah; jika melebihi 180°, ia Refleks.", en: "Check: if it's between 90° and 180°, it's Obtuse; if it's more than 180°, it's Reflex." },
     ],
     workedExample: {
-      problem: "Sudut 130°",
+      problem: { ms: "Sudut 130°", en: "Angle 130°" },
       steps: [
         { ms: "Lihat rajah: sudut ini bersilang tetapi tiada petanda petak (□).", en: "Look at the diagram: the angle crosses but has no square marker (□)." },
         { ms: "130° lebih besar daripada 90°", en: "130° is greater than 90°" },
@@ -761,7 +761,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Bahagikan hasil darab itu dengan 2.", en: "Divide that product by 2." },
     ],
     workedExample: {
-      problem: "Tapak 8 cm, tinggi 5 cm",
+      problem: { ms: "Tapak 8 cm, tinggi 5 cm", en: "Base 8 cm, height 5 cm" },
       steps: [
         { ms: "Luas = ½ × tapak × tinggi", en: "Area = ½ × base × height" },
         { ms: "= ½ × 8 × 5", en: "= ½ × 8 × 5" },
@@ -804,7 +804,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Jawapan itu ialah sudut yang hilang.", en: "The result is the missing angle." },
     ],
     workedExample: {
-      problem: "Dua sudut: 110° dan 95°",
+      problem: { ms: "Dua sudut: 110° dan 95°", en: "Two angles: 110° and 95°" },
       steps: [
         { ms: "Tambah dua sudut: 110° + 95° = 205°", en: "Add the two angles: 110° + 95° = 205°" },
         { ms: "360° − 205° = 155°", en: "360° − 205° = 155°" },
@@ -845,7 +845,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Darabkan diameter itu dengan π (3.142).", en: "Multiply that diameter by π (3.142)." },
     ],
     workedExample: {
-      problem: "Jejari 7 cm",
+      problem: { ms: "Jejari 7 cm", en: "Radius 7 cm" },
       steps: [
         { ms: "Lilitan = 2 × π × jejari", en: "Circumference = 2 × π × radius" },
         { ms: "= 2 × 3.142 × 7", en: "= 2 × 3.142 × 7" },
@@ -887,7 +887,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Darabkan hasil itu dengan π (3.142).", en: "Multiply that result by π (3.142)." },
     ],
     workedExample: {
-      problem: "Jejari 5 cm",
+      problem: { ms: "Jejari 5 cm", en: "Radius 5 cm" },
       steps: [
         { ms: "Luas = π × jejari × jejari", en: "Area = π × radius × radius" },
         { ms: "= 3.142 × 5 × 5", en: "= 3.142 × 5 × 5" },
@@ -930,7 +930,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Ulang proses ini bagi setiap lajur sehingga ke kiri sekali.", en: "Repeat this for every column, moving left, until you reach the last one." },
     ],
     workedExample: {
-      problem: "84500 − 37800",
+      problem: { ms: "84500 − 37800", en: "84500 − 37800" },
       steps: [
         { ms: "0 − 0 = 0 (sa)", en: "0 − 0 = 0 (ones)" },
         { ms: "0 − 0 = 0 (puluh)", en: "0 − 0 = 0 (tens)" },
@@ -974,7 +974,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Tambahkan kedua-dua hasil darab itu.", en: "Add the two products together." },
     ],
     workedExample: {
-      problem: "245 × 23",
+      problem: { ms: "245 × 23", en: "245 × 23" },
       steps: [
         { ms: "245 × 3 = 735", en: "245 × 3 = 735" },
         { ms: "245 × 20 = 4900", en: "245 × 20 = 4900" },
@@ -1016,7 +1016,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
     ],
     workedExample: {
-      problem: "1288 ÷ 23",
+      problem: { ms: "1288 ÷ 23", en: "1288 ÷ 23" },
       steps: [
         { ms: "Anggaran: 23 × 50 = 1150 (terlalu kecil)", en: "Estimate: 23 × 50 = 1150 (too small)" },
         { ms: "Cuba 23 × 56 = 1288 ✓", en: "Try 23 × 56 = 1288 ✓" },
@@ -1057,7 +1057,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Untuk jumlah: tambahkan semua nilai. Untuk beza: tolak nilai lebih kecil daripada nilai lebih besar.", en: "For a total: add all the values. For a difference: subtract the smaller value from the bigger one." },
     ],
     workedExample: {
-      problem: "Kumpulan A=12, B=18, C=9, D=15",
+      problem: { ms: "Kumpulan A=12, B=18, C=9, D=15", en: "Group A=12, B=18, C=9, D=15" },
       steps: [
         { ms: "Jumlah = 12 + 18 + 9 + 15", en: "Total = 12 + 18 + 9 + 15" },
         { ms: "= 54", en: "= 54" },
@@ -1099,7 +1099,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Tulis jawapan sebagai (x, y).", en: "Write the answer as (x, y)." },
     ],
     workedExample: {
-      problem: "Titik berada 4 unit ke kanan dan 6 unit ke atas",
+      problem: { ms: "Titik berada 4 unit ke kanan dan 6 unit ke atas", en: "The point is 4 units right and 6 units up" },
       steps: [
         { ms: "Nilai x = 4 (ke kanan)", en: "x-value = 4 (right)" },
         { ms: "Nilai y = 6 (ke atas)", en: "y-value = 6 (up)" },
@@ -1141,7 +1141,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
     ],
     workedExample: {
-      problem: "738 ÷ 6",
+      problem: { ms: "738 ÷ 6", en: "738 ÷ 6" },
       steps: [
         { ms: "6 masuk ke dalam 7 sebanyak 1 kali, baki 1", en: "6 goes into 7 once, remainder 1" },
         { ms: "Turunkan 3: 13 ÷ 6 = 2 kali, baki 1", en: "Bring down 3: 13 ÷ 6 = 2 times, remainder 1" },
@@ -1184,7 +1184,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Tambahkan kedua-dua hasil darab itu.", en: "Add the two products together." },
     ],
     workedExample: {
-      problem: "3450 × 34",
+      problem: { ms: "3450 × 34", en: "3450 × 34" },
       steps: [
         { ms: "3450 × 4 = 13,800", en: "3450 × 4 = 13,800" },
         { ms: "3450 × 30 = 103,500", en: "3450 × 30 = 103,500" },
@@ -1230,7 +1230,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah anda buat pendaraban/pembahagian dahulu sebelum tambah/tolak?", en: "Check: did you do the multiplication/division before the addition/subtraction?" },
     ],
     workedExample: {
-      problem: "15 + 4 × 10",
+      problem: { ms: "15 + 4 × 10", en: "15 + 4 × 10" },
       steps: [
         { ms: "Darab dahulu: 4 × 10 = 40", en: "Multiply first: 4 × 10 = 40" },
         { ms: "Kemudian tambah: 15 + 40 = 55", en: "Then add: 15 + 40 = 55" },
@@ -1277,7 +1277,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Gabungkan semua digit jawapan untuk dapatkan jawapan akhir.", en: "Combine all the answer digits to get the final answer." },
     ],
     workedExample: {
-      problem: "1245 × 4",
+      problem: { ms: "1245 × 4", en: "1245 × 4" },
       steps: [
         { ms: "5 × 4 = 20, tulis 0, simpan 2", en: "5 × 4 = 20, write 0, carry 2" },
         { ms: "4 × 4 = 16, + 2 (simpan) = 18, tulis 8, simpan 1", en: "4 × 4 = 16, + 2 (carried) = 18, write 8, carry 1" },
@@ -1321,7 +1321,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
     ],
     workedExample: {
-      problem: "84 ÷ 4",
+      problem: { ms: "84 ÷ 4", en: "84 ÷ 4" },
       steps: [
         { ms: "4 masuk ke dalam 8 sebanyak 2 kali", en: "4 goes into 8 twice" },
         { ms: "4 masuk ke dalam 4 sebanyak 1 kali", en: "4 goes into 4 once" },
@@ -1363,7 +1363,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Teruskan ke lajur seterusnya sehingga semua lajur ditambah.", en: "Continue to the next column until every column is added." },
     ],
     workedExample: {
-      problem: "245600 + 318750",
+      problem: { ms: "245600 + 318750", en: "245600 + 318750" },
       steps: [
         { ms: "0 + 0 = 0 (sa)", en: "0 + 0 = 0 (ones)" },
         { ms: "0 + 5 = 5 (puluh)", en: "0 + 5 = 5 (tens)" },
@@ -1409,7 +1409,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Teruskan ke lajur seterusnya sehingga semua lajur ditolak.", en: "Continue to the next column until every column is subtracted." },
     ],
     workedExample: {
-      problem: "876400 − 123850",
+      problem: { ms: "876400 − 123850", en: "876400 − 123850" },
       steps: [
         { ms: "0 − 0 = 0 (sa)", en: "0 − 0 = 0 (ones)" },
         { ms: "0 − 5: pinjam 1, 10 − 5 = 5 (puluh)", en: "0 − 5: borrow 1, 10 − 5 = 5 (tens)" },
@@ -1452,7 +1452,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah anda benar-benar menambah SEMUA TIGA nombor, bukan hanya dua?", en: "Check: did you really add ALL THREE numbers, not just two?" },
     ],
     workedExample: {
-      problem: "12450 + 15800 + 9670",
+      problem: { ms: "12450 + 15800 + 9670", en: "12450 + 15800 + 9670" },
       steps: [
         { ms: "Kenal pasti tiga nombor: 12,450, 15,800, dan 9,670.", en: "Identify the three numbers: 12,450, 15,800, and 9,670." },
         { ms: "12,450 + 15,800 = 28,250", en: "12,450 + 15,800 = 28,250" },
@@ -1498,7 +1498,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: tambah jawapan anda dengan nombor yang ditolak — ia mesti kembali kepada nombor bulat asal.", en: "Check: add your answer to the number you subtracted — it must return to the original round number." },
     ],
     workedExample: {
-      problem: "500000 − 187650",
+      problem: { ms: "500000 − 187650", en: "500000 − 187650" },
       steps: [
         { ms: "Kenal pasti: 500,000 (nombor bulat) − 187,650.", en: "Identify: 500,000 (round number) − 187,650." },
         { ms: "500,000 boleh ditulis sebagai 4 9 9 9 9 10 selepas pinjam", en: "500,000 can be rewritten as 4 9 9 9 9 10 after borrowing" },
@@ -1552,7 +1552,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Kekalkan penyebut (nombor bawah) tanpa diubah.", en: "Keep the denominator (bottom number) unchanged." },
     ],
     workedExample: {
-      problem: "5/8 − 2/8",
+      problem: { ms: "5/8 − 2/8", en: "5/8 − 2/8" },
       steps: [
         { ms: "Penyebut sama, kekalkan 8", en: "Same denominator, keep it as 8" },
         { ms: "Tolak pengangka: 5−2=3", en: "Subtract the numerators: 5−2=3" },
@@ -1590,7 +1590,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: jawapan anda mesti mempunyai TEPAT satu digit selepas titik perpuluhan.", en: "Check: your answer must have EXACTLY one digit after the decimal point." },
     ],
     workedExample: {
-      problem: "2.4 + 1.3",
+      problem: { ms: "2.4 + 1.3", en: "2.4 + 1.3" },
       steps: [
         { ms: "Kenal pasti: 2.4 dan 1.3, kedua-duanya 1 tempat perpuluhan.", en: "Identify: 2.4 and 1.3, both 1 decimal place." },
         { ms: "Susun titik perpuluhan lurus", en: "Line up the decimal points" },
@@ -1645,7 +1645,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak dengan anggaran: adakah jawapan anda hampir dengan anggaran kasar?", en: "Check with an estimate: is your answer close to a rough estimate?" },
     ],
     workedExample: {
-      problem: "1.5 × 4",
+      problem: { ms: "1.5 × 4", en: "1.5 × 4" },
       steps: [
         { ms: "Darab seolah-olah nombor bulat: 15 × 4 = 60", en: "Multiply as whole numbers: 15 × 4 = 60" },
         { ms: "1.5 ada 1 tempat perpuluhan, jadi letakkan titik: 6.0", en: "1.5 has 1 decimal place, so place the point: 6.0" },
@@ -1697,7 +1697,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak jawapan akhir dengan darab semula.", en: "Check the final answer by multiplying back." },
     ],
     workedExample: {
-      problem: "7.2 ÷ 3",
+      problem: { ms: "7.2 ÷ 3", en: "7.2 ÷ 3" },
       steps: [
         { ms: "Letakkan titik perpuluhan pada jawapan terus di atas 7.2", en: "Place the decimal point in the answer directly above 7.2" },
         { ms: "7 ÷ 3 = 2, baki 1", en: "7 ÷ 3 = 2, remainder 1" },
@@ -1746,7 +1746,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Permudahkan pecahan jawapan jika boleh.", en: "Simplify the resulting fraction if possible." },
     ],
     workedExample: {
-      problem: "3/4 ÷ 2",
+      problem: { ms: "3/4 ÷ 2", en: "3/4 ÷ 2" },
       steps: [
         { ms: "Darabkan penyebut: 4 × 2 = 8", en: "Multiply the denominator: 4 × 2 = 8" },
         { ms: "Pengangka kekal: 3", en: "Numerator stays: 3" },
@@ -1785,7 +1785,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: tolak salah satu jumlah asal daripada jawapan anda — ia mesti sama dengan jumlah asal yang satu lagi.", en: "Check: subtract one of the original amounts from your answer — it should equal the other original amount." },
     ],
     workedExample: {
-      problem: "RM8.50 + RM12.30",
+      problem: { ms: "RM8.50 + RM12.30", en: "RM8.50 + RM12.30" },
       steps: [
         { ms: "Kenal pasti: RM8.50 dan RM12.30.", en: "Identify: RM8.50 and RM12.30." },
         { ms: "Tambah sen: 50 + 30 = 80 sen", en: "Add the sen: 50 + 30 = 80 sen" },
@@ -1831,7 +1831,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: gunakan anggaran untuk pastikan jawapan anda munasabah.", en: "Check: use an estimate to make sure your answer is reasonable." },
     ],
     workedExample: {
-      problem: "RM4.50 × 3",
+      problem: { ms: "RM4.50 × 3", en: "RM4.50 × 3" },
       steps: [
         { ms: "Kenal pasti: RM4.50 didarab dengan 3.", en: "Identify: RM4.50 multiplied by 3." },
         { ms: "Buang titik: 450 sen", en: "Drop the point: 450 sen" },
@@ -1877,7 +1877,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah anda darab dengan bilangan TAHUN, bukan hanya kira untuk 1 tahun?", en: "Check: did you multiply by the number of YEARS, not just calculate for 1 year?" },
     ],
     workedExample: {
-      problem: "RM500 pada 4% setahun selama 2 tahun",
+      problem: { ms: "RM500 pada 4% setahun selama 2 tahun", en: "RM500 at 4% per year for 2 years" },
       steps: [
         { ms: "Kenal pasti: Prinsipal RM500, Kadar 4%, Tempoh 2 tahun.", en: "Identify: Principal RM500, Rate 4%, Time 2 years." },
         { ms: "Darab ketiga-tiganya: 500 × 4 × 2 = 4000", en: "Multiply all three: 500 × 4 × 2 = 4000" },
@@ -1923,7 +1923,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda sepadan dengan arah perbandingan (untung jika jualan lebih tinggi)?", en: "Check: does your answer match the comparison direction (profit if selling is higher)?" },
     ],
     workedExample: {
-      problem: "Harga kos RM150, harga jualan RM180",
+      problem: { ms: "Harga kos RM150, harga jualan RM180", en: "Cost price RM150, selling price RM180" },
       steps: [
         { ms: "Kenal pasti: harga kos RM150, harga jualan RM180.", en: "Identify: cost price RM150, selling price RM180." },
         { ms: "Bandingkan: RM180 > RM150", en: "Compare: RM180 > RM150" },
@@ -1977,7 +1977,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah bahagian minit dalam jawapan anda kurang daripada 60?", en: "Check: is the minutes part of your answer less than 60?" },
     ],
     workedExample: {
-      problem: "1 jam 45 minit + 50 minit",
+      problem: { ms: "1 jam 45 minit + 50 minit", en: "1 hour 45 minutes + 50 minutes" },
       steps: [
         { ms: "Tambah minit: 45 + 50 = 95 minit", en: "Add the minutes: 45 + 50 = 95 minutes" },
         { ms: "95 minit = 1 jam 35 minit", en: "95 minutes = 1 hour 35 minutes" },
@@ -2030,7 +2030,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah bahagian cm dalam jawapan anda kurang daripada 100?", en: "Check: is the cm part of your answer less than 100?" },
     ],
     workedExample: {
-      problem: "2 m 40 cm + 1 m 75 cm",
+      problem: { ms: "2 m 40 cm + 1 m 75 cm", en: "2 m 40 cm + 1 m 75 cm" },
       steps: [
         { ms: "Tambah cm: 40 + 75 = 115 cm", en: "Add the cm: 40 + 75 = 115 cm" },
         { ms: "115 cm = 1 m 15 cm", en: "115 cm = 1 m 15 cm" },
@@ -2077,7 +2077,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda munasabah? (unit kecil sepatutnya beri nombor lebih besar)", en: "Check: does your answer make sense? (a smaller unit should give a bigger number)" },
     ],
     workedExample: {
-      problem: "15 cm = ? mm",
+      problem: { ms: "15 cm = ? mm", en: "15 cm = ? mm" },
       steps: [
         { ms: "cm ke mm ialah unit besar ke kecil, jadi darab", en: "cm to mm is large unit to small, so multiply" },
         { ms: "Faktor penukaran ialah 10 (10 mm = 1 cm)", en: "The conversion factor is 10 (10 mm = 1 cm)" },
@@ -2123,7 +2123,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda munasabah? (g sepatutnya beri nombor lebih besar daripada kg)", en: "Check: does your answer make sense? (g should give a bigger number than kg)" },
     ],
     workedExample: {
-      problem: "2 kg = ? g",
+      problem: { ms: "2 kg = ? g", en: "2 kg = ? g" },
       steps: [
         { ms: "kg ke g, jadi darab dengan 1000", en: "kg to g, so multiply by 1000" },
         { ms: "2 × 1000 = 2000", en: "2 × 1000 = 2000" },
@@ -2168,7 +2168,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda munasabah? (ml sepatutnya beri nombor lebih besar daripada l)", en: "Check: does your answer make sense? (ml should give a bigger number than l)" },
     ],
     workedExample: {
-      problem: "3 l = ? ml",
+      problem: { ms: "3 l = ? ml", en: "3 l = ? ml" },
       steps: [
         { ms: "l ke ml, jadi darab dengan 1000", en: "l to ml, so multiply by 1000" },
         { ms: "3 × 1000 = 3000", en: "3 × 1000 = 3000" },
@@ -2213,7 +2213,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda munasabah? (unit lebih kecil sepatutnya beri nombor lebih besar)", en: "Check: does your answer make sense? (a smaller unit should give a bigger number)" },
     ],
     workedExample: {
-      problem: "2 minggu = ? hari",
+      problem: { ms: "2 minggu = ? hari", en: "2 weeks = ? days" },
       steps: [
         { ms: "minggu ke hari, jadi darab dengan 7", en: "week to day, so multiply by 7" },
         { ms: "2 × 7 = 14", en: "2 × 7 = 14" },
@@ -2259,7 +2259,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda munasabah? (unit lebih kecil sepatutnya beri nombor lebih besar)", en: "Check: does your answer make sense? (a smaller unit should give a bigger number)" },
     ],
     workedExample: {
-      problem: "3 abad = ? dekad",
+      problem: { ms: "3 abad = ? dekad", en: "3 centuries = ? decades" },
       steps: [
         { ms: "abad ke dekad, jadi darab dengan 10", en: "century to decade, so multiply by 10" },
         { ms: "3 × 10 = 30", en: "3 × 10 = 30" },
@@ -2303,7 +2303,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda harga AKHIR, bukan hanya jumlah diskaun?", en: "Check: is your answer the FINAL price, not just the discount amount?" },
     ],
     workedExample: {
-      problem: "RM80 dengan diskaun 25%",
+      problem: { ms: "RM80 dengan diskaun 25%", en: "RM80 with a 25% discount" },
       steps: [
         { ms: "Kenal pasti: harga asal RM80, diskaun 25%.", en: "Identify: original price RM80, discount 25%." },
         { ms: "Jumlah diskaun: 80 × 25 ÷ 100 = RM20", en: "Discount amount: 80 × 25 ÷ 100 = RM20" },
@@ -2347,7 +2347,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah bilangan bagi setiap jenis item benar-benar sama sebelum memilih 'sama kemungkinan'?", en: "Check: are the counts for each item type actually equal before choosing 'equally likely'?" },
     ],
     workedExample: {
-      problem: "Beg mengandungi 10 guli merah sahaja. Kebarangkalian mengeluarkan guli biru?",
+      problem: { ms: "Beg mengandungi 10 guli merah sahaja. Kebarangkalian mengeluarkan guli biru?", en: "A bag contains 10 red marbles only. What is the likelihood of picking out a blue marble?" },
       steps: [
         { ms: "Tiada guli biru dalam beg itu", en: "There are no blue marbles in the bag" },
         { ms: "Jawapan: Mustahil", en: "Answer: Impossible" },
@@ -2390,7 +2390,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda kurang daripada kuantiti asal (untuk peratus di bawah 100%)?", en: "Check: is your answer smaller than the original quantity (for percentages under 100%)?" },
     ],
     workedExample: {
-      problem: "25% daripada 20",
+      problem: { ms: "25% daripada 20", en: "25% of 20" },
       steps: [
         { ms: "20 × 25 = 500", en: "20 × 25 = 500" },
         { ms: "500 ÷ 100 = 5", en: "500 ÷ 100 = 5" },
@@ -2436,7 +2436,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah penyebut baru anda betul-betul 100?", en: "Check: is your new denominator exactly 100?" },
     ],
     workedExample: {
-      problem: "3/4 = ?%",
+      problem: { ms: "3/4 = ?%", en: "3/4 = ?%" },
       steps: [
         { ms: "4 × 25 = 100, jadi darab kedua-dua dengan 25", en: "4 × 25 = 100, so multiply both by 25" },
         { ms: "3 × 25 = 75", en: "3 × 25 = 75" },
@@ -2477,7 +2477,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Permudahkan pecahan jawapan jika boleh.", en: "Simplify the resulting fraction if possible." },
     ],
     workedExample: {
-      problem: "3/4 × 3",
+      problem: { ms: "3/4 × 3", en: "3/4 × 3" },
       steps: [
         { ms: "Darabkan pengangka: 3 × 3 = 9", en: "Multiply the numerator: 3 × 3 = 9" },
         { ms: "Penyebut kekal: 4", en: "Denominator stays: 4" },
@@ -2517,7 +2517,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah anda anjak titik perpuluhan tepat 2 tempat?", en: "Check: did you shift the decimal point exactly 2 places?" },
     ],
     workedExample: {
-      problem: "0.85 = ?%",
+      problem: { ms: "0.85 = ?%", en: "0.85 = ?%" },
       steps: [
         { ms: "Darab dengan 100: 0.85 × 100 = 85", en: "Multiply by 100: 0.85 × 100 = 85" },
         { ms: "Jawapan: 85%", en: "Answer: 85%" },
@@ -2560,7 +2560,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: untuk tambah, jawapan mesti lebih besar daripada kedua-dua nilai asal.", en: "Check: for addition, the answer must be bigger than both original values." },
     ],
     workedExample: {
-      problem: "Harga naik 20%, kemudian naik lagi 15%. Berapakah jumlah kenaikan?",
+      problem: { ms: "Harga naik 20%, kemudian naik lagi 15%. Berapakah jumlah kenaikan?", en: "Price rises 20%, then rises another 15%. What is the total increase?" },
       steps: [
         { ms: "Kenal pasti operasi: tambah, kerana harga naik dua kali.", en: "Identify the operation: addition, since the price rose twice." },
         { ms: "Buang %: 20 + 15", en: "Drop the %: 20 + 15" },
@@ -2609,7 +2609,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah anda tukar kepada pecahan tak wajar SEBELUM membahagi?", en: "Check: did you convert to an improper fraction BEFORE dividing?" },
     ],
     workedExample: {
-      problem: "2 1/2 ÷ 5",
+      problem: { ms: "2 1/2 ÷ 5", en: "2 1/2 ÷ 5" },
       steps: [
         { ms: "Tukar kepada pecahan tak wajar: (2×2+1)/2 = 5/2", en: "Convert to improper fraction: (2×2+1)/2 = 5/2" },
         { ms: "Darabkan penyebut: 2 × 5 = 10", en: "Multiply the denominator: 2 × 5 = 10" },
@@ -2655,7 +2655,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah nisbah jawapan anda kepada kuantiti yang diketahui SAMA dengan nisbah asal?", en: "Check: is the ratio of your answer to the known quantity the SAME as the original ratio?" },
     ],
     workedExample: {
-      problem: "Nisbah 2:3, kucing=8 ekor. Berapa anjing?",
+      problem: { ms: "Nisbah 2:3, kucing=8 ekor. Berapa anjing?", en: "Ratio 2:3, cats=8. How many dogs?" },
       steps: [
         { ms: "Faktor skala: 8 ÷ 2 = 4", en: "Scale factor: 8 ÷ 2 = 4" },
         { ms: "Anjing: 3 × 4 = 12", en: "Dogs: 3 × 4 = 12" },
@@ -2688,13 +2688,18 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Cari jumlah cukai dahulu (jumlah invois × peratus cukai ÷ 100), kemudian TAMBAH pada jumlah invois.", en: "Find the tax amount first (invoice amount × tax percent ÷ 100), then ADD it to the invoice amount." },
       { ms: "Jangan berhenti selepas kira cukai — itu bukan jumlah akhir.", en: "Don't stop after calculating the tax — that's not the final amount." },
+      {
+        ms: "JANGAN buat ini: invois RM50 dengan cukai 6%, jawab RM3 (jumlah cukai sahaja). SALAH — RM3 itu cukai TAMBAHAN, bukan jumlah perlu dibayar. Jawapan yang betul ialah RM50 + RM3 = RM53.",
+        en: "DON'T do this: invoice RM50 with 6% tax, answered RM3 (the tax amount alone). WRONG — RM3 is the ADDITIONAL tax, not the total payable. The correct answer is RM50 + RM3 = RM53.",
+      },
     ],
     howTo: [
       { ms: "Kira jumlah cukai: jumlah invois × peratus cukai ÷ 100.", en: "Calculate the tax amount: invoice amount × tax percent ÷ 100." },
       { ms: "Tambah jumlah cukai pada jumlah invois.", en: "Add the tax amount to the invoice amount." },
+      { ms: "Semak: adakah jawapan anda LEBIH BESAR daripada jumlah invois asal?", en: "Check: is your answer LARGER than the original invoice amount?" },
     ],
     workedExample: {
-      problem: "RM50 dengan cukai 6%",
+      problem: { ms: "RM50 dengan cukai 6%", en: "RM50 with 6% tax" },
       steps: [
         { ms: "Jumlah cukai: 50 × 6 ÷ 100 = RM3", en: "Tax amount: 50 × 6 ÷ 100 = RM3" },
         { ms: "Jumlah perlu dibayar: 50 + 3 = RM53", en: "Total payable: 50 + 3 = RM53" },
@@ -2703,10 +2708,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "gave_tax_only", description: { ms: "Murid beri jumlah cukai sahaja, bukan jumlah perlu dibayar.", en: "The student gives only the tax amount, not the total payable." } },
+      { mistakeType: "subtracted_instead_of_added", description: { ms: "Murid tolak cukai daripada jumlah invois berbanding menambahnya.", en: "The student subtracts the tax from the invoice amount instead of adding it." } },
+      { mistakeType: "wrong_percentage_used", description: { ms: "Murid guna kadar cukai yang salah atau salah letak titik perpuluhan semasa kira peratus.", en: "The student uses the wrong tax rate or misplaces the decimal point when calculating the percentage." } },
+      { mistakeType: "arithmetic_error_in_addition", description: { ms: "Murid kira jumlah cukai dengan betul tetapi tersilap kira semasa menambah.", en: "The student calculates the tax amount correctly but makes an arithmetic slip while adding." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 200 } },
+      { type: "fill", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 200 } },
       { type: "word_problem", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 150 } },
+      { type: "mcq", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 200, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 150, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000060": {
@@ -2731,7 +2742,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: bahagikan jumlah dividen dengan bilangan saham — jawapan mesti sama dengan dividen bagi setiap saham asal.", en: "Check: divide the total dividend by the number of shares — it should match the original dividend per share." },
     ],
     workedExample: {
-      problem: "200 saham × RM0.15 setiap saham",
+      problem: { ms: "200 saham × RM0.15 setiap saham", en: "200 shares × RM0.15 per share" },
       steps: [
         { ms: "Kenal pasti: 200 saham, RM0.15 setiap saham.", en: "Identify: 200 shares, RM0.15 per share." },
         { ms: "200 × 0.15 = 30", en: "200 × 0.15 = 30" },
@@ -2777,7 +2788,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: kos penyelenggaraan atau nilai tinggi TIDAK menukar sesuatu daripada aset kepada liabiliti — hanya hutang yang belum dijelaskan yang menjadikannya liabiliti.", en: "Check: maintenance cost or high value does NOT turn an asset into a liability — only an unpaid debt does." },
     ],
     workedExample: {
-      problem: "Hutang kad kredit — aset atau liabiliti?",
+      problem: { ms: "Hutang kad kredit — aset atau liabiliti?", en: "Credit card debt — asset or liability?" },
       steps: [
         { ms: "Baca perihalan: hutang kad kredit ialah wang yang telah dibelanjakan tetapi belum dibayar balik.", en: "Read the description: credit card debt is money already spent but not yet paid back." },
         { ms: "Tanya: adakah ini milik saya, atau adakah saya terhutang?", en: "Ask: is this something I own, or something I owe?" },
@@ -2826,7 +2837,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah anda terbalikkan pecahan KEDUA sahaja, bukan yang pertama?", en: "Check: did you flip only the SECOND fraction, not the first?" },
     ],
     workedExample: {
-      problem: "3/4 ÷ 1/8",
+      problem: { ms: "3/4 ÷ 1/8", en: "3/4 ÷ 1/8" },
       steps: [
         { ms: "Terbalikkan pecahan kedua: 1/8 → 8/1", en: "Flip the second fraction: 1/8 → 8/1" },
         { ms: "Darab: 3/4 × 8/1 = 24/4", en: "Multiply: 3/4 × 8/1 = 24/4" },
@@ -2872,7 +2883,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah anda tukar kepada pecahan tak wajar SEBELUM terbalik dan darab?", en: "Check: did you convert to an improper fraction BEFORE flipping and multiplying?" },
     ],
     workedExample: {
-      problem: "1 1/2 ÷ 1/4",
+      problem: { ms: "1 1/2 ÷ 1/4", en: "1 1/2 ÷ 1/4" },
       steps: [
         { ms: "Tukar kepada pecahan tak wajar: 1 1/2 = 3/2", en: "Convert to improper fraction: 1 1/2 = 3/2" },
         { ms: "Terbalik dan darab: 3/2 × 4/1 = 12/2", en: "Flip and multiply: 3/2 × 4/1 = 12/2" },
@@ -2906,14 +2917,19 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Kenal pasti faktor penukaran untuk pasangan unit itu dahulu (cth. 12 bulan=1 tahun, 10 tahun=1 dekad).", en: "Identify the conversion factor for that unit pair first (e.g. 12 months=1 year, 10 years=1 decade)." },
       { ms: "Tambah/tolak unit kecil dahulu, kemudian regroup jika perlu.", en: "Add/subtract the smaller unit first, then regroup if needed." },
+      {
+        ms: "JANGAN buat ini: 2 tahun 8 bulan + 1 tahun 5 bulan dijawab sebagai 3 tahun 13 bulan. SALAH — bulan tidak boleh melebihi 11! 13 bulan MESTI ditukar kepada 1 tahun 1 bulan dahulu, jadi jawapan sebenar ialah 4 tahun 1 bulan.",
+        en: "DON'T do this: 2 years 8 months + 1 year 5 months answered as 3 years 13 months. WRONG — months can't exceed 11! 13 months MUST be converted into 1 year 1 month first, so the real answer is 4 years 1 month.",
+      },
     ],
     howTo: [
       { ms: "Tambah atau tolak unit kecil dahulu.", en: "Add or subtract the smaller unit first." },
       { ms: "Jika unit kecil mencapai atau melebihi faktor penukaran, regroup ke unit besar.", en: "If the smaller unit reaches or exceeds the conversion factor, regroup into the larger unit." },
       { ms: "Tambah atau tolak unit besar.", en: "Add or subtract the larger unit." },
+      { ms: "Semak: adakah bahagian unit kecil dalam jawapan anda kurang daripada faktor penukaran?", en: "Check: is the smaller-unit part of your answer less than the conversion factor?" },
     ],
     workedExample: {
-      problem: "2 tahun 8 bulan + 1 tahun 5 bulan",
+      problem: { ms: "2 tahun 8 bulan + 1 tahun 5 bulan", en: "2 years 8 months + 1 year 5 months" },
       steps: [
         { ms: "Tambah bulan: 8 + 5 = 13 bulan", en: "Add the months: 8 + 5 = 13 months" },
         { ms: "13 bulan = 1 tahun 1 bulan", en: "13 months = 1 year 1 month" },
@@ -2924,10 +2940,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "time_carry_error", description: { ms: "Murid tidak regroup apabila unit kecil melebihi faktor penukaran.", en: "The student doesn't regroup when the smaller unit exceeds the conversion factor." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid menambah berbanding menolak (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student adds instead of subtracting (or vice versa) when solving the problem." } },
+      { mistakeType: "borrow_error", description: { ms: "Semasa menolak, murid tidak pinjam daripada unit besar apabila unit kecil yang ditolak lebih besar.", en: "When subtracting, the student doesn't borrow from the larger unit when the smaller unit being subtracted is larger." } },
+      { mistakeType: "wrong_conversion_factor", description: { ms: "Murid guna faktor penukaran yang salah untuk pasangan unit itu (cth. anggap 10 bulan=1 tahun).", en: "The student uses the wrong conversion factor for that unit pair (e.g. assumes 10 months=1 year)." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "yr", small: "mth", factor: 12 }], maxBig: 6 } },
-      { type: "word_problem", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "dec", small: "yr", factor: 10 }], maxBig: 5 } },
+      { type: "fill", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "yr", small: "mth", factor: 12 }], maxBig: 6 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "dec", small: "yr", factor: 10 }], maxBig: 5, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "yr", small: "mth", factor: 12 }], maxBig: 6, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "dec", small: "yr", factor: 10 }], maxBig: 5, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000065": {
@@ -2953,7 +2975,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda beza (tolak), bukan jumlah (tambah)?", en: "Check: is your answer a difference (subtraction), not a sum (addition)?" },
     ],
     workedExample: {
-      problem: "A(2, 3) dan B(2, 9)",
+      problem: { ms: "A(2, 3) dan B(2, 9)", en: "A(2, 3) and B(2, 9)" },
       steps: [
         { ms: "Nilai-x sama (2), jadi bandingkan nilai-y", en: "The x-value is the same (2), so compare the y-values" },
         { ms: "Jarak = 9 − 3 = 6", en: "Distance = 9 − 3 = 6" },
@@ -2996,7 +3018,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda sepadan dengan statistik yang DITANYA, bukan yang lain?", en: "Check: does your answer match the statistic that was ASKED for, not a different one?" },
     ],
     workedExample: {
-      problem: "12, 15, 12, 18, 20 — cari mod",
+      problem: { ms: "12, 15, 12, 18, 20 — cari mod", en: "12, 15, 12, 18, 20 — find the mode" },
       steps: [
         { ms: "12 muncul dua kali, yang lain sekali sahaja", en: "12 appears twice, the others only once" },
         { ms: "Jawapan: Mod = 12", en: "Answer: Mode = 12" },
@@ -3029,13 +3051,18 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Kira jumlah keseluruhan ansuran dahulu: bayaran pendahuluan + (bayaran bulanan × bilangan bulan).", en: "Calculate the total instalment cost first: deposit + (monthly payment × number of months)." },
       { ms: "Lebihan = jumlah ansuran − harga tunai.", en: "Extra amount = instalment total − cash price." },
+      {
+        ms: "JANGAN buat ini: jumlah ansuran RM860 dijawab terus sebagai jawapan akhir. SALAH — soalan tanya LEBIHAN, bukan jumlah ansuran. Jawapan yang betul ialah RM860 − RM800 = RM60.",
+        en: "DON'T do this: the instalment total RM860 given directly as the final answer. WRONG — the question asks for the EXTRA amount, not the instalment total. The correct answer is RM860 − RM800 = RM60.",
+      },
     ],
     howTo: [
       { ms: "Kira jumlah keseluruhan secara ansuran: bayaran pendahuluan + (bayaran bulanan × bilangan bulan).", en: "Calculate the total instalment amount: deposit + (monthly payment × number of months)." },
       { ms: "Tolak harga tunai daripada jumlah ansuran itu.", en: "Subtract the cash price from that instalment total." },
+      { ms: "Semak: adakah jawapan anda jauh LEBIH KECIL daripada jumlah ansuran keseluruhan?", en: "Check: is your answer much SMALLER than the full instalment total?" },
     ],
     workedExample: {
-      problem: "Tunai RM800; ansuran RM80 + (RM65 × 12 bulan)",
+      problem: { ms: "Tunai RM800; ansuran RM80 + (RM65 × 12 bulan)", en: "Cash RM800; instalment RM80 + (RM65 × 12 months)" },
       steps: [
         { ms: "Jumlah ansuran: 80 + (65 × 12) = 80 + 780 = RM860", en: "Instalment total: 80 + (65 × 12) = 80 + 780 = RM860" },
         { ms: "Lebihan: 860 − 800 = RM60", en: "Extra: 860 − 800 = RM60" },
@@ -3044,10 +3071,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "gave_credit_total_not_difference", description: { ms: "Murid beri jumlah ansuran keseluruhan, bukan lebihan berbanding tunai.", en: "The student gives the full instalment total, not the extra amount compared to cash." } },
+      { mistakeType: "forgot_deposit", description: { ms: "Murid kira bayaran bulanan sahaja, terlepas pandang bayaran pendahuluan.", en: "The student calculates only the monthly payments, overlooking the deposit." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid tambah harga tunai dan jumlah ansuran berbanding cari beza (tolak).", en: "The student adds the cash price and instalment total instead of finding the difference (subtracting)." } },
+      { mistakeType: "arithmetic_error_in_step", description: { ms: "Murid ikut kaedah yang betul tetapi tersilap kira semasa mendarab atau menolak.", en: "The student follows the correct method but makes an arithmetic slip while multiplying or subtracting." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 2000 } },
+      { type: "fill", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 2000 } },
       { type: "word_problem", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 1500 } },
+      { type: "mcq", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 2000, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 1500, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000068": {
@@ -3072,7 +3105,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah jawapan anda berdasarkan prinsip operasi (Syariah lawan konvensional), bukan sekadar kewujudan bayaran?", en: "Check: is your answer based on the operating principle (Shariah vs. conventional), not just the presence of a payment?" },
     ],
     workedExample: {
-      problem: "Pelan berasaskan prinsip mudharabah, tiada riba",
+      problem: { ms: "Pelan berasaskan prinsip mudharabah, tiada riba", en: "A plan based on mudharabah principles, no interest" },
       steps: [
         { ms: "Baca perihalan: pelan mengagihkan lebihan dana mengikut prinsip mudharabah.", en: "Read the description: the plan distributes surplus funds under mudharabah principles." },
         { ms: "Cari kata kunci: \"mudharabah\" dan \"tiada riba\" ialah prinsip Syariah.", en: "Look for keywords: \"mudharabah\" and \"no interest\" are Shariah principles." },
@@ -3120,7 +3153,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak semula: adakah jawapan anda untuk kuantiti yang betul-betul ditanya?", en: "Double-check: is your answer for the quantity that was actually asked?" },
     ],
     workedExample: {
-      problem: "Tali 3 m, 1.2 kg, dipotong kepada 4 bahagian. Panjang setiap bahagian?",
+      problem: { ms: "Tali 3 m, 1.2 kg, dipotong kepada 4 bahagian. Panjang setiap bahagian?", en: "Rope 3 m, 1.2 kg, cut into 4 equal pieces. Length of each piece?" },
       steps: [
         { ms: "Fokus pada panjang sahaja: 3 m = 300 cm", en: "Focus on length only: 3 m = 300 cm" },
         { ms: "300 cm ÷ 4 = 75 cm", en: "300 cm ÷ 4 = 75 cm" },
@@ -3164,7 +3197,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak semula: adakah jawapan anda untuk kuantiti yang betul-betul ditanya?", en: "Double-check: is your answer for the quantity that was actually asked?" },
     ],
     workedExample: {
-      problem: "Hos 6 m, baja 1 L 200 ml, dibahagikan kepada 3 bahagian. Panjang setiap bahagian?",
+      problem: { ms: "Hos 6 m, baja 1 L 200 ml, dibahagikan kepada 3 bahagian. Panjang setiap bahagian?", en: "Hose 6 m, fertiliser 1 L 200 ml, divided into 3 equal parts. Length of each part?" },
       steps: [
         { ms: "Fokus pada panjang sahaja: 6 m = 600 cm", en: "Focus on length only: 6 m = 600 cm" },
         { ms: "600 cm ÷ 3 = 200 cm", en: "600 cm ÷ 3 = 200 cm" },
@@ -3208,7 +3241,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak semula: adakah jawapan anda untuk kuantiti yang betul-betul ditanya?", en: "Double-check: is your answer for the quantity that was actually asked?" },
     ],
     workedExample: {
-      problem: "Tepung 900 g, susu 1 L 500 ml, dibahagikan kepada 3 bahagian. Berat tepung setiap bahagian?",
+      problem: { ms: "Tepung 900 g, susu 1 L 500 ml, dibahagikan kepada 3 bahagian. Berat tepung setiap bahagian?", en: "Flour 900 g, milk 1 L 500 ml, divided into 3 equal batches. Mass of flour per batch?" },
       steps: [
         { ms: "Fokus pada jisim sahaja: 900 g ÷ 3", en: "Focus on mass only: 900 g ÷ 3" },
         { ms: "900 g ÷ 3 = 300 g", en: "900 g ÷ 3 = 300 g" },
@@ -3248,7 +3281,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Untuk soalan beza, cari bilangan sebenar bagi KEDUA-DUA kumpulan dahulu, kemudian tolak.", en: "For a difference question, find the actual count for BOTH groups first, then subtract." },
     ],
     workedExample: {
-      problem: "Carta pai: kumpulan A = 1/4, jumlah murid = 24. Berapakah bilangan murid dalam kumpulan A?",
+      problem: { ms: "Carta pai: kumpulan A = 1/4, jumlah murid = 24. Berapakah bilangan murid dalam kumpulan A?", en: "Pie chart: group A = 1/4, total students = 24. How many students are in group A?" },
       steps: [
         { ms: "Pecahan bagi A ialah 1/4", en: "The fraction for A is 1/4" },
         { ms: "24 × 1/4 = 6", en: "24 × 1/4 = 6" },
@@ -3282,7 +3315,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Tambahkan beza itu (jika positif) atau tolak (jika negatif) daripada masa asal.", en: "Add that difference (if positive) or subtract it (if negative) from the original time." },
     ],
     workedExample: {
-      problem: "Kuala Lumpur (GMT+8), Tokyo (GMT+9). Masa di Kuala Lumpur: 14:00. Pukul berapa di Tokyo?",
+      problem: { ms: "Kuala Lumpur (GMT+8), Tokyo (GMT+9). Masa di Kuala Lumpur: 14:00. Pukul berapa di Tokyo?", en: "Kuala Lumpur (GMT+8), Tokyo (GMT+9). Time in Kuala Lumpur: 14:00. What time is it in Tokyo?" },
       steps: [
         { ms: "Beza GMT = 9 − 8 = +1 jam", en: "GMT difference = 9 − 8 = +1 hour" },
         { ms: "14:00 + 1 jam = 15:00", en: "14:00 + 1 hour = 15:00" },
@@ -3318,7 +3351,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Jika ada LEBIH daripada 2 faktor, ia gubahan. Jika HANYA 1 faktor (nombor itu ialah 1), ia bukan kedua-duanya.", en: "If it has MORE than 2 factors, it's composite. If it has ONLY 1 factor (the number is 1), it's neither." },
     ],
     workedExample: {
-      problem: "Adakah 9 nombor perdana atau nombor gubahan?",
+      problem: { ms: "Adakah 9 nombor perdana atau nombor gubahan?", en: "Is 9 a prime number or a composite number?" },
       steps: [
         { ms: "Faktor bagi 9: 1, 3, 9", en: "Factors of 9: 1, 3, 9" },
         { ms: "Terdapat 3 faktor (lebih daripada 2), jadi 9 ialah nombor gubahan", en: "There are 3 factors (more than 2), so 9 is composite" },
@@ -3350,13 +3383,18 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Jangan lupa TOLAK 2 daripada bilangan sisi dahulu, sebelum darab dengan 180°.", en: "Don't forget to SUBTRACT 2 from the number of sides first, before multiplying by 180°." },
       { ms: "Untuk cari SATU sudut, bahagikan jumlah keseluruhan dengan bilangan sisi.", en: "To find ONE angle, divide the total sum by the number of sides." },
+      {
+        ms: "JANGAN buat ini: heksagon (6 sisi) dikira sebagai 6 × 180° = 1080°. SALAH — anda MESTI tolak 2 daripada bilangan sisi dahulu. Jawapan yang betul ialah (6 − 2) × 180° = 720°.",
+        en: "DON'T do this: a hexagon (6 sides) calculated as 6 × 180° = 1080°. WRONG — you MUST subtract 2 from the number of sides first. The correct answer is (6 − 2) × 180° = 720°.",
+      },
     ],
     howTo: [
       { ms: "Kira jumlah sudut pedalaman: (bilangan sisi − 2) × 180°.", en: "Calculate the sum of interior angles: (number of sides − 2) × 180°." },
       { ms: "Jika soalan minta SATU sudut, bahagikan jumlah itu dengan bilangan sisi.", en: "If the question asks for ONE angle, divide that sum by the number of sides." },
+      { ms: "Semak: adakah anda tolak 2 daripada bilangan sisi SEBELUM darab dengan 180°?", en: "Check: did you subtract 2 from the number of sides BEFORE multiplying by 180°?" },
     ],
     workedExample: {
-      problem: "Berapakah setiap sudut pedalaman bagi heksagon sekata (6 sisi)?",
+      problem: { ms: "Berapakah setiap sudut pedalaman bagi heksagon sekata (6 sisi)?", en: "What is each interior angle of a regular hexagon (6 sides)?" },
       steps: [
         { ms: "Jumlah = (6 − 2) × 180° = 720°", en: "Sum = (6 − 2) × 180° = 720°" },
         { ms: "Setiap sudut = 720° ÷ 6 = 120°", en: "Each angle = 720° ÷ 6 = 120°" },
@@ -3365,10 +3403,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "polygon_angle_formula_error", description: { ms: "Murid lupa tolak 2 daripada bilangan sisi, atau lupa bahagikan jumlah dengan bilangan sisi untuk dapatkan satu sudut.", en: "The student forgets to subtract 2 from the number of sides, or forgets to divide the sum by the number of sides to get one angle." } },
+      { mistakeType: "confused_sum_and_each_angle", description: { ms: "Murid beri jumlah keseluruhan sudut apabila soalan minta satu sudut sahaja, atau sebaliknya.", en: "The student gives the total sum of angles when the question only asks for one angle, or vice versa." } },
+      { mistakeType: "wrong_side_count", description: { ms: "Murid kira bilangan sisi poligon itu dengan salah.", en: "The student miscounts the number of sides of the polygon." } },
+      { mistakeType: "arithmetic_error_in_formula", description: { ms: "Murid guna formula yang betul tetapi tersilap kira semasa mendarab atau membahagi.", en: "The student uses the correct formula but makes an arithmetic slip while multiplying or dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "regular_polygon_angles", config: {} },
       { type: "fill", difficulty: 3, generatorKey: "regular_polygon_angles", config: {} },
+      { type: "word_problem", difficulty: 3, generatorKey: "regular_polygon_angles", config: { type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "regular_polygon_angles", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "regular_polygon_angles", config: { reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000076": {
@@ -3390,7 +3434,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Jumlah faedah kompaun = jumlah akhir − prinsipal asal.", en: "Total compound interest = final total − original principal." },
     ],
     workedExample: {
-      problem: "RM100 dilaburkan pada kadar faedah kompaun 10% setahun selama 2 tahun. Berapakah jumlah faedah kompaun?",
+      problem: { ms: "RM100 dilaburkan pada kadar faedah kompaun 10% setahun selama 2 tahun. Berapakah jumlah faedah kompaun?", en: "RM100 invested at a compound interest rate of 10% per year for 2 years. What is the total compound interest?" },
       steps: [
         { ms: "Tahun 1: RM100 × 10% = RM10 faedah. Jumlah = RM100 + RM10 = RM110", en: "Year 1: RM100 × 10% = RM10 interest. Total = RM100 + RM10 = RM110" },
         { ms: "Tahun 2: RM110 × 10% = RM11 faedah. Jumlah = RM110 + RM11 = RM121", en: "Year 2: RM110 × 10% = RM11 interest. Total = RM110 + RM11 = RM121" },
@@ -3425,7 +3469,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Darabkan bilangan ikon itu dengan kunci (unit setiap ikon) untuk dapat bilangan sebenar.", en: "Multiply that icon count by the key (units per icon) to get the actual count." },
     ],
     workedExample: {
-      problem: "Peniaga A mempunyai 4 ikon. Kunci: setiap ikon = 5 biji buah. Berapakah bilangan buah peniaga A?",
+      problem: { ms: "Peniaga A mempunyai 4 ikon. Kunci: setiap ikon = 5 biji buah. Berapakah bilangan buah peniaga A?", en: "Seller A has 4 icons. Key: each icon = 5 fruits. How many fruits does Seller A have?" },
       steps: [
         { ms: "Bilangan ikon = 4, kunci = 5 setiap ikon", en: "Icon count = 4, key = 5 per icon" },
         { ms: "4 × 5 = 20", en: "4 × 5 = 20" },
@@ -3463,7 +3507,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: jika anda kata 'serenjang', pastikan sudut itu kelihatan seperti sudut bilik/kertas, bukan condong.", en: "Check: if you say 'perpendicular', make sure the angle really looks like a room/paper corner, not slanted." },
     ],
     workedExample: {
-      problem: "Dua garis bersilang membentuk petak kecil (□) di titik persilangan. Apakah hubungan antara kedua-dua garis ini?",
+      problem: { ms: "Dua garis bersilang membentuk petak kecil (□) di titik persilangan. Apakah hubungan antara kedua-dua garis ini?", en: "Two lines cross forming a small square (□) at the intersection point. What is the relationship between these two lines?" },
       steps: [
         { ms: "Lihat rajah: kedua-dua garis bersilang (bukan selari).", en: "Look at the diagram: the two lines cross (not parallel)." },
         { ms: "Cari petanda: terdapat petak kecil (□) di titik persilangan.", en: "Look for a marker: there's a small square (□) at the crossing point." },
@@ -3499,13 +3543,18 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Isi padu guna KETIGA-TIGA dimensi (panjang, lebar, DAN tinggi) — jangan tertinggal satu dimensi seperti mengira luas.", en: "Volume uses ALL THREE dimensions (length, width, AND height) — don't leave one out like when calculating area." },
       { ms: "Unit isi padu ialah unit padu (cth. cm³), bukan unit petak (cm²) seperti luas.", en: "Volume units are cubic units (e.g. cm³), not square units (cm²) like area." },
+      {
+        ms: "JANGAN buat ini: kuboid panjang 5 cm, lebar 3 cm, tinggi 2 cm dikira sebagai 5 × 3 = 15 cm³ (terlepas pandang tinggi). SALAH — anda MESTI darab KETIGA-TIGA dimensi. Jawapan yang betul ialah 5 × 3 × 2 = 30 cm³.",
+        en: "DON'T do this: a cuboid with length 5 cm, width 3 cm, height 2 cm calculated as 5 × 3 = 15 cm³ (leaving out the height). WRONG — you MUST multiply ALL THREE dimensions. The correct answer is 5 × 3 × 2 = 30 cm³.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti panjang, lebar, dan tinggi kuboid itu.", en: "Identify the cuboid's length, width, and height." },
       { ms: "Darabkan ketiga-tiga nilai itu: panjang × lebar × tinggi.", en: "Multiply all three values together: length × width × height." },
+      { ms: "Semak: adakah unit jawapan anda unit PADU (cth. cm³), bukan unit petak (cm²)?", en: "Check: are your answer's units CUBIC (e.g. cm³), not square units (cm²)?" },
     ],
     workedExample: {
-      problem: "Kuboid: panjang 5 cm, lebar 3 cm, tinggi 2 cm. Cari isi padu.",
+      problem: { ms: "Kuboid: panjang 5 cm, lebar 3 cm, tinggi 2 cm. Cari isi padu.", en: "Cuboid: length 5 cm, width 3 cm, height 2 cm. Find the volume." },
       steps: [
         { ms: "Isi padu = panjang × lebar × tinggi", en: "Volume = length × width × height" },
         { ms: "5 × 3 × 2 = 30 cm³", en: "5 × 3 × 2 = 30 cm³" },
@@ -3514,10 +3563,16 @@ export const TOPICS: Record<string, TopicContent> = {
     },
     commonMistakes: [
       { mistakeType: "treated_volume_as_area", description: { ms: "Murid hanya darabkan DUA daripada tiga dimensi, seperti mengira luas.", en: "The student only multiplies TWO of the three dimensions, like calculating area." } },
+      { mistakeType: "added_instead_of_multiplied", description: { ms: "Murid tambah ketiga-tiga dimensi berbanding mendarabkannya.", en: "The student adds the three dimensions instead of multiplying them." } },
+      { mistakeType: "used_wrong_dimensions", description: { ms: "Dalam soalan berbalik, murid bahagikan isi padu dengan dimensi yang salah, atau gunakan hanya satu dimensi yang diketahui.", en: "In reverse-style questions, the student divides the volume by the wrong dimension, or uses only one known dimension." } },
+      { mistakeType: "arithmetic_error_in_multiplication", description: { ms: "Murid kenal pasti ketiga-tiga dimensi dengan betul tetapi tersilap kira semasa mendarab.", en: "The student correctly identifies all three dimensions but makes an arithmetic slip while multiplying." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "volume_cuboid", config: { min: 2, max: 10 } },
       { type: "fill", difficulty: 2, generatorKey: "volume_cuboid", config: { min: 2, max: 8 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "volume_cuboid", config: { min: 2, max: 8, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "volume_cuboid", config: { min: 2, max: 10, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "volume_cuboid", config: { min: 2, max: 8, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000080": {
@@ -3539,7 +3594,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Tambahkan semua isi padu itu untuk dapatkan jumlah keseluruhan.", en: "Add all those volumes together to get the total." },
     ],
     workedExample: {
-      problem: "Kuboid A: 4 cm × 3 cm × 2 cm, Kuboid B: 3 cm × 2 cm × 2 cm",
+      problem: { ms: "Kuboid A: 4 cm × 3 cm × 2 cm, Kuboid B: 3 cm × 2 cm × 2 cm", en: "Cuboid A: 4 cm × 3 cm × 2 cm, Cuboid B: 3 cm × 2 cm × 2 cm" },
       steps: [
         { ms: "Isi padu A = 4 × 3 × 2 = 24 cm³", en: "Volume A = 4 × 3 × 2 = 24 cm³" },
         { ms: "Isi padu B = 3 × 2 × 2 = 12 cm³", en: "Volume B = 3 × 2 × 2 = 12 cm³" },
@@ -3574,7 +3629,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Kira perimeter menggunakan formula biasa: 2 × (panjang + lebar). Abaikan petak kecil yang dipotong.", en: "Calculate the perimeter using the normal formula: 2 × (length + width). Ignore the small cut-out notch." },
     ],
     workedExample: {
-      problem: "Segi empat tepat 10 m × 6 m dengan petak 4 m × 3 m dipotong daripada satu penjuru. Cari perimeter bentuk-L.",
+      problem: { ms: "Segi empat tepat 10 m × 6 m dengan petak 4 m × 3 m dipotong daripada satu penjuru. Cari perimeter bentuk-L.", en: "Rectangle 10 m × 6 m with a 4 m × 3 m section cut from one corner. Find the perimeter of the L-shape." },
       steps: [
         { ms: "Perimeter bentuk-L = perimeter segi empat tepat ASAL", en: "The L-shape's perimeter = the ORIGINAL rectangle's perimeter" },
         { ms: "2 × (10 + 6) = 32 m", en: "2 × (10 + 6) = 32 m" },
@@ -3614,7 +3669,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah nombor pertama yang anda tulis untuk pergerakan ATAS PANJANG (kanan), bukan NAIK (atas)?", en: "Check: is the first number you wrote for the ACROSS (right) movement, not the UP movement?" },
     ],
     workedExample: {
-      problem: "Sebuah titik terletak 3 petak ke kanan dan 2 petak ke atas daripada asalan.",
+      problem: { ms: "Sebuah titik terletak 3 petak ke kanan dan 2 petak ke atas daripada asalan.", en: "A point is located 3 squares right and 2 squares up from the origin." },
       steps: [
         { ms: "Ke kanan 3 petak → x = 3", en: "3 squares right → x = 3" },
         { ms: "Ke atas 2 petak → y = 2", en: "2 squares up → y = 2" },
@@ -3656,7 +3711,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: bahagian pertama nisbah anda mesti 1, bukan nombor lain.", en: "Check: the first part of your ratio must be 1, not any other number." },
     ],
     workedExample: {
-      problem: "Bagi setiap 1 guru, terdapat 10 murid. Tuliskan nisbah guru kepada murid.",
+      problem: { ms: "Bagi setiap 1 guru, terdapat 10 murid. Tuliskan nisbah guru kepada murid.", en: "For every 1 teacher, there are 10 students. Write the ratio of teachers to students." },
       steps: [
         { ms: "Kenal pasti kuantiti: guru dan murid.", en: "Identify the quantities: teachers and students." },
         { ms: "Cari nombor bersama \"1\": 1 guru.", en: "Find the number with \"1\": 1 teacher." },
@@ -3703,7 +3758,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: adakah anda cari harga SATU item dahulu, sebelum darab?", en: "Check: did you find the price of ONE item first, before multiplying?" },
     ],
     workedExample: {
-      problem: "2 batang pensel berharga RM4. Berapakah harga 5 batang pensel?",
+      problem: { ms: "2 batang pensel berharga RM4. Berapakah harga 5 batang pensel?", en: "2 pencils cost RM4. What is the price of 5 pencils?" },
       steps: [
         { ms: "Harga satu pensel = RM4 ÷ 2 = RM2", en: "Price of one pencil = RM4 ÷ 2 = RM2" },
         { ms: "Harga 5 pensel = RM2 × 5 = RM10", en: "Price of 5 pencils = RM2 × 5 = RM10" },
@@ -3746,7 +3801,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Semak: waktu selepas 1200 sepatutnya jatuh pada petang/malam sahaja.", en: "Check: any time after 1200 should only fall in the afternoon/evening." },
     ],
     workedExample: {
-      problem: "Tukar 2:45 petang kepada format 24 jam",
+      problem: { ms: "Tukar 2:45 petang kepada format 24 jam", en: "Convert 2:45 pm to 24-hour format" },
       steps: [
         { ms: "2:45 petang ialah p.m. dan bukan 12 tengah hari.", en: "2:45 p.m. is p.m. and not 12 noon." },
         { ms: "Tambah 12 pada jam: 2 + 12 = 14", en: "Add 12 to the hour: 2 + 12 = 14" },
