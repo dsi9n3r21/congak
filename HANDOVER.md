@@ -566,14 +566,99 @@ Luas, Sudut, Graf, Koordinat) with no obvious generator-sharing cluster
 in that sample; worth checking `generatorKey`s per-topic same as recent
 batches rather than assuming.
 
+**Batch 19 done — first batch of the score-12 tier:** `...001` (Tambah
+Dalam Lingkungan 100 000), `...004` (Perimeter Bentuk Mudah), `...020`
+(Tolak Nombor Bulat Hingga 100000). All three already had a
+`workedExample` with detailed step-by-step carry/borrow arithmetic and
+2 tips — just needed a 3rd tip, 2 more `commonMistakes`, and 3 more
+templates (word_problem/errorSpotting/reverseProblem) each, confirming
+this tier really is lighter-weight than the original baseline. Found a
+genuine new bug while retrofitting `perimeter.ts`: all three of its
+distractor-padding loops (`errorSpotting`, `word_problem`, and the base
+`mcq` branch) pushed a random candidate straight onto `options` with no
+`!includes()` duplicate check — the one padding-loop shape that had
+survived every prior round unnoticed because this specific generator
+hadn't been touched since the original build. The smoke test caught it
+immediately (6 duplicate-option failures in the errorSpotting variant on
+the first 1000-iteration run) — fixed all three occurrences in the same
+file, not just the new one, since the same broken pattern was already
+sitting in the two branches I hadn't touched. 54 topics retrofitted
+total across 19 batches.
+
+**Batch 20 done:** `...006` (Peratus Asas), `...011` (Luas Segi Empat
+Tepat & Segi Empat Sama), `...016` (Luas Segi Tiga). `...006` was pure
+content work as predicted — `percentage_of_quantity` already had full
+word_problem/errorSpotting/reverseProblem support from batch 12, so this
+one only needed a 3rd tip, 2 more mistakes, and 3 more templates in
+`topics.ts`, no generator changes. `...011` needed the full generator
+retrofit. `...016` had the by-now-familiar bug pattern: `word_problem`
+was declared in the type union but the prompt never branched on it AND
+options were gated `if (type === "mcq")` only — so any word_problem
+template configured for this topic had been rendering with zero
+scenario and zero options. Fixed with a real cloth-cutting word_problem
+(matches the topic's own explanation text) plus the options guard.
+57 topics retrofitted total across 20 batches. **Noticed while
+auditing:** `...024` is ALSO titled "Membaca Koordinat" (Y5) — a
+separate topic from `...082`'s "Membaca Koordinat" (Y4) that was
+retrofitted in batch 16. Worth checking `...024`'s `generatorKey` next
+time; if it's the same `coordinates` generator, that's another likely
+pure-content-work topic like `...006` turned out to be.
+
+**Batch 21 done:** `...024` (Membaca Koordinat, Y5), `...012` (Sudut
+Pada Garis Lurus), `...014` (Jumlah Sudut Dalam Segi Tiga). `...024`
+confirmed as a duplicate-title, pure-content-work topic exactly as
+predicted — same `coordinates` generator as `...082` (batch 16), just a
+4-template categorical shape (no reverseProblem, same as `...082`), used
+a park-map word_problem framing distinct from `...082`'s treasure-map to
+avoid the two topics feeling identical to a student who's done both.
+`...014` had the by-now-standard bug: `word_problem` declared in the
+type union but never wired to a real prompt or options. Both angle
+generators got genuinely different reverseProblems rather than the same
+subtraction relabelled: `...012` gives the *difference* between the two
+angles (not either angle) and asks for the smaller one — a small
+simultaneous-equation step, appropriately harder than the base skill;
+`...014` gives the third angle plus one of the other two and asks for
+the missing one — same computation, different unknown, consistent with
+how other reverseProblems in this project reframe which value isn't
+given rather than inventing an unrelated harder skill. 60 topics
+retrofitted total across 21 batches.
+
+**Batch 22 done — closes the angle cluster and the circle cluster:**
+`...017` (Sudut Pada Satu Titik), `...018` (Lilitan Bulatan), `...019`
+(Luas Bulatan). All three distinct generators, no sharing. `...017`
+mirrors `...014`'s reverseProblem shape (given the third angle plus one
+of the other two, find the missing one). `...018`/`...019` are a
+genuine matched pair — same `PI = 3.142` constant, same "confused with
+the other circle formula" classic mistake in both directions
+(circumference↔area), and their reverseProblems are deliberately built
+from a known integer radius rather than computed via runtime division/
+square-root, so the "correct" answer is always exact instead of
+depending on rounding — `...019`'s reverse in particular would need a
+square root at runtime otherwise (area → radius), which risks an ugly
+non-terminating decimal; sidestepping that by generating the radius
+first and presenting the area second keeps the answer clean while still
+being a genuine "find the radius" question from the student's
+perspective. 63 topics retrofitted total across 22 batches.
+
 **Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
-confirm the current ranked list, then pick ~3 from the score-12 tier
-(34 topics — see the sample above: `...001`, `...003`, `...004`,
-`...006`, `...008`, `...009`, `...011`, `...012`, `...013`, `...014`,
-`...016`, `...017`, `...018`, `...019`, `...020`, `...021`, `...022`,
-`...023`, `...024`, `...025`, and 14 more not shown in the top-20
-printout — run the audit and check the full list rather than assuming
-these are all of them). No DB/UI schema changes needed for any of
+confirm the current ranked list (63 at gold/score 1, 22 still at score
+12: `...003`, `...008`, `...009`, `...013`, `...021`, `...022`,
+`...023`, `...025`, `...026`, `...028`, `...029`, `...030`, `...031`,
+`...034`, `...038`, `...054`, `...072`, `...073`, `...076`, `...077`,
+plus 2 more not shown in the top-20 printout — run the full audit
+rather than assuming this list is exhaustive). Worth checking together:
+`...021`/`...022`/`...025`/`...026`/`...028`/`...029` (a cluster of
+multiplication/division-by-N-digit whole-number topics spanning Y4-Y6 —
+check each `generatorKey`, they may be one shared generator with
+different digit-count configs, or several separate ones);
+`...030`/`...031` (Tambah/Tolak Nombor Bulat Hingga 1,000,000 — likely
+the same generators as batch 19's `...001`/`...020` but at a higher
+number range, worth checking if that's literally true via config rather
+than a separate generator); `...038`/`...054` (Bahagi/Darab Pecahan)
+might share a generator with the fraction-division family from batch
+15; `...072` (Membaca Carta Pai) and `...077` (Membaca Piktograf) are
+both diagram/chart-reading topics, likely categorical like `...082`'s
+pattern (no reverseProblem). No DB/UI schema changes needed for any of
 this — `challengeExample` from the original brief was folded into
 `questionTemplates`' `reverseProblem`/`errorSpotting` configs instead of
 a new object field, since that's already how `...085` and every

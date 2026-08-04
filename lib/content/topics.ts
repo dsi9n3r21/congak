@@ -59,6 +59,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Anggarkan jawapan dahulu dengan membundarkan kedua-dua nombor — ini membantu anda kesan jika jawapan akhir tidak masuk akal.",
         en: "Estimate the answer first by rounding both numbers — this helps you catch it if your final answer doesn't make sense.",
       },
+      {
+        ms: "JANGAN buat ini: 3245 + 186 disusun sa bertentang sa dengan sa terakhir sahaja (bukan ikut nilai tempat sebenar), lalu jawab 5105. SALAH — anda MESTI susun ikut nilai tempat (sa di bawah sa). Jawapan yang betul ialah 3431.",
+        en: "DON'T do this: 3245 + 186 lined up flush-right by digit count (not real place value), then answered 5105. WRONG — you MUST line up by place value (ones under ones). The correct answer is 3431.",
+      },
     ],
     howTo: [
       { ms: "Susun kedua-dua nombor menegak, ikut nilai tempat (sa di bawah sa, puluh di bawah puluh, dan seterusnya).", en: "Line the two numbers up vertically, matching place value (ones under ones, tens under tens, and so on)." },
@@ -121,10 +125,15 @@ export const TOPICS: Record<string, TopicContent> = {
           { ms: "Tambah 1 (simpan) itu bersama lajur ribu seterusnya", en: "Add that carried 1 into the next (thousands) column's total" },
         ],
       },
+      { mistakeType: "wrong_operation", description: { ms: "Murid menolak berbanding menambah (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student subtracts instead of adding (or vice versa) when solving the problem." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan jawapan dahulu, jadi tidak perasan jawapan akhir tidak masuk akal.", en: "The student doesn't estimate the answer first, so doesn't notice when the final answer doesn't make sense." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_addition", config: { min: 15000, max: 45000 } },
       { type: "fill", difficulty: 2, generatorKey: "whole_numbers_addition", config: { min: 25000, max: 50000 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_addition", config: { min: 15000, max: 45000, type: "word_problem" } },
+      { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_addition", config: { min: 15000, max: 45000, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_addition", config: { min: 15000, max: 45000, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000002": {
@@ -234,6 +243,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Untuk segi empat sama, cukup darab satu sisi dengan 4 — tidak perlu formula panjang+lebar.",
         en: "For a square, just multiply one side by 4 — no need for the length+width formula.",
       },
+      {
+        ms: "JANGAN buat ini: segi empat tepat 8 cm × 5 cm dikira sebagai 8 × 5 = 40 cm. SALAH — itu ialah LUAS, bukan perimeter. Perimeter yang betul ialah 2 × (8 + 5) = 26 cm.",
+        en: "DON'T do this: a rectangle 8 cm × 5 cm calculated as 8 × 5 = 40 cm. WRONG — that's AREA, not perimeter. The correct perimeter is 2 × (8 + 5) = 26 cm.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti bentuk itu — segi empat tepat atau segi empat sama.", en: "Identify the shape — rectangle or square." },
@@ -253,10 +266,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "perimeter_area_confusion", description: { ms: "Murid mengira luas (panjang × lebar) berbanding perimeter.", en: "The student calculates area (length × width) instead of perimeter." } },
       { mistakeType: "forgot_double_perimeter", description: { ms: "Murid terlupa gandakan (panjang + lebar) dengan 2.", en: "The student forgets to double (length + width) by 2." } },
+      { mistakeType: "wrong_dimensions_used", description: { ms: "Dalam soalan berbalik, murid guna perimeter secara terus sebagai sisi, tanpa bahagikan dengan 2 dahulu.", en: "In reverse-style questions, the student uses the perimeter directly as a side length, without dividing by 2 first." } },
+      { mistakeType: "arithmetic_error_in_formula", description: { ms: "Murid guna formula yang betul tetapi tersilap kira semasa menambah atau mendarab.", en: "The student uses the correct formula but makes an arithmetic slip while adding or multiplying." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "perimeter", config: { min: 3, max: 12 } },
       { type: "fill", difficulty: 2, generatorKey: "perimeter", config: { min: 8, max: 20 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "perimeter", config: { min: 3, max: 12, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "perimeter", config: { min: 3, max: 12, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "perimeter", config: { min: 3, max: 12, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000005": {
@@ -324,11 +342,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Jawapan mesti lebih kecil daripada kuantiti asal (kecuali peratus itu 100% atau lebih) — jika lebih besar, semak semula pengiraan anda.",
         en: "The answer should be smaller than the original quantity (unless the percentage is 100% or more) — if it's bigger, double-check your working.",
       },
+      {
+        ms: "JANGAN buat ini: 20% daripada 50 dikira sebagai 20 × 50 = 1000 dan berhenti di situ. SALAH — anda MESTI bahagi dengan 100 selepas darab. Jawapan yang betul ialah 1000 ÷ 100 = 10.",
+        en: "DON'T do this: 20% of 50 calculated as 20 × 50 = 1000 and stopping there. WRONG — you MUST divide by 100 after multiplying. The correct answer is 1000 ÷ 100 = 10.",
+      },
     ],
     howTo: [
       { ms: "Tukar peratus itu kepada pecahan per seratus (cth. 20% = 20/100).", en: "Convert the percentage into a fraction over 100 (e.g. 20% = 20/100)." },
       { ms: "Darabkan pecahan itu dengan kuantiti yang diberi.", en: "Multiply that fraction by the given quantity." },
       { ms: "Permudahkan pengiraan itu untuk dapatkan jawapan.", en: "Simplify the calculation to get the answer." },
+      { ms: "Semak: adakah jawapan anda munasabah berbanding kuantiti asal?", en: "Check: does your answer make sense compared to the original quantity?" },
     ],
     workedExample: {
       problem: { ms: "20% daripada 50", en: "20% of 50" },
@@ -342,10 +365,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_divide_by_100", description: { ms: "Murid mendarab terus peratus dengan kuantiti tanpa membahagi dengan 100 dahulu.", en: "The student multiplies the percent directly by the quantity without dividing by 100 first." } },
       { mistakeType: "inverted_percentage_operation", description: { ms: "Murid membahagikan kuantiti dengan peratus, bukan mendarab.", en: "The student divides the quantity by the percent instead of multiplying." } },
+      { mistakeType: "confused_part_and_whole", description: { ms: "Murid keliru antara kuantiti asal dan bahagian yang dicari, terutamanya dalam soalan berbalik.", en: "The student confuses the original quantity with the part being found, especially in reverse-style questions." } },
+      { mistakeType: "arithmetic_error_in_step", description: { ms: "Murid ikut kaedah yang betul tetapi tersilap kira semasa mendarab atau membahagi.", en: "The student follows the correct method but makes an arithmetic slip while multiplying or dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "percentage_of_quantity", config: { percentages: [50, 25, 10] } },
-      { type: "word_problem", difficulty: 2, generatorKey: "percentage_of_quantity", config: { percentages: [20, 75, 5] } },
+      { type: "fill", difficulty: 1, generatorKey: "percentage_of_quantity", config: { percentages: [50, 25, 10] } },
+      { type: "word_problem", difficulty: 2, generatorKey: "percentage_of_quantity", config: { percentages: [20, 75, 5], type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "percentage_of_quantity", config: { percentages: [20, 75, 5], errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "percentage_of_quantity", config: { percentages: [20, 75, 5], reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000007": {
@@ -543,11 +571,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Jangan lupa unit luas ialah \"persegi\" (cm² atau m²), bukan sama seperti unit panjang biasa.",
         en: "Don't forget the unit for area is \"squared\" (cm² or m²), not the same as a plain length unit.",
       },
+      {
+        ms: "JANGAN buat ini: segi empat tepat 7 cm × 4 cm dikira sebagai perimeter 2×(7+4) = 22 cm. SALAH — soalan minta LUAS, bukan perimeter. Luas yang betul ialah 7 × 4 = 28 cm².",
+        en: "DON'T do this: a rectangle 7 cm × 4 cm calculated as the perimeter 2×(7+4) = 22 cm. WRONG — the question asks for AREA, not perimeter. The correct area is 7 × 4 = 28 cm².",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti panjang dan lebar bentuk itu.", en: "Identify the length and width of the shape." },
       { ms: "Darabkan panjang dengan lebar.", en: "Multiply the length by the width." },
       { ms: "Tulis jawapan dengan unit persegi yang betul (cm², m²).", en: "Write the answer with the correct squared unit (cm², m²)." },
+      { ms: "Semak: adakah anda darab (bukan tambah) panjang dengan lebar?", en: "Check: did you multiply (not add) the length and width?" },
     ],
     workedExample: {
       problem: { ms: "Segi empat tepat 7 cm × 4 cm", en: "Rectangle 7 cm × 4 cm" },
@@ -561,10 +594,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "area_perimeter_confusion", description: { ms: "Murid mengira perimeter (2×(panjang+lebar)) berbanding luas.", en: "The student calculates perimeter (2×(length+width)) instead of area." } },
       { mistakeType: "forgot_multiply_area", description: { ms: "Murid menambah panjang dan lebar, bukan mendarabkannya.", en: "The student adds the length and width instead of multiplying them." } },
+      { mistakeType: "wrong_dimension_used", description: { ms: "Dalam soalan berbalik, murid tolak berbanding bahagi untuk mencari sisi yang tidak diketahui.", en: "In reverse-style questions, the student subtracts instead of dividing to find the missing side." } },
+      { mistakeType: "arithmetic_error_in_multiplication", description: { ms: "Murid kenal pasti panjang dan lebar dengan betul tetapi tersilap kira semasa mendarab.", en: "The student correctly identifies the length and width but makes an arithmetic slip while multiplying." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "area_rectangle", config: { min: 3, max: 10 } },
       { type: "fill", difficulty: 2, generatorKey: "area_rectangle", config: { min: 5, max: 15 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "area_rectangle", config: { min: 3, max: 10, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "area_rectangle", config: { min: 3, max: 10, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "area_rectangle", config: { min: 3, max: 10, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000012": {
@@ -585,11 +623,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Semak jawapan anda: sudut yang diberi + jawapan anda MESTI menyamai 180°.",
         en: "Check your answer: the given angle + your answer MUST equal 180°.",
       },
+      {
+        ms: "JANGAN buat ini: satu sudut 65° pada garis lurus, sudut satu lagi dikira sebagai 90° − 65° = 25°. SALAH — sudut pada garis lurus berjumlah 180°, BUKAN 90°. Jawapan yang betul ialah 180° − 65° = 115°.",
+        en: "DON'T do this: one angle is 65° on a straight line, the other calculated as 90° − 65° = 25°. WRONG — angles on a straight line add up to 180°, NOT 90°. The correct answer is 180° − 65° = 115°.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti sudut yang diberi pada garis lurus itu.", en: "Identify the given angle on the straight line." },
       { ms: "Tolak sudut itu daripada 180°.", en: "Subtract that angle from 180°." },
       { ms: "Jawapan itu ialah sudut satu lagi.", en: "The result is the other angle." },
+      { ms: "Semak: adakah kedua-dua sudut itu berjumlah tepat 180°?", en: "Check: do both angles add up to exactly 180°?" },
     ],
     workedExample: {
       problem: { ms: "Satu sudut ialah 65° pada garis lurus", en: "One angle is 65° on a straight line" },
@@ -602,10 +645,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "confused_with_complementary", description: { ms: "Murid tolak daripada 90° (sudut bersandar) berbanding 180°.", en: "The student subtracts from 90° (complementary angles) instead of 180°." } },
       { mistakeType: "no_operation_performed", description: { ms: "Murid menulis semula sudut yang diberi tanpa membuat sebarang pengiraan.", en: "The student just restates the given angle without performing any calculation." } },
+      { mistakeType: "confused_which_angle_asked", description: { ms: "Dalam soalan berbalik, murid beri sudut yang lebih besar apabila soalan minta yang lebih kecil, atau sebaliknya.", en: "In reverse-style questions, the student gives the larger angle when the question asks for the smaller one, or vice versa." } },
+      { mistakeType: "arithmetic_error_in_subtraction", description: { ms: "Murid guna kaedah yang betul (tolak daripada 180°) tetapi tersilap kira.", en: "The student uses the correct method (subtracting from 180°) but makes an arithmetic slip." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "angles_straight_line", config: {} },
       { type: "fill", difficulty: 2, generatorKey: "angles_straight_line", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "angles_straight_line", config: { type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "angles_straight_line", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "angles_straight_line", config: { reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000013": {
@@ -668,11 +716,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Semak jawapan anda: ketiga-tiga sudut segi tiga itu MESTI berjumlah tepat 180° apabila ditambah bersama.",
         en: "Check your answer: all three angles of the triangle MUST add up to exactly 180° together.",
       },
+      {
+        ms: "JANGAN buat ini: sudut 50° dan 60°, sudut ketiga dikira sebagai 360° − 50° − 60° = 250°. SALAH — jumlah sudut dalam segi tiga ialah 180°, BUKAN 360° (itu untuk sudut pada satu titik). Jawapan yang betul ialah 180° − 50° − 60° = 70°.",
+        en: "DON'T do this: angles 50° and 60°, third angle calculated as 360° − 50° − 60° = 250°. WRONG — the angle sum in a triangle is 180°, NOT 360° (that's for angles at a point). The correct answer is 180° − 50° − 60° = 70°.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti kedua-dua sudut yang diberi dalam segi tiga itu.", en: "Identify the two given angles in the triangle." },
       { ms: "Tambahkan kedua-dua sudut itu bersama.", en: "Add those two angles together." },
       { ms: "Tolak jumlah itu daripada 180°.", en: "Subtract that total from 180°." },
+      { ms: "Semak: adakah ketiga-tiga sudut berjumlah tepat 180°?", en: "Check: do all three angles add up to exactly 180°?" },
     ],
     workedExample: {
       problem: { ms: "Dua sudut: 50° dan 60°", en: "Two angles: 50° and 60°" },
@@ -685,10 +738,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "confused_angle_sum_360", description: { ms: "Murid tolak daripada 360° (sudut pada satu titik) berbanding 180°.", en: "The student subtracts from 360° (angles at a point) instead of 180°." } },
       { mistakeType: "only_subtracted_one_angle", description: { ms: "Murid hanya tolak satu daripada dua sudut yang diberi.", en: "The student only subtracts one of the two given angles." } },
+      { mistakeType: "confused_which_angle_asked", description: { ms: "Dalam soalan berbalik, murid keliru sudut mana yang perlu dicari apabila diberi sudut ketiga.", en: "In reverse-style questions, the student is confused about which angle to find when given the third angle." } },
+      { mistakeType: "arithmetic_error_in_addition", description: { ms: "Murid guna kaedah yang betul tetapi tersilap kira semasa menambah atau menolak.", en: "The student uses the correct method but makes an arithmetic slip while adding or subtracting." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "angles_triangle_sum", config: {} },
-      { type: "word_problem", difficulty: 2, generatorKey: "angles_triangle_sum", config: {} },
+      { type: "fill", difficulty: 2, generatorKey: "angles_triangle_sum", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "angles_triangle_sum", config: { type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "angles_triangle_sum", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "angles_triangle_sum", config: { reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000015": {
@@ -754,11 +812,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Tinggi segi tiga MESTI diukur secara tegak lurus (bersudut 90°) daripada tapak ke bucu atas — bukan panjang sisi condong.",
         en: "The height of a triangle MUST be measured perpendicular (at 90°) from the base to the top vertex — not the length of a slanted side.",
       },
+      {
+        ms: "JANGAN buat ini: tapak 8 cm, tinggi 5 cm dikira sebagai 8 × 5 = 40 cm² dan berhenti di situ. SALAH — anda MESTI bahagi dengan 2 selepas darab. Jawapan yang betul ialah 40 ÷ 2 = 20 cm².",
+        en: "DON'T do this: base 8 cm, height 5 cm calculated as 8 × 5 = 40 cm² and stopping there. WRONG — you MUST divide by 2 after multiplying. The correct answer is 40 ÷ 2 = 20 cm².",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti tapak dan tinggi segi tiga itu.", en: "Identify the triangle's base and height." },
       { ms: "Darabkan tapak dengan tinggi.", en: "Multiply the base by the height." },
       { ms: "Bahagikan hasil darab itu dengan 2.", en: "Divide that product by 2." },
+      { ms: "Semak: adakah anda bahagi dengan 2 SELEPAS darab, bukan sebelum?", en: "Check: did you divide by 2 AFTER multiplying, not before?" },
     ],
     workedExample: {
       problem: { ms: "Tapak 8 cm, tinggi 5 cm", en: "Base 8 cm, height 5 cm" },
@@ -773,10 +836,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_to_halve", description: { ms: "Murid mengira tapak × tinggi tanpa membahagikan dengan 2.", en: "The student calculates base × height without dividing by 2." } },
       { mistakeType: "halved_both_dimensions", description: { ms: "Murid membahagikan tapak dan tinggi dengan 2 secara berasingan sebelum mendarab.", en: "The student divides the base and height by 2 separately before multiplying." } },
+      { mistakeType: "used_slanted_side_as_height", description: { ms: "Murid guna panjang sisi condong sebagai tinggi, bukan jarak tegak lurus sebenar.", en: "The student uses the length of a slanted side as the height, instead of the actual perpendicular distance." } },
+      { mistakeType: "arithmetic_error_in_division", description: { ms: "Murid darab tapak dan tinggi dengan betul tetapi tersilap kira semasa bahagi dengan 2.", en: "The student multiplies the base and height correctly but makes an arithmetic slip while dividing by 2." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "area_triangle", config: { min: 4, max: 16 } },
-      { type: "word_problem", difficulty: 2, generatorKey: "area_triangle", config: { min: 6, max: 20 } },
+      { type: "fill", difficulty: 2, generatorKey: "area_triangle", config: { min: 4, max: 16 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "area_triangle", config: { min: 6, max: 20, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "area_triangle", config: { min: 4, max: 16, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "area_triangle", config: { min: 6, max: 20, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000017": {
@@ -797,11 +865,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Jangan keliru dengan sudut pada garis lurus (180°) — sudut pada satu titik mengelilingi TITIK itu sepenuhnya, bukan hanya separuh.",
         en: "Don't confuse this with angles on a straight line (180°) — angles at a point go all the way around the point, not just halfway.",
       },
+      {
+        ms: "JANGAN buat ini: sudut 110° dan 95°, sudut ketiga dikira sebagai 180° − 110° − 95° = −25°. SALAH — jumlah sudut pada satu titik ialah 360°, BUKAN 180° (itu untuk garis lurus). Jawapan yang betul ialah 360° − 110° − 95° = 155°.",
+        en: "DON'T do this: angles 110° and 95°, third angle calculated as 180° − 110° − 95° = −25°. WRONG — the angle sum at a point is 360°, NOT 180° (that's for a straight line). The correct answer is 360° − 110° − 95° = 155°.",
+      },
     ],
     howTo: [
       { ms: "Tambahkan semua sudut yang diketahui.", en: "Add up all the known angles." },
       { ms: "Tolak jumlah itu daripada 360°.", en: "Subtract that total from 360°." },
       { ms: "Jawapan itu ialah sudut yang hilang.", en: "The result is the missing angle." },
+      { ms: "Semak: adakah kesemua sudut berjumlah tepat 360°?", en: "Check: do all the angles add up to exactly 360°?" },
     ],
     workedExample: {
       problem: { ms: "Dua sudut: 110° dan 95°", en: "Two angles: 110° and 95°" },
@@ -814,10 +887,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "confused_with_180", description: { ms: "Murid tolak daripada 180° (garis lurus/segi tiga) berbanding 360°.", en: "The student subtracts from 180° (straight line/triangle) instead of 360°." } },
       { mistakeType: "only_subtracted_one_angle", description: { ms: "Murid hanya tolak satu daripada dua sudut yang diberi.", en: "The student only subtracts one of the two given angles." } },
+      { mistakeType: "confused_which_angle_asked", description: { ms: "Dalam soalan berbalik, murid keliru sudut mana yang perlu dicari apabila diberi sudut ketiga.", en: "In reverse-style questions, the student is confused about which angle to find when given the third angle." } },
+      { mistakeType: "arithmetic_error_in_addition", description: { ms: "Murid guna kaedah yang betul tetapi tersilap kira semasa menambah atau menolak.", en: "The student uses the correct method but makes an arithmetic slip while adding or subtracting." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "angles_at_point", config: {} },
-      { type: "word_problem", difficulty: 2, generatorKey: "angles_at_point", config: {} },
+      { type: "fill", difficulty: 2, generatorKey: "angles_at_point", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "angles_at_point", config: { type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "angles_at_point", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "angles_at_point", config: { reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000018": {
@@ -838,11 +916,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Jika soalan memberi diameter (bukan jejari), anda tidak perlu darab dengan 2 lagi — diameter sudah merupakan 2 × jejari.",
         en: "If the question gives the diameter (not the radius), you don't need to multiply by 2 again — the diameter already IS 2 × radius.",
       },
+      {
+        ms: "JANGAN buat ini: jejari 7 cm dikira sebagai lilitan = 3.142 × 7 = 21.99 cm (terlepas gandakan dahulu). SALAH — anda MESTI gandakan jejari dengan 2 SEBELUM darab dengan π. Jawapan yang betul ialah 2 × 3.142 × 7 = 43.99 cm.",
+        en: "DON'T do this: radius 7 cm calculated as circumference = 3.142 × 7 = 21.99 cm (missing the doubling step). WRONG — you MUST double the radius by 2 BEFORE multiplying by π. The correct answer is 2 × 3.142 × 7 = 43.99 cm.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti jejari bulatan itu.", en: "Identify the circle's radius." },
       { ms: "Gandakan jejari dengan 2 untuk dapatkan diameter.", en: "Double the radius to get the diameter." },
       { ms: "Darabkan diameter itu dengan π (3.142).", en: "Multiply that diameter by π (3.142)." },
+      { ms: "Semak: adakah anda gandakan jejari SEBELUM darab dengan π?", en: "Check: did you double the radius BEFORE multiplying by π?" },
     ],
     workedExample: {
       problem: { ms: "Jejari 7 cm", en: "Radius 7 cm" },
@@ -856,10 +939,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_to_double_radius", description: { ms: "Murid mendarab jejari dengan π sahaja, lupa gandakan dengan 2 dahulu.", en: "The student multiplies the radius by π alone, forgetting to double it first." } },
       { mistakeType: "confused_with_area_formula", description: { ms: "Murid menggunakan formula luas (π × jejari²) berbanding formula lilitan.", en: "The student uses the area formula (π × radius²) instead of the circumference formula." } },
+      { mistakeType: "wrong_reverse_method", description: { ms: "Dalam soalan berbalik, murid bahagikan lilitan dengan π sahaja tanpa bahagi 2 juga, jadi dapat diameter bukan jejari.", en: "In reverse-style questions, the student divides the circumference by π alone without also dividing by 2, getting the diameter instead of the radius." } },
+      { mistakeType: "arithmetic_error_in_multiplication", description: { ms: "Murid guna formula yang betul tetapi tersilap kira semasa mendarab.", en: "The student uses the correct formula but makes an arithmetic slip while multiplying." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "circumference", config: { min: 3, max: 20 } },
       { type: "fill", difficulty: 3, generatorKey: "circumference", config: { min: 5, max: 25 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "circumference", config: { min: 3, max: 20, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "circumference", config: { min: 3, max: 20, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "circumference", config: { min: 3, max: 20, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000019": {
@@ -880,11 +968,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Jangan keliru dengan lilitan (2 × π × jejari) — luas melibatkan jejari didarab dengan DIRINYA, bukan didarab dengan 2.",
         en: "Don't mix this up with circumference (2 × π × radius) — area involves multiplying the radius by ITSELF, not by 2.",
       },
+      {
+        ms: "JANGAN buat ini: jejari 5 cm dikira sebagai luas = 2 × 3.142 × 5 = 31.42 cm² (guna formula lilitan). SALAH — luas MESTI guna jejari × jejari, bukan × 2. Jawapan yang betul ialah 3.142 × 5 × 5 = 78.55 cm².",
+        en: "DON'T do this: radius 5 cm calculated as area = 2 × 3.142 × 5 = 31.42 cm² (using the circumference formula). WRONG — area MUST use radius × radius, not × 2. The correct answer is 3.142 × 5 × 5 = 78.55 cm².",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti jejari bulatan itu (bahagikan diameter dengan 2 jika perlu).", en: "Identify the circle's radius (divide the diameter by 2 if needed)." },
       { ms: "Darabkan jejari dengan dirinya sendiri (jejari × jejari).", en: "Multiply the radius by itself (radius × radius)." },
       { ms: "Darabkan hasil itu dengan π (3.142).", en: "Multiply that result by π (3.142)." },
+      { ms: "Semak: adakah anda darab jejari dengan DIRINYA, bukan dengan 2?", en: "Check: did you multiply the radius by ITSELF, not by 2?" },
     ],
     workedExample: {
       problem: { ms: "Jejari 5 cm", en: "Radius 5 cm" },
@@ -898,10 +991,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "confused_with_circumference_formula", description: { ms: "Murid menggunakan formula lilitan (2 × π × jejari) berbanding formula luas.", en: "The student uses the circumference formula (2 × π × radius) instead of the area formula." } },
       { mistakeType: "squared_diameter_instead", description: { ms: "Murid mendarab diameter dengan dirinya, bukan jejari.", en: "The student squares the diameter instead of the radius." } },
+      { mistakeType: "wrong_reverse_method", description: { ms: "Dalam soalan berbalik, murid guna kaedah bahagi lilitan (÷π÷2) berbanding punca kuasa dua yang betul untuk cari jejari.", en: "In reverse-style questions, the student uses the circumference-division method (÷π÷2) instead of correctly working back through the square to find the radius." } },
+      { mistakeType: "arithmetic_error_in_multiplication", description: { ms: "Murid guna formula yang betul tetapi tersilap kira semasa mendarab.", en: "The student uses the correct formula but makes an arithmetic slip while multiplying." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "area_circle", config: { min: 3, max: 15 } },
       { type: "fill", difficulty: 3, generatorKey: "area_circle", config: { min: 4, max: 18 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "area_circle", config: { min: 3, max: 15, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "area_circle", config: { min: 3, max: 15, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "area_circle", config: { min: 3, max: 15, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000020": {
@@ -921,6 +1019,10 @@ export const TOPICS: Record<string, TopicContent> = {
       {
         ms: "Anggarkan jawapan dahulu dengan membundarkan kedua-dua nombor — ini membantu anda kesan jika jawapan akhir tidak masuk akal.",
         en: "Estimate the answer first by rounding both numbers — this helps you catch it if your final answer doesn't make sense.",
+      },
+      {
+        ms: "JANGAN buat ini: 34 − 78 (dalam satu lajur) dikira sebagai 78 − 34 = 44 kerana \"lebih senang\". SALAH — anda MESTI pinjam 1 daripada lajur sebelah kiri apabila digit atas lebih kecil, bukan tukar susunan.",
+        en: "DON'T do this: 34 − 78 (within one column) calculated as 78 − 34 = 44 because it's \"easier\". WRONG — you MUST borrow 1 from the column on the left when the top digit is smaller, not swap the order around.",
       },
     ],
     howTo: [
@@ -943,10 +1045,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_borrow", description: { ms: "Murid tolak digit lebih kecil daripada digit lebih besar mengikut susunan terbalik (bukan pinjam).", en: "The student subtracts the smaller digit from the larger one regardless of position, instead of borrowing." } },
       { mistakeType: "place_value_misalignment", description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid menambah berbanding menolak (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student adds instead of subtracting (or vice versa) when solving the problem." } },
+      { mistakeType: "chained_borrow_error", description: { ms: "Murid pinjam dengan betul di satu lajur tetapi lupa tolak 1 daripada lajur yang dipinjam pada langkah seterusnya.", en: "The student borrows correctly in one column but forgets to subtract 1 from the borrowed-from column in the next step." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_subtraction", config: { min: 15000, max: 45000 } },
       { type: "fill", difficulty: 2, generatorKey: "whole_numbers_subtraction", config: { min: 25000, max: 90000 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_subtraction", config: { min: 15000, max: 45000, type: "word_problem" } },
+      { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_subtraction", config: { min: 15000, max: 45000, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_subtraction", config: { min: 15000, max: 45000, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000021": {
@@ -1091,6 +1198,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Mula kira dari titik asalan (0, 0) setiap kali — jangan kira dari kedudukan lain di grid.",
         en: "Always start counting from the origin (0, 0) — don't count from some other point on the grid.",
       },
+      {
+        ms: "JANGAN buat ini: titik yang 4 unit ke kanan dan 6 unit ke atas ditulis sebagai (6, 4). SALAH — nombor ATAS PANJANG (x) MESTI ditulis dahulu. Jawapan yang betul ialah (4, 6).",
+        en: "DON'T do this: a point that is 4 units right and 6 units up written as (6, 4). WRONG — the ACROSS number (x) MUST be written first. The correct answer is (4, 6).",
+      },
     ],
     howTo: [
       { ms: "Cari titik asalan (0, 0) di sudut bawah kiri grid.", en: "Find the origin (0, 0) at the bottom-left corner of the grid." },
@@ -1110,10 +1221,14 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "swapped_x_and_y", description: { ms: "Murid menulis nilai y dahulu, kemudian x — tersalah susunan.", en: "The student writes the y-value first, then x — the order is reversed." } },
       { mistakeType: "misread_grid_position", description: { ms: "Murid silap kira bilangan unit pada grid.", en: "The student miscounts the number of units on the grid." } },
+      { mistakeType: "started_from_wrong_point", description: { ms: "Murid mula mengira daripada tepi grid atau titik lain, bukan daripada asalan (0, 0).", en: "The student starts counting from the edge of the grid or another point, not from the origin (0, 0)." } },
+      { mistakeType: "confused_axis_direction", description: { ms: "Murid keliru arah paksi-x (mendatar) dengan paksi-y (menegak).", en: "The student confuses the direction of the x-axis (horizontal) with the y-axis (vertical)." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 10 } },
       { type: "mcq", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 12 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 10, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "coordinates", config: { gridSize: 10, errorSpotting: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000025": {
