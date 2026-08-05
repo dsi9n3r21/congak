@@ -693,11 +693,43 @@ batches — only 19 remain, all confirmed one-offs (score distribution
 is now purely `{ '1': 66, '12': 19 }`, no more hidden clusters left to
 discover in this tier).
 
-**Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
-confirm the current ranked list (66 at gold/score 1, 19 still at score
-12: `...003`, `...008`, `...009`, `...013`, `...021`, `...022`,
-`...023`, `...025`, `...026`, `...029`, `...034`, `...038`, `...054`,
-`...072`, `...073`, `...076`, `...077`, `...080`, `...081`). The
+**Batch 24 done:** `...003` (Kira Baki Wang — Money Change, Y4), `...008`
+(Purata/Average, Y5), `...009` (Nisbah Mudah/Simple Ratio, Y6) — three
+unrelated one-off topics, no shared generators between them, each
+retrofitted independently. `money.ts`'s `generateMoneyChange` gained
+`errorSpotting` (classic RM1 borrow-slip mistake) and `reverseProblem`
+(given price + change, find the amount paid) branches, plus real `fill`
+type support (previously only mcq/word_problem existed). `average.ts`'s
+`generateAverage` gained real Malaysian word-problem contexts (test
+scores, goals, pocket money — previously bare "find the average of X, Y,
+Z" for every type) plus `errorSpotting`/`reverseProblem` (find a missing
+value given the average and the rest of the set). `ratio.ts`'s
+`generateSimplifyRatio` gained `errorSpotting` (partial simplification —
+divided by 2 but not the full GCD) and `reverseProblem`, the latter a
+genuine "share a total in a ratio" word problem (e.g. boys:girls given a
+class total) rather than a re-skinned simplification question — this is
+the first ratio topic where the reverse direction actually differs in
+kind from the base question, not just in framing.
+
+**`classify.ts` note for this batch:** all three retrofitted cases now
+branch on `question.correctAnswer` (via `.includes(":")` for
+simplify_ratio, or a direct value comparison for money_change/average)
+rather than assuming the original single-answer shape, since
+`reverseProblem` questions ask for a genuinely different quantity
+(amount paid / missing value / one ratio part) than the base question
+(change / average / simplified ratio) but share the same `context`
+object shape. Two new mistakeTypes added: `ratio_scaling_error` +
+`ratio_part_swapped` for ratio's reverseProblem, `forgot_subtract_known_values`
+for average's reverseProblem, `wrong_operation` reused (already existed
+elsewhere) for money_change's reverseProblem.
+
+69 topics retrofitted total across 24 batches — 16 remain, all confirmed
+one-offs (score distribution now `{ '1': 69, '12': 16 }`).
+
+**Next batch (not yet done):** `...013`, `...021`, `...022`, `...023`,
+`...025`, `...026`, `...029`, `...034`, `...038`, `...054`, `...072`,
+`...073`, `...076`, `...077`, `...080`, `...081` remain. The
+
 remaining multiplication/division topics (`...021`/`...022`/`...025`/
 `...026`/`...029`) are next in line for that family — five separate
 generators (`wholeNumbersMultiplicationY6`, `wholeNumbersDivisionY4`,

@@ -113,6 +113,26 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
         priceSen: number; paidSen: number; changeSen: number;
       };
       const answerSen = Math.round(parseFloat(answer.replace(/[^0-9.]/g, "")) * 100);
+      const targetSen = Math.round(parseFloat(question.correctAnswer.replace(/[^0-9.]/g, "")) * 100);
+      // reverseProblem: correctAnswer is the amount paid, not the change.
+      if (targetSen === paidSen && targetSen !== changeSen) {
+        if (!Number.isNaN(answerSen) && Math.abs(answerSen - Math.abs(priceSen - changeSen)) < 5) {
+          return {
+            mistakeType: "wrong_operation",
+            hint: {
+              ms: "Wang Dibayar = Harga Barang + Baki — kedua-dua nilai perlu DITAMBAH, bukan ditolak.",
+              en: "Money Paid = Item Price + Change — the two values need to be ADDED, not subtracted.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Cuba kira semula: Harga Barang + Baki = Wang Dibayar.",
+            en: "Try calculating again: Item Price + Change = Money Paid.",
+          },
+        };
+      }
       if (Math.abs(answerSen - changeSen) === 100) {
         return {
           mistakeType: "subtraction_borrow_error",
@@ -224,7 +244,27 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "average": {
-      const { sum, count } = question.context as { sum: number; count: number };
+      const { sum, count, correct } = question.context as { sum: number; count: number; correct: number };
+      const target = Number(question.correctAnswer);
+      // reverseProblem: correctAnswer is the missing value, not the average.
+      if (target !== correct) {
+        if (Number(answer) === correct * count) {
+          return {
+            mistakeType: "forgot_subtract_known_values",
+            hint: {
+              ms: "Darab purata dengan bilangan nilai dahulu, kemudian TOLAK jumlah nilai yang sudah diketahui.",
+              en: "Multiply the average by the count first, then SUBTRACT the sum of the known values.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Purata × Bilangan − Jumlah nilai diketahui = nilai yang hilang.",
+            en: "Average × Count − Sum of known values = the missing value.",
+          },
+        };
+      }
       if (Number(answer) === sum) {
         return {
           mistakeType: "forgot_divide_average",
@@ -250,9 +290,28 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "simplify_ratio": {
-      const { a, b, simplifiedA, simplifiedB } = question.context as {
-        a: number; b: number; simplifiedA: number; simplifiedB: number;
+      const { simplifiedA, simplifiedB, partBValue } = question.context as {
+        a: number; b: number; simplifiedA: number; simplifiedB: number; partBValue?: number;
       };
+      // reverseProblem: correctAnswer is a plain quantity, not a ratio string.
+      if (!question.correctAnswer.includes(":")) {
+        if (partBValue !== undefined && Number(answer) === partBValue) {
+          return {
+            mistakeType: "ratio_part_swapped",
+            hint: {
+              ms: "Anda beri nilai bahagian yang satu lagi — semak semula bahagian mana yang ditanya.",
+              en: "You gave the other part's value — check again which part the question is asking for.",
+            },
+          };
+        }
+        return {
+          mistakeType: "ratio_scaling_error",
+          hint: {
+            ms: "Tambah kedua-dua bahagian nisbah dahulu (contoh 2+3=5), kemudian bahagikan jumlah keseluruhan dengan nombor itu untuk cari nilai satu bahagian.",
+            en: "Add both parts of the ratio first (e.g. 2+3=5), then divide the total by that number to find the value of one part.",
+          },
+        };
+      }
       if (answer === `${simplifiedB}:${simplifiedA}`) {
         return {
           mistakeType: "ratio_order_reversed",

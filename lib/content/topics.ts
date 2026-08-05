@@ -200,12 +200,17 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Semak jawapan anda: Baki + Harga Barang MESTI menyamai Wang Dibayar.",
         en: "Check your answer: Change + Item Price MUST equal Money Paid.",
       },
+      {
+        ms: "JANGAN buat ini: RM10.00 − RM6.30 dikira terus digit demi digit tanpa tukar ke sen (10−6=4, 00−30=terbalik). SALAH — anda MESTI tukar kepada sen dahulu (1000 sen − 630 sen). Jawapan yang betul ialah RM3.70.",
+        en: "DON'T do this: RM10.00 − RM6.30 calculated digit-by-digit without converting to sen first (10−6=4, 00−30=flipped). WRONG — you MUST convert to sen first (1000 sen − 630 sen). The correct answer is RM3.70.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti Wang Dibayar dan Harga Barang.", en: "Identify the Money Paid and the Item Price." },
       { ms: "Tukar kedua-dua nilai kepada sen sepenuhnya.", en: "Convert both values fully into sen." },
       { ms: "Tolak: Wang Dibayar − Harga Barang.", en: "Subtract: Money Paid − Item Price." },
       { ms: "Tukar jawapan itu balik kepada format RM.", en: "Convert the answer back into RM format." },
+      { ms: "Semak: Baki + Harga Barang mesti menyamai semula Wang Dibayar.", en: "Check: Change + Item Price must add back up to Money Paid." },
     ],
     workedExample: {
       problem: { ms: "RM10.00 - RM6.30", en: "RM10.00 - RM6.30" },
@@ -219,10 +224,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "ringgit_sen_conversion_error", description: { ms: "Murid tersilap semasa menukar antara ringgit dan sen.", en: "The student makes an error converting between ringgit and sen." } },
       { mistakeType: "subtraction_borrow_error", description: { ms: "Murid tersilap semasa proses \"pinjam\" dalam penolakan berlajur.", en: "The student makes an error during the \"borrow\" step in column subtraction." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid menambah harga barang dengan wang dibayar, bukan menolak.", en: "The student adds the item price to the money paid, instead of subtracting." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan baki dahulu, jadi tidak perasan jika jawapan akhir tidak munasabah (contohnya baki lebih besar daripada wang dibayar).", en: "The student doesn't estimate the change first, so doesn't notice when the final answer doesn't make sense (e.g. change bigger than the money paid)." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "money_change", config: { maxPaid: 20, maxPrice: 18 } },
+      { type: "fill", difficulty: 2, generatorKey: "money_change", config: { maxPaid: 30, maxPrice: 28 } },
       { type: "word_problem", difficulty: 2, generatorKey: "money_change", config: { maxPaid: 50, maxPrice: 48, context: "canteen" } },
+      { type: "mcq", difficulty: 3, generatorKey: "money_change", config: { maxPaid: 30, maxPrice: 28, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "money_change", config: { maxPaid: 30, maxPrice: 28, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000004": {
@@ -441,11 +451,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Kira semula berapa banyak nilai yang diberi dalam soalan sebelum membahagi — silap kira bilangan nilai ialah kesilapan biasa.",
         en: "Recount how many values the question gives before dividing — miscounting the number of values is a common slip.",
       },
+      {
+        ms: "JANGAN buat ini: purata bagi 70, 80, 75, 75 dijawab sebagai 300 (jumlah sahaja, berhenti di situ). SALAH — anda MESTI bahagikan jumlah itu dengan bilangan nilai (4). Jawapan yang betul ialah 75.",
+        en: "DON'T do this: the average of 70, 80, 75, 75 answered as 300 (just the sum, stopping there). WRONG — you MUST divide that sum by the number of values (4). The correct answer is 75.",
+      },
     ],
     howTo: [
       { ms: "Tambahkan semua nilai dalam set data itu.", en: "Add up all the values in the data set." },
       { ms: "Kira berapa banyak nilai yang ada.", en: "Count how many values there are." },
       { ms: "Bahagikan jumlah itu dengan bilangan nilai.", en: "Divide the total by the number of values." },
+      { ms: "Semak: purata itu sepatutnya berada antara nilai terkecil dan terbesar dalam set data.", en: "Check: the average should fall between the smallest and largest values in the data set." },
     ],
     workedExample: {
       problem: { ms: "70, 80, 75, 75", en: "70, 80, 75, 75" },
@@ -459,10 +474,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_divide_average", description: { ms: "Murid memberikan jumlah keseluruhan sebagai jawapan, tanpa membahagikannya.", en: "The student gives the total sum as the answer, without dividing it." } },
       { mistakeType: "wrong_count_average", description: { ms: "Murid membahagikan dengan bilangan nilai yang salah.", en: "The student divides by the wrong number of values." } },
+      { mistakeType: "forgot_subtract_known_values", description: { ms: "Semasa mencari nilai yang hilang, murid darab purata dengan bilangan nilai tetapi terlupa tolak jumlah nilai yang sudah diketahui.", en: "When finding a missing value, the student multiplies the average by the count but forgets to subtract the sum of the known values." } },
+      { mistakeType: "average_out_of_range", description: { ms: "Murid dapat jawapan purata yang lebih besar daripada nilai terbesar atau lebih kecil daripada nilai terkecil, tetapi tidak perasan ia tidak munasabah.", en: "The student gets an average bigger than the largest value or smaller than the smallest value, but doesn't notice it's unreasonable." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "average", config: { count: 3, maxValue: 15 } },
       { type: "fill", difficulty: 2, generatorKey: "average", config: { count: 4, maxValue: 20 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "average", config: { count: 4, maxValue: 15, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "average", config: { count: 4, maxValue: 20, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "average", config: { count: 4, maxValue: 15, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000009": {
@@ -483,11 +503,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Nisbah paling ringkas tidak boleh dipermudahkan lagi — jika kedua-dua nombor masih ada faktor sepunya, teruskan membahagi.",
         en: "The simplest ratio can't be simplified any further — if both numbers still share a common factor, keep dividing.",
       },
+      {
+        ms: "JANGAN buat ini: nisbah 12:18 dipermudahkan kepada 6:9 (bahagi dengan 2 sahaja) dan berhenti. SALAH — 6 dan 9 masih ada faktor sepunya (3). Anda MESTI teruskan membahagi sehingga tiada faktor sepunya lagi. Jawapan yang betul ialah 2:3.",
+        en: "DON'T do this: the ratio 12:18 simplified to 6:9 (only divided by 2) and stopped there. WRONG — 6 and 9 still share a common factor (3). You MUST keep dividing until there's no common factor left. The correct answer is 2:3.",
+      },
     ],
     howTo: [
       { ms: "Cari faktor sepunya terbesar (HCF/GCD) bagi kedua-dua nombor dalam nisbah.", en: "Find the highest common factor (HCF/GCD) of both numbers in the ratio." },
       { ms: "Bahagikan kedua-dua nombor itu dengan faktor sepunya terbesar tersebut.", en: "Divide both numbers by that highest common factor." },
       { ms: "Semak sama ada nisbah itu sudah dalam bentuk paling ringkas.", en: "Check that the ratio is now in its simplest form." },
+      { ms: "Jika nisbah mewakili kuantiti sebenar (contoh bilangan murid), kekalkan kaitan dengan jumlah asal semasa menyelesaikan masalah.", en: "If the ratio represents real quantities (e.g. number of students), keep track of how it relates to the original total when solving problems." },
     ],
     workedExample: {
       problem: { ms: "12:18", en: "12:18" },
@@ -501,10 +526,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "ratio_not_fully_simplified", description: { ms: "Murid hanya membahagikan sebahagian, bukan sehingga bentuk paling ringkas.", en: "The student only partially simplifies, not all the way to the simplest form." } },
       { mistakeType: "ratio_order_reversed", description: { ms: "Murid menukar susunan nisbah secara tidak sengaja.", en: "The student accidentally reverses the order of the ratio." } },
+      { mistakeType: "ratio_scaling_error", description: { ms: "Semasa mengagihkan jumlah mengikut nisbah, murid membahagikan jumlah itu sama rata dua-dua bahagian, bukan mengikut nisbah.", en: "When sharing a total according to a ratio, the student divides the total equally between the two parts instead of by the ratio." } },
+      { mistakeType: "ratio_part_swapped", description: { ms: "Murid memberikan nilai bahagian yang satu lagi, bukan bahagian yang ditanya.", en: "The student gives the value of the other part, not the one the question asked for." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "simplify_ratio", config: { maxMultiplier: 4 } },
       { type: "fill", difficulty: 2, generatorKey: "simplify_ratio", config: { maxMultiplier: 6 } },
+      { type: "fill", difficulty: 2, generatorKey: "simplify_ratio", config: { maxMultiplier: 8 } },
+      { type: "mcq", difficulty: 3, generatorKey: "simplify_ratio", config: { maxMultiplier: 6, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "simplify_ratio", config: { maxMultiplier: 4, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000010": {

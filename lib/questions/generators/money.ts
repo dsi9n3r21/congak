@@ -17,10 +17,19 @@ export function formatRM(sen: number): string {
   return `RM${(sen / 100).toFixed(2)}`;
 }
 
+const CHANGE_NAMES = ["Aisyah", "Ali", "Vijay", "Mei Ling", "Hakim", "Nurul", "Faisal"];
+
+// Retrofitted per the Round 19 content standard: added errorSpotting and
+// reverseProblem branches (previously only a bare mcq/word_problem split
+// existed), plus "fill" type support and a uniqueness-guaranteed fallback
+// on every options array (matching the money_add_subtract/dividend pattern).
 export function generateMoneyChange(params: GeneratorParams): GeneratedQuestion {
   const maxPaidRM = Number(params.maxPaid ?? 20);
-  const type = (params.type as "mcq" | "word_problem") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const useContext = params.context === "canteen";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
+  const name = pick(CHANGE_NAMES);
 
   const item = useContext ? pick(CANTEEN_ITEMS) : null;
   const priceSen = item ? toSen(item.price) : randInt(150, Number(params.maxPrice ?? 20) * 100);
@@ -31,11 +40,66 @@ export function generateMoneyChange(params: GeneratorParams): GeneratedQuestion 
   const paidSen = pick(noteOptions.filter((n) => n > priceSen && n <= maxPaidRM * 100)) ?? 5000;
 
   const changeSen = paidSen - priceSen;
+  const context = { priceSen, paidSen, changeSen };
+
+  // ---- reverseProblem: given the price and the change received, find how
+  // much was paid (addition, framed as a missing payment).
+  if (reverseProblem) {
+    const itemLabel = item ? { ms: item.ms, en: item.en } : { ms: "sebuah barang", en: "an item" };
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membeli ${itemLabel.ms} berharga ${formatRM(priceSen)} dan menerima baki ${formatRM(changeSen)}. Berapakah wang yang ${name} bayar?`,
+        en: `${name} buys ${itemLabel.en} for ${formatRM(priceSen)} and receives ${formatRM(changeSen)} change. How much did ${name} pay?`,
+      },
+      type: "word_problem",
+      correctAnswer: formatRM(paidSen),
+      context,
+      generatorKey: "money_change",
+      difficulty: 3,
+    };
+    // Classic mistake: subtracted the change from the price instead of adding.
+    const subtractedInstead = formatRM(Math.abs(priceSen - changeSen));
+    const distractors = [subtractedInstead].filter((d) => d !== formatRM(paidSen));
+    question.options = shuffleOptions(formatRM(paidSen), distractors);
+    while (question.options.length < 3) {
+      const candidateSen = Math.max(0, paidSen + randInt(10, 200) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateSen);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic RM1 borrow-slip mistake, must
+  // give the correct change. Only meaningful when the mistake produces a
+  // genuinely different value from the real answer.
+  if (errorSpotting) {
+    const wrongChange = formatRM(Math.abs(changeSen - 100));
+    if (wrongChange !== formatRM(changeSen)) {
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} membayar ${formatRM(paidSen)} untuk barang berharga ${formatRM(priceSen)} dan mengira bakinya sebagai ${wrongChange}. Apakah jawapan yang betul?`,
+          en: `${name} pays ${formatRM(paidSen)} for an item priced ${formatRM(priceSen)} and calculates the change as ${wrongChange}. What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer: formatRM(changeSen),
+        context,
+        generatorKey: "money_change",
+        difficulty: 3,
+        options: shuffleOptions(formatRM(changeSen), [wrongChange]),
+      };
+      while (question.options!.length < 3) {
+        const candidateSen = Math.max(0, changeSen + randInt(10, 90) * (Math.random() > 0.5 ? 1 : -1));
+        const candidate = formatRM(candidateSen);
+        if (!question.options!.includes(candidate)) question.options!.push(candidate);
+      }
+      return question;
+    }
+  }
 
   const prompt = useContext
     ? {
-        ms: `Aisyah beli ${item!.ms} berharga ${formatRM(priceSen)} di kantin. Dia bayar dengan wang ${formatRM(paidSen)}. Berapakah baki wang Aisyah?`,
-        en: `Aisyah buys ${item!.en} for ${formatRM(priceSen)} at the canteen. She pays with ${formatRM(paidSen)}. What is Aisyah's change?`,
+        ms: `${name} beli ${item!.ms} berharga ${formatRM(priceSen)} di kantin. Dia bayar dengan wang ${formatRM(paidSen)}. Berapakah baki wang ${name}?`,
+        en: `${name} buys ${item!.en} for ${formatRM(priceSen)} at the canteen. ${name} pays with ${formatRM(paidSen)}. What is ${name}'s change?`,
       }
     : {
         ms: `Bayaran: ${formatRM(paidSen)}. Harga barang: ${formatRM(priceSen)}. Berapakah baki?`,
@@ -46,12 +110,12 @@ export function generateMoneyChange(params: GeneratorParams): GeneratedQuestion 
     prompt,
     type,
     correctAnswer: formatRM(changeSen),
-    context: { priceSen, paidSen, changeSen },
+    context,
     generatorKey: "money_change",
     difficulty: useContext ? 2 : 1,
   };
 
-  if (type === "mcq") {
+  if (type === "mcq" || type === "word_problem") {
     // ringgit_sen_conversion_error: treats sen digits as decimal RM directly (e.g. 250 sen -> RM2.05 instead of RM2.50)
     const conversionErrorSen = Math.round(priceSen / 10) + priceSen - Math.round(priceSen / 100) * 100;
     const conversionErrorDistractor = formatRM(Math.abs(paidSen - conversionErrorSen));
