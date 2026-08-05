@@ -10,6 +10,8 @@ import { UI } from "@/lib/i18n/dictionary";
 import type { PintarAvatarState, PintarChatResponse, PintarHistoryEntry, PintarQuickReply } from "@/lib/pintar/types";
 import { Send } from "lucide-react";
 import { MathSymbolBar } from "@/components/student/MathSymbolBar";
+import { renderMathText } from "@/lib/ui/mathText";
+import type { ReactNode } from "react";
 
 interface DisplayMessage {
   role: "user" | "pintar";
@@ -39,6 +41,22 @@ function toEngineLanguage(lang: Lang): "bm" | "en" {
 // it is shown to the student as if they typed it.
 const GREETING_TRIGGER = "__greeting__";
 
+// Applies the app's shared stacked-fraction rendering (see
+// lib/ui/mathText.tsx) to react-markdown's parsed children — same
+// treatment fractions get in the lesson pages and questions, so a
+// fraction Pintar writes ("2/5") looks the way it does on a textbook
+// page instead of a flat inline slash. Only string children are
+// re-typeset; other elements (e.g. **bold** text) pass through
+// untouched — bolded fractions are rare enough in practice that this
+// doesn't need deeper recursion into nested element children.
+function withMathText(children: ReactNode): ReactNode {
+  if (typeof children === "string") return renderMathText(children);
+  if (Array.isArray(children)) {
+    return children.map((child, i) => (typeof child === "string" ? <span key={i}>{renderMathText(child)}</span> : child));
+  }
+  return children;
+}
+
 // Small, self-contained Markdown renderer for chat bubbles — engine replies
 // use **bold** and line breaks/lists, so plain-string rendering showed
 // literal asterisks with no line breaks. Scoped Tailwind classes per
@@ -49,11 +67,11 @@ function PintarMarkdown({ text }: { text: string }) {
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+        p: ({ children }) => <p className="mb-2 last:mb-0">{withMathText(children)}</p>,
+        strong: ({ children }) => <strong className="font-semibold">{withMathText(children)}</strong>,
         ul: ({ children }) => <ul className="mb-2 list-disc space-y-0.5 pl-4 last:mb-0">{children}</ul>,
         ol: ({ children }) => <ol className="mb-2 list-decimal space-y-0.5 pl-4 last:mb-0">{children}</ol>,
-        li: ({ children }) => <li>{children}</li>,
+        li: ({ children }) => <li>{withMathText(children)}</li>,
       }}
     >
       {text}

@@ -471,6 +471,42 @@ inversion. 46 topics retrofitted total across 17 batches — the score-14
 baseline tier is down to 5 topics, all confirmed one-offs with no shared
 generators.
 
+## Bug fix (post-batch-23): Pintar chat fractions rendered as flat text, and a note on "sentence style" replies
+
+Lynda reported that Pintar's replies don't show fractions/math notation
+the way a teacher writes them, and that responses come back as one
+flowing sentence with no line breaks or step-by-step structure.
+
+**Fraction rendering (fixed on the Congak side):** `PintarChat.tsx`
+renders Pintar's replies through a small custom `PintarMarkdown`
+component wrapping `react-markdown`. That component had never been
+wired into `lib/ui/mathText.tsx`'s `renderMathText` — the same stacked
+numerator/bar/denominator renderer used everywhere else in the app
+(lessons, questions, worked examples). So a fraction like "2/5" in a
+Pintar reply rendered as flat inline text via plain markdown, while the
+exact same "2/5" elsewhere in the app renders stacked like a textbook.
+Fixed by applying `renderMathText` to the `p`/`strong`/`li` children in
+`PintarMarkdown`'s component overrides — only string children are
+re-typeset, so bolded fractions (rare) pass through unstacked, which is
+an acceptable gap for now. `tsc --noEmit` clean after the change.
+
+**"Sentence style" / no step breakdown (NOT fixed — needs the engine
+side):** `PintarMarkdown` already fully supports `**bold**`, line
+breaks between paragraphs, and both numbered (`1. `) and bulleted (`- `)
+lists with proper spacing (`mb-2`, `space-y-0.5` etc.) — this was
+verified by reading the component, not assumed. If the engine's replies
+actually contained that markdown structure, it would render with clear
+steps and spacing already. The fact that replies come back as one
+undifferentiated sentence strongly suggests the *engine itself* isn't
+formatting its output with markdown structure (numbered steps, blank
+lines between paragraphs) — that's server-side behavior on the Basrim
+engine, not something fixable from the Congak repo. Told Lynda this
+split plainly rather than guessing at a Congak-side fix for a
+problem that's actually upstream; her husband's Claude instance would
+need to adjust the engine's system prompt/output format to produce
+structured markdown (e.g. explicitly instructing it to use numbered
+steps and blank lines between them) for this to change.
+
 ## Bug fix (post-batch-18): worked-example "problem" statement ignored language setting
 
 Lynda reported (with a screenshot) that on the Belajar (Learn) tab's
@@ -640,29 +676,48 @@ first and presenting the area second keeps the answer clean while still
 being a genuine "find the radius" question from the student's
 perspective. 63 topics retrofitted total across 22 batches.
 
+**Batch 23 done:** `...030` (Tambah Nombor Bulat Hingga 1,000,000),
+`...031` (Tolak Nombor Bulat Hingga 1,000,000), `...028` (Darab Dengan
+Nombor 1 Digit). Confirmed `...030`/`...031` are genuinely SEPARATE
+generator files (`wholeNumbersAdditionY5.ts`/`wholeNumbersSubtractionY5.ts`),
+not the same functions as batch 19's `...001`/`...020` reused with a
+different config — mirrored the same retrofit shape (word_problem,
+errorSpotting, reverseProblem) but used a warehouse-inventory scenario
+scaled up from the Y4 versions' bookshop/egg-shop framing, so the two
+year levels don't feel like copy-pasted duplicates to a student who's
+done both. Also confirmed the whole multiplication/division cluster
+(`...021`/`...022`/`...025`/`...026`/`...028`/`...029`) is six
+genuinely separate generator files despite the similar naming — no
+shared code there either. 66 topics retrofitted total across 23
+batches — only 19 remain, all confirmed one-offs (score distribution
+is now purely `{ '1': 66, '12': 19 }`, no more hidden clusters left to
+discover in this tier).
+
 **Next batch (not yet done):** re-run `scripts/audit-content-gaps.ts` to
-confirm the current ranked list (63 at gold/score 1, 22 still at score
+confirm the current ranked list (66 at gold/score 1, 19 still at score
 12: `...003`, `...008`, `...009`, `...013`, `...021`, `...022`,
-`...023`, `...025`, `...026`, `...028`, `...029`, `...030`, `...031`,
-`...034`, `...038`, `...054`, `...072`, `...073`, `...076`, `...077`,
-plus 2 more not shown in the top-20 printout — run the full audit
-rather than assuming this list is exhaustive). Worth checking together:
-`...021`/`...022`/`...025`/`...026`/`...028`/`...029` (a cluster of
-multiplication/division-by-N-digit whole-number topics spanning Y4-Y6 —
-check each `generatorKey`, they may be one shared generator with
-different digit-count configs, or several separate ones);
-`...030`/`...031` (Tambah/Tolak Nombor Bulat Hingga 1,000,000 — likely
-the same generators as batch 19's `...001`/`...020` but at a higher
-number range, worth checking if that's literally true via config rather
-than a separate generator); `...038`/`...054` (Bahagi/Darab Pecahan)
-might share a generator with the fraction-division family from batch
-15; `...072` (Membaca Carta Pai) and `...077` (Membaca Piktograf) are
-both diagram/chart-reading topics, likely categorical like `...082`'s
-pattern (no reverseProblem). No DB/UI schema changes needed for any of
-this — `challengeExample` from the original brief was folded into
-`questionTemplates`' `reverseProblem`/`errorSpotting` configs instead of
-a new object field, since that's already how `...085` and every
-retrofitted topic since works and needs no type changes.
+`...023`, `...025`, `...026`, `...029`, `...034`, `...038`, `...054`,
+`...072`, `...073`, `...076`, `...077`, `...080`, `...081`). The
+remaining multiplication/division topics (`...021`/`...022`/`...025`/
+`...026`/`...029`) are next in line for that family — five separate
+generators (`wholeNumbersMultiplicationY6`, `wholeNumbersDivisionY4`,
+`wholeNumbersDivisionY5`, plus `whole_numbers_multiplication` and
+`whole_numbers_division` used by `...021`/`...022`), likely all
+following the exact same carry/borrow-mistake retrofit shape as
+`...028`/`...001`/`...020`/`...030`/`...031` — should go quickly now
+that the pattern is fully established for this family. `...080`/`...081`
+(Isi Padu/Perimeter Bentuk Gubahan — composite-shape volume/perimeter)
+are newly visible and worth checking together, and might relate to
+`...013` (Luas Bentuk Gubahan, composite-shape area) as a three-way
+"composite shapes" cluster even if not sharing a generator directly.
+`...072`/`...077` (Carta Pai/Piktograf) remain likely categorical/
+diagram-based topics with no reverseProblem, same as `...082`'s
+pattern — worth confirming when picked up. No DB/UI schema changes
+needed for any of this — `challengeExample` from the original brief was
+folded into `questionTemplates`' `reverseProblem`/`errorSpotting`
+configs instead of a new object field, since that's already how
+`...085` and every retrofitted topic since works and needs no type
+changes.
 
 **Round 17 (ids `...082`-`...084`) — Lynda asked directly whether Year 4
 Coordinates/Ratio/Proportion were covered. They weren't, at all** — only

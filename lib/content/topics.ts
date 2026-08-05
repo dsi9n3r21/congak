@@ -1385,11 +1385,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Jika hasil darab satu lajur lebih daripada 9, tulis digit sa sahaja dan \"simpan\" baki ke lajur seterusnya.",
         en: "If one column's product is more than 9, write only the ones digit and \"carry\" the rest into the next column.",
       },
+      {
+        ms: "JANGAN buat ini: 1245 × 4 dikira sebagai 1245 + 4 = 1249. SALAH — soalan minta DARAB, bukan tambah. Jawapan yang betul ialah 1245 × 4 = 4980.",
+        en: "DON'T do this: 1245 × 4 calculated as 1245 + 4 = 1249. WRONG — the question asks to MULTIPLY, not add. The correct answer is 1245 × 4 = 4980.",
+      },
     ],
     howTo: [
       { ms: "Darabkan digit sa nombor besar itu dengan nombor 1 digit.", en: "Multiply the ones digit of the big number by the 1-digit number." },
       { ms: "Simpan apa-apa lebihan ke lajur seterusnya, kemudian ulang untuk setiap lajur.", en: "Carry any overflow to the next column, then repeat for every column." },
       { ms: "Gabungkan semua digit jawapan untuk dapatkan jawapan akhir.", en: "Combine all the answer digits to get the final answer." },
+      { ms: "Semak: adakah anda simpan lebihan setiap kali hasil darab satu lajur melebihi 9?", en: "Check: did you carry the overflow every time a column's product exceeded 9?" },
     ],
     workedExample: {
       problem: { ms: "1245 × 4", en: "1245 × 4" },
@@ -1405,10 +1410,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_carry", description: { ms: "Murid darab setiap digit secara berasingan tanpa \"simpan\" lebihan ke lajur seterusnya.", en: "The student multiplies each digit separately without carrying the overflow into the next column." } },
       { mistakeType: "added_instead_of_multiplied", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
+      { mistakeType: "wrong_dimension_used", description: { ms: "Dalam soalan berbalik, murid tolak berbanding bahagi untuk mencari kuantiti yang tidak diketahui.", en: "In reverse-style questions, the student subtracts instead of dividing to find the missing quantity." } },
+      { mistakeType: "arithmetic_error_in_carry", description: { ms: "Murid simpan dengan betul di satu lajur tetapi lupa tambah nombor yang disimpan pada lajur seterusnya.", en: "The student carries correctly in one column but forgets to add the carried number in the next column." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 9999 } },
-      { type: "word_problem", difficulty: 1, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 5000 } },
+      { type: "fill", difficulty: 1, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 5000 } },
+      { type: "word_problem", difficulty: 1, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 5000, type: "word_problem" } },
+      { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 9999, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 9999, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000029": {
@@ -1471,11 +1481,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Susun kedua-dua nombor supaya digit sa sejajar sebelum mula tambah.",
         en: "Line up both numbers so the ones digits align before you start adding.",
       },
+      {
+        ms: "JANGAN buat ini: 245600 + 318750 disusun sa bertentang sa dengan sa terakhir sahaja (bukan ikut nilai tempat sebenar). SALAH — anda MESTI susun ikut nilai tempat (sa di bawah sa, puluh di bawah puluh). Jawapan yang betul ialah 564,350.",
+        en: "DON'T do this: 245600 + 318750 lined up flush-right by digit count (not real place value). WRONG — you MUST line up by place value (ones under ones, tens under tens). The correct answer is 564,350.",
+      },
     ],
     howTo: [
       { ms: "Susun kedua-dua nombor ikut nilai tempat.", en: "Line up both numbers by place value." },
       { ms: "Tambah bermula dari lajur sa, \"simpan\" apabila jumlah lajur lebih 9.", en: "Add starting from the ones column, carrying when a column's total is more than 9." },
       { ms: "Teruskan ke lajur seterusnya sehingga semua lajur ditambah.", en: "Continue to the next column until every column is added." },
+      { ms: "Semak: adakah anda susun kedua-dua nombor ikut nilai tempat yang betul?", en: "Check: did you line up both numbers by the correct place value?" },
     ],
     workedExample: {
       problem: { ms: "245600 + 318750", en: "245600 + 318750" },
@@ -1493,10 +1508,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_carry", description: { ms: "Murid tambah setiap lajur secara berasingan tanpa \"simpan\" apabila jumlah lebih 9.", en: "The student adds each column separately without carrying when the total is more than 9." } },
       { mistakeType: "place_value_misalignment", description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid menolak berbanding menambah (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student subtracts instead of adding (or vice versa) when solving the problem." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan jawapan dahulu, jadi tidak perasan jawapan akhir tidak masuk akal.", en: "The student doesn't estimate the answer first, so doesn't notice when the final answer doesn't make sense." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 999999 } },
       { type: "fill", difficulty: 2, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 500000 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 500000, type: "word_problem" } },
+      { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 999999, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 500000, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000031": {
@@ -1517,11 +1537,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Semak jawapan anda: tambah jawapan dengan nombor yang ditolak — ia MESTI menyamai nombor asal.",
         en: "Check your answer: add your result to the number you subtracted — it MUST equal the original number.",
       },
+      {
+        ms: "JANGAN buat ini: 876400 − 123850 (dalam satu lajur) dikira dengan tolak digit lebih kecil daripada digit lebih besar, tidak kira susunan. SALAH — anda MESTI pinjam 1 daripada lajur sebelah kiri apabila digit atas lebih kecil, bukan tukar susunan.",
+        en: "DON'T do this: 876400 − 123850 (within one column) calculated by subtracting the smaller digit from the larger one, regardless of position. WRONG — you MUST borrow 1 from the column on the left when the top digit is smaller, not swap the order around.",
+      },
     ],
     howTo: [
       { ms: "Susun kedua-dua nombor ikut nilai tempat.", en: "Line up both numbers by place value." },
       { ms: "Tolak bermula dari lajur sa, \"pinjam\" apabila digit atas lebih kecil.", en: "Subtract starting from the ones column, borrowing when the top digit is smaller." },
       { ms: "Teruskan ke lajur seterusnya sehingga semua lajur ditolak.", en: "Continue to the next column until every column is subtracted." },
+      { ms: "Semak: adakah jawapan + nombor yang ditolak menyamai nombor asal?", en: "Check: does your answer + the number you subtracted equal the original number?" },
     ],
     workedExample: {
       problem: { ms: "876400 − 123850", en: "876400 − 123850" },
@@ -1539,10 +1564,15 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_borrow", description: { ms: "Murid tolak digit lebih kecil daripada digit lebih besar mengikut susunan terbalik (bukan pinjam).", en: "The student subtracts the smaller digit from the larger one regardless of position, instead of borrowing." } },
       { mistakeType: "place_value_misalignment", description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." } },
+      { mistakeType: "wrong_operation", description: { ms: "Murid menambah berbanding menolak (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student adds instead of subtracting (or vice versa) when solving the problem." } },
+      { mistakeType: "chained_borrow_error", description: { ms: "Murid pinjam dengan betul di satu lajur tetapi lupa tolak 1 daripada lajur yang dipinjam pada langkah seterusnya.", en: "The student borrows correctly in one column but forgets to subtract 1 from the borrowed-from column in the next step." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_subtraction_y5", config: { min: 100000, max: 999999 } },
       { type: "fill", difficulty: 2, generatorKey: "whole_numbers_subtraction_y5", config: { min: 200000, max: 900000 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_subtraction_y5", config: { min: 200000, max: 900000, type: "word_problem" } },
+      { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_subtraction_y5", config: { min: 100000, max: 999999, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_subtraction_y5", config: { min: 200000, max: 900000, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000032": {
