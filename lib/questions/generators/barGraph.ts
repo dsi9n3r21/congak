@@ -2,14 +2,51 @@ import { randInt, shuffleOptions, pick } from "../utils";
 import type { GeneratedQuestion, GeneratorParams } from "../types";
 
 const LABELS = ["A", "B", "C", "D"];
+const BAR_NAMES = ["Aina", "Ali", "Siti", "Vijay", "Mei Ling", "Hakim"];
 
+// Year 5 KSSR "Reading Bar Graphs". Retrofitted per the Round 19
+// content standard: added word_problem type support, errorSpotting
+// (forgetting one bar when summing), and a reverseProblem that finds a
+// missing bar's value given the total and the other three bars.
 export function generateBarGraph(params: GeneratorParams): GeneratedQuestion {
   const min = Number(params.min ?? 5);
   const max = Number(params.max ?? 32);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
   const variant = pick(["total", "difference"]);
 
   const values = LABELS.map(() => randInt(min, max));
+
+  // ---- reverseProblem: given the total and three of the four bars,
+  // find the missing bar's value.
+  if (reverseProblem) {
+    const missingIndex = randInt(0, 3);
+    const total = values.reduce((sum, v) => sum + v, 0);
+    const knownValues = values.filter((_, i) => i !== missingIndex);
+    const missingValue = values[missingIndex];
+    const name = pick(BAR_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} mengumpul data bagi 4 kumpulan. Kumpulan ${LABELS.filter((_, i) => i !== missingIndex).join(", ")} masing-masing ialah ${knownValues.join(", ")}. Jika jumlah keseluruhan 4 kumpulan ialah ${total}, berapakah nilai kumpulan ${LABELS[missingIndex]}?`,
+        en: `${name} collects data for 4 groups. Groups ${LABELS.filter((_, i) => i !== missingIndex).join(", ")} are ${knownValues.join(", ")} respectively. If the total of all 4 groups is ${total}, what is group ${LABELS[missingIndex]}'s value?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(missingValue),
+      context: { v0: values[0], v1: values[1], v2: values[2], v3: values[3], missingIndex, total, correct: missingValue },
+      generatorKey: "bar_graph",
+      difficulty: 3,
+    };
+    // Classic mistake: added the total to the known sum instead of subtracting.
+    const addedInstead = total + knownValues.reduce((s, v) => s + v, 0);
+    const distractors = [String(addedInstead)].filter((d) => d !== String(missingValue));
+    question.options = shuffleOptions(String(missingValue), distractors);
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, missingValue + randInt(1, 5) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   let promptMs: string;
   let promptEn: string;
@@ -36,6 +73,34 @@ export function generateBarGraph(params: GeneratorParams): GeneratedQuestion {
     context = { variant, v0: values[0], v1: values[1], v2: values[2], v3: values[3], iHigh, iLow, correct };
   }
 
+  // ---- errorSpotting: shown the classic "forgot one bar" mistake (total
+  // variant only, since it's the mistake with the clearest fixed formula).
+  if (errorSpotting && variant === "total") {
+    const forgottenIndex = randInt(0, 3);
+    const wrongTotal = correct - values[forgottenIndex];
+    if (wrongTotal !== correct) {
+      const name = pick(BAR_NAMES);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} mengira jumlah keseluruhan graf palang (${values.join(", ")}) sebagai ${wrongTotal}. Apakah jawapan yang betul?`,
+          en: `${name} calculated the bar graph's total (${values.join(", ")}) as ${wrongTotal}. What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer: String(correct),
+        context,
+        generatorKey: "bar_graph",
+        difficulty: 3,
+        options: shuffleOptions(String(correct), [String(wrongTotal)]),
+        diagram: { kind: "bar_chart", labels: LABELS, values },
+      };
+      while (question.options!.length < 3) {
+        const candidate = String(correct + randInt(1, 9) * (Math.random() > 0.5 ? 1 : -1));
+        if (!question.options!.includes(candidate) && Number(candidate) > 0) question.options!.push(candidate);
+      }
+      return question;
+    }
+  }
+
   const question: GeneratedQuestion = {
     prompt: { ms: promptMs, en: promptEn },
     type,
@@ -46,7 +111,7 @@ export function generateBarGraph(params: GeneratorParams): GeneratedQuestion {
     diagram: { kind: "bar_chart", labels: LABELS, values },
   };
 
-  if (type === "mcq") {
+  if (type === "mcq" || type === "word_problem") {
     let distractors: string[];
     if (variant === "total") {
       // Classic mistake: forgetting one of the four bars when summing.

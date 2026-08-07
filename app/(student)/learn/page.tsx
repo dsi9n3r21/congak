@@ -27,6 +27,7 @@ export default async function LearnIndexPage() {
       .map((topic) => ({
         id: topic.id,
         strand: topic.strand,
+        bidang: topic.bidang,
         title: topic.title,
         href: `/learn/${topic.id}`,
         score: masteryByTopic.get(topic.id),

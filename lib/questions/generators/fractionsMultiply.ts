@@ -1,11 +1,19 @@
 import { pick, randInt, shuffleOptions, gcd } from "../utils";
 import type { GeneratedQuestion, GeneratorParams } from "../types";
 
+const MULTIPLY_NAMES = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
 // Year 5 KSSR "Multiplication of Fractions" — proper fraction × whole
-// number: (a/b) × c = (a×c)/b, then simplify.
+// number: (a/b) × c = (a×c)/b, then simplify. Retrofitted per the
+// Round 19 content standard: added a baking word_problem (matching this
+// topic's own "flour per batch" explanation), errorSpotting, and a
+// reverseProblem finding the per-batch fraction given the total and
+// number of batches (dividing back through the product).
 export function generateFractionsMultiply(params: GeneratorParams): GeneratedQuestion {
   const denominators = (params.denominators as number[]) ?? [2, 3, 4, 5, 6, 8];
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
 
   const denom = pick(denominators);
   const num = randInt(1, denom - 1);
@@ -16,12 +24,90 @@ export function generateFractionsMultiply(params: GeneratorParams): GeneratedQue
   const correctNum = rawNum / g;
   const correctDenom = denom / g;
   const correctAnswer = `${correctNum}/${correctDenom}`;
+  const context = { num, denom, whole, correctNum, correctDenom };
+
+  // ---- reverseProblem: given the total used and the number of batches,
+  // find the per-batch fraction — dividing back through the product.
+  if (reverseProblem) {
+    const name = pick(MULTIPLY_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membuat ${whole} paun kek, dan setiap paun memerlukan jumlah tepung yang sama. Jumlah tepung yang digunakan ialah ${correctAnswer} cawan. Berapa cawan tepung diperlukan untuk SATU paun?`,
+        en: `${name} bakes ${whole} loaves of cake, each needing the same amount of flour. The total flour used is ${correctAnswer} cups. How many cups of flour does ONE loaf need?`,
+      },
+      type: "word_problem",
+      correctAnswer: `${num}/${denom}`,
+      context,
+      generatorKey: "fractions_multiply",
+      difficulty: 3,
+    };
+    // Classic mistake: multiplied again instead of dividing back.
+    const multipliedAgain = `${correctNum * whole}/${correctDenom}`;
+    const distractors = [multipliedAgain].filter((d) => d !== `${num}/${denom}`);
+    question.options = shuffleOptions(`${num}/${denom}`, distractors);
+    while (question.options.length < 3) {
+      const candidate = `${Math.max(1, num + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1))}/${denom}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "multiplied the denominator
+  // too" mistake, must give the correct answer.
+  if (errorSpotting) {
+    const multipliedDenomToo = `${num}/${denom * whole}`;
+    if (multipliedDenomToo !== correctAnswer) {
+      const name = pick(MULTIPLY_NAMES);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} mengira ${num}/${denom} × ${whole} dan mendapat ${multipliedDenomToo}. Apakah jawapan yang betul?`,
+          en: `${name} calculated ${num}/${denom} × ${whole} and got ${multipliedDenomToo}. What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer,
+        context,
+        generatorKey: "fractions_multiply",
+        difficulty: 3,
+        options: shuffleOptions(correctAnswer, [multipliedDenomToo]),
+      };
+      while (question.options!.length < 3) {
+        const candidate = `${correctNum}/${correctDenom + randInt(1, 4)}`;
+        if (!question.options!.includes(candidate)) question.options!.push(candidate);
+      }
+      return question;
+    }
+  }
+
+  // ---- word_problem: baking framing, matching the topic's own explanation.
+  if (type === "word_problem") {
+    const name = pick(MULTIPLY_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Setiap paun kek yang dibuat ${name} memerlukan ${num}/${denom} cawan tepung. Berapa cawan tepung diperlukan untuk ${whole} paun?`,
+        en: `Each cake loaf ${name} makes needs ${num}/${denom} cup of flour. How many cups of flour are needed for ${whole} loaves?`,
+      },
+      type: "word_problem",
+      correctAnswer,
+      context,
+      generatorKey: "fractions_multiply",
+      difficulty: 2,
+    };
+    const multipliedDenomToo = `${num}/${denom * whole}`;
+    const unsimplified = `${rawNum}/${denom}`;
+    const distractors = Array.from(new Set([multipliedDenomToo, unsimplified].filter((d) => d !== correctAnswer)));
+    question.options = shuffleOptions(correctAnswer, distractors);
+    while (question.options.length < 3) {
+      const candidate = `${correctNum}/${correctDenom + randInt(1, 4)}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const question: GeneratedQuestion = {
     prompt: { ms: `${num}/${denom} × ${whole} = ?`, en: `${num}/${denom} × ${whole} = ?` },
     type,
     correctAnswer,
-    context: { num, denom, whole, correctNum, correctDenom },
+    context,
     generatorKey: "fractions_multiply",
     difficulty: 2,
   };

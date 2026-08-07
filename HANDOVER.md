@@ -726,31 +726,139 @@ elsewhere) for money_change's reverseProblem.
 69 topics retrofitted total across 24 batches — 16 remain, all confirmed
 one-offs (score distribution now `{ '1': 69, '12': 16 }`).
 
-**Next batch (not yet done):** `...013`, `...021`, `...022`, `...023`,
-`...025`, `...026`, `...029`, `...034`, `...038`, `...054`, `...072`,
-`...073`, `...076`, `...077`, `...080`, `...081` remain. The
+**Batch 25 done — closes out the multiplication/division family
+entirely:** `...021` (Darab Dengan Nombor 2 Digit, Y5), `...022`
+(Bahagi Dengan Nombor 2 Digit, Y6), `...025` (Bahagi Dengan Nombor 1
+Digit, Y5), `...026` (Darab Nombor 4 Digit Dengan Nombor 2 Digit, Y6),
+`...029` (Bahagi Dengan Nombor 1 Digit, Y4) — five separate generators
+(`wholeNumbersMultiplication`, `wholeNumbersMultiplicationY6`,
+`wholeNumbersDivision`, `wholeNumbersDivisionY5`,
+`wholeNumbersDivisionY4`), confirmed structurally near-identical before
+starting, retrofitted in one pass using the same shape across all five:
+a real word_problem context (factory-production for the two
+multiplication generators, equal-sharing for the three division ones —
+each with its own distinct name pool + item pool per topic so they
+don't feel copy-pasted, e.g. Y4 division uses biskut/stiker/belon while
+Y5 division uses gula-gula/pensel warna/guli), `errorSpotting` (forgot-
+shift for multiplication, subtracted-instead-of-divided for division),
+and a `reverseProblem` that's the genuine inverse operation rather than
+a re-skin: multiplication's reverse divides back through the total to
+find the daily rate; division's reverse finds the divisor itself (the
+"how many groups" framing) given the dividend and quotient.
 
-remaining multiplication/division topics (`...021`/`...022`/`...025`/
-`...026`/`...029`) are next in line for that family — five separate
-generators (`wholeNumbersMultiplicationY6`, `wholeNumbersDivisionY4`,
-`wholeNumbersDivisionY5`, plus `whole_numbers_multiplication` and
-`whole_numbers_division` used by `...021`/`...022`), likely all
-following the exact same carry/borrow-mistake retrofit shape as
-`...028`/`...001`/`...020`/`...030`/`...031` — should go quickly now
-that the pattern is fully established for this family. `...080`/`...081`
-(Isi Padu/Perimeter Bentuk Gubahan — composite-shape volume/perimeter)
-are newly visible and worth checking together, and might relate to
-`...013` (Luas Bentuk Gubahan, composite-shape area) as a three-way
-"composite shapes" cluster even if not sharing a generator directly.
-`...072`/`...077` (Carta Pai/Piktograf) remain likely categorical/
-diagram-based topics with no reverseProblem, same as `...082`'s
-pattern — worth confirming when picked up. No DB/UI schema changes
-needed for any of this — `challengeExample` from the original brief was
+**`classify.ts` note for this batch:** all five cases now open with a
+guard comparing `Number(question.correctAnswer)` against the base-case
+`correct` context field — if they differ (meaning this is a
+reverseProblem question asking for a different quantity), it skips the
+distractor-formula checks and returns a generic `calculation_error`
+with a hint naming which operation the reverse question actually needs,
+rather than risking a false match against a distractor formula that
+was never computed for that question. Same pattern as batch 24. One new
+mistakeType added to all five topics: `multiplied_instead_of_divided`,
+describing the reverseProblem-specific error of multiplying back
+through the total instead of dividing.
+
+**Audit note:** the scorer needs `mistakes >= 4` to reach score 1 (gold)
+— `mistakes >= 3` still leaves 2 points on the table (`Math.max(0, 4 -
+mistakes) * 2`). Don't stop at 3 commonMistakes per topic; always check
+the score, not just that it dropped.
+
+74 topics retrofitted total across 25 batches — 11 remain, all confirmed
+one-offs (score distribution now `{ '1': 74, '12': 11 }`).
+
+**Batch 26 done — the "composite shapes" three-way cluster confirmed
+and closed out:** `...013` (Luas Bentuk Gubahan — Area, Y5), `...080`
+(Isi Padu Bentuk Gubahan — Volume, Y5), `...081` (Perimeter Bentuk
+Gubahan, Y5) — three separate generators (`areaComposite`,
+`volumeComposite`, `perimeterComposite`) as suspected, no sharing, but
+genuinely worth doing together since they're the same "split into
+parts, combine" shape at 2D/3D/perimeter respectively. Each gained a
+real word-problem framing (garden plot for area, storage tank for
+volume, perimeter kept its existing garden framing), `errorSpotting`
+(forgot-the-second-part for area/volume, notch-reduces-perimeter for
+perimeter — reusing the mistake that was already `classify.ts`'s
+primary check for each), and a `reverseProblem` that solves for a
+missing dimension given the total (area/volume) or a missing bounding-
+rectangle side (perimeter) — genuinely different arithmetic direction
+in each case, not just a re-skinned prompt.
+
+`classify.ts` note: same guard pattern as batches 24-25 — each case now
+opens by comparing `Number(question.correctAnswer)` against the
+base-case `correct` context field, falling back to a generic
+`calculation_error` with an operation-specific hint when they differ
+(i.e. a reverseProblem question). Remembered the batch-25 gotcha this
+time and added 4 commonMistakes to each topic from the start, not 2.
+
+77 topics retrofitted total across 26 batches — **8 remain**, all
+confirmed one-offs (score distribution now `{ '1': 77, '12': 8 }`).
+
+**Batch 27 done — PROJECT COMPLETE. All 85 topics now at gold
+standard.** The final 8: `...023` (bar graphs, Y5), `...034` (subtract
+same-denom fractions, Y4), `...038` (divide fraction by whole, Y6),
+`...054` (multiply fractions, Y5), `...072` (pie charts, Y6), `...073`
+(time zones, Y6), `...076` (compound interest, Y5), `...077`
+(pictographs, Y4) — 8 separate generators, confirmed no sharing.
+
+Two things worth flagging for whoever reads this next:
+
+1. **The diagram/categorical topics (`bar_graph`, `pie_chart`,
+   `pictograph`) DID support reverseProblem naturally** — the earlier
+   worry in this file turned out unfounded. Each had a genuine reverse
+   direction: bar_graph finds a missing bar given the total and the
+   other three; pie_chart finds the total surveyed given one sector's
+   actual count and its fraction (dividing back through the
+   multiplication); pictograph finds how many icons to draw given an
+   actual total and the key (also dividing back). All three already had
+   a `variant` field in their context (`"total"`/`"difference"` for
+   bar_graph, `"count"`/`"difference"` for the other two) from their
+   original implementation, so the reverseProblem branch just added a
+   third variant value (`"reverse"`) — `classify.ts` guards on that
+   directly instead of comparing `correctAnswer` against a `correct`
+   field like the numeric topics do. Same idea, cheaper check.
+
+2. **`fractionsSubtract.ts` had a real bug**, not just a missing
+   feature: its mcq branch built distractors but never had the
+   uniqueness-guaranteed fallback loop every other generator has, so it
+   could silently return fewer than 3 options for unlucky
+   numerator/denominator combinations. Fixed as part of this retrofit.
+   Worth a quick audit of any pre-Round-19 generator not yet touched by
+   this project for the same gap — this project is now complete, but if
+   new sub-topics get added later using an old generator as a template,
+   check it has the fallback loop before copying its shape.
+
+`classify.ts` note: fraction/money/time/graph cases all follow the same
+guard pattern established across batches 24-27 — check whether
+`question.correctAnswer` matches the base-case shape (either by direct
+comparison to a `correct` context field, or a format check like
+`.startsWith("GMT")` for time_zones, or a `variant === "reverse"` check
+for the three diagram topics) before running the base-case distractor
+checks, falling back to a generic `calculation_error` with an
+operation-specific hint otherwise.
+
+**85/85 topics retrofitted — 0 remain.** Final audit: `Score
+distribution: { '1': 85 }`. Every topic has ≥3 tips (including one
+explicit "DON'T do this" worked counter-example), ≥4 commonMistakes,
+and ≥4 questionTemplates spanning mcq/fill/word_problem/errorSpotting/
+reverseProblem (or the diagram-topic equivalent). `npx tsc --noEmit`
+clean throughout. No DB/UI schema changes were needed for any of this
+across all 27 batches — `challengeExample` from the original brief was
 folded into `questionTemplates`' `reverseProblem`/`errorSpotting`
-configs instead of a new object field, since that's already how
-`...085` and every retrofitted topic since works and needs no type
-changes.
+configs instead of a new object field, since that's how `...085` (the
+original hand-written gold-standard reference topic) already worked and
+needed no type changes to extend to the other 84.
 
+**If new topics get added to the curriculum in future**, use any topic
+from this file as the template — the shape is now consistent
+end-to-end: generator (base case + errorSpotting + reverseProblem, each
+type branch with a uniqueness-guaranteed options fallback) →
+`classify.ts` case (with a reverseProblem/variant guard before the
+base-case distractor checks) → content (`explanation`, 3 `tips`
+including one DON'T example, 4 `howTo` steps ending in a self-check,
+`workedExample`, 4 `commonMistakes`, 5 `questionTemplates`). Run
+`scripts/audit-content-gaps.ts` after any addition to confirm it scores
+1, and smoke-test all 5 generator branches at ~1000x before shipping —
+that's what caught the missing-options-fallback bug in
+`fractionsSubtract.ts` above, and it'll catch the next one too.
 **Round 17 (ids `...082`-`...084`) — Lynda asked directly whether Year 4
 Coordinates/Ratio/Proportion were covered. They weren't, at all** — only
 Y5/Y6 versions existed, despite the real Y4 textbook explicitly listing
@@ -1746,6 +1854,175 @@ round(s):**
   bad drag-and-drop file replace) serving stale code and breaking the
   build — if a build error path looks like `./app/congak/app/...`
   (doubled), that's the signature of this happening again.
+
+## Curriculum hierarchy added post-launch — Bidang → Tajuk (main topics → sub-topics)
+Lynda asked whether the app matched how the real KSSR textbooks organize
+content — they don't use one flat topic list, they group into **4 Bidang
+Pembelajaran (learning areas)**, each containing several **Tajuk
+(sub-topics)**. Verified this against multiple official DSKP Matematik
+KSSR (Semakan 2017) sources for Tahun 4-6 (all consistent):
+
+1. **Nombor dan Operasi** (Numbers and Operations) — Nombor Bulat dan
+   Operasi Asas; Pecahan, Perpuluhan dan Peratus; Wang
+2. **Sukatan dan Geometri** (Measurement and Geometry) — Masa dan Waktu;
+   Ukuran dan Sukatan; Ruang
+3. **Perkaitan dan Algebra** (Relationship and Algebra) — Koordinat,
+   Nisbah dan Kadaran
+4. **Statistik dan Kebarangkalian** (Statistics and Probability) —
+   Pengurusan Data; Kebolehjadian
+
+Our existing `strand` field on every topic (e.g. "Wang", "Ruang",
+"Statistik") already *was* the Tajuk level — it just had no parent Bidang
+grouping, and a few topics had gotten bundled into the wrong Tajuk along
+the way. Fixed both:
+
+- **Added `bidang: Bilingual` to every topic** in `lib/content/topics.ts`
+  (`TopicContent` interface + all 85 entries), sourced from a new `BIDANG`
+  const with the 4 canonical values above. Verified programmatically
+  after: `{ numbersOperations: 42, measurementGeometry: 30,
+  relationshipAlgebra: 7, statisticsProbability: 6 }`, 85 total, 0
+  missing — matches the real curriculum's topic distribution shape.
+- **Split 2 Tajuk that were incorrectly merged:**
+  - Time topics (`...007`, `...043`, `...048`, `...049`, `...064`,
+    `...073`, `...085` — 7 total) were tagged `strand: "Measurement"`
+    alongside length/mass/volume topics. Real DSKP has "Masa dan Waktu"
+    as its own Tajuk, separate from "Ukuran dan Sukatan" — split them out.
+  - `...051` (Likelihood) was tagged `strand: "Statistics"`. Real DSKP
+    has "Kebolehjadian" (Probability) as a separate Tajuk from
+    "Pengurusan Data" (which the other 5 stats topics correctly map to)
+    — split it out to its own `strand: "Probability"`.
+  - `...074` (Prime/Composite Numbers) had `strand: "Numbers and
+    Operations"` (the Bidang name, not a Tajuk) — relabeled to `strand:
+    "Whole Numbers"`, which is where it actually belongs (Tajuk "Nombor
+    Bulat dan Operasi Asas").
+- **`lib/content/strandStyle.ts`**: added icon/color entries for the 2
+  new Tajuk values (`Time` → Clock, `Probability` → Dices), and swapped
+  `Space`'s icon to `Shapes` and `Measurement`'s to `Ruler` since `Clock`
+  moved to `Time` and both used to share one bucket.
+- **`components/student/TopicYearBrowser.tsx`** (shared by `/learn` and
+  `/practice`): now groups each year's topics into Bidang sections
+  (uppercase small-caps headers) in fixed curriculum order — Numbers &
+  Operations → Measurement & Geometry → Relationship & Algebra →
+  Statistics & Probability — instead of one flat list. Topic cards
+  underneath are unchanged (still show Tajuk as the small label + colored
+  icon). `YearTopicItem` gained a `bidang: Bilingual` field;
+  `app/(student)/learn/page.tsx` and `.../practice/page.tsx` both pass
+  `topic.bidang` through when building `YearGroup`s.
+- **Topic detail page headers** (`/learn/[topicId]`, `/practice/[topicId]`,
+  `/quiz/[topicId]`) now show a `Bidang › Tajuk` breadcrumb instead of
+  just the Tajuk, for consistency with the list view — cheap, same label
+  slot, no layout change.
+- **Not touched:** `supabase/migrations/0002_seed_content.sql` — per the
+  note already at the top of `topics.ts`, that seed file is a known stale
+  duplicate no screen actually reads from; `topics.ts` is the single
+  source of truth. If content ever moves into the DB for real, the
+  `bidang` column will need adding there too — flagging so it isn't
+  missed.
+
+Verified: `npx tsc --noEmit` clean. No new migration needed (code-only).
+
+## UASA-alignment audit — how our question standards compare to real exam papers
+Lynda asked whether our exercise/quiz/exam question standards are on par
+with real UASA (Ujian Akhir Sesi Akademik) papers. Read three full real
+sample papers — MathsCatch/Cikgu Gorgeous practice papers for Tahun 4, 5,
+and 6, sourced via Studocu/PDFCoffee/AnyFlip since the original Scribd
+link was JS-gated. Findings, cross-checked against the actual generator
+code rather than assumed:
+
+**On par:** paper structure (Bahagian A short items + Bahagian B word
+problems maps onto mcq/fill vs word_problem), and a long list of direct
+topic-for-topic matches — number-in-words, rounding, number lines,
+fraction↔percent, percentage-of-quantity, ratio, composite-shape
+area/volume, profit/loss, time zones, angles in regular polygons, pie
+charts (including the "one sector missing, work it out from 100%"
+pattern, which is exactly our `pie_chart` reverseProblem). The
+reverseProblem pattern built across the whole retrofit — "given a total
+and one part, find the other" — turns out to be genuinely the same shape
+real UASA word problems use.
+
+**Fixed this session — verified against DSKP, not just the exam paper:**
+`...065` (Distance Between Two Coordinates, Y6) only ever computed the
+raw grid-unit difference between two points. Real Y6 papers (and the
+DSKP itself — SK 7.1 Koordinat pada Sukuan Pertama, SP 7.1.1, textbook
+pages 187-190, confirmed via multiple independent PBD worksheet sources)
+consistently apply a map scale ("1 unit mewakili 150 m") to convert that
+grid distance into a REAL distance in m or km — this is the actual
+terminal Y6 skill, not an exam-writer's embellishment on top of the
+"real" content. Fixed in `lib/questions/generators/coordinateDistance.ts`:
+added a `scaled` config branch that multiplies the grid distance by a
+configurable scale (`scaleUnitMeters`, defaults picked from
+`[50,100,150,200,250,500]`) and expresses the answer in `m` or `km` per
+config, plus an `errorSpotting` variant for the "forgot to apply the
+scale" mistake (now `commonMistakes`' primary entry — was previously not
+covered at all). `classify.ts`'s case now guards on
+`ctx.scaleUnitMeters !== undefined` before the plain-grid checks, same
+pattern as every other reverseProblem/variant guard in this project.
+Rewrote topic 065's `explanation`/`tips`/`howTo`/`workedExample` to teach
+both steps (grid distance → apply scale) instead of just the first one.
+`questionTemplates` now mixes 2 plain-grid templates (the foundational
+step, still worth practicing alone) with 2 scaled templates and keeps
+errorSpotting + reverseProblem — 6 total, still gold per the audit
+script. Smoke-tested all 11 branches (plain × 5, scaled × 6) at 1000x —
+100% pass; also ran a few samples through the real `generateQuestion`
+dispatcher end-to-end (not just the raw generator function) to confirm
+the actual `questionTemplates` configs work, since this is the first
+retrofit where a topic's templates were restructured rather than just
+extended.
+
+**Bigger structural gaps — not fixed this session, need a dedicated
+pass, documented here so the plan doesn't get lost:**
+
+1. **Real papers routinely blend 2-3 skills into ONE question** — a
+   mixed number, a decimal, and a whole number combined in the same
+   expression; a fraction-of-a-quantity chained into a subtraction
+   chained into a multiplication. Every one of our 85 generators is
+   deliberately single-skill (right call for *practice/mastery* mode —
+   you want to isolate what's being tested when a student is drilling a
+   specific topic), but it means no single Congak question replicates
+   that layered complexity real Bahagian B items have.
+
+2. **Bahagian B's actual structure is "one scenario → a)/b)/c)/d)/e)
+   escalating sub-questions"**, often reusing numbers or an answer from
+   an earlier part in a later part. Checked `ExamFlow.tsx`:
+   `buildExamQuestions()` assembles N fully independent questions
+   cycling through topic generators (`topicIds[i % topicIds.length]`) —
+   there's no "one scenario, multiple linked parts" mode. This is the
+   single biggest structural difference from a real paper's Bahagian B,
+   not a content-quality issue — our exam mode is closer to "a longer
+   Bahagian A" than a real mixed paper.
+
+   These two are really the same underlying gap (a real Bahagian B
+   *is* the blended-multi-skill scenario), and best tackled together as
+   one feature rather than two separate patches:
+   - A new content shape for **scenario topics**: one real-world setup
+     (e.g. a school sports day, a family budget, a factory's weekly
+     output) with 3-5 linked parts, each part pulling one arithmetic
+     step but drawing numbers from the same scenario and sometimes from
+     a previous part's answer.
+   - A new generator pattern: probably a `generateScenario(seed)` that
+     returns an ordered list of `{ prompt, correctAnswer, dependsOn }`
+     parts sharing one random seed, rather than the current
+     `GeneratedQuestion` single-object shape — this is a real schema
+     change, not just a new generatorKey, so it needs its own design
+     pass before writing code.
+   - A new exam/practice UI flow that renders one scenario card with
+     multiple sub-answer fields instead of the current one-question-at-
+     a-time flow — also a real UI change, not a content tweak.
+   - Suggest scoping this as its own multi-batch project the same way
+     the content retrofit was, starting with 2-3 scenario topics as a
+     proof of shape before generalizing.
+
+3. **Some real questions are open-ended/justification-based**
+   ("is this event likely or not, and why", "which item was NOT sold,
+   and why do you think so") — not answerable in mcq/fill/word_problem
+   format without free-text grading, which this app doesn't have.
+   Recommend accepting this as a known gap rather than chasing it —
+   it's a format constraint of a digital auto-graded app, not a content
+   quality issue.
+
+4. **Chart construction** (draw/complete a bar or pie chart from a data
+   table) appears in real Bahagian B. Not replicable without a
+   drawing/labeling UI — same accepted-gap reasoning as #3.
 
 ## Workflow with Lynda
 Non-technical, testing on Windows/VS Code, deploys via GitHub push →

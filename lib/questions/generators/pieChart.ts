@@ -2,6 +2,7 @@ import { randInt, shuffleOptions, pick } from "../utils";
 import type { GeneratedQuestion, GeneratorParams } from "../types";
 
 const LABELS = ["A", "B", "C", "D"];
+const PIE_NAMES = ["Aina", "Ali", "Siti", "Vijay", "Mei Ling", "Hakim"];
 
 // Each set of numerators is out of `denom` and always sums to `denom`,
 // so every pie chart drawn is a complete, valid whole. `denom` is also
@@ -15,8 +16,15 @@ const FRACTION_SETS: { denom: number; nums: number[] }[] = [
   { denom: 6, nums: [3, 2, 1] }, // 1/2, 1/3, 1/6
 ];
 
+// Year 6 KSSR "Reading Pie Charts". Retrofitted per the Round 19 content
+// standard: added word_problem type support, errorSpotting (treating
+// every sector as a unit fraction), and a reverseProblem that finds the
+// total surveyed given one sector's actual count and its fraction
+// (dividing back through the multiplication).
 export function generatePieChart(params: GeneratorParams): GeneratedQuestion {
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
   const variant = pick(["count", "difference"]);
 
   const set = pick(FRACTION_SETS);
@@ -24,6 +32,34 @@ export function generatePieChart(params: GeneratorParams): GeneratedQuestion {
   const total = set.denom * multiplier;
   const labels = LABELS.slice(0, set.nums.length);
   const counts = set.nums.map((n) => (total * n) / set.denom);
+
+  // ---- reverseProblem: given one sector's actual count and its
+  // fraction, find the total surveyed — dividing back.
+  if (reverseProblem) {
+    const targetIndex = randInt(0, labels.length - 1);
+    const sectorCount = counts[targetIndex];
+    const name = pick(PIE_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Dalam satu carta pai, kumpulan ${labels[targetIndex]} mewakili ${set.nums[targetIndex]}/${set.denom} daripada jumlah murid yang disoal siasat oleh ${name}. Kumpulan ${labels[targetIndex]} mempunyai ${sectorCount} orang murid. Berapakah jumlah keseluruhan murid yang disoal siasat?`,
+        en: `In a pie chart, group ${labels[targetIndex]} represents ${set.nums[targetIndex]}/${set.denom} of the total pupils ${name} surveyed. Group ${labels[targetIndex]} has ${sectorCount} pupils. What is the total number of pupils surveyed?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(total),
+      context: { variant: "reverse", total, targetIndex, correct: total, denom: set.denom, sectorCount },
+      generatorKey: "pie_chart",
+      difficulty: 3,
+    };
+    // Classic mistake: multiplied instead of dividing back through the fraction.
+    const multipliedInstead = sectorCount * set.nums[targetIndex];
+    const distractors = [String(multipliedInstead)].filter((d) => d !== String(total));
+    question.options = shuffleOptions(String(total), distractors);
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, total + randInt(1, 5) * set.denom * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   let promptMs: string;
   let promptEn: string;
@@ -49,6 +85,37 @@ export function generatePieChart(params: GeneratorParams): GeneratedQuestion {
     context = { variant, total, iHigh, iLow, correct, denom: set.denom };
   }
 
+  // ---- errorSpotting: shown the classic "treated every sector as a
+  // unit fraction" mistake (count variant only), must give the correct count.
+  if (errorSpotting && variant === "count") {
+    const targetIndex = Number(context.targetIndex);
+    const unitFractionOnly = total / set.denom;
+    if (unitFractionOnly !== correct) {
+      const name = pick(PIE_NAMES);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} mengira bilangan murid dalam kumpulan ${labels[targetIndex]} (${set.nums[targetIndex]}/${set.denom} daripada ${total} murid) sebagai ${unitFractionOnly} (anggap setiap petak = 1/${set.denom}). Apakah jawapan yang betul?`,
+          en: `${name} calculated the number of pupils in group ${labels[targetIndex]} (${set.nums[targetIndex]}/${set.denom} of ${total} pupils) as ${unitFractionOnly} (assuming every slice = 1/${set.denom}). What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer: String(correct),
+        context,
+        generatorKey: "pie_chart",
+        difficulty: 3,
+        options: shuffleOptions(String(correct), [String(unitFractionOnly)]),
+        diagram: {
+          kind: "pie_chart",
+          segments: labels.map((label, i) => ({ label, numerator: set.nums[i], denominator: set.denom })),
+        },
+      };
+      while (question.options!.length < 3) {
+        const candidate = String(correct + randInt(1, 9) * (Math.random() > 0.5 ? 1 : -1));
+        if (!question.options!.includes(candidate) && Number(candidate) > 0) question.options!.push(candidate);
+      }
+      return question;
+    }
+  }
+
   const question: GeneratedQuestion = {
     prompt: { ms: promptMs, en: promptEn },
     type,
@@ -62,7 +129,7 @@ export function generatePieChart(params: GeneratorParams): GeneratedQuestion {
     },
   };
 
-  if (type === "mcq") {
+  if (type === "mcq" || type === "word_problem") {
     let distractors: string[];
     if (variant === "count") {
       const targetIndex = Number(context.targetIndex);

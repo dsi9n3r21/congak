@@ -29,7 +29,7 @@ export default async function LearnTopicPage({ params }: { params: { topicId: st
         </div>
         <div className="relative z-10 max-w-[60%]">
           <p className="text-xs font-semibold uppercase tracking-wide text-kuning-dark">
-            <Bi text={topic.strand} lang={lang} />
+            <Bi text={topic.bidang} lang={lang} /> <span className="text-kuning-dark/50">›</span> <Bi text={topic.strand} lang={lang} />
           </p>
           <h1 className="font-display text-xl font-bold text-ink">
             <Bi text={topic.title} lang={lang} />

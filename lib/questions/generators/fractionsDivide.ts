@@ -1,13 +1,23 @@
 import { pick, randInt, shuffleOptions, gcd } from "../utils";
 import type { GeneratedQuestion, GeneratorParams } from "../types";
 
+const DIVIDE_BY_WHOLE_NAMES = ["Aina", "Haris", "Wei Ling", "Kavitha", "Zulkifli", "Amirah", "Ravi"];
+
 // KSSR Y6 rule: (a/b) ÷ c = a/(b×c) — multiply the denominator by the
 // whole number, then simplify. First of four fraction-division sub-topics
 // in the real textbook (proper÷whole, mixed÷whole, proper÷proper,
 // mixed÷proper) — starting with the simplest, most foundational one.
+//
+// Retrofitted per the Round 19 content standard: added a real chocolate-
+// bar-sharing word_problem (matching this topic's own explanation),
+// errorSpotting (the documented "multiplied instead of divided"
+// mistake), and a reverseProblem finding the original amount given the
+// share size and number of shares (multiplying back).
 export function generateFractionsDivideByWhole(params: GeneratorParams): GeneratedQuestion {
   const denominators = (params.denominators as number[]) ?? [2, 3, 4, 5, 6, 8];
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
 
   const denom = pick(denominators);
   const num = randInt(1, denom - 1); // proper fraction
@@ -18,12 +28,91 @@ export function generateFractionsDivideByWhole(params: GeneratorParams): Generat
   const correctNum = num / g;
   const correctDenom = rawDenom / g;
   const correctAnswer = `${correctNum}/${correctDenom}`;
+  const context = { num, denom, whole, correctNum, correctDenom };
+
+  // ---- reverseProblem: given the share size and the number of shares,
+  // find the original amount — multiplying back through the division.
+  if (reverseProblem) {
+    const name = pick(DIVIDE_BY_WHOLE_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebatang coklat dikongsi sama rata antara ${whole} orang kawan ${name}. Setiap orang mendapat ${correctAnswer} bar. Berapakah pecahan coklat yang ada pada mulanya?`,
+        en: `A chocolate bar is shared equally among ${whole} of ${name}'s friends. Each person gets ${correctAnswer} of a bar. What fraction of a bar was there at the start?`,
+      },
+      type: "word_problem",
+      correctAnswer: `${num}/${denom}`,
+      context,
+      generatorKey: "fractions_divide_by_whole",
+      difficulty: 3,
+    };
+    // Classic mistake: divided again instead of multiplying back.
+    const dividedAgain = `${correctNum}/${correctDenom * whole}`;
+    const distractors = [dividedAgain].filter((d) => d !== `${num}/${denom}`);
+    question.options = shuffleOptions(`${num}/${denom}`, distractors);
+    while (question.options.length < 3) {
+      const candidate = `${Math.max(1, num + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1))}/${denom}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "multiplied instead of
+  // divided" mistake, must give the correct answer.
+  if (errorSpotting) {
+    const multipliedInstead = `${num * whole}/${denom}`;
+    if (multipliedInstead !== correctAnswer) {
+      const name = pick(DIVIDE_BY_WHOLE_NAMES);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} mengira ${num}/${denom} ÷ ${whole} dan mendapat ${multipliedInstead}. Apakah jawapan yang betul?`,
+          en: `${name} calculated ${num}/${denom} ÷ ${whole} and got ${multipliedInstead}. What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer,
+        context,
+        generatorKey: "fractions_divide_by_whole",
+        difficulty: 3,
+        options: shuffleOptions(correctAnswer, [multipliedInstead]),
+      };
+      while (question.options!.length < 3) {
+        const candidate = `${correctNum}/${correctDenom + randInt(1, 4)}`;
+        if (!question.options!.includes(candidate)) question.options!.push(candidate);
+      }
+      return question;
+    }
+  }
+
+  // ---- word_problem: chocolate-bar-sharing framing, matching the
+  // topic's own explanation.
+  if (type === "word_problem") {
+    const name = pick(DIVIDE_BY_WHOLE_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${num}/${denom} bar coklat milik ${name} hendak dikongsi sama rata antara ${whole} orang kawan. Berapa bahagian setiap orang dapat?`,
+        en: `${name} has ${num}/${denom} of a chocolate bar to share equally among ${whole} friends. How much does each person get?`,
+      },
+      type: "word_problem",
+      correctAnswer,
+      context,
+      generatorKey: "fractions_divide_by_whole",
+      difficulty: 3,
+    };
+    const multipliedInstead = `${num * whole}/${denom}`;
+    const unsimplified = `${num}/${rawDenom}`;
+    const distractors = Array.from(new Set([multipliedInstead, unsimplified].filter((d) => d !== correctAnswer)));
+    question.options = shuffleOptions(correctAnswer, distractors);
+    while (question.options.length < 3) {
+      const candidate = `${correctNum}/${correctDenom + randInt(1, 4)}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const question: GeneratedQuestion = {
     prompt: { ms: `${num}/${denom} ÷ ${whole} = ?`, en: `${num}/${denom} ÷ ${whole} = ?` },
     type,
     correctAnswer,
-    context: { num, denom, whole, correctNum, correctDenom },
+    context,
     generatorKey: "fractions_divide_by_whole",
     difficulty: 3,
   };

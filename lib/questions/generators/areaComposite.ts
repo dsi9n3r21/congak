@@ -1,10 +1,18 @@
-import { randInt, shuffleOptions } from "../utils";
+import { pick, randInt, shuffleOptions } from "../utils";
 import type { GeneratedQuestion, GeneratorParams } from "../types";
 
+const AREA_NAMES = ["Aiman", "Siti", "Hakim", "Mei Ling", "Farah", "Vijay"];
+
+// Year 5 KSSR "Area of Composite Shapes". Retrofitted per the Round 19
+// content standard: added a garden word_problem framing, errorSpotting
+// (the classic "forgot the second rectangle" mistake), and a
+// reverseProblem that finds a missing side length given the total area.
 export function generateAreaComposite(params: GeneratorParams): GeneratedQuestion {
-  const type = (params.type as "mcq" | "word_problem") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const min = Number(params.min ?? 2);
   const max = Number(params.max ?? 10);
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
 
   // Composite shape = two rectangles joined together (an L-shape), the
   // KSSR-standard way composite area is introduced before circles/triangles.
@@ -16,6 +24,84 @@ export function generateAreaComposite(params: GeneratorParams): GeneratedQuestio
   const area1 = l1 * w1;
   const area2 = l2 * w2;
   const correct = area1 + area2;
+  const context = { l1, w1, l2, w2, area1, area2, correct };
+
+  // ---- reverseProblem: given the total area and every dimension except
+  // one side of the second rectangle, find that missing side.
+  if (reverseProblem) {
+    const name = pick(AREA_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membina bentuk gubahan daripada dua segi empat tepat. Segi Empat Tepat A ialah ${l1} cm × ${w1} cm. Segi Empat Tepat B mempunyai panjang ${l2} cm. Jika jumlah luas keseluruhan ialah ${correct} cm², berapakah lebar Segi Empat Tepat B?`,
+        en: `${name} builds a composite shape from two rectangles. Rectangle A is ${l1} cm × ${w1} cm. Rectangle B has a length of ${l2} cm. If the total area is ${correct} cm², what is the width of Rectangle B?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(w2),
+      context,
+      generatorKey: "area_composite",
+      difficulty: 3,
+    };
+    // Classic mistake: subtracted area1 from the total, but forgot to
+    // divide by l2 to isolate the missing side.
+    const forgotDivide = correct - area1;
+    const distractors = [String(forgotDivide)].filter((d) => d !== String(w2));
+    question.options = shuffleOptions(String(w2), distractors);
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, w2 + randInt(1, 4) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "forgot the second rectangle"
+  // mistake, must give the correct total area.
+  if (errorSpotting && area1 !== correct) {
+    const name = pick(AREA_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} mengira jumlah luas bentuk gubahan (Segi Empat Tepat A: ${l1} cm × ${w1} cm, Segi Empat Tepat B: ${l2} cm × ${w2} cm) sebagai ${area1} cm². Apakah jawapan yang betul?`,
+        en: `${name} calculated the total area of a composite shape (Rectangle A: ${l1} cm × ${w1} cm, Rectangle B: ${l2} cm × ${w2} cm) as ${area1} cm². What is the correct answer?`,
+      },
+      type: "mcq",
+      correctAnswer: String(correct),
+      context,
+      generatorKey: "area_composite",
+      difficulty: 3,
+      options: shuffleOptions(String(correct), [String(area1)]),
+    };
+    while (question.options!.length < 3) {
+      const candidate = String(correct + randInt(1, 9) * (Math.random() > 0.5 ? 1 : -1));
+      if (!question.options!.includes(candidate) && Number(candidate) > 0) question.options!.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- word_problem: garden-plot framing.
+  if (type === "word_problem") {
+    const name = pick(AREA_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} mempunyai sebidang tanah berbentuk gubahan, terdiri daripada dua kawasan segi empat tepat: Kawasan A (${l1} m × ${w1} m) dan Kawasan B (${l2} m × ${w2} m). Cari jumlah luas tanah itu.`,
+        en: `${name} has an L-shaped plot of land made of two rectangular sections: Section A (${l1} m × ${w1} m) and Section B (${l2} m × ${w2} m). Find the total area of the plot.`,
+      },
+      type: "word_problem",
+      correctAnswer: String(correct),
+      context,
+      generatorKey: "area_composite",
+      difficulty: 2,
+    };
+    const onlyFirstRectangle = area1;
+    const addedSidesInstead = l1 + w1 + l2 + w2;
+    question.options = shuffleOptions(
+      String(correct),
+      Array.from(new Set([String(onlyFirstRectangle), String(addedSidesInstead)])).filter((d) => d !== String(correct))
+    );
+    while (question.options.length < 3) {
+      const candidate = String(correct + randInt(1, 9));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const question: GeneratedQuestion = {
     prompt: {
@@ -24,7 +110,7 @@ export function generateAreaComposite(params: GeneratorParams): GeneratedQuestio
     },
     type,
     correctAnswer: String(correct),
-    context: { l1, w1, l2, w2, area1, area2, correct },
+    context,
     generatorKey: "area_composite",
     difficulty: 2,
   };

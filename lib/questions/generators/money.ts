@@ -577,9 +577,13 @@ export function generateSimpleInterest(params: GeneratorParams): GeneratedQuesti
 // the running total), not the closed-form P(1+r)^t exponential formula,
 // which is beyond this level. Kept to 2-3 years so the manual
 // year-by-year calculation stays reasonable for a quiz answer.
+const INTEREST_NAMES = ["Siti", "Ahmad", "Vijay", "Mei Ling", "Hakim", "Aminah"];
+
 export function generateCompoundInterest(params: GeneratorParams): GeneratedQuestion {
   const maxPrincipalRM = Number(params.maxPrincipalRM ?? 20);
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
 
   const principalRM = randInt(2, maxPrincipalRM) * 100; // clean hundreds, e.g. RM200-RM2000
   const rate = pick([2, 4, 5, 8, 10]);
@@ -590,6 +594,62 @@ export function generateCompoundInterest(params: GeneratorParams): GeneratedQues
     amountSen += Math.round((amountSen * rate) / 100);
   }
   const compoundInterestSen = amountSen - principalRM * 100;
+  const context = { principalRM, rate, years, compoundInterestSen };
+
+  // ---- reverseProblem: given year 1's interest alone and the rate, find
+  // the principal — a clean single-step reverse that avoids re-deriving
+  // through multiple years of compounding.
+  if (reverseProblem) {
+    const year1InterestSen = Math.round((principalRM * 100 * rate) / 100);
+    const name = pick(INTEREST_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} melabur wang pada kadar faedah kompaun ${rate}% setahun. Selepas tahun pertama, dia memperoleh faedah sebanyak ${formatRM(year1InterestSen)}. Berapakah wang pokok (prinsipal) yang ${name} labur?`,
+        en: `${name} invests money at a compound interest rate of ${rate}% per year. After the first year, they earn ${formatRM(year1InterestSen)} in interest. How much did ${name} invest as the principal?`,
+      },
+      type: "word_problem",
+      correctAnswer: `RM${principalRM}`,
+      context,
+      generatorKey: "compound_interest",
+      difficulty: 3,
+    };
+    // Classic mistake: treated the interest amount itself as the principal.
+    const treatedInterestAsPrincipal = `RM${Math.round(year1InterestSen / 100)}`;
+    const distractors = [treatedInterestAsPrincipal].filter((d) => d !== `RM${principalRM}`);
+    question.options = shuffleOptions(`RM${principalRM}`, distractors);
+    while (question.options.length < 3) {
+      const candidate = `RM${Math.max(100, principalRM + randInt(1, 5) * 100 * (Math.random() > 0.5 ? 1 : -1))}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "calculated as simple interest"
+  // mistake, must give the correct compound interest.
+  if (errorSpotting) {
+    const simpleInterestSen = Math.round(((principalRM * 100) * rate * years) / 100);
+    if (simpleInterestSen !== compoundInterestSen) {
+      const name = pick(INTEREST_NAMES);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} mengira faedah bagi RM${principalRM} pada kadar ${rate}% setahun selama ${years} tahun sebagai ${formatRM(simpleInterestSen)}, dengan darab terus kadar × tahun × prinsipal (faedah mudah). Tetapi ini ialah faedah KOMPAUN. Apakah jawapan yang betul?`,
+          en: `${name} calculated the interest on RM${principalRM} at ${rate}% per year for ${years} years as ${formatRM(simpleInterestSen)}, by multiplying rate × years × principal straight through (simple interest). But this is COMPOUND interest. What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer: formatRM(compoundInterestSen),
+        context,
+        generatorKey: "compound_interest",
+        difficulty: 3,
+        options: shuffleOptions(formatRM(compoundInterestSen), [formatRM(simpleInterestSen)]),
+      };
+      while (question.options!.length < 3) {
+        const candidateSen = Math.max(0, compoundInterestSen + randInt(50, 500) * (Math.random() > 0.5 ? 1 : -1));
+        const candidate = formatRM(candidateSen);
+        if (!question.options!.includes(candidate)) question.options!.push(candidate);
+      }
+      return question;
+    }
+  }
 
   const question: GeneratedQuestion = {
     prompt: {
@@ -598,12 +658,13 @@ export function generateCompoundInterest(params: GeneratorParams): GeneratedQues
     },
     type,
     correctAnswer: formatRM(compoundInterestSen),
-    context: { principalRM, rate, years, compoundInterestSen },
+    context,
     generatorKey: "compound_interest",
     difficulty: 3,
   };
 
-  if (type === "mcq") {
+  if (type === "mcq" || type === "word_problem") {
+
     // Classic mistake: calculated it as SIMPLE interest instead (rate ×
     // years applied only to the original principal, never compounding).
     const simpleInterestSen = Math.round(((principalRM * 100) * rate * years) / 100);

@@ -401,6 +401,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
     case "area_composite": {
       const { area1, correct } = question.context as { area1: number; correct: number };
+      // reverseProblem: correctAnswer is a missing side length, not the total area.
+      if (Number(question.correctAnswer) !== correct) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Tolak luas Segi Empat Tepat A daripada jumlah keseluruhan dahulu, kemudian bahagikan dengan sisi yang diketahui.",
+            en: "Subtract Rectangle A's area from the total first, then divide by the known side.",
+          },
+        };
+      }
       if (Number(answer) === area1) {
         return {
           mistakeType: "forgot_second_rectangle",
@@ -441,6 +451,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
     case "volume_composite": {
       const { volume1, correct } = question.context as unknown as { volume1: number; correct: number };
+      // reverseProblem: correctAnswer is a missing dimension, not the total volume.
+      if (Number(question.correctAnswer) !== correct) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Tolak isi padu Kuboid A daripada jumlah keseluruhan dahulu, kemudian bahagikan dengan dua dimensi yang diketahui bagi Kuboid B.",
+            en: "Subtract Cuboid A's volume from the total first, then divide by Cuboid B's two known dimensions.",
+          },
+        };
+      }
       if (Number(answer) === volume1) {
         return {
           mistakeType: "forgot_second_cuboid",
@@ -463,6 +483,17 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       const { overallLength, overallWidth, notchLength, notchWidth, correct } = question.context as unknown as {
         overallLength: number; overallWidth: number; notchLength: number; notchWidth: number; correct: number;
       };
+      // reverseProblem: correctAnswer is a missing bounding-rectangle
+      // dimension, not the perimeter itself.
+      if (Number(question.correctAnswer) !== correct) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Perimeter = 2 × (panjang + lebar). Bahagikan perimeter dengan 2, kemudian tolak panjang yang diketahui untuk cari lebar.",
+            en: "Perimeter = 2 × (length + width). Divide the perimeter by 2, then subtract the known length to find the width.",
+          },
+        };
+      }
       const subtractedNotch = correct - 2 * (notchLength + notchWidth);
       if (Number(answer) === Math.max(0, subtractedNotch)) {
         return {
@@ -680,6 +711,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
     case "whole_numbers_multiplication": {
       const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      // reverseProblem: correctAnswer is the daily rate, not the product.
+      if (Number(question.correctAnswer) !== correct) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Ini soalan bahagi (jumlah ÷ bilangan hari), bukan darab. Cuba kira semula.",
+            en: "This is a division question (total ÷ number of days), not multiplication. Try calculating again.",
+          },
+        };
+      }
       const tens = Math.floor(b / 10);
       const ones = b % 10;
       if (Number(answer) === a * tens + a * ones) {
@@ -708,6 +749,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
     case "whole_numbers_division": {
       const { dividend, divisor, correct } = question.context as { dividend: number; divisor: number; correct: number };
+      // reverseProblem: correctAnswer is the divisor (number of groups), not the quotient.
+      if (Number(question.correctAnswer) !== correct) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Ini soalan bahagi (jumlah ÷ nilai setiap kumpulan), bukan darab. Cuba kira semula.",
+            en: "This is a division question (total ÷ amount per group), not multiplication. Try calculating again.",
+          },
+        };
+      }
       if (Number(answer) === dividend - divisor) {
         return {
           mistakeType: "subtracted_instead_of_divided",
@@ -734,6 +785,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
     case "whole_numbers_division_y5": {
       const { dividend, divisor, correct } = question.context as { dividend: number; divisor: number; correct: number };
+      // reverseProblem: correctAnswer is the divisor (number of students), not the quotient.
+      if (Number(question.correctAnswer) !== correct) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Ini soalan bahagi (jumlah ÷ nilai setiap murid), bukan darab. Cuba kira semula.",
+            en: "This is a division question (total ÷ amount per student), not multiplication. Try calculating again.",
+          },
+        };
+      }
       if (Number(answer) === dividend - divisor) {
         return {
           mistakeType: "subtracted_instead_of_divided",
@@ -760,6 +821,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
     case "whole_numbers_multiplication_y6": {
       const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      // reverseProblem: correctAnswer is the daily rate, not the product.
+      if (Number(question.correctAnswer) !== correct) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Ini soalan bahagi (jumlah ÷ bilangan hari), bukan darab. Cuba kira semula.",
+            en: "This is a division question (total ÷ number of days), not multiplication. Try calculating again.",
+          },
+        };
+      }
       const tens = Math.floor(b / 10);
       const ones = b % 10;
       if (Number(answer) === a * tens + a * ones) {
@@ -834,6 +905,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
     case "whole_numbers_division_y4": {
       const { dividend, divisor, correct } = question.context as { dividend: number; divisor: number; correct: number };
+      // reverseProblem: correctAnswer is the divisor (number of students), not the quotient.
+      if (Number(question.correctAnswer) !== correct) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Ini soalan bahagi (jumlah ÷ nilai setiap murid), bukan darab. Cuba kira semula.",
+            en: "This is a division question (total ÷ amount per student), not multiplication. Try calculating again.",
+          },
+        };
+      }
       if (Number(answer) === dividend - divisor) {
         return {
           mistakeType: "subtracted_instead_of_divided",
@@ -951,6 +1032,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       const { numA, numB, denom, correctNum } = question.context as {
         numA: number; numB: number; denom: number; correctNum: number;
       };
+      // reverseProblem: correctAnswer is the starting amount, not the difference.
+      if (question.correctAnswer !== `${correctNum}/${denom}`) {
+        return {
+          mistakeType: "fraction_calculation_error",
+          hint: {
+            ms: "Untuk cari jumlah permulaan, TAMBAH baki dengan jumlah yang ditolak, bukan tolak.",
+            en: "To find the starting amount, ADD the remainder and the amount taken away, don't subtract.",
+          },
+        };
+      }
       if (answer === `${numA + numB}/${denom}`) {
         return {
           mistakeType: "added_instead_of_subtracted",
@@ -1026,6 +1117,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       const { num, denom, whole, correctNum, correctDenom } = question.context as {
         num: number; denom: number; whole: number; correctNum: number; correctDenom: number;
       };
+      // reverseProblem: correctAnswer is the original amount, not the per-share fraction.
+      if (question.correctAnswer !== `${correctNum}/${correctDenom}`) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Untuk cari jumlah asal, DARAB semula bahagian dengan bilangan bahagian, bukan bahagikan.",
+            en: "To find the original amount, MULTIPLY the share back by the number of shares, don't divide.",
+          },
+        };
+      }
       if (answer === `${num * whole}/${denom}`) {
         return {
           mistakeType: "multiplied_instead_of_divided",
@@ -1100,6 +1201,26 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
       const { principalRM, rate, years, compoundInterestSen } = question.context as unknown as {
         principalRM: number; rate: number; years: number; compoundInterestSen: number;
       };
+      // reverseProblem: correctAnswer is the principal, not the compound interest earned.
+      if (question.correctAnswer === `RM${principalRM}`) {
+        const year1InterestSen = Math.round((principalRM * 100 * rate) / 100);
+        if (Number(answer.replace(/[^0-9.]/g, "")) === Math.round(year1InterestSen / 100)) {
+          return {
+            mistakeType: "calculation_error",
+            hint: {
+              ms: "Anda beri semula jumlah faedah, bukan prinsipal. Prinsipal = Faedah Tahun 1 ÷ (Kadar ÷ 100).",
+              en: "You gave back the interest amount, not the principal. Principal = Year 1 Interest ÷ (Rate ÷ 100).",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Prinsipal = Faedah Tahun 1 ÷ (Kadar ÷ 100).",
+            en: "Principal = Year 1 Interest ÷ (Rate ÷ 100).",
+          },
+        };
+      }
       const answerSen = Math.round(parseFloat(answer.replace(/[^0-9.]/g, "")) * 100);
       const simpleInterestSen = Math.round(((principalRM * 100) * rate * years) / 100);
       if (Math.abs(answerSen - simpleInterestSen) < 5 && simpleInterestSen !== compoundInterestSen) {
@@ -1249,7 +1370,19 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "fractions_multiply": {
-      const { num, denom, whole } = question.context as { num: number; denom: number; whole: number };
+      const { num, denom, whole, correctNum, correctDenom } = question.context as {
+        num: number; denom: number; whole: number; correctNum?: number; correctDenom?: number;
+      };
+      // reverseProblem: correctAnswer is the per-batch fraction, not the total.
+      if (correctNum !== undefined && correctDenom !== undefined && question.correctAnswer !== `${correctNum}/${correctDenom}`) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Untuk cari nilai satu bahagian, BAHAGIKAN jumlah dengan bilangan bahagian, bukan darab semula.",
+            en: "To find the value of one share, DIVIDE the total by the number of shares, don't multiply again.",
+          },
+        };
+      }
       if (answer === `${num}/${denom * whole}`) {
         return {
           mistakeType: "multiplied_denominator_instead",
@@ -1439,6 +1572,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
     case "time_zones": {
       const { cityAOffset, cityBOffset, startHour } = question.context as unknown as { cityAOffset: number; cityBOffset: number; startHour: number };
+      // reverseProblem: correctAnswer is a GMT offset, not a time.
+      if (question.correctAnswer.startsWith("GMT")) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "GMT bandar destinasi = GMT bandar asal + beza jam yang diperhatikan.",
+            en: "Destination city's GMT = origin city's GMT + the observed hour difference.",
+          },
+        };
+      }
       const reversedHour = ((startHour - (cityBOffset - cityAOffset)) % 24 + 24) % 24;
       const reversed = `${String(reversedHour).padStart(2, "0")}:00`;
       if (answer === reversed) {
@@ -1469,8 +1612,40 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "coordinate_distance": {
-      const { coord1, coord2 } = question.context as { coord1: number; coord2: number };
-      if (Number(answer) === coord1 + coord2) {
+      const ctx = question.context as unknown as {
+        coord1: number; coord2: number; scaleUnitMeters?: number; gridDistance?: number; unit?: string;
+      };
+      // scaled: correctAnswer is a real-world distance (m/km via a map
+      // scale), not the raw grid difference.
+      if (ctx.scaleUnitMeters !== undefined) {
+        if (Number(answer) === ctx.gridDistance) {
+          return {
+            mistakeType: "forgot_to_apply_scale",
+            hint: {
+              ms: `Darabkan jarak grid dengan skala (${ctx.scaleUnitMeters} m setiap unit) untuk dapat jarak sebenar.`,
+              en: `Multiply the grid distance by the scale (${ctx.scaleUnitMeters} m per unit) to get the real distance.`,
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: `Jarak sebenar = jarak grid × skala. Semak juga sama ada anda perlu tukar m kepada ${ctx.unit}.`,
+            en: `Real distance = grid distance × scale. Also check whether you need to convert m to ${ctx.unit}.`,
+          },
+        };
+      }
+      // reverseProblem: correctAnswer is a coordinate pair like "(4, 6)", not a number.
+      if (question.correctAnswer.startsWith("(")) {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Tambahkan jarak itu kepada nilai koordinat yang berubah bagi titik A untuk cari titik B (bukan tolak).",
+            en: "Add the distance to point A's changing coordinate value to find point B (not subtract).",
+          },
+        };
+      }
+      if (Number(answer) === ctx.coord1 + ctx.coord2) {
         return {
           mistakeType: "added_instead_of_subtracted",
           hint: {
@@ -1561,8 +1736,18 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "bar_graph": {
-      const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number };
+      const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number; missingIndex?: number };
       const values = [ctx.v0, ctx.v1, ctx.v2, ctx.v3];
+      // reverseProblem: correct is the missing bar's value, not a total/difference.
+      if (ctx.variant === "reverse") {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "TOLAK jumlah tiga kumpulan yang diketahui daripada jumlah keseluruhan untuk cari kumpulan yang hilang.",
+            en: "SUBTRACT the sum of the three known groups from the total to find the missing group.",
+          },
+        };
+      }
       if (ctx.variant === "total") {
         const forgotOneOptions = values.map((_, i) => ctx.correct - values[i]);
         if (forgotOneOptions.includes(Number(answer))) {
@@ -1596,6 +1781,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
     case "pie_chart": {
       const ctx = question.context as { variant: string; total: number; denom: number; targetIndex?: number; iHigh?: number; iLow?: number; correct: number };
+      // reverseProblem: correct is the total surveyed, not a sector count/difference.
+      if (ctx.variant === "reverse") {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "BAHAGIKAN bilangan sebenar dengan pecahan (pengangka÷penyebut) untuk cari jumlah keseluruhan, bukan darab.",
+            en: "DIVIDE the actual count by the fraction (numerator÷denominator) to find the total, don't multiply.",
+          },
+        };
+      }
       if (ctx.variant === "count") {
         const unitFractionOnly = ctx.total / ctx.denom;
         if (Number(answer) === unitFractionOnly && unitFractionOnly !== ctx.correct) {
@@ -1626,6 +1821,16 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
     case "pictograph": {
       const ctx = question.context as { variant: string; unitsPerIcon: number; correct: number };
+      // reverseProblem: correct is the icon count, not the actual unit total.
+      if (ctx.variant === "reverse") {
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: `BAHAGIKAN jumlah sebenar dengan kunci (${ctx.unitsPerIcon}) untuk cari bilangan ikon, bukan darab.`,
+            en: `DIVIDE the actual total by the key (${ctx.unitsPerIcon}) to find the icon count, don't multiply.`,
+          },
+        };
+      }
       if (ctx.variant === "count") {
         return {
           mistakeType: "forgot_pictograph_key",

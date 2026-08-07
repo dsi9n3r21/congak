@@ -27,6 +27,7 @@ export default async function PracticeIndexPage() {
       .map((topic) => ({
         id: topic.id,
         strand: topic.strand,
+        bidang: topic.bidang,
         title: topic.title,
         href: `/practice/${topic.id}`,
         weak: masteryByTopic.has(topic.id) ? Boolean(masteryByTopic.get(topic.id)?.weak_flag) : undefined,

@@ -21,7 +21,7 @@ export default async function PracticeTopicPage({ params }: { params: { topicId:
     <main className="min-h-screen pb-24 md:pb-8">
       <header className="px-5 pt-6 pb-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-kuning-dark">
-          <Bi text={topic.strand} lang={lang} />
+          <Bi text={topic.bidang} lang={lang} /> <span className="text-kuning-dark/50">›</span> <Bi text={topic.strand} lang={lang} />
         </p>
         <h1 className="font-display text-xl font-bold text-ink">
           <Bi text={topic.title} lang={lang} />

@@ -795,27 +795,84 @@ export function generateTimeFormatConvert(params: GeneratorParams): GeneratedQue
 }
 
 export function generateTimeZones(params: GeneratorParams): GeneratedQuestion {
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
 
   const [cityA, cityB] = [...TIME_ZONE_CITIES].sort(() => Math.random() - 0.5).slice(0, 2);
   const startHour = randInt(0, 23);
   const diff = cityB.offset - cityA.offset;
   const correctHour = startHour + diff;
   const correct = formatHour24(correctHour);
+  const context = { cityAOffset: cityA.offset, cityBOffset: cityB.offset, startHour, correctHour: ((correctHour % 24) + 24) % 24 };
+
+  // ---- reverseProblem: given both cities' current times, find one
+  // city's GMT offset (the other is given) — solving for the unknown
+  // side of the GMT-difference formula instead of the resulting time.
+  if (reverseProblem) {
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${cityA.name} ialah GMT+${cityA.offset}. Apabila masa di ${cityA.name} ialah ${formatHour24(startHour)}, masa di ${cityB.name} ialah ${correct}. Berapakah GMT bagi ${cityB.name}?`,
+        en: `${cityA.name} is GMT+${cityA.offset}. When the time in ${cityA.name} is ${formatHour24(startHour)}, the time in ${cityB.name} is ${correct}. What is ${cityB.name}'s GMT offset?`,
+      },
+      type: "word_problem",
+      correctAnswer: `GMT+${cityB.offset}`,
+      context,
+      generatorKey: "time_zones",
+      difficulty: 3,
+    };
+    // Classic mistake: subtracted the difference instead of adding it to the known offset.
+    const subtractedInstead = `GMT+${cityA.offset - diff}`;
+    const distractors = [subtractedInstead].filter((d) => d !== `GMT+${cityB.offset}`);
+    question.options = shuffleOptions(`GMT+${cityB.offset}`, distractors);
+    while (question.options.length < 3) {
+      const candidate = `GMT+${cityB.offset + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1)}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
+
+  // ---- errorSpotting: shown the classic "applied the offset in the
+  // wrong direction" mistake, must give the correct time.
+  if (errorSpotting) {
+    const reversed = formatHour24(startHour - diff);
+    if (reversed !== correct) {
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${cityA.name} ialah GMT+${cityA.offset} dan ${cityB.name} ialah GMT+${cityB.offset}. Masa di ${cityA.name} ialah ${formatHour24(startHour)}. Seseorang kira masa di ${cityB.name} sebagai ${reversed}. Apakah jawapan yang betul?`,
+          en: `${cityA.name} is GMT+${cityA.offset} and ${cityB.name} is GMT+${cityB.offset}. The time in ${cityA.name} is ${formatHour24(startHour)}. Someone calculated the time in ${cityB.name} as ${reversed}. What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer: correct,
+        context,
+        generatorKey: "time_zones",
+        difficulty: 3,
+        options: shuffleOptions(correct, [reversed]),
+      };
+      while (question.options!.length < 3) {
+        const bump = randInt(1, 4) * (Math.random() > 0.5 ? 1 : -1);
+        const candidate = formatHour24(correctHour + bump);
+        if (!question.options!.includes(candidate)) question.options!.push(candidate);
+      }
+      return question;
+    }
+  }
+
+  const prompt = {
+    ms: `${cityA.name} ialah GMT+${cityA.offset} dan ${cityB.name} ialah GMT+${cityB.offset}. Jika masa di ${cityA.name} ialah ${formatHour24(startHour)}, pukul berapakah masa di ${cityB.name}?`,
+    en: `${cityA.name} is GMT+${cityA.offset} and ${cityB.name} is GMT+${cityB.offset}. If the time in ${cityA.name} is ${formatHour24(startHour)}, what time is it in ${cityB.name}?`,
+  };
 
   const question: GeneratedQuestion = {
-    prompt: {
-      ms: `${cityA.name} ialah GMT+${cityA.offset} dan ${cityB.name} ialah GMT+${cityB.offset}. Jika masa di ${cityA.name} ialah ${formatHour24(startHour)}, pukul berapakah masa di ${cityB.name}?`,
-      en: `${cityA.name} is GMT+${cityA.offset} and ${cityB.name} is GMT+${cityB.offset}. If the time in ${cityA.name} is ${formatHour24(startHour)}, what time is it in ${cityB.name}?`,
-    },
+    prompt,
     type,
     correctAnswer: correct,
-    context: { cityAOffset: cityA.offset, cityBOffset: cityB.offset, startHour, correctHour: ((correctHour % 24) + 24) % 24 },
+    context,
     generatorKey: "time_zones",
     difficulty: 3,
   };
 
-  if (type === "mcq") {
+  if (type === "mcq" || type === "word_problem") {
     // Classic mistake: applied the offset difference in the wrong direction.
     const reversed = formatHour24(startHour - diff);
     // Classic mistake: forgot to convert the time at all.

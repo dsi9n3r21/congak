@@ -13,7 +13,11 @@ import type { Bilingual } from "@/lib/i18n/dictionary";
 
 export interface TopicContent {
   id: string;
+  /** KSSR "Tajuk" — the sub-topic within a bidang, e.g. "Wang", "Ruang". */
   strand: Bilingual;
+  /** KSSR "Bidang Pembelajaran" — the main learning area `strand` nests
+   * under. One of the 4 values in BIDANG below. */
+  bidang: Bilingual;
   title: Bilingual;
   yearLevel: number;
   explanation: Bilingual;
@@ -40,10 +44,21 @@ export interface TopicContent {
   questionTemplates: { type: "mcq" | "fill" | "word_problem"; difficulty: number; generatorKey: string; config: Record<string, unknown> }[];
 }
 
+// The 4 official KSSR "Bidang Pembelajaran" (learning areas). `strand`
+// above is the "Tajuk" (sub-topic) level nested under one of these —
+// verified against DSKP Matematik KSSR (Semakan 2017) Tahun 4-6.
+const BIDANG = {
+  numbersOperations: { ms: "Nombor dan Operasi", en: "Numbers and Operations" },
+  measurementGeometry: { ms: "Sukatan dan Geometri", en: "Measurement and Geometry" },
+  relationshipAlgebra: { ms: "Perkaitan dan Algebra", en: "Relationship and Algebra" },
+  statisticsProbability: { ms: "Statistik dan Kebarangkalian", en: "Statistics and Probability" },
+} as const;
+
 export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000001": {
     id: "a1000000-0000-0000-0000-000000000001",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tambah Dalam Lingkungan 100 000", en: "Addition Within 100,000" },
     yearLevel: 4,
     explanation: {
@@ -139,6 +154,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000002": {
     id: "a1000000-0000-0000-0000-000000000002",
     strand: { ms: "Pecahan", en: "Fractions" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tambah Pecahan Penyebut Sama", en: "Adding Fractions with the Same Denominator" },
     yearLevel: 4,
     explanation: {
@@ -185,6 +201,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000003": {
     id: "a1000000-0000-0000-0000-000000000003",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Kira Baki Wang (Ringgit & Sen)", en: "Calculating Change (Ringgit & Sen)" },
     yearLevel: 4,
     explanation: {
@@ -238,6 +255,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000004": {
     id: "a1000000-0000-0000-0000-000000000004",
     strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Perimeter Bentuk Mudah", en: "Perimeter of Simple Shapes" },
     yearLevel: 4,
     explanation: {
@@ -290,6 +308,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000005": {
     id: "a1000000-0000-0000-0000-000000000005",
     strand: { ms: "Perpuluhan", en: "Decimals" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tambah & Tolak Perpuluhan", en: "Adding & Subtracting Decimals" },
     yearLevel: 5,
     explanation: {
@@ -337,6 +356,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000006": {
     id: "a1000000-0000-0000-0000-000000000006",
     strand: { ms: "Peratus", en: "Percentage" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Peratus Asas", en: "Basic Percentage" },
     yearLevel: 6,
     explanation: {
@@ -388,7 +408,8 @@ export const TOPICS: Record<string, TopicContent> = {
   },
   "a1000000-0000-0000-0000-000000000007": {
     id: "a1000000-0000-0000-0000-000000000007",
-    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    strand: { ms: "Masa dan Waktu", en: "Time" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Waktu dan Masa", en: "Time & Duration" },
     yearLevel: 5,
     explanation: {
@@ -436,6 +457,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000008": {
     id: "a1000000-0000-0000-0000-000000000008",
     strand: { ms: "Statistik", en: "Statistics" },
+    bidang: BIDANG.statisticsProbability,
     title: { ms: "Purata (Min)", en: "Average (Mean)" },
     yearLevel: 5,
     explanation: {
@@ -488,6 +510,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000009": {
     id: "a1000000-0000-0000-0000-000000000009",
     strand: { ms: "Nisbah", en: "Ratio" },
+    bidang: BIDANG.relationshipAlgebra,
     title: { ms: "Nisbah Mudah", en: "Simple Ratio" },
     yearLevel: 6,
     explanation: {
@@ -540,6 +563,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000010": {
     id: "a1000000-0000-0000-0000-000000000010",
     strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Isipadu Cecair", en: "Volume of Liquid" },
     yearLevel: 6,
     explanation: {
@@ -586,6 +610,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000011": {
     id: "a1000000-0000-0000-0000-000000000011",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Luas Segi Empat Tepat & Segi Empat Sama", en: "Area of Rectangles & Squares" },
     yearLevel: 4,
     explanation: {
@@ -638,6 +663,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000012": {
     id: "a1000000-0000-0000-0000-000000000012",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Sudut Pada Garis Lurus", en: "Angles on a Straight Line" },
     yearLevel: 5,
     explanation: {
@@ -689,6 +715,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000013": {
     id: "a1000000-0000-0000-0000-000000000013",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Luas Bentuk Gubahan", en: "Area of Composite Shapes" },
     yearLevel: 5,
     explanation: {
@@ -704,11 +731,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Kira luas setiap segi empat tepat secara berasingan dahulu — jangan cuba gabungkan semua nombor dalam satu langkah.",
         en: "Work out each rectangle's area separately first — don't try to combine all the numbers in one step.",
       },
+      {
+        ms: "JANGAN buat ini: cari jumlah luas dengan menambah SEMUA panjang sisi (6+3+4+2=15) seperti mengira perimeter. SALAH — anda MESTI darab panjang×lebar bagi SETIAP segi empat tepat dahulu, kemudian tambah kedua-dua luas itu. Jawapan yang betul ialah 26 cm².",
+        en: "DON'T do this: find the total area by adding UP ALL the side lengths (6+3+4+2=15) like calculating a perimeter. WRONG — you MUST multiply length×width for EACH rectangle first, then add the two areas. The correct answer is 26 cm².",
+      },
     ],
     howTo: [
       { ms: "Bahagikan bentuk gubahan itu kepada dua atau lebih segi empat tepat.", en: "Split the composite shape into two or more rectangles." },
       { ms: "Kira luas setiap segi empat tepat secara berasingan (panjang × lebar).", en: "Calculate each rectangle's area separately (length × width)." },
       { ms: "Tambahkan semua luas itu untuk dapatkan jumlah keseluruhan.", en: "Add all those areas together to get the total." },
+      { ms: "Semak: setiap luas mesti lebih besar berbanding sisi-sisinya sendiri, bukan lebih kecil.", en: "Check: each area should be bigger than its own sides, not smaller." },
     ],
     workedExample: {
       problem: { ms: "Segi Empat Tepat A: 6 cm × 3 cm, Segi Empat Tepat B: 4 cm × 2 cm", en: "Rectangle A: 6 cm × 3 cm, Rectangle B: 4 cm × 2 cm" },
@@ -722,15 +754,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_second_rectangle", description: { ms: "Murid hanya mengira luas satu segi empat tepat sahaja.", en: "The student only calculates the area of one rectangle." } },
       { mistakeType: "area_addition_error", description: { ms: "Murid menambah semua sisi berbanding mengira setiap luas dahulu.", en: "The student adds all the side lengths together instead of finding each area first." } },
+      { mistakeType: "calculation_error", description: { ms: "Semasa cari sisi yang hilang (diberi jumlah luas), murid tolak luas A daripada jumlah tetapi terlupa bahagikan dengan sisi yang diketahui.", en: "When finding a missing side (given the total area), the student subtracts Rectangle A's area from the total but forgets to divide by the known side." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan jumlah luas dahulu, jadi tidak perasan jawapan akhir tidak munasabah (contohnya lebih kecil daripada salah satu luas komponen).", en: "The student doesn't estimate the total area first, so doesn't notice when the final answer doesn't make sense (e.g. smaller than one of the component areas)." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "area_composite", config: { min: 2, max: 8 } },
-      { type: "word_problem", difficulty: 2, generatorKey: "area_composite", config: { min: 3, max: 10 } },
+      { type: "fill", difficulty: 2, generatorKey: "area_composite", config: { min: 3, max: 10 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "area_composite", config: { min: 3, max: 10, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "area_composite", config: { min: 3, max: 10, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "area_composite", config: { min: 2, max: 8, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000014": {
     id: "a1000000-0000-0000-0000-000000000014",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Jumlah Sudut Dalam Segi Tiga", en: "Sum of Angles in a Triangle" },
     yearLevel: 6,
     explanation: {
@@ -782,6 +820,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000015": {
     id: "a1000000-0000-0000-0000-000000000015",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Jenis-Jenis Sudut", en: "Types of Angles" },
     yearLevel: 4,
     explanation: {
@@ -827,6 +866,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000016": {
     id: "a1000000-0000-0000-0000-000000000016",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Luas Segi Tiga", en: "Area of a Triangle" },
     yearLevel: 6,
     explanation: {
@@ -880,6 +920,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000017": {
     id: "a1000000-0000-0000-0000-000000000017",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Sudut Pada Satu Titik", en: "Angles at a Point" },
     yearLevel: 5,
     explanation: {
@@ -931,6 +972,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000018": {
     id: "a1000000-0000-0000-0000-000000000018",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Lilitan Bulatan", en: "Circumference of a Circle" },
     yearLevel: 6,
     explanation: {
@@ -983,6 +1025,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000019": {
     id: "a1000000-0000-0000-0000-000000000019",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Luas Bulatan", en: "Area of a Circle" },
     yearLevel: 6,
     explanation: {
@@ -1035,6 +1078,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000020": {
     id: "a1000000-0000-0000-0000-000000000020",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tolak Nombor Bulat Hingga 100000", en: "Subtracting Whole Numbers up to 100,000" },
     yearLevel: 4,
     explanation: {
@@ -1089,6 +1133,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000021": {
     id: "a1000000-0000-0000-0000-000000000021",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Darab Dengan Nombor 2 Digit", en: "Multiplying by a 2-Digit Number" },
     yearLevel: 5,
     explanation: {
@@ -1104,11 +1149,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Apabila mendarab dengan digit puluh, letakkan 0 di lajur sa hasil darab kedua itu sebelum menambah — ini penting!",
         en: "When multiplying by the tens digit, place a 0 in the ones column of that second product before adding — this step is easy to skip.",
       },
+      {
+        ms: "JANGAN buat ini: 245 × 23 dikira sebagai 245×2 + 245×3 = 490 + 735 = 1225 (tak anjak hasil darab puluh). SALAH — 245 × 20 = 4900, bukan 245 × 2 = 490. Anda MESTI darab dengan nilai puluh sebenar (20), bukan digit itu sahaja (2). Jawapan yang betul ialah 5,635.",
+        en: "DON'T do this: 245 × 23 calculated as 245×2 + 245×3 = 490 + 735 = 1225 (not shifting the tens product). WRONG — 245 × 20 = 4900, not 245 × 2 = 490. You MUST multiply by the actual tens value (20), not just the digit (2). The correct answer is 5,635.",
+      },
     ],
     howTo: [
       { ms: "Darabkan nombor pertama dengan digit sa nombor kedua.", en: "Multiply the first number by the ones digit of the second number." },
       { ms: "Darabkan nombor pertama dengan digit puluh nombor kedua, kemudian anjak hasil itu satu tempat ke kiri.", en: "Multiply the first number by the tens digit of the second number, then shift that result one place to the left." },
       { ms: "Tambahkan kedua-dua hasil darab itu.", en: "Add the two products together." },
+      { ms: "Semak: bahagikan jawapan anda dengan salah satu nombor asal — ia mesti menyamai nombor yang satu lagi.", en: "Check: divide your answer by one of the original numbers — it should equal the other one." },
     ],
     workedExample: {
       problem: { ms: "245 × 23", en: "245 × 23" },
@@ -1122,15 +1172,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_shift", description: { ms: "Murid darab dengan digit puluh tetapi lupa anjak hasilnya (lupa tambah 0).", en: "The student multiplies by the tens digit but forgets to shift the result (forgets the trailing 0)." } },
       { mistakeType: "added_instead_of_multiplied", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan hasil darab dahulu, jadi tidak perasan jawapan akhir tidak munasabah (contohnya lebih kecil daripada salah satu nombor asal).", en: "The student doesn't estimate the product first, so doesn't notice when the final answer doesn't make sense (e.g. smaller than one of the original numbers)." } },
+      { mistakeType: "multiplied_instead_of_divided", description: { ms: "Dalam soalan songsang (cari nilai harian daripada jumlah), murid darab semula jumlah itu dengan bilangan hari, bukan bahagikannya.", en: "In the reverse-direction question (finding the daily rate from a total), the student multiplies the total by the number of days again, instead of dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 999 } },
-      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 500 } },
+      { type: "fill", difficulty: 2, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 500 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 500, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 500, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 500, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000022": {
     id: "a1000000-0000-0000-0000-000000000022",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Bahagi Dengan Nombor 2 Digit", en: "Dividing by a 2-Digit Number" },
     yearLevel: 6,
     explanation: {
@@ -1146,11 +1202,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Semak jawapan anda: darabkan jawapan (hasil bahagi) dengan pembahagi — ia MESTI menyamai bahagi (nombor asal).",
         en: "Check your answer: multiply your answer (the quotient) by the divisor — it MUST equal the dividend (the original number).",
       },
+      {
+        ms: "JANGAN buat ini: 1288 ÷ 23 dikira sebagai 1288 − 23 = 1265 (tolak sekali sahaja). SALAH — pembahagian bermaksud tolak pembahagi BERULANG kali (atau anggar dan darab semula), bukan tolak sekali. Jawapan yang betul ialah 56.",
+        en: "DON'T do this: 1288 ÷ 23 calculated as 1288 − 23 = 1265 (subtracting just once). WRONG — division means subtracting the divisor REPEATEDLY (or estimating and multiplying back), not subtracting once. The correct answer is 56.",
+      },
     ],
     howTo: [
       { ms: "Anggarkan berapa kali pembahagi boleh masuk ke dalam bahagi.", en: "Estimate how many times the divisor fits into the dividend." },
       { ms: "Darabkan anggaran itu dengan pembahagi dan bandingkan dengan bahagi.", en: "Multiply that estimate by the divisor and compare it to the dividend." },
       { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
+      { ms: "Semak: darabkan jawapan akhir dengan pembahagi — ia mesti menyamai bahagi asal.", en: "Check: multiply your final answer by the divisor — it should equal the original dividend." },
     ],
     workedExample: {
       problem: { ms: "1288 ÷ 23", en: "1288 ÷ 23" },
@@ -1163,15 +1224,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "subtracted_instead_of_divided", description: { ms: "Murid menolak pembahagi daripada bahagi berbanding membahagikannya.", en: "The student subtracts the divisor from the dividend instead of dividing." } },
       { mistakeType: "added_instead_of_divided", description: { ms: "Murid menambah pembahagi kepada bahagi berbanding membahagikannya.", en: "The student adds the divisor to the dividend instead of dividing." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak semula dengan darab, jadi tidak perasan anggaran mereka masih terlalu jauh daripada bahagi sebenar.", en: "The student doesn't check back by multiplying, so doesn't notice their estimate is still far off from the actual dividend." } },
+      { mistakeType: "multiplied_instead_of_divided", description: { ms: "Dalam soalan songsang (cari bilangan kumpulan/murid), murid darab bahagi dengan hasil bahagi, bukan membahagikannya.", en: "In the reverse-direction question (finding the number of groups/students), the student multiplies the dividend by the quotient, instead of dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 10, maxQuotient: 99 } },
-      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 15, maxQuotient: 80 } },
+      { type: "fill", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 15, maxQuotient: 80 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 15, maxQuotient: 80, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 15, maxQuotient: 80, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 15, maxQuotient: 60, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000023": {
     id: "a1000000-0000-0000-0000-000000000023",
     strand: { ms: "Statistik", en: "Statistics" },
+    bidang: BIDANG.statisticsProbability,
     title: { ms: "Membaca Graf Palang", en: "Reading Bar Graphs" },
     yearLevel: 5,
     explanation: {
@@ -1187,11 +1254,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Untuk soalan \"jumlah\", tambah SEMUA palang. Untuk soalan \"beza\", tolak nilai yang lebih kecil daripada nilai yang lebih besar sahaja.",
         en: "For \"total\" questions, add UP ALL the bars. For \"difference\" questions, just subtract the smaller value from the bigger one.",
       },
+      {
+        ms: "JANGAN buat ini: cari jumlah keseluruhan dengan tambah hanya 2 daripada 4 palang (12+18=30) dan berhenti. SALAH — anda MESTI tambah SEMUA palang yang berkaitan. Jawapan yang betul ialah 12+18+9+15=54.",
+        en: "DON'T do this: find the total by adding only 2 of the 4 bars (12+18=30) and stopping there. WRONG — you MUST add UP ALL the relevant bars. The correct answer is 12+18+9+15=54.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti soalan itu meminta jumlah atau beza.", en: "Identify whether the question is asking for a total or a difference." },
       { ms: "Baca nilai setiap palang yang berkaitan daripada graf.", en: "Read the value of each relevant bar from the graph." },
       { ms: "Untuk jumlah: tambahkan semua nilai. Untuk beza: tolak nilai lebih kecil daripada nilai lebih besar.", en: "For a total: add all the values. For a difference: subtract the smaller value from the bigger one." },
+      { ms: "Semak: kira semula bilangan palang yang anda gunakan — adakah ia menyamai bilangan kumpulan dalam graf?", en: "Check: recount how many bars you used — does it match the number of groups in the graph?" },
     ],
     workedExample: {
       problem: { ms: "Kumpulan A=12, B=18, C=9, D=15", en: "Group A=12, B=18, C=9, D=15" },
@@ -1204,15 +1276,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_one_bar", description: { ms: "Murid tertinggal satu kumpulan semasa menambah jumlah keseluruhan.", en: "The student misses one group while adding up the total." } },
       { mistakeType: "added_instead_of_subtracted", description: { ms: "Murid menambah dua nilai berbanding mencari beza antara keduanya.", en: "The student adds two values instead of finding the difference between them." } },
+      { mistakeType: "calculation_error", description: { ms: "Semasa cari nilai palang yang hilang (diberi jumlah), murid tersilap semasa tolak jumlah tiga palang yang diketahui daripada jumlah keseluruhan.", en: "When finding a missing bar's value (given the total), the student makes an error subtracting the three known bars from the overall total." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan jumlah dahulu, jadi tidak perasan jawapan akhir tidak munasabah (contohnya lebih kecil daripada salah satu palang).", en: "The student doesn't estimate the total first, so doesn't notice when the final answer doesn't make sense (e.g. smaller than one of the bars)." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "bar_graph", config: { min: 5, max: 32 } },
       { type: "fill", difficulty: 2, generatorKey: "bar_graph", config: { min: 8, max: 40 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "bar_graph", config: { min: 8, max: 40, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "bar_graph", config: { min: 8, max: 40, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "bar_graph", config: { min: 5, max: 32, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000024": {
     id: "a1000000-0000-0000-0000-000000000024",
     strand: { ms: "Koordinat", en: "Coordinates" },
+    bidang: BIDANG.relationshipAlgebra,
     title: { ms: "Membaca Koordinat", en: "Reading Coordinates" },
     yearLevel: 5,
     explanation: {
@@ -1264,6 +1342,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000025": {
     id: "a1000000-0000-0000-0000-000000000025",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Bahagi Dengan Nombor 1 Digit", en: "Dividing by a 1-Digit Number" },
     yearLevel: 5,
     explanation: {
@@ -1279,11 +1358,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Semak jawapan anda: darabkan jawapan (hasil bahagi) dengan pembahagi — ia MESTI menyamai bahagi (nombor asal).",
         en: "Check your answer: multiply your answer (the quotient) by the divisor — it MUST equal the dividend (the original number).",
       },
+      {
+        ms: "JANGAN buat ini: 738 ÷ 6 dikira sebagai 738 − 6 = 732 (tolak sekali sahaja). SALAH — pembahagian bermaksud cari berapa KALI 6 boleh masuk ke dalam 738, bukan tolak sekali. Jawapan yang betul ialah 123.",
+        en: "DON'T do this: 738 ÷ 6 calculated as 738 − 6 = 732 (subtracting just once). WRONG — division means finding how many TIMES 6 fits into 738, not subtracting once. The correct answer is 123.",
+      },
     ],
     howTo: [
       { ms: "Anggarkan berapa kali pembahagi boleh masuk ke dalam bahagi, digit demi digit dari kiri.", en: "Estimate how many times the divisor fits into the dividend, digit by digit from the left." },
       { ms: "Darabkan anggaran itu dengan pembahagi dan bandingkan dengan bahagi.", en: "Multiply that estimate by the divisor and compare it to the dividend." },
       { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
+      { ms: "Semak: darabkan jawapan akhir dengan pembahagi — ia mesti menyamai bahagi asal.", en: "Check: multiply your final answer by the divisor — it should equal the original dividend." },
     ],
     workedExample: {
       problem: { ms: "738 ÷ 6", en: "738 ÷ 6" },
@@ -1298,15 +1382,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "subtracted_instead_of_divided", description: { ms: "Murid menolak pembahagi daripada bahagi berbanding membahagikannya.", en: "The student subtracts the divisor from the dividend instead of dividing." } },
       { mistakeType: "added_instead_of_divided", description: { ms: "Murid menambah pembahagi kepada bahagi berbanding membahagikannya.", en: "The student adds the divisor to the dividend instead of dividing." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak semula dengan darab, jadi tidak perasan anggaran mereka masih terlalu jauh daripada bahagi sebenar.", en: "The student doesn't check back by multiplying, so doesn't notice their estimate is still far off from the actual dividend." } },
+      { mistakeType: "multiplied_instead_of_divided", description: { ms: "Dalam soalan songsang (cari bilangan kumpulan/murid), murid darab bahagi dengan hasil bahagi, bukan membahagikannya.", en: "In the reverse-direction question (finding the number of groups/students), the student multiplies the dividend by the quotient, instead of dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 999 } },
-      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 500 } },
+      { type: "fill", difficulty: 2, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 500 } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 500, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 500, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 400, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000026": {
     id: "a1000000-0000-0000-0000-000000000026",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Darab Nombor 4 Digit Dengan Nombor 2 Digit", en: "Multiplying a 4-Digit Number by a 2-Digit Number" },
     yearLevel: 6,
     explanation: {
@@ -1322,11 +1412,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Apabila mendarab dengan digit puluh, letakkan 0 di lajur sa hasil darab kedua itu sebelum menambah — ini penting!",
         en: "When multiplying by the tens digit, place a 0 in the ones column of that second product before adding — this step is easy to skip.",
       },
+      {
+        ms: "JANGAN buat ini: 3450 × 34 dikira sebagai 3450×3 + 3450×4 = 10,350 + 13,800 = 24,150 (tak anjak hasil darab puluh). SALAH — 3450 × 30 = 103,500, bukan 3450 × 3 = 10,350. Anda MESTI darab dengan nilai puluh sebenar (30), bukan digit itu sahaja (3). Jawapan yang betul ialah 117,300.",
+        en: "DON'T do this: 3450 × 34 calculated as 3450×3 + 3450×4 = 10,350 + 13,800 = 24,150 (not shifting the tens product). WRONG — 3450 × 30 = 103,500, not 3450 × 3 = 10,350. You MUST multiply by the actual tens value (30), not just the digit (3). The correct answer is 117,300.",
+      },
     ],
     howTo: [
       { ms: "Darabkan nombor pertama dengan digit sa nombor kedua.", en: "Multiply the first number by the ones digit of the second number." },
       { ms: "Darabkan nombor pertama dengan digit puluh nombor kedua, kemudian anjak hasil itu satu tempat ke kiri.", en: "Multiply the first number by the tens digit of the second number, then shift that result one place to the left." },
       { ms: "Tambahkan kedua-dua hasil darab itu.", en: "Add the two products together." },
+      { ms: "Semak: bahagikan jawapan anda dengan salah satu nombor asal — ia mesti menyamai nombor yang satu lagi.", en: "Check: divide your answer by one of the original numbers — it should equal the other one." },
     ],
     workedExample: {
       problem: { ms: "3450 × 34", en: "3450 × 34" },
@@ -1340,15 +1435,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_shift", description: { ms: "Murid darab dengan digit puluh tetapi lupa anjak hasilnya (lupa tambah 0).", en: "The student multiplies by the tens digit but forgets to shift the result (forgets the trailing 0)." } },
       { mistakeType: "added_instead_of_multiplied", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan hasil darab dahulu, jadi tidak perasan jawapan akhir tidak munasabah (contohnya lebih kecil daripada salah satu nombor asal).", en: "The student doesn't estimate the product first, so doesn't notice when the final answer doesn't make sense (e.g. smaller than one of the original numbers)." } },
+      { mistakeType: "multiplied_instead_of_divided", description: { ms: "Dalam soalan songsang (cari nilai harian daripada jumlah), murid darab semula jumlah itu dengan bilangan hari, bukan bahagikannya.", en: "In the reverse-direction question (finding the daily rate from a total), the student multiplies the total by the number of days again, instead of dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 9999 } },
-      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 5000 } },
+      { type: "fill", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 5000 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 5000, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 5000, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 5000, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000027": {
     id: "a1000000-0000-0000-0000-000000000027",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Operasi Bergabung Tanpa Kurungan", en: "Combined Operations Without Brackets" },
     yearLevel: 6,
     explanation: {
@@ -1400,6 +1501,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000028": {
     id: "a1000000-0000-0000-0000-000000000028",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Darab Dengan Nombor 1 Digit", en: "Multiplying by a 1-Digit Number" },
     yearLevel: 4,
     explanation: {
@@ -1454,6 +1556,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000029": {
     id: "a1000000-0000-0000-0000-000000000029",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Bahagi Dengan Nombor 1 Digit", en: "Dividing by a 1-Digit Number" },
     yearLevel: 4,
     explanation: {
@@ -1469,11 +1572,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Semak jawapan anda: darabkan jawapan (hasil bahagi) dengan pembahagi — ia MESTI menyamai bahagi (nombor asal).",
         en: "Check your answer: multiply your answer (the quotient) by the divisor — it MUST equal the dividend (the original number).",
       },
+      {
+        ms: "JANGAN buat ini: 84 ÷ 4 dikira sebagai 84 − 4 = 80 (tolak sekali sahaja). SALAH — pembahagian bermaksud cari berapa KALI 4 boleh masuk ke dalam 84, bukan tolak sekali. Jawapan yang betul ialah 21.",
+        en: "DON'T do this: 84 ÷ 4 calculated as 84 − 4 = 80 (subtracting just once). WRONG — division means finding how many TIMES 4 fits into 84, not subtracting once. The correct answer is 21.",
+      },
     ],
     howTo: [
       { ms: "Anggarkan berapa kali pembahagi boleh masuk ke dalam bahagi, digit demi digit dari kiri.", en: "Estimate how many times the divisor fits into the dividend, digit by digit from the left." },
       { ms: "Darabkan anggaran itu dengan pembahagi dan bandingkan dengan bahagi.", en: "Multiply that estimate by the divisor and compare it to the dividend." },
       { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
+      { ms: "Semak: darabkan jawapan akhir dengan pembahagi — ia mesti menyamai bahagi asal.", en: "Check: multiply your final answer by the divisor — it should equal the original dividend." },
     ],
     workedExample: {
       problem: { ms: "84 ÷ 4", en: "84 ÷ 4" },
@@ -1487,15 +1595,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "subtracted_instead_of_divided", description: { ms: "Murid menolak pembahagi daripada bahagi berbanding membahagikannya.", en: "The student subtracts the divisor from the dividend instead of dividing." } },
       { mistakeType: "added_instead_of_divided", description: { ms: "Murid menambah pembahagi kepada bahagi berbanding membahagikannya.", en: "The student adds the divisor to the dividend instead of dividing." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak semula dengan darab, jadi tidak perasan anggaran mereka masih terlalu jauh daripada bahagi sebenar.", en: "The student doesn't check back by multiplying, so doesn't notice their estimate is still far off from the actual dividend." } },
+      { mistakeType: "multiplied_instead_of_divided", description: { ms: "Dalam soalan songsang (cari bilangan kumpulan/murid), murid darab bahagi dengan hasil bahagi, bukan membahagikannya.", en: "In the reverse-direction question (finding the number of groups/students), the student multiplies the dividend by the quotient, instead of dividing." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 99 } },
-      { type: "word_problem", difficulty: 1, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 50 } },
+      { type: "fill", difficulty: 1, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 50 } },
+      { type: "word_problem", difficulty: 1, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 50, type: "word_problem" } },
+      { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 50, errorSpotting: true } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 30, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000030": {
     id: "a1000000-0000-0000-0000-000000000030",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tambah Nombor Bulat Hingga 1,000,000", en: "Adding Whole Numbers up to 1,000,000" },
     yearLevel: 5,
     explanation: {
@@ -1552,6 +1666,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000031": {
     id: "a1000000-0000-0000-0000-000000000031",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tolak Nombor Bulat Hingga 1,000,000", en: "Subtracting Whole Numbers up to 1,000,000" },
     yearLevel: 5,
     explanation: {
@@ -1608,6 +1723,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000032": {
     id: "a1000000-0000-0000-0000-000000000032",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tambah Tiga Nombor Bulat", en: "Adding Three Whole Numbers" },
     yearLevel: 6,
     explanation: {
@@ -1654,6 +1770,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000033": {
     id: "a1000000-0000-0000-0000-000000000033",
     strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tolak Daripada Nombor Bulat", en: "Subtracting from a Round Number" },
     yearLevel: 6,
     explanation: {
@@ -1705,6 +1822,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000034": {
     id: "a1000000-0000-0000-0000-000000000034",
     strand: { ms: "Pecahan", en: "Fractions" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tolak Pecahan Penyebut Sama", en: "Subtracting Fractions with the Same Denominator" },
     yearLevel: 4,
     explanation: {
@@ -1720,11 +1838,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Pengangka pertama mesti lebih besar (atau sama) daripada pengangka kedua, supaya jawapan tidak negatif.",
         en: "The first numerator must be bigger than (or equal to) the second, so the answer doesn't go negative.",
       },
+      {
+        ms: "JANGAN buat ini: 5/8 − 2/8 dikira sebagai 3/0 (tolak penyebut juga, 8−8=0). SALAH — penyebut MESTI kekal sama, hanya pengangka yang ditolak. Jawapan yang betul ialah 3/8.",
+        en: "DON'T do this: 5/8 − 2/8 calculated as 3/0 (subtracting the denominators too, 8−8=0). WRONG — the denominator MUST stay the same, only the numerator gets subtracted. The correct answer is 3/8.",
+      },
     ],
     howTo: [
       { ms: "Semak sama ada kedua-dua pecahan mempunyai penyebut yang sama.", en: "Check that both fractions have the same denominator." },
       { ms: "Tolak pengangka kedua daripada pengangka pertama.", en: "Subtract the second numerator from the first." },
       { ms: "Kekalkan penyebut (nombor bawah) tanpa diubah.", en: "Keep the denominator (bottom number) unchanged." },
+      { ms: "Semak: tambahkan jawapan anda dengan pecahan yang ditolak — ia mesti menyamai pecahan asal.", en: "Check: add your answer to the fraction you subtracted — it should equal the original fraction." },
     ],
     workedExample: {
       problem: { ms: "5/8 − 2/8", en: "5/8 − 2/8" },
@@ -1737,15 +1860,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "added_instead_of_subtracted", description: { ms: "Murid menambah pengangka berbanding menolaknya.", en: "The student adds the numerators instead of subtracting them." } },
       { mistakeType: "denominator_subtraction_error", description: { ms: "Murid turut menolak penyebut.", en: "The student also subtracts the denominators." } },
+      { mistakeType: "fraction_calculation_error", description: { ms: "Semasa cari jumlah permulaan (diberi baki dan bahagian yang dimakan), murid tolak berbanding tambah.", en: "When finding the starting amount (given the remainder and the part eaten), the student subtracts instead of adding." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada jawapan itu munasabah — pecahan hasil tolak mesti lebih kecil daripada pecahan pertama.", en: "The student doesn't check whether the answer is reasonable — the resulting fraction should be smaller than the first fraction." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [4, 5, 6, 8, 10, 12] } },
       { type: "fill", difficulty: 2, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [8, 10, 12, 15, 16] } },
+      { type: "word_problem", difficulty: 1, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [4, 5, 6, 8], type: "word_problem" } },
+      { type: "mcq", difficulty: 2, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [6, 8, 10, 12], errorSpotting: true } },
+      { type: "word_problem", difficulty: 2, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [5, 6, 8, 10], reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000035": {
     id: "a1000000-0000-0000-0000-000000000035",
     strand: { ms: "Perpuluhan", en: "Decimals" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tambah & Tolak Perpuluhan (1 Tempat Perpuluhan)", en: "Adding & Subtracting Decimals (1 Decimal Place)" },
     yearLevel: 4,
     explanation: {
@@ -1793,6 +1922,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000036": {
     id: "a1000000-0000-0000-0000-000000000036",
     strand: { ms: "Perpuluhan", en: "Decimals" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Darab Perpuluhan", en: "Multiplying Decimals" },
     yearLevel: 5,
     explanation: {
@@ -1846,6 +1976,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000037": {
     id: "a1000000-0000-0000-0000-000000000037",
     strand: { ms: "Perpuluhan", en: "Decimals" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Bahagi Perpuluhan", en: "Dividing Decimals" },
     yearLevel: 5,
     explanation: {
@@ -1899,6 +2030,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000038": {
     id: "a1000000-0000-0000-0000-000000000038",
     strand: { ms: "Pecahan", en: "Fractions" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Bahagi Pecahan Dengan Nombor Bulat", en: "Dividing a Fraction by a Whole Number" },
     yearLevel: 6,
     explanation: {
@@ -1914,11 +2046,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "Jangan lupa permudahkan jawapan akhir jika pengangka dan penyebut ada faktor sepunya.",
         en: "Don't forget to simplify the final answer if the numerator and denominator share a common factor.",
       },
+      {
+        ms: "JANGAN buat ini: 3/4 ÷ 2 dikira sebagai 6/4 (darab pengangka dengan 2, seperti mendarab bukan membahagi). SALAH — anda MESTI darab PENYEBUT dengan nombor bulat itu, bukan pengangka. Jawapan yang betul ialah 3/8.",
+        en: "DON'T do this: 3/4 ÷ 2 calculated as 6/4 (multiplying the numerator by 2, like multiplying instead of dividing). WRONG — you MUST multiply the DENOMINATOR by that whole number, not the numerator. The correct answer is 3/8.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti pengangka, penyebut, dan nombor bulat pembahagi.", en: "Identify the numerator, denominator, and the whole number divisor." },
       { ms: "Darabkan penyebut dengan nombor bulat itu. Pengangka kekal sama.", en: "Multiply the denominator by that whole number. The numerator stays the same." },
       { ms: "Permudahkan pecahan jawapan jika boleh.", en: "Simplify the resulting fraction if possible." },
+      { ms: "Semak: darabkan jawapan anda semula dengan nombor bulat itu — ia mesti menyamai pecahan asal.", en: "Check: multiply your answer back by that whole number — it should equal the original fraction." },
     ],
     workedExample: {
       problem: { ms: "3/4 ÷ 2", en: "3/4 ÷ 2" },
@@ -1932,15 +2069,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "multiplied_instead_of_divided", description: { ms: "Murid darabkan pengangka dengan nombor bulat, bukan penyebut.", en: "The student multiplies the numerator by the whole number instead of the denominator." } },
       { mistakeType: "forgot_to_simplify", description: { ms: "Murid dapat jawapan yang betul tetapi tidak permudahkannya.", en: "The student gets the correct answer but doesn't simplify it." } },
+      { mistakeType: "calculation_error", description: { ms: "Semasa cari jumlah asal (diberi bahagian dan bilangan bahagian), murid bahagi berbanding darab semula.", en: "When finding the original amount (given the share and the number of shares), the student divides instead of multiplying back." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada jawapan itu munasabah — pecahan hasil bahagi mesti lebih kecil daripada pecahan asal.", en: "The student doesn't check whether the answer is reasonable — the resulting fraction should be smaller than the original fraction." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 5, 6, 8] } },
-      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 6] } },
+      { type: "fill", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 6] } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 6], type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [3, 4, 5, 6], errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 6], reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000039": {
     id: "a1000000-0000-0000-0000-000000000039",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tambah & Tolak Wang", en: "Adding & Subtracting Money" },
     yearLevel: 4,
     explanation: {
@@ -1987,6 +2130,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000040": {
     id: "a1000000-0000-0000-0000-000000000040",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Darab & Bahagi Wang", en: "Multiplying & Dividing Money" },
     yearLevel: 4,
     explanation: {
@@ -2033,6 +2177,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000041": {
     id: "a1000000-0000-0000-0000-000000000041",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Faedah Mudah", en: "Simple Interest" },
     yearLevel: 5,
     explanation: {
@@ -2079,6 +2224,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000042": {
     id: "a1000000-0000-0000-0000-000000000042",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Untung dan Rugi", en: "Profit and Loss" },
     yearLevel: 6,
     explanation: {
@@ -2124,7 +2270,8 @@ export const TOPICS: Record<string, TopicContent> = {
   },
   "a1000000-0000-0000-0000-000000000043": {
     id: "a1000000-0000-0000-0000-000000000043",
-    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    strand: { ms: "Masa dan Waktu", en: "Time" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Tambah & Tolak Masa", en: "Adding & Subtracting Time" },
     yearLevel: 4,
     explanation: {
@@ -2178,6 +2325,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000044": {
     id: "a1000000-0000-0000-0000-000000000044",
     strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Tambah & Tolak Panjang", en: "Adding & Subtracting Length" },
     yearLevel: 4,
     explanation: {
@@ -2231,6 +2379,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000045": {
     id: "a1000000-0000-0000-0000-000000000045",
     strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Tukar Unit Panjang", en: "Converting Units of Length" },
     yearLevel: 4,
     explanation: {
@@ -2278,6 +2427,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000046": {
     id: "a1000000-0000-0000-0000-000000000046",
     strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Tukar Unit Jisim", en: "Converting Units of Mass" },
     yearLevel: 5,
     explanation: {
@@ -2323,6 +2473,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000047": {
     id: "a1000000-0000-0000-0000-000000000047",
     strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Tukar Unit Isipadu Cecair", en: "Converting Units of Volume of Liquid" },
     yearLevel: 5,
     explanation: {
@@ -2367,7 +2518,8 @@ export const TOPICS: Record<string, TopicContent> = {
   },
   "a1000000-0000-0000-0000-000000000048": {
     id: "a1000000-0000-0000-0000-000000000048",
-    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    strand: { ms: "Masa dan Waktu", en: "Time" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Tukar Unit Masa", en: "Converting Units of Time" },
     yearLevel: 4,
     explanation: {
@@ -2412,7 +2564,8 @@ export const TOPICS: Record<string, TopicContent> = {
   },
   "a1000000-0000-0000-0000-000000000049": {
     id: "a1000000-0000-0000-0000-000000000049",
-    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    strand: { ms: "Masa dan Waktu", en: "Time" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Tukar Unit Masa Lanjutan", en: "Converting Units of Time (Advanced)" },
     yearLevel: 5,
     explanation: {
@@ -2459,6 +2612,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000050": {
     id: "a1000000-0000-0000-0000-000000000050",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Diskaun", en: "Discount" },
     yearLevel: 6,
     explanation: {
@@ -2504,7 +2658,8 @@ export const TOPICS: Record<string, TopicContent> = {
   },
   "a1000000-0000-0000-0000-000000000051": {
     id: "a1000000-0000-0000-0000-000000000051",
-    strand: { ms: "Statistik", en: "Statistics" },
+    strand: { ms: "Kebolehjadian", en: "Probability" },
+    bidang: BIDANG.statisticsProbability,
     title: { ms: "Kebarangkalian", en: "Likelihood" },
     yearLevel: 6,
     explanation: {
@@ -2545,6 +2700,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000052": {
     id: "a1000000-0000-0000-0000-000000000052",
     strand: { ms: "Peratus", en: "Percentage" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Peratus Suatu Kuantiti (Asas)", en: "Percentage of a Quantity (Basic)" },
     yearLevel: 4,
     explanation: {
@@ -2590,6 +2746,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000053": {
     id: "a1000000-0000-0000-0000-000000000053",
     strand: { ms: "Pecahan", en: "Fractions" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tukar Pecahan dan Peratus", en: "Converting Fractions and Percentages" },
     yearLevel: 4,
     explanation: {
@@ -2636,6 +2793,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000054": {
     id: "a1000000-0000-0000-0000-000000000054",
     strand: { ms: "Pecahan", en: "Fractions" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Darab Pecahan", en: "Multiplying Fractions" },
     yearLevel: 5,
     explanation: {
@@ -2645,11 +2803,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Peraturan: (a/b) × c = (a×c)/b — hanya pengangka yang berubah.", en: "The rule: (a/b) × c = (a×c)/b — only the numerator changes." },
       { ms: "Jangan lupa permudahkan jawapan akhir jika boleh.", en: "Don't forget to simplify the final answer if possible." },
+      {
+        ms: "JANGAN buat ini: 3/4 × 3 dikira sebagai 3/12 (darab penyebut sahaja, seperti membahagi terbalik). SALAH — anda MESTI darab PENGANGKA dengan nombor bulat itu, bukan penyebut. Jawapan yang betul ialah 9/4.",
+        en: "DON'T do this: 3/4 × 3 calculated as 3/12 (multiplying the denominator only, like dividing backwards). WRONG — you MUST multiply the NUMERATOR by the whole number, not the denominator. The correct answer is 9/4.",
+      },
     ],
     howTo: [
       { ms: "Darabkan pengangka dengan nombor bulat itu.", en: "Multiply the numerator by the whole number." },
       { ms: "Penyebut kekal sama.", en: "The denominator stays the same." },
       { ms: "Permudahkan pecahan jawapan jika boleh.", en: "Simplify the resulting fraction if possible." },
+      { ms: "Semak: bahagikan jawapan anda semula dengan nombor bulat itu — ia mesti menyamai pecahan asal.", en: "Check: divide your answer back by that whole number — it should equal the original fraction." },
     ],
     workedExample: {
       problem: { ms: "3/4 × 3", en: "3/4 × 3" },
@@ -2663,15 +2826,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "multiplied_denominator_instead", description: { ms: "Murid darabkan penyebut, bukan pengangka.", en: "The student multiplies the denominator instead of the numerator." } },
       { mistakeType: "forgot_to_simplify", description: { ms: "Murid dapat jawapan yang betul tetapi tidak permudahkannya.", en: "The student gets the correct answer but doesn't simplify it." } },
+      { mistakeType: "calculation_error", description: { ms: "Semasa cari nilai satu bahagian (diberi jumlah dan bilangan bahagian), murid darab semula berbanding bahagi.", en: "When finding the value of one share (given the total and number of shares), the student multiplies again instead of dividing." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada jawapan itu munasabah — hasil darab pecahan wajar dengan nombor bulat mesti lebih besar daripada pecahan asal.", en: "The student doesn't check whether the answer is reasonable — multiplying a proper fraction by a whole number should give something bigger than the original fraction." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 5, 6, 8] } },
-      { type: "word_problem", difficulty: 2, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 6] } },
+      { type: "fill", difficulty: 2, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 6] } },
+      { type: "word_problem", difficulty: 2, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 6], type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "fractions_multiply", config: { denominators: [3, 4, 5, 6], errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 6], reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000055": {
     id: "a1000000-0000-0000-0000-000000000055",
     strand: { ms: "Perpuluhan", en: "Decimals" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tukar Perpuluhan dan Peratus", en: "Converting Decimals and Percentages" },
     yearLevel: 5,
     explanation: {
@@ -2716,6 +2885,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000056": {
     id: "a1000000-0000-0000-0000-000000000056",
     strand: { ms: "Peratus", en: "Percentage" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Tambah & Tolak Peratus", en: "Adding & Subtracting Percentages" },
     yearLevel: 6,
     explanation: {
@@ -2763,6 +2933,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000057": {
     id: "a1000000-0000-0000-0000-000000000057",
     strand: { ms: "Pecahan", en: "Fractions" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Bahagi Nombor Bercampur Dengan Nombor Bulat", en: "Dividing a Mixed Number by a Whole Number" },
     yearLevel: 6,
     explanation: {
@@ -2809,6 +2980,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000058": {
     id: "a1000000-0000-0000-0000-000000000058",
     strand: { ms: "Koordinat", en: "Coordinates" },
+    bidang: BIDANG.relationshipAlgebra,
     title: { ms: "Perkadaran Untuk Cari Nilai", en: "Proportion to Find a Value" },
     yearLevel: 5,
     explanation: {
@@ -2854,6 +3026,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000059": {
     id: "a1000000-0000-0000-0000-000000000059",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Invois, Resit, dan Cukai Perkhidmatan", en: "Invoice, Receipt, and Service Tax" },
     yearLevel: 6,
     explanation: {
@@ -2898,6 +3071,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000060": {
     id: "a1000000-0000-0000-0000-000000000060",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Faedah dan Dividen", en: "Interest and Dividend" },
     yearLevel: 6,
     explanation: {
@@ -2944,6 +3118,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000061": {
     id: "a1000000-0000-0000-0000-000000000061",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Aset dan Liabiliti", en: "Asset and Liability" },
     yearLevel: 6,
     explanation: {
@@ -2991,6 +3166,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000062": {
     id: "a1000000-0000-0000-0000-000000000062",
     strand: { ms: "Pecahan", en: "Fractions" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Bahagi Pecahan Dengan Pecahan", en: "Dividing a Fraction by a Fraction" },
     yearLevel: 6,
     explanation: {
@@ -3037,6 +3213,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000063": {
     id: "a1000000-0000-0000-0000-000000000063",
     strand: { ms: "Pecahan", en: "Fractions" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Bahagi Nombor Bercampur Dengan Pecahan", en: "Dividing a Mixed Number by a Fraction" },
     yearLevel: 6,
     explanation: {
@@ -3082,7 +3259,8 @@ export const TOPICS: Record<string, TopicContent> = {
   },
   "a1000000-0000-0000-0000-000000000064": {
     id: "a1000000-0000-0000-0000-000000000064",
-    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    strand: { ms: "Masa dan Waktu", en: "Time" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Tambah & Tolak Masa (Unit Lebih Besar)", en: "Adding & Subtracting Time (Bigger Units)" },
     yearLevel: 5,
     explanation: {
@@ -3130,50 +3308,56 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000065": {
     id: "a1000000-0000-0000-0000-000000000065",
     strand: { ms: "Koordinat", en: "Coordinates" },
+    bidang: BIDANG.relationshipAlgebra,
     title: { ms: "Jarak Antara Dua Koordinat", en: "Distance Between Two Coordinates" },
     yearLevel: 6,
     explanation: {
-      ms: "Jika dua titik berkongsi nilai-x yang sama (jarak menegak) atau nilai-y yang sama (jarak mendatar), jarak antara kedua-duanya ialah beza antara nilai koordinat yang berbeza.\n\nContoh harian: Titik A ialah (2, 3) dan titik B ialah (2, 9) — kedua-duanya kongsi nilai-x. Berapakah jarak antara A dan B?",
-      en: "If two points share the same x-value (vertical distance) or the same y-value (horizontal distance), the distance between them is the difference between the coordinate values that differ.\n\nEveryday example: Point A is at (2, 3) and point B is at (2, 9) — they share the same x-value. What is the distance between A and B?",
+      ms: "Jarak antara dua titik pada grid koordinat boleh dikira dalam DUA langkah: (1) cari jarak grid (beza antara nilai koordinat yang berbeza), dan (2) jika diberi skala (contohnya \"1 unit mewakili 150 m\"), darabkan jarak grid itu dengan skala untuk dapatkan JARAK SEBENAR di dunia sebenar.\n\nContoh harian: Pada peta sebuah taman (skala 1 unit = 150 m), gerai makanan berada 3 unit dari pintu masuk. Jarak sebenar dari pintu masuk ke gerai makanan ialah 3 \u00d7 150 m = 450 m.",
+      en: "The distance between two points on a coordinate grid can be found in TWO steps: (1) find the grid distance (the difference between the coordinate values that differ), and (2) if a scale is given (e.g. \"1 unit represents 150 m\"), multiply that grid distance by the scale to get the REAL distance in the real world.\n\nEveryday example: On a park map (scale 1 unit = 150 m), a food stall is 3 units from the entrance. The real distance from the entrance to the food stall is 3 \u00d7 150 m = 450 m.",
     },
     tips: [
-      { ms: "Cari nilai koordinat yang SAMA — itu petunjuk sama ada jarak itu mendatar atau menegak.", en: "Find the coordinate value that's the SAME — that tells you whether the distance is horizontal or vertical." },
-      { ms: "Jarak = beza (tolak) antara nilai koordinat yang BERBEZA.", en: "Distance = the difference (subtraction) between the coordinate values that DIFFER." },
+      { ms: "Cari nilai koordinat yang SAMA \u2014 itu petunjuk sama ada jarak itu mendatar atau menegak.", en: "Find the coordinate value that's the SAME \u2014 that tells you whether the distance is horizontal or vertical." },
+      { ms: "Jarak grid = beza (tolak) antara nilai koordinat yang BERBEZA. Jarak SEBENAR = jarak grid \u00d7 skala.", en: "Grid distance = the difference (subtraction) between the coordinate values that DIFFER. REAL distance = grid distance \u00d7 scale." },
       {
-        ms: "JANGAN buat ini: jarak antara (2, 3) dan (2, 9) dikira sebagai 3 + 9 = 12. SALAH — jarak ialah BEZA, bukan jumlah. Jawapan yang betul ialah 9 − 3 = 6.",
-        en: "DON'T do this: the distance between (2, 3) and (2, 9) calculated as 3 + 9 = 12. WRONG — distance is the DIFFERENCE, not the sum. The correct answer is 9 − 3 = 6.",
+        ms: "JANGAN buat ini: skala 1 unit = 150 m diberi, tetapi jarak grid (contoh 3 unit) terus dijadikan jawapan akhir tanpa darab dengan skala. SALAH \u2014 anda MESTI darab jarak grid dengan skala untuk dapat jarak sebenar. Jawapan yang betul ialah 3 \u00d7 150 m = 450 m, bukan 3.",
+        en: "DON'T do this: a scale of 1 unit = 150 m is given, but the grid distance (e.g. 3 units) is used directly as the final answer without multiplying by the scale. WRONG \u2014 you MUST multiply the grid distance by the scale to get the real distance. The correct answer is 3 \u00d7 150 m = 450 m, not 3.",
       },
     ],
     howTo: [
       { ms: "Kenal pasti sama ada nilai-x atau nilai-y adalah sama untuk kedua-dua titik.", en: "Identify whether the x-values or y-values are the same for both points." },
-      { ms: "Tolak nilai koordinat yang berbeza untuk dapatkan jarak.", en: "Subtract the differing coordinate values to get the distance." },
-      { ms: "Semak: adakah jawapan anda beza (tolak), bukan jumlah (tambah)?", en: "Check: is your answer a difference (subtraction), not a sum (addition)?" },
+      { ms: "Tolak nilai koordinat yang berbeza untuk dapatkan jarak grid.", en: "Subtract the differing coordinate values to get the grid distance." },
+      { ms: "Jika diberi skala (contoh \"1 unit mewakili 150 m\"), darabkan jarak grid dengan skala itu untuk dapat jarak sebenar.", en: "If a scale is given (e.g. \"1 unit represents 150 m\"), multiply the grid distance by that scale to get the real distance." },
+      { ms: "Jika soalan minta jawapan dalam km tetapi skala dalam m, tukar unit (bahagikan dengan 1000) sebelum menjawab.", en: "If the question asks for the answer in km but the scale is in m, convert the unit (divide by 1000) before answering." },
+      { ms: "Semak: adakah jawapan anda beza (tolak), bukan jumlah (tambah)? Dan adakah anda sudah darab dengan skala jika diberi?", en: "Check: is your answer a difference (subtraction), not a sum (addition)? And did you multiply by the scale if one was given?" },
     ],
     workedExample: {
-      problem: { ms: "A(2, 3) dan B(2, 9)", en: "A(2, 3) and B(2, 9)" },
+      problem: { ms: "A(2, 3) dan B(2, 9). Skala: 1 unit mewakili 150 m. Cari jarak sebenar antara A dan B, dalam m.", en: "A(2, 3) and B(2, 9). Scale: 1 unit represents 150 m. Find the real distance between A and B, in m." },
       steps: [
         { ms: "Nilai-x sama (2), jadi bandingkan nilai-y", en: "The x-value is the same (2), so compare the y-values" },
-        { ms: "Jarak = 9 − 3 = 6", en: "Distance = 9 − 3 = 6" },
+        { ms: "Jarak grid = 9 \u2212 3 = 6 unit", en: "Grid distance = 9 \u2212 3 = 6 units" },
+        { ms: "Jarak sebenar = 6 \u00d7 150 m = 900 m", en: "Real distance = 6 \u00d7 150 m = 900 m" },
       ],
-      answer: 6,
+      answer: "900 m",
     },
     commonMistakes: [
+      { mistakeType: "forgot_to_apply_scale", description: { ms: "Murid berikan jarak grid (dalam unit) sebagai jawapan akhir, terlupa darab dengan skala untuk dapat jarak sebenar.", en: "The student gives the grid distance (in units) as the final answer, forgetting to multiply by the scale to get the real distance." } },
       { mistakeType: "added_instead_of_subtracted", description: { ms: "Murid menambah dua nilai koordinat berbanding mencari beza.", en: "The student adds the two coordinate values instead of finding the difference." } },
-      { mistakeType: "compared_wrong_values", description: { ms: "Murid tolak nilai koordinat yang SAMA berbanding yang berbeza.", en: "The student subtracts the coordinate values that are the SAME instead of the ones that differ." } },
       { mistakeType: "wrong_axis_confusion", description: { ms: "Murid keliru sama ada jarak itu mendatar (nilai-y sama) atau menegak (nilai-x sama).", en: "The student confuses whether the distance is horizontal (same y-value) or vertical (same x-value)." } },
-      { mistakeType: "arithmetic_error_in_subtraction", description: { ms: "Murid kenal pasti nilai yang betul untuk ditolak tetapi tersilap kira.", en: "The student identifies the correct values to subtract but makes an arithmetic slip." } },
+      { mistakeType: "calculation_error", description: { ms: "Murid darab dengan skala yang betul tetapi terlupa tukar unit (contohnya m kepada km) yang diminta oleh soalan.", en: "The student multiplies by the correct scale but forgets to convert to the unit (e.g. m to km) the question asked for." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "coordinate_distance", config: { maxCoord: 12 } },
-      { type: "fill", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 15 } },
-      { type: "word_problem", difficulty: 2, generatorKey: "coordinate_distance", config: { maxCoord: 12, type: "word_problem" } },
+      { type: "fill", difficulty: 2, generatorKey: "coordinate_distance", config: { maxCoord: 12 } },
       { type: "mcq", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 12, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 10, scaled: true, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 10, scaled: true, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 12, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000066": {
     id: "a1000000-0000-0000-0000-000000000066",
     strand: { ms: "Statistik", en: "Statistics" },
+    bidang: BIDANG.statisticsProbability,
     title: { ms: "Mod, Julat, Median, dan Min", en: "Mode, Range, Median, and Mean" },
     yearLevel: 5,
     explanation: {
@@ -3217,6 +3401,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000067": {
     id: "a1000000-0000-0000-0000-000000000067",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Beli Secara Tunai atau Ansuran", en: "Purchasing Via Cash or Instalment" },
     yearLevel: 5,
     explanation: {
@@ -3261,6 +3446,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000068": {
     id: "a1000000-0000-0000-0000-000000000068",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Insurans dan Takaful", en: "Insurance and Takaful" },
     yearLevel: 6,
     explanation: {
@@ -3308,6 +3494,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000069": {
     id: "a1000000-0000-0000-0000-000000000069",
     strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Panjang dan Jisim Bergabung", en: "Combined Length and Mass" },
     yearLevel: 6,
     explanation: {
@@ -3352,6 +3539,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000070": {
     id: "a1000000-0000-0000-0000-000000000070",
     strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Panjang dan Isipadu Bergabung", en: "Combined Length and Volume" },
     yearLevel: 6,
     explanation: {
@@ -3396,6 +3584,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000071": {
     id: "a1000000-0000-0000-0000-000000000071",
     strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Jisim dan Isipadu Bergabung", en: "Combined Mass and Volume" },
     yearLevel: 6,
     explanation: {
@@ -3440,6 +3629,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000072": {
     id: "a1000000-0000-0000-0000-000000000072",
     strand: { ms: "Statistik", en: "Statistics" },
+    bidang: BIDANG.statisticsProbability,
     title: { ms: "Membaca Carta Pai", en: "Reading Pie Charts" },
     yearLevel: 6,
     explanation: {
@@ -3449,11 +3639,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Setiap petak carta pai ialah PECAHAN daripada jumlah keseluruhan — bukan bilangan sebenar. Darabkan pecahan dengan jumlah untuk dapat bilangan sebenar.", en: "Each pie slice is a FRACTION of the total — not the actual count. Multiply the fraction by the total to get the actual count." },
       { ms: "Jangan anggap semua petak sama besar — semak nombor pada petak itu (pengangka dan penyebut) sebelum mengira.", en: "Don't assume every slice is the same size — check the numbers on that slice (numerator and denominator) before calculating." },
+      {
+        ms: "JANGAN buat ini: cari bilangan murid kumpulan A (3/8 daripada 24) dengan mengira 24 ÷ 8 = 3 sahaja (abaikan pengangka 3). SALAH — anda MESTI darab pecahan PENUH (3/8) dengan jumlah, bukan anggap ia 1/8. Jawapan yang betul ialah 24 × 3/8 = 9.",
+        en: "DON'T do this: find group A's count (3/8 of 24) by calculating just 24 ÷ 8 = 3 (ignoring the numerator 3). WRONG — you MUST multiply the FULL fraction (3/8) by the total, not treat it as 1/8. The correct answer is 24 × 3/8 = 9.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti pecahan bagi kumpulan yang ditanya.", en: "Identify the fraction for the group being asked about." },
       { ms: "Darabkan pecahan itu dengan jumlah keseluruhan data untuk dapat bilangan sebenar.", en: "Multiply that fraction by the overall total to get the actual count." },
       { ms: "Untuk soalan beza, cari bilangan sebenar bagi KEDUA-DUA kumpulan dahulu, kemudian tolak.", en: "For a difference question, find the actual count for BOTH groups first, then subtract." },
+      { ms: "Semak: tambahkan bilangan sebenar bagi SEMUA kumpulan — jumlahnya mesti menyamai jumlah keseluruhan data.", en: "Check: add up the actual counts for ALL groups — the total should equal the overall data total." },
     ],
     workedExample: {
       problem: { ms: "Carta pai: kumpulan A = 1/4, jumlah murid = 24. Berapakah bilangan murid dalam kumpulan A?", en: "Pie chart: group A = 1/4, total students = 24. How many students are in group A?" },
@@ -3466,15 +3661,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "treated_as_unit_fraction", description: { ms: "Murid anggap setiap petak carta pai bersamaan 1 bahagian sahaja (cth. mengira jumlah ÷ penyebut) tanpa mengambil kira pengangka sebenar.", en: "The student assumes every pie slice is worth a single 1-part fraction (e.g. total ÷ denominator) without accounting for the actual numerator." } },
       { mistakeType: "misread_pie_sector", description: { ms: "Murid baca pecahan bagi petak yang salah semasa mengira.", en: "The student reads the fraction for the wrong slice while calculating." } },
+      { mistakeType: "calculation_error", description: { ms: "Semasa cari jumlah keseluruhan (diberi bilangan sebenar satu kumpulan dan pecahannya), murid darab berbanding bahagi.", en: "When finding the overall total (given one group's actual count and its fraction), the student multiplies instead of dividing." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada bilangan sebenar itu munasabah — ia mesti kurang daripada jumlah keseluruhan.", en: "The student doesn't check whether the actual count is reasonable — it should be less than the overall total." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "pie_chart", config: {} },
       { type: "fill", difficulty: 3, generatorKey: "pie_chart", config: {} },
+      { type: "word_problem", difficulty: 3, generatorKey: "pie_chart", config: { type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "pie_chart", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "pie_chart", config: { reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000073": {
     id: "a1000000-0000-0000-0000-000000000073",
-    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    strand: { ms: "Masa dan Waktu", en: "Time" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Zon Waktu", en: "Time Zones" },
     yearLevel: 6,
     explanation: {
@@ -3484,10 +3685,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Jika bandar kedua mempunyai GMT yang LEBIH TINGGI, masanya LEBIH LEWAT — tambah jam. Jika lebih rendah, masanya lebih awal — tolak jam.", en: "If the second city has a HIGHER GMT, its time is LATER — add hours. If lower, its time is earlier — subtract hours." },
       { ms: "Bandingkan nombor GMT dahulu sebelum mengira — itulah beza jam yang perlu ditambah atau ditolak.", en: "Compare the GMT numbers first before calculating — that's the hour difference you need to add or subtract." },
+      {
+        ms: "JANGAN buat ini: Kuala Lumpur (GMT+8) ke Tokyo (GMT+9), masa 14:00 dikira sebagai 14:00 − 1 = 13:00 (tolak, arah terbalik). SALAH — GMT Tokyo LEBIH TINGGI, jadi anda MESTI tambah. Jawapan yang betul ialah 15:00.",
+        en: "DON'T do this: Kuala Lumpur (GMT+8) to Tokyo (GMT+9), time 14:00 calculated as 14:00 − 1 = 13:00 (subtracting, wrong direction). WRONG — Tokyo's GMT is HIGHER, so you MUST add. The correct answer is 15:00.",
+      },
     ],
     howTo: [
       { ms: "Cari beza GMT antara kedua-dua bandar (GMT bandar destinasi − GMT bandar asal).", en: "Find the GMT difference between the two cities (destination city's GMT − origin city's GMT)." },
       { ms: "Tambahkan beza itu (jika positif) atau tolak (jika negatif) daripada masa asal.", en: "Add that difference (if positive) or subtract it (if negative) from the original time." },
+      { ms: "Semak: kira semula ke arah bertentangan (destinasi ke asal) — anda mesti dapat semula masa asal.", en: "Check: calculate in the reverse direction (destination back to origin) — you should get the original time back." },
     ],
     workedExample: {
       problem: { ms: "Kuala Lumpur (GMT+8), Tokyo (GMT+9). Masa di Kuala Lumpur: 14:00. Pukul berapa di Tokyo?", en: "Kuala Lumpur (GMT+8), Tokyo (GMT+9). Time in Kuala Lumpur: 14:00. What time is it in Tokyo?" },
@@ -3500,15 +3706,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "wrong_offset_direction", description: { ms: "Murid tolak beza GMT sepatutnya tambah, atau sebaliknya.", en: "The student subtracts the GMT difference when they should add it, or vice versa." } },
       { mistakeType: "forgot_to_convert", description: { ms: "Murid berikan masa asal tanpa melaraskannya mengikut beza GMT.", en: "The student gives the original time without adjusting it for the GMT difference." } },
+      { mistakeType: "calculation_error", description: { ms: "Semasa cari GMT bandar yang tidak diketahui (diberi masa kedua-dua bandar), murid tolak beza jam daripada GMT yang diketahui berbanding tambah.", en: "When finding an unknown city's GMT (given both cities' times), the student subtracts the hour difference from the known GMT instead of adding it." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada masa akhir munasabah — beza jam yang besar (lebih daripada 12 jam) patut dipersoalkan semula.", en: "The student doesn't check whether the final time is reasonable — a large hour difference (more than 12 hours) should raise a flag." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "time_zones", config: {} },
       { type: "fill", difficulty: 3, generatorKey: "time_zones", config: {} },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_zones", config: { type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "time_zones", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_zones", config: { reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000074": {
     id: "a1000000-0000-0000-0000-000000000074",
-    strand: { ms: "Nombor dan Operasi", en: "Numbers and Operations" },
+    strand: { ms: "Nombor Bulat", en: "Whole Numbers" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Nombor Perdana dan Nombor Gubahan", en: "Prime Numbers and Composite Numbers" },
     yearLevel: 6,
     explanation: {
@@ -3549,6 +3761,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000075": {
     id: "a1000000-0000-0000-0000-000000000075",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Sudut Pedalaman Poligon Sekata", en: "Interior Angles of Regular Polygons" },
     yearLevel: 6,
     explanation: {
@@ -3593,6 +3806,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000076": {
     id: "a1000000-0000-0000-0000-000000000076",
     strand: { ms: "Wang", en: "Money" },
+    bidang: BIDANG.numbersOperations,
     title: { ms: "Faedah Kompaun", en: "Compound Interest" },
     yearLevel: 5,
     explanation: {
@@ -3602,11 +3816,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Kira faedah SATU TAHUN pada satu masa — jangan darab terus dengan bilangan tahun seperti faedah mudah.", en: "Calculate interest ONE YEAR at a time — don't multiply straight through by the number of years like simple interest." },
       { ms: "Selepas setiap tahun, TAMBAHKAN faedah itu kepada jumlah sebelum mengira tahun seterusnya.", en: "After each year, ADD that interest to the total before calculating the next year." },
+      {
+        ms: "JANGAN buat ini: RM100 pada kadar 10% selama 2 tahun dikira sebagai 100 × 10% × 2 = RM20 (faedah mudah). SALAH — faedah kompaun MESTI dikira daripada jumlah terkini setiap tahun. Jawapan yang betul ialah RM21.00.",
+        en: "DON'T do this: RM100 at 10% for 2 years calculated as 100 × 10% × 2 = RM20 (simple interest). WRONG — compound interest MUST be calculated from the current total each year. The correct answer is RM21.00.",
+      },
     ],
     howTo: [
       { ms: "Kira faedah tahun 1: prinsipal × kadar ÷ 100. Tambahkan kepada prinsipal.", en: "Calculate year 1's interest: principal × rate ÷ 100. Add it to the principal." },
       { ms: "Kira faedah tahun 2 daripada JUMLAH BAHARU itu (bukan prinsipal asal). Ulang untuk setiap tahun.", en: "Calculate year 2's interest from that NEW total (not the original principal). Repeat for every year." },
       { ms: "Jumlah faedah kompaun = jumlah akhir − prinsipal asal.", en: "Total compound interest = final total − original principal." },
+      { ms: "Semak: faedah kompaun mesti SENTIASA lebih besar daripada faedah mudah (prinsipal × kadar × tahun) bagi tempoh yang sama.", en: "Check: compound interest should ALWAYS be bigger than simple interest (principal × rate × years) for the same period." },
     ],
     workedExample: {
       problem: { ms: "RM100 dilaburkan pada kadar faedah kompaun 10% setahun selama 2 tahun. Berapakah jumlah faedah kompaun?", en: "RM100 invested at a compound interest rate of 10% per year for 2 years. What is the total compound interest?" },
@@ -3620,15 +3839,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "used_simple_interest_formula", description: { ms: "Murid guna formula faedah mudah (prinsipal × kadar × tahun) dan lupa faedah kompaun mengira daripada jumlah terkini setiap tahun.", en: "The student uses the simple interest formula (principal × rate × years) and forgets compound interest calculates from the current total each year." } },
       { mistakeType: "stopped_compounding_early", description: { ms: "Murid hanya kira faedah untuk 1 tahun dan lupa teruskan untuk baki tahun.", en: "The student only calculates 1 year's interest and forgets to continue for the remaining years." } },
+      { mistakeType: "calculation_error", description: { ms: "Semasa cari prinsipal (diberi faedah tahun 1 dan kadar), murid anggap jumlah faedah itu sendiri ialah prinsipal.", en: "When finding the principal (given year 1's interest and the rate), the student treats the interest amount itself as the principal." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada faedah kompaun mereka lebih besar daripada faedah mudah untuk tempoh yang sama, jadi tidak perasan jawapan mereka tersilap.", en: "The student doesn't check whether their compound interest is bigger than simple interest for the same period, so doesn't notice their answer is off." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 20 } },
-      { type: "word_problem", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 15 } },
+      { type: "fill", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 15 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 15, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 15, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 15, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000077": {
     id: "a1000000-0000-0000-0000-000000000077",
     strand: { ms: "Statistik", en: "Statistics" },
+    bidang: BIDANG.statisticsProbability,
     title: { ms: "Membaca Piktograf", en: "Reading Pictographs" },
     yearLevel: 4,
     explanation: {
@@ -3638,10 +3863,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "SENTIASA semak kunci dahulu sebelum mengira — jangan anggap setiap ikon mewakili 1 sahaja.", en: "ALWAYS check the key first before calculating — don't assume each icon represents just 1." },
       { ms: "Untuk soalan beza, tukar KEDUA-DUA baris kepada unit sebenar dahulu, kemudian tolak.", en: "For a difference question, convert BOTH rows to actual units first, then subtract." },
+      {
+        ms: "JANGAN buat ini: peniaga A ada 4 ikon (kunci = 5 setiap ikon) dan bilangan buah dijawab sebagai 4 (bilangan ikon sahaja). SALAH — anda MESTI darab bilangan ikon dengan kunci itu. Jawapan yang betul ialah 4 × 5 = 20.",
+        en: "DON'T do this: seller A has 4 icons (key = 5 per icon) and the fruit count answered as 4 (just the icon count). WRONG — you MUST multiply the icon count by the key. The correct answer is 4 × 5 = 20.",
+      },
     ],
     howTo: [
       { ms: "Kira bilangan ikon bagi kumpulan yang ditanya.", en: "Count the number of icons for the group being asked about." },
       { ms: "Darabkan bilangan ikon itu dengan kunci (unit setiap ikon) untuk dapat bilangan sebenar.", en: "Multiply that icon count by the key (units per icon) to get the actual count." },
+      { ms: "Semak: bahagikan bilangan sebenar dengan kunci — jawapannya mesti menyamai bilangan ikon yang anda kira.", en: "Check: divide the actual count by the key — the answer should match the icon count you counted." },
     ],
     workedExample: {
       problem: { ms: "Peniaga A mempunyai 4 ikon. Kunci: setiap ikon = 5 biji buah. Berapakah bilangan buah peniaga A?", en: "Seller A has 4 icons. Key: each icon = 5 fruits. How many fruits does Seller A have?" },
@@ -3654,15 +3884,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_pictograph_key", description: { ms: "Murid berikan bilangan ikon sahaja tanpa mendarabkan dengan kunci.", en: "The student gives the icon count alone without multiplying by the key." } },
       { mistakeType: "subtracted_icons_not_units", description: { ms: "Murid tolak bilangan ikon terus tanpa menukarkannya kepada unit sebenar dahulu.", en: "The student subtracts icon counts directly without converting them to actual units first." } },
+      { mistakeType: "calculation_error", description: { ms: "Semasa cari bilangan ikon yang perlu dilukis (diberi jumlah sebenar dan kunci), murid darab berbanding bahagi.", en: "When finding how many icons to draw (given the actual total and the key), the student multiplies instead of dividing." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada bilangan sebenar itu munasabah berbanding bilangan ikon yang dilukis.", en: "The student doesn't check whether the actual count is reasonable compared to the number of icons drawn." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "pictograph", config: {} },
       { type: "fill", difficulty: 2, generatorKey: "pictograph", config: {} },
+      { type: "word_problem", difficulty: 2, generatorKey: "pictograph", config: { type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "pictograph", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "pictograph", config: { reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000078": {
     id: "a1000000-0000-0000-0000-000000000078",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Garis Selari dan Garis Serenjang", en: "Parallel Lines and Perpendicular Lines" },
     yearLevel: 4,
     explanation: {
@@ -3709,6 +3945,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000079": {
     id: "a1000000-0000-0000-0000-000000000079",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Isi Padu Kuboid", en: "Volume of a Cuboid" },
     yearLevel: 4,
     explanation: {
@@ -3753,6 +3990,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000080": {
     id: "a1000000-0000-0000-0000-000000000080",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Isi Padu Bentuk Gubahan", en: "Volume of Composite Shapes" },
     yearLevel: 5,
     explanation: {
@@ -3762,11 +4000,16 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Kira isi padu SETIAP kuboid secara berasingan dahulu — jangan cuba gabungkan semua nombor dalam satu langkah.", en: "Work out EACH cuboid's volume separately first — don't try to combine all the numbers in one step." },
       { ms: "Ingat isi padu perlukan KETIGA-TIGA dimensi bagi setiap kuboid, bukan hanya dua seperti luas.", en: "Remember volume needs ALL THREE dimensions for each cuboid, not just two like area." },
+      {
+        ms: "JANGAN buat ini: kira isi padu Kuboid A sebagai 4×3=12 (guna dua dimensi sahaja, seperti luas). SALAH — anda MESTI darab KETIGA-TIGA dimensi (panjang×lebar×tinggi = 4×3×2=24). Jawapan yang betul bagi Kuboid A ialah 24 cm³.",
+        en: "DON'T do this: calculate Cuboid A's volume as 4×3=12 (using only two dimensions, like area). WRONG — you MUST multiply ALL THREE dimensions (length×width×height = 4×3×2=24). The correct answer for Cuboid A is 24 cm³.",
+      },
     ],
     howTo: [
       { ms: "Bahagikan bentuk gubahan itu kepada dua atau lebih kuboid.", en: "Split the composite shape into two or more cuboids." },
       { ms: "Kira isi padu setiap kuboid secara berasingan (panjang × lebar × tinggi).", en: "Calculate each cuboid's volume separately (length × width × height)." },
       { ms: "Tambahkan semua isi padu itu untuk dapatkan jumlah keseluruhan.", en: "Add all those volumes together to get the total." },
+      { ms: "Semak: pastikan anda darab tiga nombor bagi setiap kuboid, bukan dua.", en: "Check: make sure you multiplied three numbers for each cuboid, not two." },
     ],
     workedExample: {
       problem: { ms: "Kuboid A: 4 cm × 3 cm × 2 cm, Kuboid B: 3 cm × 2 cm × 2 cm", en: "Cuboid A: 4 cm × 3 cm × 2 cm, Cuboid B: 3 cm × 2 cm × 2 cm" },
@@ -3780,15 +4023,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "forgot_second_cuboid", description: { ms: "Murid hanya mengira isi padu satu kuboid sahaja.", en: "The student only calculates the volume of one cuboid." } },
       { mistakeType: "volume_addition_error", description: { ms: "Murid darabkan hanya dua dimensi setiap kuboid (seperti luas) berbanding ketiga-tiga.", en: "The student multiplies only two dimensions per cuboid (like area) instead of all three." } },
+      { mistakeType: "calculation_error", description: { ms: "Semasa cari dimensi yang hilang (diberi jumlah isi padu), murid tolak isi padu A daripada jumlah tetapi terlupa bahagikan dengan dua dimensi Kuboid B yang diketahui.", en: "When finding a missing dimension (given the total volume), the student subtracts Cuboid A's volume from the total but forgets to divide by Cuboid B's two known dimensions." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan jumlah isi padu dahulu, jadi tidak perasan jawapan akhir tidak munasabah (contohnya lebih kecil daripada salah satu isi padu komponen).", en: "The student doesn't estimate the total volume first, so doesn't notice when the final answer doesn't make sense (e.g. smaller than one of the component volumes)." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 8 } },
-      { type: "word_problem", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 6 } },
+      { type: "fill", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 6 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 6, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 6, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 6, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000081": {
     id: "a1000000-0000-0000-0000-000000000081",
     strand: { ms: "Ruang", en: "Space" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Perimeter Bentuk Gubahan", en: "Perimeter of Composite Shapes" },
     yearLevel: 5,
     explanation: {
@@ -3798,10 +4047,15 @@ export const TOPICS: Record<string, TopicContent> = {
     tips: [
       { ms: "Jangan tertipu oleh saiz petak yang dipotong — ia TIDAK mengubah perimeter keseluruhan.", en: "Don't be fooled by the size of the cut-out notch — it does NOT change the overall perimeter." },
       { ms: "Guna sahaja dimensi segi empat tepat BESAR (keseluruhan) untuk kira perimeter, abaikan petak kecil.", en: "Just use the LARGE (overall) rectangle's dimensions to calculate the perimeter — ignore the small notch." },
+      {
+        ms: "JANGAN buat ini: perimeter bentuk-L dikira sebagai perimeter segi empat tepat besar TOLAK perimeter petak yang dipotong (32 − 14 = 18 m). SALAH — memotong petak itu TIDAK mengurangkan perimeter langsung. Jawapan yang betul kekal 32 m.",
+        en: "DON'T do this: the L-shape's perimeter calculated as the big rectangle's perimeter MINUS the cut-out notch's perimeter (32 − 14 = 18 m). WRONG — cutting the notch does NOT reduce the perimeter at all. The correct answer stays 32 m.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti dimensi segi empat tepat BESAR (keseluruhan) — panjang dan lebar.", en: "Identify the LARGE (overall) rectangle's dimensions — length and width." },
       { ms: "Kira perimeter menggunakan formula biasa: 2 × (panjang + lebar). Abaikan petak kecil yang dipotong.", en: "Calculate the perimeter using the normal formula: 2 × (length + width). Ignore the small cut-out notch." },
+      { ms: "Semak: perimeter bentuk-L mesti SAMA dengan perimeter segi empat tepat asal, tidak kira saiz petak yang dipotong.", en: "Check: the L-shape's perimeter should be EQUAL to the original rectangle's perimeter, regardless of the notch's size." },
     ],
     workedExample: {
       problem: { ms: "Segi empat tepat 10 m × 6 m dengan petak 4 m × 3 m dipotong daripada satu penjuru. Cari perimeter bentuk-L.", en: "Rectangle 10 m × 6 m with a 4 m × 3 m section cut from one corner. Find the perimeter of the L-shape." },
@@ -3814,15 +4068,21 @@ export const TOPICS: Record<string, TopicContent> = {
     commonMistakes: [
       { mistakeType: "notch_assumed_to_reduce_perimeter", description: { ms: "Murid anggap memotong petak itu mengurangkan perimeter, lalu menolak perimeter petak kecil itu.", en: "The student assumes cutting the notch reduces the perimeter, and subtracts the notch's perimeter." } },
       { mistakeType: "found_area_not_perimeter", description: { ms: "Murid kira LUAS bentuk-L berbanding perimeter.", en: "The student calculates the L-shape's AREA instead of its perimeter." } },
+      { mistakeType: "calculation_error", description: { ms: "Semasa cari dimensi yang hilang (diberi perimeter), murid tersilap semasa bahagi perimeter dengan 2 atau tolak dimensi yang diketahui.", en: "When finding a missing dimension (given the perimeter), the student makes an error dividing the perimeter by 2 or subtracting the known dimension." } },
+      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada perimeter bentuk-L munasabah berbanding perimeter segi empat tepat besar, jadi tidak perasan jawapan mereka jauh berbeza.", en: "The student doesn't check whether the L-shape's perimeter is reasonable compared to the big rectangle's, so doesn't notice their answer is way off." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 6, max: 20 } },
-      { type: "word_problem", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 25 } },
+      { type: "fill", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 25 } },
+      { type: "word_problem", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 25, type: "word_problem" } },
+      { type: "mcq", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 25, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 20, reverseProblem: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000082": {
     id: "a1000000-0000-0000-0000-000000000082",
     strand: { ms: "Koordinat", en: "Coordinates" },
+    bidang: BIDANG.relationshipAlgebra,
     title: { ms: "Membaca Koordinat", en: "Reading Coordinates" },
     yearLevel: 4,
     explanation: {
@@ -3867,6 +4127,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000083": {
     id: "a1000000-0000-0000-0000-000000000083",
     strand: { ms: "Nisbah", en: "Ratio" },
+    bidang: BIDANG.relationshipAlgebra,
     title: { ms: "Nisbah", en: "Ratio" },
     yearLevel: 4,
     explanation: {
@@ -3913,6 +4174,7 @@ export const TOPICS: Record<string, TopicContent> = {
   "a1000000-0000-0000-0000-000000000084": {
     id: "a1000000-0000-0000-0000-000000000084",
     strand: { ms: "Nisbah", en: "Ratio" },
+    bidang: BIDANG.relationshipAlgebra,
     title: { ms: "Kadaran", en: "Proportion" },
     yearLevel: 4,
     explanation: {
@@ -3956,7 +4218,8 @@ export const TOPICS: Record<string, TopicContent> = {
   },
   "a1000000-0000-0000-0000-000000000085": {
     id: "a1000000-0000-0000-0000-000000000085",
-    strand: { ms: "Ukuran dan Sukatan", en: "Measurement" },
+    strand: { ms: "Masa dan Waktu", en: "Time" },
+    bidang: BIDANG.measurementGeometry,
     title: { ms: "Format 12 Jam dan 24 Jam", en: "12-Hour and 24-Hour Time" },
     yearLevel: 5,
     explanation: {

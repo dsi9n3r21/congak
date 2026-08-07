@@ -3,6 +3,7 @@ import type { GeneratedQuestion, GeneratorParams } from "../types";
 
 const LABELS = ["A", "B", "C", "D"];
 const UNITS_PER_ICON_OPTIONS = [2, 5, 10];
+const PICTOGRAPH_NAMES = ["Aiman", "Iman", "Danish", "Sofea", "Adam", "Farah"];
 
 // Year 4 KSSR "Construct Pictographs and Bar Charts" / "Interpret
 // Pictographs and Bar Charts" — verified against the real Y4 textbook ToC
@@ -10,8 +11,15 @@ const UNITS_PER_ICON_OPTIONS = [2, 5, 10];
 // pedagogical point here is applying the KEY (each icon = N units), not
 // just reading a value straight off — so unlike bar_graph, the actual
 // unit count is never shown directly, only icon counts + the key.
+//
+// Retrofitted per the Round 19 content standard: added word_problem type
+// support, errorSpotting (giving the icon count instead of applying the
+// key), and a reverseProblem finding how many icons should be drawn
+// given the actual total and the key (dividing instead of multiplying).
 export function generatePictograph(params: GeneratorParams): GeneratedQuestion {
-  const type = (params.type as "mcq" | "fill") ?? "mcq";
+  const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
+  const errorSpotting = Boolean(params.errorSpotting);
+  const reverseProblem = Boolean(params.reverseProblem);
   const variant = pick(["count", "difference"]);
 
   const unitsPerIcon = pick(UNITS_PER_ICON_OPTIONS);
@@ -19,6 +27,34 @@ export function generatePictograph(params: GeneratorParams): GeneratedQuestion {
   const labels = LABELS.slice(0, numCategories);
   const iconCounts = labels.map(() => randInt(1, 8));
   const totals = iconCounts.map((c) => c * unitsPerIcon);
+
+  // ---- reverseProblem: given the actual total and the key, find how
+  // many icons should be drawn — dividing instead of multiplying.
+  if (reverseProblem) {
+    const targetIndex = randInt(0, labels.length - 1);
+    const total = totals[targetIndex];
+    const name = pick(PICTOGRAPH_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} menjual ${total} biji buah. Jika setiap ikon dalam piktograf mewakili ${unitsPerIcon} biji buah, berapa banyak ikon yang perlu dilukis untuk ${name}?`,
+        en: `${name} sold ${total} fruits. If each icon in the pictograph represents ${unitsPerIcon} fruits, how many icons should be drawn for ${name}?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(iconCounts[targetIndex]),
+      context: { variant: "reverse", unitsPerIcon, targetIndex, correct: iconCounts[targetIndex], total },
+      generatorKey: "pictograph",
+      difficulty: 3,
+    };
+    // Classic mistake: multiplied instead of dividing (used the total as the icon count's key again).
+    const multipliedInstead = total * unitsPerIcon;
+    const distractors = [String(multipliedInstead)].filter((d) => d !== String(iconCounts[targetIndex]));
+    question.options = shuffleOptions(String(iconCounts[targetIndex]), distractors);
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, iconCounts[targetIndex] + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   let promptMs: string;
   let promptEn: string;
@@ -44,6 +80,38 @@ export function generatePictograph(params: GeneratorParams): GeneratedQuestion {
     context = { variant, unitsPerIcon, iHigh, iLow, correct };
   }
 
+  // ---- errorSpotting: shown the classic "gave the icon count, forgot
+  // the key" mistake (count variant only), must give the correct total.
+  if (errorSpotting && variant === "count") {
+    const targetIndex = Number(context.targetIndex);
+    const iconCountOnly = iconCounts[targetIndex];
+    if (iconCountOnly !== correct) {
+      const name = pick(PICTOGRAPH_NAMES);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} kira bilangan buah yang dijual peniaga ${labels[targetIndex]} sebagai ${iconCountOnly} (bilangan ikon sahaja, tanpa guna kunci). Apakah jawapan yang betul?`,
+          en: `${name} counted seller ${labels[targetIndex]}'s fruit as ${iconCountOnly} (just the icon count, without applying the key). What is the correct answer?`,
+        },
+        type: "mcq",
+        correctAnswer: String(correct),
+        context,
+        generatorKey: "pictograph",
+        difficulty: 3,
+        options: shuffleOptions(String(correct), [String(iconCountOnly)]),
+        diagram: {
+          kind: "pictograph",
+          segments: labels.map((label, i) => ({ label, iconCount: iconCounts[i] })),
+          unitsPerIcon,
+        },
+      };
+      while (question.options!.length < 3) {
+        const candidate = String(correct + randInt(unitsPerIcon, unitsPerIcon * 3) * (Math.random() > 0.5 ? 1 : -1));
+        if (!question.options!.includes(candidate) && Number(candidate) > 0) question.options!.push(candidate);
+      }
+      return question;
+    }
+  }
+
   const question: GeneratedQuestion = {
     prompt: { ms: promptMs, en: promptEn },
     type,
@@ -58,7 +126,7 @@ export function generatePictograph(params: GeneratorParams): GeneratedQuestion {
     },
   };
 
-  if (type === "mcq") {
+  if (type === "mcq" || type === "word_problem") {
     let distractors: string[];
     if (variant === "count") {
       const targetIndex = Number(context.targetIndex);
