@@ -78,6 +78,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 3245 + 186 disusun sa bertentang sa dengan sa terakhir sahaja (bukan ikut nilai tempat sebenar), lalu jawab 5105. SALAH — anda MESTI susun ikut nilai tempat (sa di bawah sa). Jawapan yang betul ialah 3431.",
         en: "DON'T do this: 3245 + 186 lined up flush-right by digit count (not real place value), then answered 5105. WRONG — you MUST line up by place value (ones under ones). The correct answer is 3431.",
       },
+      {
+        ms: "Cabaran: jika ada DUA penghantaran berturutan, jangan berhenti selepas yang pertama — tambah KETIGA-TIGA nombor (jumlah asal + penghantaran pertama + penghantaran kedua).",
+        en: "Challenge: if there are TWO deliveries one after another, don't stop after the first — add all THREE numbers (original amount + first delivery + second delivery).",
+      },
     ],
     howTo: [
       { ms: "Susun kedua-dua nombor menegak, ikut nilai tempat (sa di bawah sa, puluh di bawah puluh, dan seterusnya).", en: "Line the two numbers up vertically, matching place value (ones under ones, tens under tens, and so on)." },
@@ -142,6 +146,7 @@ export const TOPICS: Record<string, TopicContent> = {
       },
       { mistakeType: "wrong_operation", description: { ms: "Murid menolak berbanding menambah (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student subtracts instead of adding (or vice versa) when solving the problem." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan jawapan dahulu, jadi tidak perasan jawapan akhir tidak masuk akal.", en: "The student doesn't estimate the answer first, so doesn't notice when the final answer doesn't make sense." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan dua penghantaran, murid berhenti selepas penghantaran PERTAMA dan lupa tambah penghantaran kedua.", en: "In a two-delivery question, the student stops after the FIRST delivery and forgets to add the second." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_addition", config: { min: 15000, max: 45000 } },
@@ -149,6 +154,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_addition", config: { min: 15000, max: 45000, type: "word_problem" } },
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_addition", config: { min: 15000, max: 45000, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_addition", config: { min: 15000, max: 45000, reverseProblem: true } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_addition", config: { min: 15000, max: 45000, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000002": {
@@ -165,6 +171,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Penyebut sama = SAMA besar keping. 'Sama besar, senang tambah' — hanya nombor atas berubah!", en: "Same denominator = same-size pieces. 'Same size, easy to add' — only the top number changes!" },
       { ms: "JANGAN buat ini: 2/5 + 1/5 = 3/10. SALAH — penyebut TIDAK ditambah. Jawapan yang betul ialah 3/5; penyebut kekal 5 kerana saiz keping tidak berubah.", en: "DON'T do this: 2/5 + 1/5 = 3/10. WRONG — the denominator is NOT added. The correct answer is 3/5; the denominator stays 5 because the piece size hasn't changed." },
       { ms: "Petua pantas: jika penyebut kedua-dua pecahan sama, hanya fokus pada nombor atas — anggap ia macam tambah nombor bulat biasa.", en: "Quick trick: if both denominators match, focus only on the top numbers — treat it like adding regular whole numbers." },
+      { ms: "Cabaran: jika ada TIGA bahagian yang dimakan/ditambah berturutan, jangan berhenti selepas dua yang pertama — tambah KETIGA-TIGA pengangka.", en: "Challenge: if THREE portions are eaten/added one after another, don't stop after the first two — add all THREE numerators." },
     ],
     howTo: [
       { ms: "Kenal pasti kedua-dua pecahan yang perlu ditambah.", en: "Identify the two fractions to be added." },
@@ -189,6 +196,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "wrong_operation", description: { ms: "Murid menolak pengangka bukannya menambah, kerana keliru dengan susunan soalan.", en: "Student subtracts the numerators instead of adding, getting confused by the question's layout." } },
       { mistakeType: "special_case_error", description: { ms: "Apabila salah satu pecahan mempunyai pengangka sama dengan penyebut (contohnya 5/5), murid tidak pasti cara mengendalikannya dan tertinggal langkah tambah.", en: "When one fraction has a numerator equal to its denominator (e.g. 5/5), student is unsure how to handle it and skips the addition step." } },
       { mistakeType: "keyword_only_classification", description: { ms: "Murid cuba mempermudahkan jawapan (contohnya 6/8 kepada 3/4) walaupun sistem menyemak jawapan tanpa dipermudahkan, menyebabkan jawapan yang betul secara matematik ditandakan salah.", en: "Student tries to simplify the answer (e.g. 6/8 to 3/4) even though the system checks the unsimplified form, causing a mathematically correct answer to be marked wrong." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan tiga bahagian, murid hanya tambah dua bahagian pertama dan lupa bahagian ketiga.", en: "In a three-portion question, the student only adds the first two portions and forgets the third." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "fractions_same_denominator", config: { denominators: [4, 5, 6, 8, 10, 12] } },
@@ -196,6 +204,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "fractions_same_denominator", config: { type: "word_problem", denominators: [5, 6, 8, 10] } },
       { type: "mcq", difficulty: 3, generatorKey: "fractions_same_denominator", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_same_denominator", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 2, generatorKey: "fractions_same_denominator", config: { denominators: [8, 10, 12], challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000003": {
@@ -221,13 +230,17 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: RM10.00 − RM6.30 dikira terus digit demi digit tanpa tukar ke sen (10−6=4, 00−30=terbalik). SALAH — anda MESTI tukar kepada sen dahulu (1000 sen − 630 sen). Jawapan yang betul ialah RM3.70.",
         en: "DON'T do this: RM10.00 − RM6.30 calculated digit-by-digit without converting to sen first (10−6=4, 00−30=flipped). WRONG — you MUST convert to sen first (1000 sen − 630 sen). The correct answer is RM3.70.",
       },
+      {
+        ms: "Cabaran: jika baki daripada satu belian digunakan untuk belian KEDUA, jangan berhenti selepas belian pertama — teruskan tolak harga belian kedua daripada baki itu.",
+        en: "Challenge: if the change from one purchase is used for a SECOND purchase, don't stop after the first purchase — keep going and subtract the second item's price from that change.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti Wang Dibayar dan Harga Barang.", en: "Identify the Money Paid and the Item Price." },
       { ms: "Tukar kedua-dua nilai kepada sen sepenuhnya.", en: "Convert both values fully into sen." },
       { ms: "Tolak: Wang Dibayar − Harga Barang.", en: "Subtract: Money Paid − Item Price." },
       { ms: "Tukar jawapan itu balik kepada format RM.", en: "Convert the answer back into RM format." },
-      { ms: "Semak: Baki + Harga Barang mesti menyamai semula Wang Dibayar.", en: "Check: Change + Item Price must add back up to Money Paid." },
+      { ms: "Semak: Baki + Harga Barang mesti menyamai semula Wang Dibayar. Jika ada belian KEDUA, ulangi langkah ini dengan baki pertama sebagai \"wang dibayar\" yang baharu.", en: "Check: Change + Item Price must add back up to Money Paid. If there's a SECOND purchase, repeat this process using the first change as the new \"money paid\"." },
     ],
     workedExample: {
       problem: { ms: "RM10.00 - RM6.30", en: "RM10.00 - RM6.30" },
@@ -243,6 +256,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "subtraction_borrow_error", description: { ms: "Murid tersilap semasa proses \"pinjam\" dalam penolakan berlajur.", en: "The student makes an error during the \"borrow\" step in column subtraction." } },
       { mistakeType: "wrong_operation", description: { ms: "Murid menambah harga barang dengan wang dibayar, bukan menolak.", en: "The student adds the item price to the money paid, instead of subtracting." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan baki dahulu, jadi tidak perasan jika jawapan akhir tidak munasabah (contohnya baki lebih besar daripada wang dibayar).", en: "The student doesn't estimate the change first, so doesn't notice when the final answer doesn't make sense (e.g. change bigger than the money paid)." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan dua langkah (belian kedua daripada baki pertama), murid berhenti selepas belian pertama dan lupa teruskan ke belian kedua.", en: "In a two-step question (a second purchase from the first change), the student stops after the first purchase and forgets to continue to the second." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "money_change", config: { maxPaid: 20, maxPrice: 18 } },
@@ -250,6 +264,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "money_change", config: { maxPaid: 50, maxPrice: 48, context: "canteen" } },
       { type: "mcq", difficulty: 3, generatorKey: "money_change", config: { maxPaid: 30, maxPrice: 28, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "money_change", config: { maxPaid: 30, maxPrice: 28, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "money_change", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000004": {
@@ -376,12 +391,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 20% daripada 50 dikira sebagai 20 × 50 = 1000 dan berhenti di situ. SALAH — anda MESTI bahagi dengan 100 selepas darab. Jawapan yang betul ialah 1000 ÷ 100 = 10.",
         en: "DON'T do this: 20% of 50 calculated as 20 × 50 = 1000 and stopping there. WRONG — you MUST divide by 100 after multiplying. The correct answer is 1000 ÷ 100 = 10.",
       },
+      {
+        ms: "Cabaran: jika DUA peratusan dikenakan secara berturutan, peratusan KEDUA dikira daripada BAKI selepas potongan pertama, bukan daripada kuantiti asal.",
+        en: "Challenge: if TWO percentages are applied one after another, the SECOND one is calculated from the REMAINDER after the first cut, not from the original quantity.",
+      },
     ],
     howTo: [
       { ms: "Tukar peratus itu kepada pecahan per seratus (cth. 20% = 20/100).", en: "Convert the percentage into a fraction over 100 (e.g. 20% = 20/100)." },
       { ms: "Darabkan pecahan itu dengan kuantiti yang diberi.", en: "Multiply that fraction by the given quantity." },
       { ms: "Permudahkan pengiraan itu untuk dapatkan jawapan.", en: "Simplify the calculation to get the answer." },
-      { ms: "Semak: adakah jawapan anda munasabah berbanding kuantiti asal?", en: "Check: does your answer make sense compared to the original quantity?" },
+      { ms: "Semak: adakah jawapan anda munasabah berbanding kuantiti asal? Jika ada peratusan KEDUA, ulangi proses ini menggunakan BAKI sebagai kuantiti baharu.", en: "Check: does your answer make sense compared to the original quantity? If there's a SECOND percentage, repeat this process using the remainder as the new quantity." },
     ],
     workedExample: {
       problem: { ms: "20% daripada 50", en: "20% of 50" },
@@ -396,7 +415,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "forgot_divide_by_100", description: { ms: "Murid mendarab terus peratus dengan kuantiti tanpa membahagi dengan 100 dahulu.", en: "The student multiplies the percent directly by the quantity without dividing by 100 first." } },
       { mistakeType: "inverted_percentage_operation", description: { ms: "Murid membahagikan kuantiti dengan peratus, bukan mendarab.", en: "The student divides the quantity by the percent instead of multiplying." } },
       { mistakeType: "confused_part_and_whole", description: { ms: "Murid keliru antara kuantiti asal dan bahagian yang dicari, terutamanya dalam soalan berbalik.", en: "The student confuses the original quantity with the part being found, especially in reverse-style questions." } },
-      { mistakeType: "arithmetic_error_in_step", description: { ms: "Murid ikut kaedah yang betul tetapi tersilap kira semasa mendarab atau membahagi.", en: "The student follows the correct method but makes an arithmetic slip while multiplying or dividing." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan dua peratusan berturutan, murid berhenti selepas potongan pertama dan lupa kira potongan kedua daripada baki.", en: "In a two-cascading-percentage question, the student stops after the first cut and forgets to calculate the second cut from the remainder." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "percentage_of_quantity", config: { percentages: [50, 25, 10] } },
@@ -404,6 +423,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "percentage_of_quantity", config: { percentages: [20, 75, 5], type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "percentage_of_quantity", config: { percentages: [20, 75, 5], errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "percentage_of_quantity", config: { percentages: [20, 75, 5], reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "percentage_of_quantity", config: { percentages: [50, 25, 10, 20], challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000007": {
@@ -477,12 +497,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: purata bagi 70, 80, 75, 75 dijawab sebagai 300 (jumlah sahaja, berhenti di situ). SALAH — anda MESTI bahagikan jumlah itu dengan bilangan nilai (4). Jawapan yang betul ialah 75.",
         en: "DON'T do this: the average of 70, 80, 75, 75 answered as 300 (just the sum, stopping there). WRONG — you MUST divide that sum by the number of values (4). The correct answer is 75.",
       },
+      {
+        ms: "Cabaran: jika satu nilai BAHARU ditambah kepada set data, purata lama TIDAK boleh dipurata terus dengan nilai baharu itu — cari jumlah asal dahulu (purata lama × bilangan lama), tambah nilai baharu, kemudian bahagi dengan bilangan yang baharu.",
+        en: "Challenge: if a NEW value is added to the data set, you can't just average the old average with the new value — find the original sum first (old average × old count), add the new value, then divide by the new count.",
+      },
     ],
     howTo: [
       { ms: "Tambahkan semua nilai dalam set data itu.", en: "Add up all the values in the data set." },
       { ms: "Kira berapa banyak nilai yang ada.", en: "Count how many values there are." },
       { ms: "Bahagikan jumlah itu dengan bilangan nilai.", en: "Divide the total by the number of values." },
-      { ms: "Semak: purata itu sepatutnya berada antara nilai terkecil dan terbesar dalam set data.", en: "Check: the average should fall between the smallest and largest values in the data set." },
+      { ms: "Semak: purata itu sepatutnya berada antara nilai terkecil dan terbesar dalam set data. Jika satu nilai baharu ditambah, ulangi proses ini dengan jumlah dan bilangan yang dikemas kini.", en: "Check: the average should fall between the smallest and largest values in the data set. If a new value is added, repeat this process with the updated sum and count." },
     ],
     workedExample: {
       problem: { ms: "70, 80, 75, 75", en: "70, 80, 75, 75" },
@@ -498,6 +522,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "wrong_count_average", description: { ms: "Murid membahagikan dengan bilangan nilai yang salah.", en: "The student divides by the wrong number of values." } },
       { mistakeType: "forgot_subtract_known_values", description: { ms: "Semasa mencari nilai yang hilang, murid darab purata dengan bilangan nilai tetapi terlupa tolak jumlah nilai yang sudah diketahui.", en: "When finding a missing value, the student multiplies the average by the count but forgets to subtract the sum of the known values." } },
       { mistakeType: "average_out_of_range", description: { ms: "Murid dapat jawapan purata yang lebih besar daripada nilai terbesar atau lebih kecil daripada nilai terkecil, tetapi tidak perasan ia tidak munasabah.", en: "The student gets an average bigger than the largest value or smaller than the smallest value, but doesn't notice it's unreasonable." } },
+      { mistakeType: "averaged_the_average", description: { ms: "Apabila nilai baharu ditambah, murid purata terus purata lama dengan nilai baharu itu (contoh (purata+nilai baharu)÷2), lupa purata lama mewakili beberapa nilai.", en: "When a new value is added, the student directly averages the old average with the new value (e.g. (average+new value)÷2), forgetting the old average represents several values." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "average", config: { count: 3, maxValue: 15 } },
@@ -505,6 +530,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "average", config: { count: 4, maxValue: 15, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "average", config: { count: 4, maxValue: 20, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "average", config: { count: 4, maxValue: 15, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "average", config: { count: 4, maxValue: 15, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000009": {
@@ -1098,6 +1124,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 34 − 78 (dalam satu lajur) dikira sebagai 78 − 34 = 44 kerana \"lebih senang\". SALAH — anda MESTI pinjam 1 daripada lajur sebelah kiri apabila digit atas lebih kecil, bukan tukar susunan.",
         en: "DON'T do this: 34 − 78 (within one column) calculated as 78 − 34 = 44 because it's \"easier\". WRONG — you MUST borrow 1 from the column on the left when the top digit is smaller, not swap the order around.",
       },
+      {
+        ms: "Cabaran: jika ada DUA jualan berturutan, jangan berhenti selepas yang pertama — tolak jualan KEDUA daripada baki selepas jualan pertama.",
+        en: "Challenge: if there are TWO sales one after another, don't stop after the first — subtract the SECOND sale from the remainder after the first.",
+      },
     ],
     howTo: [
       { ms: "Susun kedua-dua nombor menegak, nombor lebih besar di atas.", en: "Line the two numbers up vertically, with the bigger number on top." },
@@ -1121,6 +1151,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "place_value_misalignment", description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." } },
       { mistakeType: "wrong_operation", description: { ms: "Murid menambah berbanding menolak (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student adds instead of subtracting (or vice versa) when solving the problem." } },
       { mistakeType: "chained_borrow_error", description: { ms: "Murid pinjam dengan betul di satu lajur tetapi lupa tolak 1 daripada lajur yang dipinjam pada langkah seterusnya.", en: "The student borrows correctly in one column but forgets to subtract 1 from the borrowed-from column in the next step." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan dua jualan, murid berhenti selepas jualan PERTAMA dan lupa tolak jualan kedua.", en: "In a two-sale question, the student stops after the FIRST sale and forgets to subtract the second." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_subtraction", config: { min: 15000, max: 45000 } },
@@ -1128,6 +1159,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_subtraction", config: { min: 15000, max: 45000, type: "word_problem" } },
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_subtraction", config: { min: 15000, max: 45000, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_subtraction", config: { min: 15000, max: 45000, reverseProblem: true } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_subtraction", config: { min: 15000, max: 45000, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000021": {
@@ -1153,12 +1185,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 245 × 23 dikira sebagai 245×2 + 245×3 = 490 + 735 = 1225 (tak anjak hasil darab puluh). SALAH — 245 × 20 = 4900, bukan 245 × 2 = 490. Anda MESTI darab dengan nilai puluh sebenar (20), bukan digit itu sahaja (2). Jawapan yang betul ialah 5,635.",
         en: "DON'T do this: 245 × 23 calculated as 245×2 + 245×3 = 490 + 735 = 1225 (not shifting the tens product). WRONG — 245 × 20 = 4900, not 245 × 2 = 490. You MUST multiply by the actual tens value (20), not just the digit (2). The correct answer is 5,635.",
       },
+      {
+        ms: "Cabaran: jika soalan tanya jumlah untuk bilangan hari yang BAHARU, cari kadar harian dahulu (jumlah asal ÷ bilangan hari asal), kemudian darab dengan bilangan hari baharu.",
+        en: "Challenge: if the question asks for a total over a NEW number of days, find the daily rate first (original total ÷ original days), then multiply by the new number of days.",
+      },
     ],
     howTo: [
       { ms: "Darabkan nombor pertama dengan digit sa nombor kedua.", en: "Multiply the first number by the ones digit of the second number." },
       { ms: "Darabkan nombor pertama dengan digit puluh nombor kedua, kemudian anjak hasil itu satu tempat ke kiri.", en: "Multiply the first number by the tens digit of the second number, then shift that result one place to the left." },
       { ms: "Tambahkan kedua-dua hasil darab itu.", en: "Add the two products together." },
-      { ms: "Semak: bahagikan jawapan anda dengan salah satu nombor asal — ia mesti menyamai nombor yang satu lagi.", en: "Check: divide your answer by one of the original numbers — it should equal the other one." },
+      { ms: "Semak: bahagikan jawapan anda dengan salah satu nombor asal — ia mesti menyamai nombor yang satu lagi. Jika soalan minta unjuran untuk bilangan hari lain, ulangi darab dengan kadar harian itu.", en: "Check: divide your answer by one of the original numbers — it should equal the other one. If the question asks for a projection over a different number of days, multiply the daily rate by that new number." },
     ],
     workedExample: {
       problem: { ms: "245 × 23", en: "245 × 23" },
@@ -1173,7 +1209,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "forgot_shift", description: { ms: "Murid darab dengan digit puluh tetapi lupa anjak hasilnya (lupa tambah 0).", en: "The student multiplies by the tens digit but forgets to shift the result (forgets the trailing 0)." } },
       { mistakeType: "added_instead_of_multiplied", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan hasil darab dahulu, jadi tidak perasan jawapan akhir tidak munasabah (contohnya lebih kecil daripada salah satu nombor asal).", en: "The student doesn't estimate the product first, so doesn't notice when the final answer doesn't make sense (e.g. smaller than one of the original numbers)." } },
-      { mistakeType: "multiplied_instead_of_divided", description: { ms: "Dalam soalan songsang (cari nilai harian daripada jumlah), murid darab semula jumlah itu dengan bilangan hari, bukan bahagikannya.", en: "In the reverse-direction question (finding the daily rate from a total), the student multiplies the total by the number of days again, instead of dividing." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan dua langkah (unjur untuk bilangan hari baharu), murid berhenti selepas cari kadar harian dan lupa teruskan darab dengan hari baharu.", en: "In a two-step projection question, the student stops after finding the daily rate and forgets to continue by multiplying by the new day count." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 999 } },
@@ -1181,6 +1217,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 500, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 500, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 500, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication", config: { min: 100, max: 500, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000022": {
@@ -1206,12 +1243,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 1288 ÷ 23 dikira sebagai 1288 − 23 = 1265 (tolak sekali sahaja). SALAH — pembahagian bermaksud tolak pembahagi BERULANG kali (atau anggar dan darab semula), bukan tolak sekali. Jawapan yang betul ialah 56.",
         en: "DON'T do this: 1288 ÷ 23 calculated as 1288 − 23 = 1265 (subtracting just once). WRONG — division means subtracting the divisor REPEATEDLY (or estimating and multiplying back), not subtracting once. The correct answer is 56.",
       },
+      {
+        ms: "Cabaran: jika kumpulan yang SAMA disusun semula kepada bilangan kelas yang BAHARU, kira semula jumlah keseluruhan dahulu (pembahagi lama × hasil bahagi lama), kemudian bahagikan dengan bilangan kelas yang baharu.",
+        en: "Challenge: if the SAME group is regrouped into a NEW number of classes, recalculate the total first (old divisor × old quotient), then divide by the new number of classes.",
+      },
     ],
     howTo: [
       { ms: "Anggarkan berapa kali pembahagi boleh masuk ke dalam bahagi.", en: "Estimate how many times the divisor fits into the dividend." },
       { ms: "Darabkan anggaran itu dengan pembahagi dan bandingkan dengan bahagi.", en: "Multiply that estimate by the divisor and compare it to the dividend." },
       { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
-      { ms: "Semak: darabkan jawapan akhir dengan pembahagi — ia mesti menyamai bahagi asal.", en: "Check: multiply your final answer by the divisor — it should equal the original dividend." },
+      { ms: "Semak: darabkan jawapan akhir dengan pembahagi — ia mesti menyamai bahagi asal. Jika ada penyusunan semula, ulangi proses dengan bilangan kelas yang baharu.", en: "Check: multiply your final answer by the divisor — it should equal the original dividend. If there's a regroup, repeat the process with the new number of classes." },
     ],
     workedExample: {
       problem: { ms: "1288 ÷ 23", en: "1288 ÷ 23" },
@@ -1226,6 +1267,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "added_instead_of_divided", description: { ms: "Murid menambah pembahagi kepada bahagi berbanding membahagikannya.", en: "The student adds the divisor to the dividend instead of dividing." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak semula dengan darab, jadi tidak perasan anggaran mereka masih terlalu jauh daripada bahagi sebenar.", en: "The student doesn't check back by multiplying, so doesn't notice their estimate is still far off from the actual dividend." } },
       { mistakeType: "multiplied_instead_of_divided", description: { ms: "Dalam soalan songsang (cari bilangan kumpulan/murid), murid darab bahagi dengan hasil bahagi, bukan membahagikannya.", en: "In the reverse-direction question (finding the number of groups/students), the student multiplies the dividend by the quotient, instead of dividing." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan penyusunan semula, murid berhenti selepas pengagihan PERTAMA dan lupa kira semula bagi bilangan kelas yang baharu.", en: "In a regrouping question, the student stops after the FIRST grouping and forgets to recalculate for the new number of classes." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 10, maxQuotient: 99 } },
@@ -1233,6 +1275,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 15, maxQuotient: 80, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 15, maxQuotient: 80, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division", config: { minQuotient: 15, maxQuotient: 60, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000023": {
@@ -1258,12 +1301,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: cari jumlah keseluruhan dengan tambah hanya 2 daripada 4 palang (12+18=30) dan berhenti. SALAH — anda MESTI tambah SEMUA palang yang berkaitan. Jawapan yang betul ialah 12+18+9+15=54.",
         en: "DON'T do this: find the total by adding only 2 of the 4 bars (12+18=30) and stopping there. WRONG — you MUST add UP ALL the relevant bars. The correct answer is 12+18+9+15=54.",
       },
+      {
+        ms: "Cabaran: jika soalan minta \"berapa lebih daripada DUA KALI\" satu kumpulan, gandakan nilai itu DAHULU sebelum tolak — jangan tolak biasa sahaja.",
+        en: "Challenge: if the question asks \"how much more than DOUBLE\" one group, double that value FIRST before subtracting — don't just do a plain subtraction.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti soalan itu meminta jumlah atau beza.", en: "Identify whether the question is asking for a total or a difference." },
       { ms: "Baca nilai setiap palang yang berkaitan daripada graf.", en: "Read the value of each relevant bar from the graph." },
       { ms: "Untuk jumlah: tambahkan semua nilai. Untuk beza: tolak nilai lebih kecil daripada nilai lebih besar.", en: "For a total: add all the values. For a difference: subtract the smaller value from the bigger one." },
-      { ms: "Semak: kira semula bilangan palang yang anda gunakan — adakah ia menyamai bilangan kumpulan dalam graf?", en: "Check: recount how many bars you used — does it match the number of groups in the graph?" },
+      { ms: "Semak: kira semula bilangan palang yang anda gunakan — adakah ia menyamai bilangan kumpulan dalam graf? Jika soalan ada perkataan tambahan seperti \"dua kali\", pastikan anda buat langkah itu SEBELUM tolak.", en: "Check: recount how many bars you used — does it match the number of groups in the graph? If the question has an extra word like \"double\", make sure you do that step BEFORE subtracting." },
     ],
     workedExample: {
       problem: { ms: "Kumpulan A=12, B=18, C=9, D=15", en: "Group A=12, B=18, C=9, D=15" },
@@ -1277,7 +1324,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "forgot_one_bar", description: { ms: "Murid tertinggal satu kumpulan semasa menambah jumlah keseluruhan.", en: "The student misses one group while adding up the total." } },
       { mistakeType: "added_instead_of_subtracted", description: { ms: "Murid menambah dua nilai berbanding mencari beza antara keduanya.", en: "The student adds two values instead of finding the difference between them." } },
       { mistakeType: "calculation_error", description: { ms: "Semasa cari nilai palang yang hilang (diberi jumlah), murid tersilap semasa tolak jumlah tiga palang yang diketahui daripada jumlah keseluruhan.", en: "When finding a missing bar's value (given the total), the student makes an error subtracting the three known bars from the overall total." } },
-      { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan jumlah dahulu, jadi tidak perasan jawapan akhir tidak munasabah (contohnya lebih kecil daripada salah satu palang).", en: "The student doesn't estimate the total first, so doesn't notice when the final answer doesn't make sense (e.g. smaller than one of the bars)." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan \"berapa lebih daripada dua kali\", murid kira beza biasa sahaja dan lupa gandakan nilai itu dahulu.", en: "In a \"how much more than double\" question, the student calculates a plain difference and forgets to double the value first." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "bar_graph", config: { min: 5, max: 32 } },
@@ -1285,6 +1332,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "bar_graph", config: { min: 8, max: 40, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "bar_graph", config: { min: 8, max: 40, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "bar_graph", config: { min: 5, max: 32, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "bar_graph", config: { min: 5, max: 32, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000024": {
@@ -1521,12 +1569,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 1245 × 4 dikira sebagai 1245 + 4 = 1249. SALAH — soalan minta DARAB, bukan tambah. Jawapan yang betul ialah 1245 × 4 = 4980.",
         en: "DON'T do this: 1245 × 4 calculated as 1245 + 4 = 1249. WRONG — the question asks to MULTIPLY, not add. The correct answer is 1245 × 4 = 4980.",
       },
+      {
+        ms: "Cabaran: jika soalan tanya jumlah untuk bilangan hari yang BAHARU, cari kadar harian dahulu (jumlah asal ÷ bilangan hari asal), kemudian darab dengan bilangan hari baharu.",
+        en: "Challenge: if the question asks for a total over a NEW number of days, find the daily rate first (original total ÷ original days), then multiply by the new number of days.",
+      },
     ],
     howTo: [
       { ms: "Darabkan digit sa nombor besar itu dengan nombor 1 digit.", en: "Multiply the ones digit of the big number by the 1-digit number." },
       { ms: "Simpan apa-apa lebihan ke lajur seterusnya, kemudian ulang untuk setiap lajur.", en: "Carry any overflow to the next column, then repeat for every column." },
       { ms: "Gabungkan semua digit jawapan untuk dapatkan jawapan akhir.", en: "Combine all the answer digits to get the final answer." },
-      { ms: "Semak: adakah anda simpan lebihan setiap kali hasil darab satu lajur melebihi 9?", en: "Check: did you carry the overflow every time a column's product exceeded 9?" },
+      { ms: "Semak: adakah anda simpan lebihan setiap kali hasil darab satu lajur melebihi 9? Jika soalan minta unjuran untuk bilangan hari lain, ulangi darab dengan kadar harian itu.", en: "Check: did you carry the overflow every time a column's product exceeded 9? If the question asks for a projection over a different number of days, multiply the daily rate by that new number." },
     ],
     workedExample: {
       problem: { ms: "1245 × 4", en: "1245 × 4" },
@@ -1544,6 +1596,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "added_instead_of_multiplied", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
       { mistakeType: "wrong_dimension_used", description: { ms: "Dalam soalan berbalik, murid tolak berbanding bahagi untuk mencari kuantiti yang tidak diketahui.", en: "In reverse-style questions, the student subtracts instead of dividing to find the missing quantity." } },
       { mistakeType: "arithmetic_error_in_carry", description: { ms: "Murid simpan dengan betul di satu lajur tetapi lupa tambah nombor yang disimpan pada lajur seterusnya.", en: "The student carries correctly in one column but forgets to add the carried number in the next column." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan dua langkah (unjur untuk bilangan hari baharu), murid berhenti selepas cari kadar harian dan lupa teruskan darab dengan hari baharu.", en: "In a two-step projection question, the student stops after finding the daily rate and forgets to continue by multiplying by the new day count." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 9999 } },
@@ -1551,6 +1604,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 1, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 5000, type: "word_problem" } },
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 9999, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 9999, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication_y4", config: { min: 1000, max: 5000, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000029": {
@@ -1576,12 +1630,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 84 ÷ 4 dikira sebagai 84 − 4 = 80 (tolak sekali sahaja). SALAH — pembahagian bermaksud cari berapa KALI 4 boleh masuk ke dalam 84, bukan tolak sekali. Jawapan yang betul ialah 21.",
         en: "DON'T do this: 84 ÷ 4 calculated as 84 − 4 = 80 (subtracting just once). WRONG — division means finding how many TIMES 4 fits into 84, not subtracting once. The correct answer is 21.",
       },
+      {
+        ms: "Cabaran: jika kumpulan yang SAMA disusun semula kepada bilangan murid yang BAHARU, kira semula jumlah keseluruhan dahulu (pembahagi lama × hasil bahagi lama), kemudian bahagikan dengan bilangan murid yang baharu.",
+        en: "Challenge: if the SAME group is regrouped into a NEW number of students, recalculate the total first (old divisor × old quotient), then divide by the new number of students.",
+      },
     ],
     howTo: [
       { ms: "Anggarkan berapa kali pembahagi boleh masuk ke dalam bahagi, digit demi digit dari kiri.", en: "Estimate how many times the divisor fits into the dividend, digit by digit from the left." },
       { ms: "Darabkan anggaran itu dengan pembahagi dan bandingkan dengan bahagi.", en: "Multiply that estimate by the divisor and compare it to the dividend." },
       { ms: "Laraskan anggaran itu sehingga ia tepat.", en: "Adjust the estimate until it's exact." },
-      { ms: "Semak: darabkan jawapan akhir dengan pembahagi — ia mesti menyamai bahagi asal.", en: "Check: multiply your final answer by the divisor — it should equal the original dividend." },
+      { ms: "Semak: darabkan jawapan akhir dengan pembahagi — ia mesti menyamai bahagi asal. Jika ada penyusunan semula, ulangi proses dengan bilangan murid yang baharu.", en: "Check: multiply your final answer by the divisor — it should equal the original dividend. If there's a regroup, repeat the process with the new number of students." },
     ],
     workedExample: {
       problem: { ms: "84 ÷ 4", en: "84 ÷ 4" },
@@ -1597,6 +1655,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "added_instead_of_divided", description: { ms: "Murid menambah pembahagi kepada bahagi berbanding membahagikannya.", en: "The student adds the divisor to the dividend instead of dividing." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak semula dengan darab, jadi tidak perasan anggaran mereka masih terlalu jauh daripada bahagi sebenar.", en: "The student doesn't check back by multiplying, so doesn't notice their estimate is still far off from the actual dividend." } },
       { mistakeType: "multiplied_instead_of_divided", description: { ms: "Dalam soalan songsang (cari bilangan kumpulan/murid), murid darab bahagi dengan hasil bahagi, bukan membahagikannya.", en: "In the reverse-direction question (finding the number of groups/students), the student multiplies the dividend by the quotient, instead of dividing." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan penyusunan semula, murid berhenti selepas pengagihan PERTAMA dan lupa kira semula bagi bilangan murid yang baharu.", en: "In a regrouping question, the student stops after the FIRST grouping and forgets to recalculate for the new number of students." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 99 } },
@@ -1604,6 +1663,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 1, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 50, type: "word_problem" } },
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 50, errorSpotting: true } },
       { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_division_y4", config: { minQuotient: 10, maxQuotient: 30, reverseProblem: true } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_division_y4", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000030": {
@@ -2050,12 +2110,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 3/4 ÷ 2 dikira sebagai 6/4 (darab pengangka dengan 2, seperti mendarab bukan membahagi). SALAH — anda MESTI darab PENYEBUT dengan nombor bulat itu, bukan pengangka. Jawapan yang betul ialah 3/8.",
         en: "DON'T do this: 3/4 ÷ 2 calculated as 6/4 (multiplying the numerator by 2, like multiplying instead of dividing). WRONG — you MUST multiply the DENOMINATOR by that whole number, not the numerator. The correct answer is 3/8.",
       },
+      {
+        ms: "Cabaran: jika bahagian itu dikongsi SEKALI LAGI antara lebih ramai orang, darabkan penyebut SEKALI LAGI dengan bilangan orang yang baharu — jangan berhenti selepas pembahagian pertama.",
+        en: "Challenge: if the share is divided AGAIN among more people, multiply the denominator AGAIN by the new number of people — don't stop after the first division.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti pengangka, penyebut, dan nombor bulat pembahagi.", en: "Identify the numerator, denominator, and the whole number divisor." },
       { ms: "Darabkan penyebut dengan nombor bulat itu. Pengangka kekal sama.", en: "Multiply the denominator by that whole number. The numerator stays the same." },
       { ms: "Permudahkan pecahan jawapan jika boleh.", en: "Simplify the resulting fraction if possible." },
-      { ms: "Semak: darabkan jawapan anda semula dengan nombor bulat itu — ia mesti menyamai pecahan asal.", en: "Check: multiply your answer back by that whole number — it should equal the original fraction." },
+      { ms: "Semak: darabkan jawapan anda semula dengan nombor bulat itu — ia mesti menyamai pecahan asal. Jika bahagian itu dikongsi sekali lagi, ulangi proses ini dengan penyebut yang baharu.", en: "Check: multiply your answer back by that whole number — it should equal the original fraction. If the share is divided again, repeat this process with the new denominator." },
     ],
     workedExample: {
       problem: { ms: "3/4 ÷ 2", en: "3/4 ÷ 2" },
@@ -2071,6 +2135,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "forgot_to_simplify", description: { ms: "Murid dapat jawapan yang betul tetapi tidak permudahkannya.", en: "The student gets the correct answer but doesn't simplify it." } },
       { mistakeType: "calculation_error", description: { ms: "Semasa cari jumlah asal (diberi bahagian dan bilangan bahagian), murid bahagi berbanding darab semula.", en: "When finding the original amount (given the share and the number of shares), the student divides instead of multiplying back." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada jawapan itu munasabah — pecahan hasil bahagi mesti lebih kecil daripada pecahan asal.", en: "The student doesn't check whether the answer is reasonable — the resulting fraction should be smaller than the original fraction." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan dua langkah (dikongsi sekali lagi), murid berhenti selepas pembahagian pertama dan lupa teruskan ke pembahagian kedua.", en: "In a two-step question (shared again), the student stops after the first division and forgets to continue to the second." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 5, 6, 8] } },
@@ -2078,6 +2143,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 6], type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [3, 4, 5, 6], errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4, 6], reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_whole", config: { denominators: [2, 3, 4], challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000039": {
@@ -3369,12 +3435,16 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Julat = nilai TERBESAR tolak nilai TERKECIL.", en: "Range = the LARGEST value minus the SMALLEST value." },
       { ms: "Median: susun data mengikut turutan dahulu, kemudian cari nilai TENGAH.", en: "Median: sort the data in order first, then find the MIDDLE value." },
       { ms: "Min: tambah SEMUA nilai, kemudian bahagikan dengan BILANGAN nilai.", en: "Mean: add ALL the values, then divide by the NUMBER of values." },
+      {
+        ms: "Cabaran: jika satu nilai BAHARU ditambah, ia mungkin menjadi nilai MAKSIMUM atau MINIMUM baharu — jangan guna julat lama, kira semula.",
+        en: "Challenge: if a NEW value is added, it might become the new MAXIMUM or MINIMUM — don't use the old range, recalculate it.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti yang mana satu diminta: mod, julat, median, atau min.", en: "Identify which one is being asked for: mode, range, median, or mean." },
       { ms: "Susun data mengikut turutan jika perlu (untuk median atau julat).", en: "Sort the data in order if needed (for median or range)." },
       { ms: "Kira ikut definisi yang betul untuk statistik itu.", en: "Calculate using the correct definition for that statistic." },
-      { ms: "Semak: adakah jawapan anda sepadan dengan statistik yang DITANYA, bukan yang lain?", en: "Check: does your answer match the statistic that was ASKED for, not a different one?" },
+      { ms: "Semak: adakah jawapan anda sepadan dengan statistik yang DITANYA, bukan yang lain? Jika satu nilai baharu ditambah, semak sama ada ia mengubah maksimum atau minimum sebelum kira semula.", en: "Check: does your answer match the statistic that was ASKED for, not a different one? If a new value is added, check whether it changes the maximum or minimum before recalculating." },
     ],
     workedExample: {
       problem: { ms: "12, 15, 12, 18, 20 — cari mod", en: "12, 15, 12, 18, 20 — find the mode" },
@@ -3389,6 +3459,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "forgot_to_sort", description: { ms: "Murid cari median tanpa menyusun data mengikut turutan dahulu.", en: "The student finds the median without sorting the data in order first." } },
       { mistakeType: "arithmetic_error_in_mean", description: { ms: "Murid tambah nilai dengan betul tetapi bahagi dengan bilangan yang salah, atau tersilap kira jumlah.", en: "The student adds the values correctly but divides by the wrong count, or makes a sum error." } },
       { mistakeType: "mode_with_no_repeat", description: { ms: "Murid anggap set data itu ada mod walaupun tiada nilai yang berulang, atau salah kenal pasti nilai yang berulang.", en: "The student assumes a data set has a mode even when no value repeats, or misidentifies the repeated value." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Apabila satu nilai baharu ditambah, murid guna julat LAMA dan tidak perasan nilai baharu itu mengubah maksimum atau minimum.", en: "When a new value is added, the student uses the OLD range and doesn't notice the new value changes the maximum or minimum." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "mode_range_median_mean", config: { maxValue: 20 } },
@@ -3396,6 +3467,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "mode_range_median_mean", config: { maxValue: 20, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "mode_range_median_mean", config: { maxValue: 20, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "mode_range_median_mean", config: { maxValue: 20, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mode_range_median_mean", config: { maxValue: 20, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000067": {
@@ -3643,12 +3715,16 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: cari bilangan murid kumpulan A (3/8 daripada 24) dengan mengira 24 ÷ 8 = 3 sahaja (abaikan pengangka 3). SALAH — anda MESTI darab pecahan PENUH (3/8) dengan jumlah, bukan anggap ia 1/8. Jawapan yang betul ialah 24 × 3/8 = 9.",
         en: "DON'T do this: find group A's count (3/8 of 24) by calculating just 24 ÷ 8 = 3 (ignoring the numerator 3). WRONG — you MUST multiply the FULL fraction (3/8) by the total, not treat it as 1/8. The correct answer is 24 × 3/8 = 9.",
       },
+      {
+        ms: "Cabaran: jika soalan minta \"berapa lebih daripada DUA KALI\" satu kumpulan, gandakan bilangan sebenar kumpulan itu DAHULU sebelum tolak.",
+        en: "Challenge: if the question asks \"how much more than DOUBLE\" one group, double that group's actual count FIRST before subtracting.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti pecahan bagi kumpulan yang ditanya.", en: "Identify the fraction for the group being asked about." },
       { ms: "Darabkan pecahan itu dengan jumlah keseluruhan data untuk dapat bilangan sebenar.", en: "Multiply that fraction by the overall total to get the actual count." },
       { ms: "Untuk soalan beza, cari bilangan sebenar bagi KEDUA-DUA kumpulan dahulu, kemudian tolak.", en: "For a difference question, find the actual count for BOTH groups first, then subtract." },
-      { ms: "Semak: tambahkan bilangan sebenar bagi SEMUA kumpulan — jumlahnya mesti menyamai jumlah keseluruhan data.", en: "Check: add up the actual counts for ALL groups — the total should equal the overall data total." },
+      { ms: "Semak: tambahkan bilangan sebenar bagi SEMUA kumpulan — jumlahnya mesti menyamai jumlah keseluruhan data. Jika ada perkataan tambahan seperti \"dua kali\", buat langkah itu SEBELUM tolak.", en: "Check: add up the actual counts for ALL groups — the total should equal the overall data total. If there's an extra word like \"double\", do that step BEFORE subtracting." },
     ],
     workedExample: {
       problem: { ms: "Carta pai: kumpulan A = 1/4, jumlah murid = 24. Berapakah bilangan murid dalam kumpulan A?", en: "Pie chart: group A = 1/4, total students = 24. How many students are in group A?" },
@@ -3663,6 +3739,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "misread_pie_sector", description: { ms: "Murid baca pecahan bagi petak yang salah semasa mengira.", en: "The student reads the fraction for the wrong slice while calculating." } },
       { mistakeType: "calculation_error", description: { ms: "Semasa cari jumlah keseluruhan (diberi bilangan sebenar satu kumpulan dan pecahannya), murid darab berbanding bahagi.", en: "When finding the overall total (given one group's actual count and its fraction), the student multiplies instead of dividing." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada bilangan sebenar itu munasabah — ia mesti kurang daripada jumlah keseluruhan.", en: "The student doesn't check whether the actual count is reasonable — it should be less than the overall total." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan \"berapa lebih daripada dua kali\", murid kira beza biasa sahaja dan lupa gandakan bilangan itu dahulu.", en: "In a \"how much more than double\" question, the student calculates a plain difference and forgets to double the count first." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "pie_chart", config: {} },
@@ -3670,6 +3747,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "pie_chart", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "pie_chart", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "pie_chart", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "pie_chart", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000073": {

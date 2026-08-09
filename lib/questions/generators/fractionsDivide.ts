@@ -29,6 +29,44 @@ export function generateFractionsDivideByWhole(params: GeneratorParams): Generat
   const correctDenom = rawDenom / g;
   const correctAnswer = `${correctNum}/${correctDenom}`;
   const context = { num, denom, whole, correctNum, correctDenom };
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question — the
+  // share from the first division is split AGAIN among more people (a
+  // second ÷ by a whole number). Stays within the same repeated-division
+  // skill rather than pulling in fraction addition (which would need a
+  // different denominator each time) — a share divided again is just
+  // num/(denom×whole×whole2), still one clean simplification at the end.
+  if (challenge) {
+    const whole2 = randInt(2, 5);
+    const rawDenom2 = rawDenom * whole2;
+    const g2 = gcd(num, rawDenom2);
+    const finalNum = num / g2;
+    const finalDenom = rawDenom2 / g2;
+    const finalAnswer = `${finalNum}/${finalDenom}`;
+    const name = pick(DIVIDE_BY_WHOLE_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${num}/${denom} bar coklat dikongsi sama rata antara ${whole} orang murid. Kemudian, bahagian setiap orang itu dikongsi SEKALI LAGI secara sama rata antara ${whole2} adik-beradik mereka. Berapa bahagian bar coklat yang diterima setiap adik-beradik?`,
+        en: `${num}/${denom} of a chocolate bar is shared equally among ${whole} students. Then, each student's share is shared AGAIN equally among ${whole2} siblings. What fraction of the bar does each sibling receive?`,
+      },
+      type: "word_problem",
+      correctAnswer: finalAnswer,
+      context: { ...context, whole2, finalNum, finalDenom },
+      generatorKey: "fractions_divide_by_whole",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first division and
+    // gives that share as the final answer, forgetting the second split.
+    const stoppedAtFirstShare = correctAnswer;
+    const distractors = [stoppedAtFirstShare].filter((d) => d !== finalAnswer);
+    question.options = shuffleOptions(finalAnswer, distractors);
+    while (question.options.length < 3) {
+      const candidate = `${finalNum}/${finalDenom + randInt(1, 4)}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the share size and the number of shares,
   // find the original amount — multiplying back through the division.

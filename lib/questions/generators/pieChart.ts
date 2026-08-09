@@ -32,6 +32,58 @@ export function generatePieChart(params: GeneratorParams): GeneratedQuestion {
   const total = set.denom * multiplier;
   const labels = LABELS.slice(0, set.nums.length);
   const counts = set.nums.map((n) => (total * n) / set.denom);
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question —
+  // find the highest AND lowest sector counts (hop 1), then combine them
+  // with an extra operation beyond a plain difference (hop 2: how much
+  // MORE than DOUBLE the lowest sector is the highest one) — same shape
+  // as bar_graph's challenge, kept consistent across the two categorical-
+  // data topics.
+  if (challenge) {
+    let iHigh = 0;
+    let iLow = 0;
+    counts.forEach((c, i) => {
+      if (c > counts[iHigh]) iHigh = i;
+      if (c < counts[iLow]) iLow = i;
+    });
+    const doubleLow = counts[iLow] * 2;
+    const finalDiff = counts[iHigh] - doubleLow;
+    if (finalDiff > 0 && iHigh !== iLow) {
+      const name = pick(PIE_NAMES);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `Carta pai di bawah menunjukkan pecahan murid yang menggemari ${labels.length} kegiatan berbeza daripada ${total} orang murid yang disoal siasat oleh ${name}. Berapakah lebihnya kumpulan yang PALING RAMAI berbanding DUA KALI kumpulan yang PALING SEDIKIT?`,
+          en: `The pie chart below shows the fraction of pupils who like ${labels.length} different activities, out of ${total} pupils ${name} surveyed. How much more is the group with the MOST pupils than DOUBLE the group with the FEWEST?`,
+        },
+        type: "word_problem",
+        correctAnswer: String(finalDiff),
+        context: { total, denom: set.denom, iHigh, iLow, highCount: counts[iHigh], lowCount: counts[iLow], doubleLow, finalDiff },
+        generatorKey: "pie_chart",
+        difficulty: 3,
+        diagram: {
+          kind: "pie_chart",
+          segments: labels.map((label, i) => ({ label, numerator: set.nums[i], denominator: set.denom })),
+        },
+      };
+      // Classic non-routine mistake: stops at the plain difference,
+      // forgetting to double the lowest sector first.
+      const stoppedAtPlainDifference = String(counts[iHigh] - counts[iLow]);
+      // Classic mistake: doubled the lowest sector but forgot the final subtraction.
+      const forgotFinalSubtraction = String(doubleLow);
+      const distractors = Array.from(
+        new Set([stoppedAtPlainDifference, forgotFinalSubtraction].filter((d) => d !== String(finalDiff)))
+      );
+      question.options = shuffleOptions(String(finalDiff), distractors);
+      while (question.options.length < 3) {
+        const candidate = String(Math.max(1, finalDiff + randInt(1, 5) * (Math.random() > 0.5 ? 1 : -1)));
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare draw where doubling the
+    // lowest sector already exceeds the highest one.
+  }
 
   // ---- reverseProblem: given one sector's actual count and its
   // fraction, find the total surveyed — dividing back.

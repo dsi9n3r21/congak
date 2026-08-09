@@ -17,6 +17,54 @@ export function generateBarGraph(params: GeneratorParams): GeneratedQuestion {
   const variant = pick(["total", "difference"]);
 
   const values = LABELS.map(() => randInt(min, max));
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question — find
+  // the highest AND lowest bars (hop 1), then combine them with an extra
+  // operation beyond a plain difference (hop 2: how much MORE than DOUBLE
+  // the lowest bar is the highest one). Genuinely dependent — hop 2 needs
+  // both bars identified in hop 1, and adds a real second step beyond the
+  // existing "difference" variant above.
+  if (challenge) {
+    let iHigh = 0;
+    let iLow = 0;
+    values.forEach((v, i) => {
+      if (v > values[iHigh]) iHigh = i;
+      if (v < values[iLow]) iLow = i;
+    });
+    const doubleLow = values[iLow] * 2;
+    const finalDiff = values[iHigh] - doubleLow;
+    if (finalDiff > 0) {
+      const name = pick(BAR_NAMES);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} mengumpul data bagi 4 kumpulan: ${LABELS.map((l, i) => `${l}=${values[i]}`).join(", ")}. Berapakah lebihnya kumpulan yang PALING BANYAK berbanding DUA KALI kumpulan yang PALING SEDIKIT?`,
+          en: `${name} collects data for 4 groups: ${LABELS.map((l, i) => `${l}=${values[i]}`).join(", ")}. How much more is the HIGHEST group than DOUBLE the LOWEST group?`,
+        },
+        type: "word_problem",
+        correctAnswer: String(finalDiff),
+        context: { v0: values[0], v1: values[1], v2: values[2], v3: values[3], iHigh, iLow, doubleLow, finalDiff },
+        generatorKey: "bar_graph",
+        difficulty: 3,
+      };
+      // Classic non-routine mistake: stops after finding the plain
+      // difference (forgetting to double the lowest bar first).
+      const stoppedAtPlainDifference = String(values[iHigh] - values[iLow]);
+      // Classic mistake: doubled the lowest bar but forgot the final subtraction.
+      const forgotFinalSubtraction = String(doubleLow);
+      const distractors = Array.from(
+        new Set([stoppedAtPlainDifference, forgotFinalSubtraction].filter((d) => d !== String(finalDiff)))
+      );
+      question.options = shuffleOptions(String(finalDiff), distractors);
+      while (question.options.length < 3) {
+        const candidate = String(Math.max(1, finalDiff + randInt(1, 5) * (Math.random() > 0.5 ? 1 : -1)));
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare draw where doubling the
+    // lowest bar already exceeds the highest one.
+  }
 
   // ---- reverseProblem: given the total and three of the four bars,
   // find the missing bar's value.

@@ -39,6 +39,50 @@ export function generateAverage(params: GeneratorParams): GeneratedQuestion {
   const sum = values.reduce((a, b) => a + b, 0);
   const correct = sum / count;
   const context = { values: values.join(","), sum, count, correct };
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question — an
+  // extra data point is added to the set, and the question asks for the
+  // NEW average, not the original one. Requires undoing the average
+  // (average × count = sum), adding the new value, then re-averaging —
+  // matches the real "average changes when a new item is added" KBAT
+  // pattern, and its natural distractor (naively averaging the OLD
+  // average with the new value) is the actual classic student mistake.
+  if (challenge) {
+    const newCount = count + 1;
+    // Pick the NEW average first (close to the old one), then derive the
+    // new value algebraically — guarantees a clean whole-number answer
+    // instead of hoping a random new value happens to divide evenly.
+    const newAverage = Math.max(1, average + randInt(-4, 4));
+    const newValue = newAverage * newCount - sum;
+    if (newValue >= 0 && newValue <= maxValue * 3) {
+      const newSum = sum + newValue;
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `Purata ${subject.ms} ${name} untuk ${count} kali ialah ${correct}. Selepas kali ke-${newCount}, keputusan barunya ialah ${newValue}. Berapakah purata baharu untuk kesemua ${newCount} kali?`,
+          en: `${name}'s average ${subject.en} over ${count} times is ${correct}. After the ${newCount}th time, the new result is ${newValue}. What is the new average over all ${newCount} times?`,
+        },
+        type: "word_problem",
+        correctAnswer: String(newAverage),
+        context: { ...context, newValue, newCount, newSum, newAverage },
+        generatorKey: "average",
+        difficulty: 3,
+      };
+      // Classic non-routine mistake: naively averages the OLD average
+      // with the new value directly, e.g. (correct + newValue) / 2 —
+      // ignoring that the old average represents `count` data points, not 1.
+      const naiveAverage = (correct + newValue) / 2;
+      const distractors = [String(naiveAverage)].filter((d) => d !== String(newAverage));
+      question.options = shuffleOptions(String(newAverage), distractors);
+      while (question.options.length < 3) {
+        const candidate = String(Math.max(0, newAverage + randInt(1, 4) * (Math.random() > 0.5 ? 1 : -1)));
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare draw where the new
+    // average isn't a clean whole number.
+  }
 
   // ---- reverseProblem: given the average and all-but-one value, find
   // the missing value (multiply average by count, subtract known values).

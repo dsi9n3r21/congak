@@ -28,8 +28,58 @@ export function generateMoneyChange(params: GeneratorParams): GeneratedQuestion 
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const useContext = params.context === "canteen";
   const errorSpotting = Boolean(params.errorSpotting);
+  const challenge = Boolean(params.challenge);
   const reverseProblem = Boolean(params.reverseProblem);
   const name = pick(CHANGE_NAMES);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question — buy
+  // one item, get change, then spend part of that change on a second
+  // item, and ask for what's left. Matches the real PBD/KBAT pattern of
+  // chaining two operations into one final answer rather than a single
+  // step, while still being one self-contained question (no multi-part
+  // UI needed).
+  if (challenge) {
+    const item1 = pick(CANTEEN_ITEMS);
+    const item2 = pick(CANTEEN_ITEMS.filter((it) => it.ms !== item1.ms));
+    const price1Sen = toSen(item1.price);
+    const price2Sen = toSen(item2.price);
+    const noteOptions = [500, 1000, 2000];
+    const paidSen = pick(noteOptions.filter((n) => n > price1Sen)) ?? 1000;
+    const change1Sen = paidSen - price1Sen;
+    // Guard: the second item must be affordable from the first change.
+    if (change1Sen > price2Sen) {
+      const finalSen = change1Sen - price2Sen;
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} membeli ${item1.ms} berharga ${formatRM(price1Sen)} dan membayar dengan ${formatRM(paidSen)}. Dengan baki wang itu, ${name} membeli pula ${item2.ms} berharga ${formatRM(price2Sen)}. Berapakah baki wang ${name} yang tinggal sekarang?`,
+          en: `${name} buys ${item1.en} for ${formatRM(price1Sen)} and pays with ${formatRM(paidSen)}. With that change, ${name} then buys ${item2.en} for ${formatRM(price2Sen)}. How much money does ${name} have left now?`,
+        },
+        type: "word_problem",
+        correctAnswer: formatRM(finalSen),
+        context: { price1Sen, price2Sen, paidSen, change1Sen, finalSen },
+        generatorKey: "money_change",
+        difficulty: 3,
+      };
+      // Classic non-routine mistake: stops after the first hop and gives
+      // the first change as the final answer, forgetting the second purchase.
+      const stoppedAtFirstHop = formatRM(change1Sen);
+      // Classic mistake: added the second price instead of subtracting it.
+      const addedSecondPrice = formatRM(change1Sen + price2Sen);
+      const distractors = Array.from(
+        new Set([stoppedAtFirstHop, addedSecondPrice].filter((d) => d !== formatRM(finalSen)))
+      );
+      question.options = shuffleOptions(formatRM(finalSen), distractors);
+      while (question.options.length < 3) {
+        const candidateSen = Math.max(0, finalSen + randInt(10, 90) * (Math.random() > 0.5 ? 1 : -1));
+        const candidate = formatRM(candidateSen);
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare pairing where the second
+    // item doesn't fit the first change — keeps the branch simple rather
+    // than retrying combinations.
+  }
 
   const item = useContext ? pick(CANTEEN_ITEMS) : null;
   const priceSen = item ? toSen(item.price) : randInt(150, Number(params.maxPrice ?? 20) * 100);

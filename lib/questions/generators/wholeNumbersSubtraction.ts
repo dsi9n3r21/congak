@@ -70,6 +70,43 @@ export function generateWholeNumbersSubtraction(params: GeneratorParams): Genera
   let b = randInt(min, max);
   if (b > a) [a, b] = [b, a]; // keep the result non-negative for this level
   const correct = a - b;
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question — a
+  // SECOND deduction is taken from what's left after the first one.
+  // Same "buy then buy again" shape as money_change's challenge, applied
+  // to plain whole-number subtraction.
+  if (challenge) {
+    const afterFirst = correct;
+    if (afterFirst >= 2) {
+      const b2 = randInt(1, afterFirst - 1);
+      const finalRemaining = afterFirst - b2;
+      const name = pick(names);
+      const item = pick(items);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `Sebuah kedai ${name} ada ${a.toLocaleString("en-US")} biji ${item}. ${b.toLocaleString("en-US")} biji terjual pada waktu pagi. Kemudian, ${b2.toLocaleString("en-US")} biji lagi terjual pada waktu petang. Berapa biji ${item} yang tinggal?`,
+          en: `${name}'s shop has ${a.toLocaleString("en-US")} ${itemsEn[item]}. ${b.toLocaleString("en-US")} are sold in the morning. Then, ${b2.toLocaleString("en-US")} more are sold in the afternoon. How many ${itemsEn[item]} are left?`,
+        },
+        type: "word_problem",
+        correctAnswer: String(finalRemaining),
+        context: { a, b, b2, afterFirst, finalRemaining },
+        generatorKey: "whole_numbers_subtraction",
+        difficulty: 2,
+      };
+      // Classic non-routine mistake: stops after the morning sale.
+      const stoppedAfterMorning = String(afterFirst);
+      const distractors = [stoppedAfterMorning].filter((d) => d !== String(finalRemaining));
+      question.options = shuffleOptions(String(finalRemaining), distractors);
+      while (question.options.length < 3) {
+        const candidate = String(Math.max(0, finalRemaining + randInt(10, 999) * (Math.random() > 0.5 ? 1 : -1)));
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare draw where there's
+    // nothing meaningful left to take a second deduction from.
+  }
 
   // ---- errorSpotting: shown the classic "forgot to borrow" mistake,
   // must give the correct answer.

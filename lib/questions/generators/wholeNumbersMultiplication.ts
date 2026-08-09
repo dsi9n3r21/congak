@@ -23,6 +23,48 @@ export function generateWholeNumbersMultiplication(params: GeneratorParams): Gen
   const b = randInt(11, 99); // 2-digit multiplier, matching KSSR Y5 level
   const correct = a * b;
   const context = { a, b, correct };
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question —
+  // find the daily rate from a given total over `b` days (hop 1, same
+  // skill as reverseProblem above), then use that rate to project a
+  // DIFFERENT number of days (hop 2). The two hops are genuinely
+  // dependent — hop 2 needs hop 1's daily rate as an input, not just
+  // "the same calculation done twice."
+  if (challenge) {
+    let b2 = randInt(11, 99);
+    while (b2 === b) b2 = randInt(11, 99);
+    const finalTotal = a * b2;
+    const name = pick(MULT_NAMES);
+    const item = pick(MULT_ITEMS);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah kilang milik ${name} mengeluarkan ${item.ms} yang sama banyak setiap hari selama ${b} hari, dan menghasilkan ${correct.toLocaleString("en-US")} ${item.ms} kesemuanya. Jika kilang itu beroperasi selama ${b2} hari pada bulan depan (dengan kadar pengeluaran harian yang sama), berapa ${item.ms} akan dihasilkan?`,
+        en: `${name}'s factory produces the same number of ${item.en} every day for ${b} days, producing ${correct.toLocaleString("en-US")} ${item.en} in total. If the factory operates for ${b2} days next month (at the same daily rate), how many ${item.en} will it produce?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(finalTotal),
+      context: { ...context, b2, finalTotal },
+      generatorKey: "whole_numbers_multiplication",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after finding the daily rate
+    // (hop 1) and gives that as the final answer, forgetting to project
+    // it forward over the new number of days.
+    const stoppedAtDailyRate = String(a);
+    // Classic mistake: reused the ORIGINAL total instead of recalculating
+    // for the new number of days.
+    const reusedOriginalTotal = String(correct);
+    const distractors = Array.from(
+      new Set([stoppedAtDailyRate, reusedOriginalTotal].filter((d) => d !== String(finalTotal)))
+    );
+    question.options = shuffleOptions(String(finalTotal), distractors);
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, finalTotal + randInt(1, 99) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the total and the number of days, find the
   // daily rate — dividing back through the product.

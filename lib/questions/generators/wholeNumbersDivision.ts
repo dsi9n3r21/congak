@@ -23,6 +23,45 @@ export function generateWholeNumbersDivision(params: GeneratorParams): Generated
   const quotient = randInt(minQuotient, maxQuotient);
   const dividend = divisor * quotient; // keep it exact — no remainder at this level
   const context = { dividend, divisor, correct: quotient };
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question — the
+  // SAME total is regrouped into a DIFFERENT number of classes. Built
+  // from scratch as divisor × divisor2 × k so it divides cleanly both
+  // ways by construction (rather than hoping a random second divisor
+  // happens to factor the first quotient's dividend) — hop 2 needs the
+  // regrouped total, so it can't be shortcut into a single division.
+  if (challenge) {
+    const divisorOptions = [11, 13, 15, 17, 19, 21, 23, 25].filter((d) => d !== divisor);
+    const divisor2 = pick(divisorOptions);
+    const k = randInt(2, 5);
+    const bigDividend = divisor * divisor2 * k;
+    const quotient1 = bigDividend / divisor;
+    const quotient2 = bigDividend / divisor2;
+    const name = pick(DIV_Y6_NAMES);
+    const item = pick(DIV_Y6_ITEMS);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${bigDividend.toLocaleString("en-US")} ${item.ms} milik ${name} mula-mula diagihkan sama rata kepada ${divisor} buah kelas. Kemudian, ${item.ms} yang SAMA disusun semula dan diagihkan sama rata kepada ${divisor2} buah kelas sahaja. Berapa ${item.ms} setiap kelas terima selepas disusun semula?`,
+        en: `${name} first shares ${bigDividend.toLocaleString("en-US")} ${item.en} equally among ${divisor} classes. Then, the SAME ${item.en} are regrouped and shared equally among just ${divisor2} classes instead. How many ${item.en} does each class get after regrouping?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(quotient2),
+      context: { bigDividend, divisor, divisor2, quotient1, quotient2 },
+      generatorKey: "whole_numbers_division",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first grouping and
+    // gives that quotient as the final answer, ignoring the regroup.
+    const stoppedAtFirstGrouping = String(quotient1);
+    const distractors = [stoppedAtFirstGrouping].filter((d) => d !== String(quotient2));
+    question.options = shuffleOptions(String(quotient2), distractors);
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, quotient2 + randInt(1, 9) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the dividend and the quotient (amount per
   // group), find the divisor (number of groups).

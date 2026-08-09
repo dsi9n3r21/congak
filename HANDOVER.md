@@ -2033,3 +2033,271 @@ Vercel auto-deploy. Always: (1) fix/build the feature, (2) run
 run and in what order. She replaces files by extracting the zip and
 overwriting her local folder (not touching `node_modules`/`.env.local`),
 then `git add . && git commit -m "..." && git push`.
+
+## Round 20 — Challenge tier (TP6 / non-routine), evidence-based scoping
+
+Lynda pushed back on the "Scenario Mode" plan from the UASA audit above,
+asking whether Malaysian classroom practice materials (not just exam
+papers) already use mixed-skill questions — and if so, at what stage.
+Investigated properly rather than guessing from instructional theory.
+
+### The evidence
+Malaysia's own official assessment framework already answers this: every
+DSKP content standard is scored on 6 tiers, **Tahap Penguasaan (TP1-6)**,
+worded almost identically across every topic:
+
+- **TP1** Tahu — state/name/recognize a fact
+- **TP2** Tahu dan Faham — explain the steps, convert, represent
+- **TP3** Boleh Buat — determine whether an answer is *reasonable*
+- **TP4** Solve **routine** daily-life problems using the skill
+- **TP5** Solve routine problems using **multiple strategies**
+- **TP6** Solve **non-routine** problems **creatively and innovatively**
+
+Found real PBD (classroom-based assessment) worksheets — Penerbit Ilmu
+Bakti, tied to specific textbook page ranges, used as ongoing weekly
+practice, NOT exam papers — for Y4, Y5, and Y6. Every one had a "TP4,
+TP5" section with genuinely layered word problems (a Y5 worksheet chained
+a fraction subtraction → decimal conversion → division in one question;
+a Y4 worksheet blended multiplication and division in one word problem).
+So multi-step application is standard weekly practice, introduced right
+alongside basic recall for the same topic — not deferred to exam season.
+
+Critical nuance though: TP4-5's "integration" is almost always *multiple
+steps within one topic* (fraction → decimal → unit conversion, all still
+"fractions/decimals/measurement"), not *combining unrelated topics*. The
+deeply cross-topic blending seen in the UASA papers (mixed number +
+decimal + whole number in one expression) is TP6 territory — and TP6
+items are visibly rarer in real worksheets, usually one item per
+worksheet, explicitly labeled "KBAT" (Kemahiran Berfikir Aras Tinggi).
+
+### What this changes about the architecture
+Mapped our existing question types onto TP1-6 and found we already cover
+5 of 6 tiers better than expected:
+- mcq/fill → TP1-2 ✅
+- errorSpotting ("this answer is wrong, what's correct?") → TP3's
+  "determine reasonableness" ✅ almost exactly
+- word_problem + reverseProblem → TP4-5's routine multi-step application ✅
+
+**The only genuinely missing tier is TP6** — and it's the smallest tier
+in real materials, not the biggest. That de-risks the whole plan: normal
+practice materials do NOT use linked multi-part scenarios for TP6 either
+— a KBAT item is still one self-contained question, just non-routine.
+So the earlier "Scenario Mode" idea (new schema, new UI, multi-part
+linked questions) is correctly scoped to **Exam Mode's Bahagian B
+simulation only** — a separate, later, exam-specific effort. Challenge
+tier for Exercise Mode is a much lighter addition: **a new `challenge`
+boolean config per generator**, no new question shape, no new UI.
+
+### The Challenge tier pattern (proven on 2 pilots this round)
+A `challenge: true` config flag added to a generator, alongside the
+existing `errorSpotting`/`reverseProblem` flags, that produces a genuine
+**two-hop** question: compute an intermediate value using the topic's
+core skill, then feed that into a second closely-related step, with only
+the FINAL result as `correctAnswer`. Still one `GeneratedQuestion`, one
+prompt, one answer — no multi-part UI needed. The natural "wrong"
+distractor is always **stopping after the first hop** — this is the
+actual, authentic TP6 failure mode (matches real classroom mistakes),
+tracked as a new `stopped_at_intermediate_step`-style mistakeType.
+
+Piloted on 2 topics, chosen for having a natural, well-motivated 2-hop
+shape rather than a forced one:
+
+- **`...003` money_change**: buy item A, get change, spend part of that
+  change on item B, ask what's left. `finalSen = paidSen - price1Sen -
+  price2Sen`, with "stopped after the first purchase"
+  (`change1Sen`) as the primary distractor. Falls through to the base
+  case on the rare item pairing where the second item doesn't fit the
+  first change (~10% of draws) rather than retrying combinations.
+- **`...008` average**: given the old average, a NEW value is added to
+  the set — find the NEW average. Requires undoing the average
+  (`average × count = sum`), adding the new value, re-averaging. The
+  natural distractor is `(oldAverage + newValue) / 2` — naively
+  averaging the average, the actual classic student misconception (the
+  old average represents several values, not one). Derives the new
+  value algebraically from a chosen target new-average rather than
+  retrying random values until one divides cleanly — the first attempt
+  at this (retry-based) only hit the challenge branch 16% of the time;
+  the algebraic version hits ~75%.
+
+Both wired end-to-end: `classify.ts` gets a guard (`ctx.finalSen !==
+undefined` / `ctx.newAverage !== undefined`) before the base-case checks,
+same pattern as every reverseProblem/variant guard elsewhere in this
+project. Content updated: 1 new tip (framed as "Challenge:"), 1 new
+`commonMistakes` entry, 1 new `questionTemplates` entry with
+`challenge: true`. Smoke-tested at 1000x for actual-challenge hit rate
+(not just pass rate — a `challenge: true` config that silently falls
+through to the base case 90% of the time would be a much sneakier bug
+than a crash) — 003 hits ~90%, 008 hits ~75% after the algebraic fix.
+Also ran both topics' full `questionTemplates` through the real
+`generateQuestion` dispatcher end-to-end, not just the raw generator
+functions.
+
+**Audit script repurposed to track this rollout**, same role it played
+for the whole 27-batch content retrofit: `scripts/audit-content-gaps.ts`
+had a dormant `hasChallenge` check against a `challengeExample` field
+that was never implemented (a leftover from the original brief — folded
+into `questionTemplates` configs instead, see the note near the top of
+`topics.ts`). Repurposed it to check for a real `challenge: true` in any
+of a topic's `questionTemplates` instead. This means "gold" now has two
+levels: **score ≤1** = still the full Round 19 content-retrofit bar
+(≥3 tips, ≥4 mistakes, ≥4 templates); **score 0** = that bar PLUS a
+Challenge-tier template. Current state: `{ '0': 2, '1': 83 }` — 83
+topics still need a Challenge-tier pass.
+
+### Rollout plan for the remaining 83 topics
+Same batch-by-batch workflow as the content retrofit: pick a natural
+2-hop shape per topic (don't force one if it doesn't fit — a small
+number of topics may end up genuinely single-hop-only, e.g. "name this
+angle type" has no natural second hop, and that's fine, not every topic
+needs one), implement, smoke-test at 1000x checking BOTH pass rate and
+actual-challenge hit rate, wire the `classify.ts` guard, add the tip/
+mistake/template, run the audit script, ship. Natural next candidates
+with an obvious 2-hop shape (not yet started):
+- `...054`/`...038` fractions (a fraction operation feeding into a
+  second fraction or whole-number step — matches the exact Y5 PBD
+  pattern found: fraction subtraction → division → unit conversion)
+- `...006` percentage (percentage-of-remainder chains — "X% sold, of
+  what's left, Y% sold again" — matches the Y5 UASA cascading-percentage
+  pattern and the government-aid-30%-of-total pattern)
+- `...072` pie_chart / `...023` bar_graph (find one sector/bar, then use
+  it to answer a second question about the data — e.g. "how many more
+  than double the smallest")
+- `...021`/`...022` multiplication/division (the existing reverseProblem
+  daily-rate framing extends naturally to "find the daily rate, then use
+  it to project a different number of days")
+
+Topics where forcing a 2-hop doesn't make sense and shouldn't be forced:
+pure classification/reading topics (angle-type naming, coordinate
+reading without computation) — same "don't force reverseProblem where it
+doesn't fit" judgment call already made for some topics during the
+Round 19 retrofit.
+
+### Round 20, batch 2 — 3 more topics: percentage, multiplication, bar graphs
+`...006` (Peratus Asas), `...021` (Darab Dengan Nombor 2 Digit),
+`...023` (Membaca Graf Palang) — all wired end-to-end (generator +
+`classify.ts` guard + tip/mistake/questionTemplate), smoke-tested at
+1000x for pass rate AND actual-challenge hit rate, then re-verified via
+the real `generateQuestion` dispatcher across all of each topic's
+`questionTemplates` (18 configs total, 300x each, 100% pass).
+
+- **`...006` percentage**: cascading two-cut percentage chain — "X% sold
+  in the morning, Y% of what's LEFT sold in the afternoon, how many
+  remain" — directly matches the real PBD/UASA cascading-percentage
+  pattern found during the UASA audit. Hit rate 706/1000 (the rest fall
+  through to the base case when no second percentage divides the
+  remainder cleanly — acceptable, not worth forcing).
+- **`...021` multiplication**: extends the existing reverseProblem
+  "find the daily rate" framing — hop 1 finds the rate, hop 2 projects
+  it over a DIFFERENT number of days. Hit rate 1000/1000 (no fallthrough
+  condition needed here, any two distinct day-counts work).
+- **`...023` bar_graph**: "how much more is the highest group than
+  DOUBLE the lowest group" — genuinely dependent two-hop (identify both
+  bars, then double one before subtracting), a real step beyond the
+  existing plain-difference variant. Hit rate 767/1000.
+
+Score distribution now `{ '0': 5, '1': 80 }` — 80 topics left for the
+Challenge-tier pass. All 85 still at least the Round-19 gold bar.
+
+### Round 20, batch 3 — 3 more: division, fraction division, pie charts
+`...022` (Bahagi Dengan Nombor 2 Digit), `...038` (Bahagi Pecahan Dengan
+Nombor Bulat), `...072` (Membaca Carta Pai) — all wired end-to-end,
+smoke-tested at 1000x for pass rate + hit rate, then re-verified via the
+real dispatcher across all 18 template configs (300x each, 100% pass).
+
+- **`...022` division**: rejected the first design (same dividend
+  re-divided by a second random divisor) because the hit rate would
+  depend on the SAME number happening to factor cleanly two different
+  ways — instead built the challenge dividend from scratch as
+  `divisor × divisor2 × k`, guaranteeing a clean split both ways by
+  construction. "Regroup the same total into a different number of
+  classes" — 1000/1000 hit rate, no fallthrough needed at all.
+- **`...038` fractions_divide_by_whole**: rejected doing this for
+  `...054` fractions_multiply instead, because that shape reduces to a
+  fraction ADDITION with different denominators (a genuinely different,
+  untaught sub-skill) once you actually work through the numbers.
+  `...038` avoids that trap: a share divided again by a second whole
+  number stays within the same repeated-division skill throughout (the
+  denominator just keeps multiplying) — 1000/1000 hit rate.
+- **`...072` pie_chart**: same "highest vs double-lowest" shape as
+  `...023` bar_graph from batch 2, kept deliberately consistent across
+  the two categorical-data topics. 602/1000 hit rate (falls through when
+  doubling the lowest sector already exceeds the highest one, which
+  happens more often here than in bar_graph since pie sectors are more
+  skewed by design).
+
+**Note for future batches**: before committing to a challenge shape,
+actually multiply/add the numbers through by hand (or in the design
+notes) to check it doesn't secretly require an unrelated skill — this is
+what caught the fractions_multiply trap above before writing any code.
+
+Score distribution now `{ '0': 8, '1': 77 }` — 77 topics left. All 85
+still at least the Round-19 gold bar.
+
+### Round 20, batch 4 — 3 more: Y4 mult/div pair + mode/range/median/mean
+`...028` (Darab Dengan Nombor 1 Digit, Y4), `...029` (Bahagi Dengan
+Nombor 1 Digit, Y4), `...066` (Mod, Julat, Median, dan Min, Y5) — all
+wired end-to-end, smoke-tested at 1000x, re-verified via the real
+dispatcher across all 18 template configs (300x each, 100% pass).
+
+- **`...028`/`...029`**: straight ports of `...021`/`...022`'s
+  challenge shapes (daily-rate projection / regroup-by-construction)
+  down to Y4's 1-digit multiplier/divisor range. Both 1000/1000 hit
+  rate — worth doing the Y5/Y6 versions of a shape first, then porting
+  down to Y4, since the hard design work (avoiding a low-hit-rate
+  fallthrough) is already solved.
+- **`...066` mode/range/median/mean**: "a 6th score joins and becomes a
+  new extreme — what's the new range?" First version collapsed to a
+  score of exactly 0 far too often when the new value was meant to be a
+  new minimum (a small `currentMin` left almost no headroom before
+  hitting the `Math.max(0, ...)` floor) — caught this by actually
+  reading the sample prompts during smoke-testing, not just the pass/
+  fail numbers. Fixed by only offering the "new minimum" branch when
+  there's enough room below the current minimum, else always adding a
+  new maximum instead. 1000/1000 hit rate after the fix, healthy
+  variety in the sample prompts on the retest.
+
+**Note for future batches**: a hit-rate check confirms the challenge
+branch fires, but doesn't catch a branch that fires "too easily" into a
+degenerate case (like everything collapsing to a score of 0) — always
+eyeball a handful of actual sample prompts during smoke-testing, not
+just the pass-rate number.
+
+Score distribution now `{ '0': 11, '1': 74 }` — 74 topics left. All 85
+still at least the Round-19 gold bar.
+
+### Round 20, batch 5 — 3 more: whole-number addition/subtraction + same-denominator fractions
+`...001` (Tambah Dalam Lingkungan 100,000, Y4), `...020` (Tolak Nombor
+Bulat Hingga 100000, Y4), `...002` (Tambah Pecahan Penyebut Sama, Y4) —
+all wired end-to-end, smoke-tested at 1000x, re-verified via the real
+dispatcher across all 18 template configs (300x each, 100% pass).
+
+- **`...001`/`...020`**: two/three sequential events (two deliveries
+  arrive; two sales happen), question asks for the running total/
+  remainder after all of them — same "don't stop after the first hop"
+  shape used throughout this round, applied to plain whole-number add/
+  subtract for the first time. 1000/1000 hit rate both ways, no
+  fallthrough needed for addition (any two numbers work); subtraction
+  guards against the rare case where there's nothing meaningful left
+  after the first deduction to take a second one from.
+- **`...002` fractions_same_denominator**: THREE same-denominator
+  portions added in sequence (an extra portion eaten at "night" on top
+  of "lunch" and "evening"), respecting the file's own documented
+  constraint that every sum in this generator must stay a proper
+  fraction (this generator explicitly never introduces improper
+  fractions/mixed numbers, since the app has no mixed-number grading
+  convention anywhere) — the third portion is only drawn small enough
+  that the running total still fits under the denominator. 474/1000 hit
+  rate (falls through often on tight denominators with little room left
+  after two portions — acceptable, matches the same trade off as
+  `...072` pie_chart from batch 3).
+
+`...001` and `...020` also had a **pre-existing gap** worth noting: their
+`classify.ts` cases had no guard at all for their existing reverseProblem
+variant (a bug that predates this round, not introduced by it) — the
+reverseProblem context uses different field names (`total` instead of
+`correct` for addition, `remaining` instead of `correct` for
+subtraction) that silently fell through to a generic hint. Fixed both
+while adding the challenge guard, since it was directly adjacent code.
+
+Score distribution now `{ '0': 14, '1': 71 }` — 71 topics left. All 85
+still at least the Round-19 gold bar.

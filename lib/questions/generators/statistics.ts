@@ -80,6 +80,59 @@ export function generateModeRangeMedianMean(params: GeneratorParams): GeneratedQ
   const sum = values.reduce((a, b) => a + b, 0);
   const meanRaw = sum / 5;
   const mean = Number.isInteger(meanRaw) ? String(meanRaw) : meanRaw.toFixed(1);
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question — a
+  // 6th score is added to the set, and it becomes a NEW extreme (higher
+  // than the current max, or lower than the current min). Find the NEW
+  // range. Genuinely dependent: needs the original min/max identified
+  // first (hop 1) before the new range can be worked out (hop 2) —
+  // distinct from average.ts's challenge, which does this same "add a
+  // new value" idea for the MEAN specifically; this one is for RANGE.
+  if (challenge) {
+    const currentMax = sorted[4];
+    const currentMin = sorted[0];
+    // Only offer the "new minimum" branch when there's enough room below
+    // the current minimum — otherwise it collapses to 0 too often and
+    // the questions start looking repetitive.
+    const addNewMax = currentMin < 3 || Math.random() > 0.5;
+    let newValue: number;
+    let newRange: number;
+    if (addNewMax) {
+      newValue = currentMax + randInt(1, 10);
+      newRange = newValue - currentMin;
+    } else {
+      newValue = currentMin - randInt(1, Math.min(10, currentMin));
+      newRange = currentMax - newValue;
+    }
+    const oldRange = currentMax - currentMin;
+    if (newRange !== oldRange) {
+      const name = pick(names);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} mencatat markah ujian 5 orang rakan: ${values.join(", ")}. Seorang rakan keenam menyertai dengan markah ${newValue}. Berapakah julat baharu bagi kesemua 6 markah itu?`,
+          en: `${name} records the test scores of 5 friends: ${values.join(", ")}. A 6th friend joins with a score of ${newValue}. What is the new range of all 6 scores?`,
+        },
+        type: "word_problem",
+        correctAnswer: String(newRange),
+        context: { values: values.join(","), currentMax, currentMin, newValue, oldRange, newRange },
+        generatorKey: "mode_range_median_mean",
+        difficulty: 3,
+      };
+      // Classic non-routine mistake: gives the OLD range, not noticing
+      // the new score changed the maximum or minimum.
+      const stoppedAtOldRange = String(oldRange);
+      const distractors = [stoppedAtOldRange].filter((d) => d !== String(newRange));
+      question.options = shuffleOptions(String(newRange), distractors);
+      while (question.options.length < 3) {
+        const candidate = String(Math.max(0, newRange + randInt(1, 5) * (Math.random() > 0.5 ? 1 : -1)));
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare draw where the new range
+    // happens to equal the old one.
+  }
 
   const stats: Record<string, string> = { mode: String(mode), range: String(range), median: String(median), mean };
   const statType = pick(["mode", "range", "median", "mean"] as const);

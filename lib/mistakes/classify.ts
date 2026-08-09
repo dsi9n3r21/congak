@@ -49,7 +49,47 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
 
   switch (question.generatorKey) {
     case "whole_numbers_addition": {
-      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      const ctx = question.context as { a: number; b: number; correct?: number; total?: number; b2?: number; finalTotal?: number };
+      // challenge: correctAnswer is the total after a SECOND delivery, not
+      // the total after just the first one.
+      if (ctx.finalTotal !== undefined) {
+        if (Number(answer) === ctx.correct) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda berhenti selepas penghantaran PERTAMA. Teruskan: tambah penghantaran KEDUA juga.",
+              en: "You stopped after the FIRST delivery. Keep going: add the SECOND delivery too.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Tambahkan KETIGA-TIGA nombor itu: jumlah asal + penghantaran pertama + penghantaran kedua.",
+            en: "Add all THREE numbers: the original amount + the first delivery + the second delivery.",
+          },
+        };
+      }
+      // reverseProblem: correctAnswer is the missing addend, a different context shape (has `total`, not `correct`).
+      if (ctx.total !== undefined) {
+        if (Number(answer) === ctx.total) {
+          return {
+            mistakeType: "calculation_error",
+            hint: {
+              ms: "Anda beri semula jumlah keseluruhan. Tolak penambah yang diketahui daripada jumlah itu untuk cari penambah yang hilang.",
+              en: "You gave back the total. Subtract the known addend from that total to find the missing addend.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Penambah yang hilang = jumlah − penambah yang diketahui.",
+            en: "Missing addend = total − known addend.",
+          },
+        };
+      }
+      const { a, b, correct } = ctx as { a: number; b: number; correct: number };
       if (Number(answer) === noCarryAdd(a, b)) {
         return {
           mistakeType: "forgot_carry",
@@ -78,9 +118,29 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "fractions_same_denominator": {
-      const { numA, numB, denom, correctNum } = question.context as {
-        numA: number; numB: number; denom: number; correctNum: number;
+      const ctx = question.context as {
+        numA: number; numB: number; denom: number; correctNum: number; numC?: number; finalNum?: number;
       };
+      const { numA, numB, denom, correctNum } = ctx;
+      // challenge: correctAnswer is the sum of THREE portions, not two.
+      if (ctx.finalNum !== undefined) {
+        if (answer === `${correctNum}/${denom}`) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda hanya tambah DUA bahagian pertama. Teruskan: tambah bahagian KETIGA juga.",
+              en: "You only added the FIRST two portions. Keep going: add the THIRD portion too.",
+            },
+          };
+        }
+        return {
+          mistakeType: "fraction_calculation_error",
+          hint: {
+            ms: "Tambahkan KETIGA-TIGA pengangka bersama-sama, penyebut kekal sama.",
+            en: "Add all THREE numerators together, the denominator stays the same.",
+          },
+        };
+      }
       if (answer === `${correctNum}/${denom * 2}`) {
         return {
           mistakeType: "denominator_addition_error",
@@ -109,7 +169,32 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "money_change": {
-      const { priceSen, paidSen, changeSen } = question.context as {
+      const ctx = question.context as {
+        priceSen?: number; paidSen: number; changeSen?: number;
+        price1Sen?: number; price2Sen?: number; change1Sen?: number; finalSen?: number;
+      };
+      // challenge: a two-hop question — correctAnswer is what's left after
+      // a SECOND purchase from the first change, not the first change itself.
+      if (ctx.finalSen !== undefined) {
+        const answerSen = Math.round(parseFloat(answer.replace(/[^0-9.]/g, "")) * 100);
+        if (answerSen === ctx.change1Sen) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda berhenti selepas belian PERTAMA. Teruskan: tolak harga belian KEDUA daripada baki pertama itu.",
+              en: "You stopped after the FIRST purchase. Keep going: subtract the SECOND item's price from that first change.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Ada DUA langkah: (1) baki selepas belian pertama, (2) baki itu tolak harga belian kedua.",
+            en: "There are TWO steps: (1) the change after the first purchase, (2) that change minus the second item's price.",
+          },
+        };
+      }
+      const { priceSen, paidSen, changeSen } = ctx as {
         priceSen: number; paidSen: number; changeSen: number;
       };
       const answerSen = Math.round(parseFloat(answer.replace(/[^0-9.]/g, "")) * 100);
@@ -197,7 +282,30 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "percentage_of_quantity": {
-      const { percent, quantity, correct } = question.context as { percent: number; quantity: number; correct: number };
+      const ctx = question.context as {
+        percent: number; quantity: number; correct: number; remainder1?: number; finalRemaining?: number;
+      };
+      const { percent, quantity, correct } = ctx;
+      // challenge: correctAnswer is what's left after TWO cascading
+      // percentage cuts, not the quantity or the first part alone.
+      if (ctx.finalRemaining !== undefined) {
+        if (Number(answer) === ctx.remainder1) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda berhenti selepas potongan PERTAMA. Teruskan: tolak potongan KEDUA daripada baki pertama itu.",
+              en: "You stopped after the FIRST cut. Keep going: subtract the second cut from that first remainder.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Ada DUA langkah: (1) baki selepas potongan pertama, (2) kira potongan kedua daripada BAKI itu, bukan daripada kuantiti asal.",
+            en: "There are TWO steps: (1) the remainder after the first cut, (2) the second cut calculated from that REMAINDER, not the original quantity.",
+          },
+        };
+      }
       if (Number(answer) === percent * quantity) {
         return {
           mistakeType: "forgot_divide_by_100",
@@ -244,8 +352,32 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "average": {
-      const { sum, count, correct } = question.context as { sum: number; count: number; correct: number };
+      const ctx = question.context as {
+        sum: number; count: number; correct: number; newValue?: number; newCount?: number; newAverage?: number;
+      };
+      const { sum, count, correct } = ctx;
       const target = Number(question.correctAnswer);
+      // challenge: correctAnswer is the NEW average after an extra value
+      // is added, not the original average or a missing original value.
+      if (ctx.newAverage !== undefined) {
+        const naiveAverage = (correct + (ctx.newValue as number)) / 2;
+        if (Number(answer) === naiveAverage) {
+          return {
+            mistakeType: "averaged_the_average",
+            hint: {
+              ms: "Purata lama mewakili BEBERAPA nilai, bukan satu. Cari jumlah asal dahulu (purata × bilangan), tambah nilai baharu, kemudian bahagi dengan bilangan baharu.",
+              en: "The old average represents SEVERAL values, not one. Find the original sum first (average × count), add the new value, then divide by the new count.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Jumlah baharu = (purata lama × bilangan lama) + nilai baharu. Purata baharu = jumlah baharu ÷ bilangan baharu.",
+            en: "New sum = (old average × old count) + new value. New average = new sum ÷ new count.",
+          },
+        };
+      }
       // reverseProblem: correctAnswer is the missing value, not the average.
       if (target !== correct) {
         if (Number(answer) === correct * count) {
@@ -684,7 +816,47 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "whole_numbers_subtraction": {
-      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      const ctx = question.context as { a: number; b: number; correct?: number; remaining?: number; b2?: number; afterFirst?: number; finalRemaining?: number };
+      // challenge: correctAnswer is what's left after a SECOND deduction,
+      // not the remainder after just the first one.
+      if (ctx.finalRemaining !== undefined) {
+        if (Number(answer) === ctx.afterFirst) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda berhenti selepas jualan PERTAMA. Teruskan: tolak jualan KEDUA daripada baki pertama itu.",
+              en: "You stopped after the FIRST sale. Keep going: subtract the SECOND sale from that first remainder.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Dua langkah: (1) baki selepas jualan pertama, (2) baki itu tolak jualan kedua.",
+            en: "Two steps: (1) the remainder after the first sale, (2) that remainder minus the second sale.",
+          },
+        };
+      }
+      // reverseProblem: correctAnswer is the original total, a different context shape (has `remaining`, not `correct`).
+      if (ctx.remaining !== undefined) {
+        if (Number(answer) === ctx.remaining) {
+          return {
+            mistakeType: "calculation_error",
+            hint: {
+              ms: "Anda beri semula baki. Tambahkan baki itu dengan jumlah yang telah dijual untuk cari jumlah asal.",
+              en: "You gave back the remainder. Add that remainder to the amount sold to find the original total.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Jumlah asal = baki + jumlah yang telah dijual.",
+            en: "Original total = remainder + amount sold.",
+          },
+        };
+      }
+      const { a, b, correct } = ctx as { a: number; b: number; correct: number };
       if (Number(answer) === noBorrowSubtract(a, b)) {
         return {
           mistakeType: "forgot_borrow",
@@ -710,7 +882,37 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "whole_numbers_multiplication": {
-      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      const ctx = question.context as { a: number; b: number; correct: number; b2?: number; finalTotal?: number };
+      const { a, b, correct } = ctx;
+      // challenge: correctAnswer is the total projected over a DIFFERENT
+      // number of days (b2), not the daily rate or the original total.
+      if (ctx.finalTotal !== undefined) {
+        if (Number(answer) === a) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda beri kadar harian sahaja. Teruskan: darab kadar itu dengan bilangan hari yang BAHARU.",
+              en: "You gave just the daily rate. Keep going: multiply that rate by the NEW number of days.",
+            },
+          };
+        }
+        if (Number(answer) === correct) {
+          return {
+            mistakeType: "calculation_error",
+            hint: {
+              ms: "Itu jumlah ASAL. Soalan minta jumlah untuk bilangan hari yang BAHARU — cari kadar harian dahulu, kemudian darab dengan hari baharu itu.",
+              en: "That's the ORIGINAL total. The question asks for the total over the NEW number of days — find the daily rate first, then multiply by the new day count.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Dua langkah: (1) jumlah ÷ bilangan hari asal = kadar harian, (2) kadar harian × bilangan hari baharu.",
+            en: "Two steps: (1) total ÷ original days = daily rate, (2) daily rate × new number of days.",
+          },
+        };
+      }
       // reverseProblem: correctAnswer is the daily rate, not the product.
       if (Number(question.correctAnswer) !== correct) {
         return {
@@ -748,7 +950,30 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "whole_numbers_division": {
-      const { dividend, divisor, correct } = question.context as { dividend: number; divisor: number; correct: number };
+      const ctx = question.context as {
+        dividend?: number; divisor: number; correct?: number; divisor2?: number; quotient1?: number; quotient2?: number;
+      };
+      // challenge: correctAnswer is the REGROUPED quotient (divisor2), not
+      // the original quotient or divisor.
+      if (ctx.quotient2 !== undefined) {
+        if (Number(answer) === ctx.quotient1) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda beri kuantiti bagi kumpulan PERTAMA sahaja. Teruskan: kira semula bagi bilangan kelas yang BAHARU.",
+              en: "You gave the amount for the FIRST grouping only. Keep going: recalculate for the NEW number of classes.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Dua langkah: (1) darab pembahagi asal dengan hasil bahagi asal untuk cari jumlah, (2) bahagikan jumlah itu dengan bilangan kelas yang BAHARU.",
+            en: "Two steps: (1) multiply the original divisor by the original quotient to find the total, (2) divide that total by the NEW number of classes.",
+          },
+        };
+      }
+      const { dividend, divisor, correct } = ctx as { dividend: number; divisor: number; correct: number };
       // reverseProblem: correctAnswer is the divisor (number of groups), not the quotient.
       if (Number(question.correctAnswer) !== correct) {
         return {
@@ -875,7 +1100,58 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "whole_numbers_multiplication_y4": {
-      const { a, b, correct } = question.context as { a: number; b: number; correct: number };
+      const ctx = question.context as {
+        a?: number; b?: number; correct?: number; perDay?: number; days?: number; total?: number; b2?: number; finalTotal?: number;
+      };
+      // challenge: correctAnswer is the total projected over a DIFFERENT
+      // number of days, not the daily rate or the original total.
+      if (ctx.finalTotal !== undefined) {
+        if (Number(answer) === ctx.a) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda beri kadar harian sahaja. Teruskan: darab kadar itu dengan bilangan hari yang BAHARU.",
+              en: "You gave just the daily rate. Keep going: multiply that rate by the NEW number of days.",
+            },
+          };
+        }
+        if (Number(answer) === ctx.correct) {
+          return {
+            mistakeType: "calculation_error",
+            hint: {
+              ms: "Itu jumlah ASAL. Soalan minta jumlah untuk bilangan hari yang BAHARU.",
+              en: "That's the ORIGINAL total. The question asks for the total over the NEW number of days.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Dua langkah: (1) jumlah ÷ bilangan hari asal = kadar harian, (2) kadar harian × bilangan hari baharu.",
+            en: "Two steps: (1) total ÷ original days = daily rate, (2) daily rate × new number of days.",
+          },
+        };
+      }
+      // reverseProblem: correctAnswer is the per-day rate, a totally different context shape.
+      if (ctx.perDay !== undefined) {
+        if (Number(answer) === ctx.total) {
+          return {
+            mistakeType: "calculation_error",
+            hint: {
+              ms: "Anda beri semula jumlah keseluruhan. Bahagikan jumlah itu dengan bilangan hari untuk cari kadar harian.",
+              en: "You gave back the overall total. Divide that total by the number of days to find the daily rate.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Ini soalan bahagi (jumlah ÷ bilangan hari), bukan darab.",
+            en: "This is a division question (total ÷ number of days), not multiplication.",
+          },
+        };
+      }
+      const { a, b, correct } = ctx as { a: number; b: number; correct: number };
       const digits = String(a).split("").reverse();
       let noCarry = "";
       for (const d of digits) noCarry = String((Number(d) * b) % 10) + noCarry;
@@ -904,7 +1180,30 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "whole_numbers_division_y4": {
-      const { dividend, divisor, correct } = question.context as { dividend: number; divisor: number; correct: number };
+      const ctx = question.context as {
+        dividend?: number; divisor: number; correct?: number; divisor2?: number; quotient1?: number; quotient2?: number;
+      };
+      // challenge: correctAnswer is the REGROUPED quotient, not the
+      // original quotient or divisor.
+      if (ctx.quotient2 !== undefined) {
+        if (Number(answer) === ctx.quotient1) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda beri kuantiti bagi kumpulan PERTAMA sahaja. Teruskan: kira semula bagi bilangan murid yang BAHARU.",
+              en: "You gave the amount for the FIRST grouping only. Keep going: recalculate for the NEW number of students.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Dua langkah: (1) darab pembahagi asal dengan hasil bahagi asal untuk cari jumlah, (2) bahagikan jumlah itu dengan bilangan murid yang BAHARU.",
+            en: "Two steps: (1) multiply the original divisor by the original quotient to find the total, (2) divide that total by the NEW number of students.",
+          },
+        };
+      }
+      const { dividend, divisor, correct } = ctx as { dividend: number; divisor: number; correct: number };
       // reverseProblem: correctAnswer is the divisor (number of students), not the quotient.
       if (Number(question.correctAnswer) !== correct) {
         return {
@@ -1114,9 +1413,31 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "fractions_divide_by_whole": {
-      const { num, denom, whole, correctNum, correctDenom } = question.context as {
+      const ctx = question.context as {
         num: number; denom: number; whole: number; correctNum: number; correctDenom: number;
+        whole2?: number; finalNum?: number; finalDenom?: number;
       };
+      const { num, denom, whole, correctNum, correctDenom } = ctx;
+      // challenge: correctAnswer is the share after a SECOND division,
+      // not the original amount or the first share alone.
+      if (ctx.finalNum !== undefined) {
+        if (answer === `${correctNum}/${correctDenom}`) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda beri bahagian selepas pembahagian PERTAMA sahaja. Teruskan: bahagikan bahagian itu sekali lagi dengan bilangan orang yang baharu.",
+              en: "You gave the share after the FIRST division only. Keep going: divide that share again by the new number of people.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Dua langkah: (1) darabkan penyebut dengan bilangan orang pertama, (2) darabkan penyebut itu SEKALI LAGI dengan bilangan orang kedua.",
+            en: "Two steps: (1) multiply the denominator by the first group size, (2) multiply that denominator AGAIN by the second group size.",
+          },
+        };
+      }
       // reverseProblem: correctAnswer is the original amount, not the per-share fraction.
       if (question.correctAnswer !== `${correctNum}/${correctDenom}`) {
         return {
@@ -1661,8 +1982,29 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "mode_range_median_mean": {
-      const { statType } = question.context as unknown as { statType: string };
-      const stats = question.context as unknown as Record<string, string>;
+      const ctx = question.context as unknown as Record<string, any>;
+      // challenge: correctAnswer is the NEW range after a 6th score is
+      // added, not one of the original 4 statistics.
+      if (ctx.newRange !== undefined) {
+        if (Number(answer) === ctx.oldRange) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda beri julat LAMA. Markah keenam itu mengubah nilai maksimum atau minimum — kira semula julat baharu.",
+              en: "You gave the OLD range. The 6th score changes the maximum or minimum — recalculate the new range.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Semak semula sama ada markah baharu itu menjadi nilai MAKSIMUM atau MINIMUM baharu, kemudian kira julat = maks − min.",
+            en: "Check whether the new score becomes the new MAXIMUM or MINIMUM, then calculate range = max − min.",
+          },
+        };
+      }
+      const { statType } = ctx as { statType: string };
+      const stats = ctx as Record<string, string>;
       const confusedWith = Object.keys(stats).find((k) => ["mode", "range", "median", "mean"].includes(k) && k !== statType && stats[k] === answer);
       if (confusedWith) {
         return {
@@ -1736,8 +2078,29 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "bar_graph": {
-      const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number; missingIndex?: number };
+      const ctx = question.context as { variant: string; v0: number; v1: number; v2: number; v3: number; correct: number; iHigh?: number; iLow?: number; missingIndex?: number; doubleLow?: number; finalDiff?: number };
       const values = [ctx.v0, ctx.v1, ctx.v2, ctx.v3];
+      // challenge: correct is highest-minus-double-lowest, a genuinely
+      // different target than the plain total/difference/reverse variants.
+      if (ctx.finalDiff !== undefined) {
+        const plainDifference = values[ctx.iHigh as number] - values[ctx.iLow as number];
+        if (Number(answer) === plainDifference) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda kira beza biasa sahaja. Gandakan dahulu nilai kumpulan PALING SEDIKIT, kemudian tolak daripada kumpulan PALING BANYAK.",
+              en: "You calculated the plain difference. Double the LOWEST group's value first, then subtract from the HIGHEST group.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Dua langkah: (1) gandakan (× 2) nilai kumpulan paling sedikit, (2) tolak hasil itu daripada kumpulan paling banyak.",
+            en: "Two steps: (1) double (× 2) the lowest group's value, (2) subtract that from the highest group.",
+          },
+        };
+      }
       // reverseProblem: correct is the missing bar's value, not a total/difference.
       if (ctx.variant === "reverse") {
         return {
@@ -1780,7 +2143,27 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
     }
 
     case "pie_chart": {
-      const ctx = question.context as { variant: string; total: number; denom: number; targetIndex?: number; iHigh?: number; iLow?: number; correct: number };
+      const ctx = question.context as { variant: string; total: number; denom: number; targetIndex?: number; iHigh?: number; iLow?: number; correct: number; highCount?: number; lowCount?: number; doubleLow?: number; finalDiff?: number };
+      // challenge: correct is highest-minus-double-lowest, a genuinely
+      // different target than the plain count/difference/reverse variants.
+      if (ctx.finalDiff !== undefined) {
+        if (Number(answer) === (ctx.highCount as number) - (ctx.lowCount as number)) {
+          return {
+            mistakeType: "stopped_at_intermediate_step",
+            hint: {
+              ms: "Anda kira beza biasa sahaja. Gandakan dahulu bilangan bagi kumpulan PALING SEDIKIT, kemudian tolak daripada kumpulan PALING RAMAI.",
+              en: "You calculated the plain difference. Double the count for the FEWEST group first, then subtract from the MOST group.",
+            },
+          };
+        }
+        return {
+          mistakeType: "calculation_error",
+          hint: {
+            ms: "Dua langkah: (1) gandakan (× 2) bilangan bagi kumpulan paling sedikit, (2) tolak hasil itu daripada kumpulan paling ramai.",
+            en: "Two steps: (1) double (× 2) the count for the fewest group, (2) subtract that from the count for the most group.",
+          },
+        };
+      }
       // reverseProblem: correct is the total surveyed, not a sector count/difference.
       if (ctx.variant === "reverse") {
         return {

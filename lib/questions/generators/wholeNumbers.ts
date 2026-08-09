@@ -66,6 +66,39 @@ export function generateWholeNumbersAddition(params: GeneratorParams): Generated
   const a = randInt(min, max);
   const b = randInt(min, max);
   const correct = a + b;
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question — TWO
+  // separate deliveries arrive one after another, and the question asks
+  // for the total after BOTH. The natural mistake is stopping after the
+  // first delivery, which is the authentic "forgot to keep going"
+  // TP6 failure mode, even though the arithmetic itself is routine.
+  if (challenge) {
+    const b2 = randInt(min, max);
+    const finalTotal = a + b + b2;
+    const name = pick(names);
+    const item = pick(items);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Kedai ${name} ada ${a.toLocaleString("en-US")} biji ${item}. Pembekal pertama menghantar ${b.toLocaleString("en-US")} biji ${item} baru, dan pembekal kedua menghantar ${b2.toLocaleString("en-US")} biji ${item} baru lagi. Berapa biji ${item} kesemuanya sekarang?`,
+        en: `${name}'s shop has ${a.toLocaleString("en-US")} ${itemsEn[item]}. The first supplier delivers ${b.toLocaleString("en-US")} new ${itemsEn[item]}, and a second supplier delivers ${b2.toLocaleString("en-US")} more. How many ${itemsEn[item]} are there now in total?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(finalTotal),
+      context: { a, b, b2, correct, finalTotal },
+      generatorKey: "whole_numbers_addition",
+      difficulty: 2,
+    };
+    // Classic non-routine mistake: stops after the first delivery.
+    const stoppedAfterFirst = String(correct);
+    const distractors = [stoppedAfterFirst].filter((d) => d !== String(finalTotal));
+    question.options = shuffleOptions(String(finalTotal), distractors);
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(0, finalTotal + randInt(10, 999) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- errorSpotting: shown the classic "forgot to carry" mistake, must
   // give the correct answer.

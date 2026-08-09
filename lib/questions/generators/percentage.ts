@@ -26,6 +26,53 @@ export function generatePercentageOfQuantity(params: GeneratorParams): Generated
   const multiple = 100 / gcdOf(percent, 100);
   const quantity = multiple * randInt(1, 5);
   const correct = (percent / 100) * quantity;
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question —
+  // cascading percentages. A percentage is taken off the quantity (hop
+  // 1), then a SECOND percentage is taken off what's LEFT (hop 2, not
+  // off the original quantity) — matches the real PBD/UASA pattern of
+  // "X% sold, then Y% of the remainder sold again."
+  if (challenge) {
+    const remainder1 = quantity - correct;
+    // Only proceed if a second percentage divides the remainder cleanly.
+    const validSecondPercents = percentages.filter((p) => remainder1 > 0 && (remainder1 * p) % 100 === 0);
+    if (validSecondPercents.length > 0) {
+      const percent2 = pick(validSecondPercents);
+      const part2 = (percent2 / 100) * remainder1;
+      const finalRemaining = remainder1 - part2;
+      const name = pick(names);
+      const item = pick(items);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `Ada ${quantity} biji ${item} di kedai ${name}. Pada waktu pagi, ${percent}% daripadanya terjual. Daripada baki yang tinggal, ${percent2}% pula terjual pada waktu petang. Berapa biji ${item} yang tinggal sekarang?`,
+          en: `${name}'s shop has ${quantity} ${itemsEn[item]}. In the morning, ${percent}% of them are sold. Of what's LEFT, ${percent2}% are sold in the afternoon. How many ${itemsEn[item]} are left now?`,
+        },
+        type: "word_problem",
+        correctAnswer: String(finalRemaining),
+        context: { percent, percent2, quantity, remainder1, part2, finalRemaining },
+        generatorKey: "percentage_of_quantity",
+        difficulty: 3,
+      };
+      // Classic non-routine mistake: stops after the morning sale and
+      // gives that remainder as the final answer, forgetting the second sale.
+      const stoppedAfterMorning = String(remainder1);
+      // Classic mistake: applied the second percentage to the ORIGINAL
+      // quantity instead of the remainder.
+      const appliedToOriginal = String(quantity - correct - (percent2 / 100) * quantity);
+      const distractors = Array.from(
+        new Set([stoppedAfterMorning, appliedToOriginal].filter((d) => d !== String(finalRemaining) && Number(d) >= 0))
+      );
+      question.options = shuffleOptions(String(finalRemaining), distractors);
+      while (question.options.length < 3) {
+        const candidate = String(Math.max(0, finalRemaining + randInt(1, 9) * (Math.random() > 0.5 ? 1 : -1)));
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare draw where no second
+    // percentage divides the remainder cleanly.
+  }
 
   // ---- reverseProblem: given the part and the percentage, find the
   // original whole quantity (dividing back through the percentage).

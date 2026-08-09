@@ -25,6 +25,45 @@ export function generateFractionsSameDenominator(params: GeneratorParams): Gener
   const numA = randInt(1, denom - 2);
   const numB = randInt(1, denom - numA - 1 > 0 ? denom - numA - 1 : 1);
   const correctNum = numA + numB;
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question — a
+  // THIRD portion is eaten/added on top of the first two, and the
+  // question asks for the total after all three. Keeps the same-
+  // denominator, proper-fraction constraint from the rest of this file —
+  // the third portion is only drawn small enough that the running total
+  // still stays below the denominator.
+  if (challenge) {
+    const remainingRoom = denom - correctNum - 1;
+    if (remainingRoom >= 1) {
+      const numC = randInt(1, remainingRoom);
+      const finalNum = correctNum + numC;
+      const name = pick(names);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} makan ${numA}/${denom} bahagian pizza pada waktu tengah hari, ${numB}/${denom} bahagian lagi pada waktu petang, dan ${numC}/${denom} bahagian lagi pada waktu malam. Berapakah jumlah pizza yang dimakan ${name} sepanjang hari itu?`,
+          en: `${name} eats ${numA}/${denom} of a pizza at lunch, ${numB}/${denom} more in the evening, and ${numC}/${denom} more at night. What total fraction of pizza did ${name} eat that day?`,
+        },
+        type: "word_problem",
+        correctAnswer: `${finalNum}/${denom}`,
+        context: { numA, numB, numC, denom, correctNum, finalNum },
+        generatorKey: "fractions_same_denominator",
+        difficulty: 2,
+      };
+      // Classic non-routine mistake: stops after the first two portions,
+      // forgetting the third.
+      const stoppedAtTwo = `${correctNum}/${denom}`;
+      const distractors = [stoppedAtTwo].filter((d) => d !== `${finalNum}/${denom}`);
+      question.options = shuffleOptions(`${finalNum}/${denom}`, distractors);
+      while (question.options.length < 3) {
+        const candidate = `${Math.max(1, finalNum + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1))}/${denom}`;
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare draw where there's no
+    // room left for a third portion while staying a proper fraction.
+  }
 
   // ---- reverseProblem: given the total and one addend, find the
   // missing addend (fraction subtraction, same denominator).
