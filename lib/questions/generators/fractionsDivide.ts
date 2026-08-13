@@ -187,6 +187,7 @@ export function generateFractionsDivideByFraction(params: GeneratorParams): Gene
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const liquids = ["cat", "jus", "minyak"] as const;
   const liquidsEn: Record<(typeof liquids)[number], string> = { cat: "paint", jus: "juice", minyak: "oil" };
@@ -202,6 +203,43 @@ export function generateFractionsDivideByFraction(params: GeneratorParams): Gene
   const correctNum = rawNum / g;
   const correctDenom = rawDenom / g;
   const correctAnswer = `${correctNum}/${correctDenom}`;
+
+  // ---- challenge (TP6 / non-routine): the bottle count from the first
+  // division is itself shared AGAIN across a second whole-number amount
+  // (bottles packed equally into boxes) — a genuine second hop past the
+  // single fraction-÷-fraction step, same "compound sharing" shape as
+  // fractions_divide_by_whole's challenge, adapted to start from a
+  // fraction÷fraction quotient instead of a fraction÷whole one.
+  if (challenge) {
+    const boxes = randInt(2, 5);
+    const rawDenom2 = rawDenom * boxes;
+    const g2 = gcd(rawNum, rawDenom2);
+    const finalNum = rawNum / g2;
+    const finalDenom = rawDenom2 / g2;
+    const finalAnswer = `${finalNum}/${finalDenom}`;
+    const liquid = pick(liquids);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah balang mengandungi ${numA}/${denomA} liter ${liquid}. Setiap botol kecil memerlukan ${numB}/${denomB} liter. Semua botol yang terisi itu kemudiannya dibungkus sama rata ke dalam ${boxes} kotak. Berapa botol dalam setiap kotak?`,
+        en: `A jar contains ${numA}/${denomA} litres of ${liquidsEn[liquid]}. Each small bottle needs ${numB}/${denomB} litres. All the filled bottles are then packed equally into ${boxes} boxes. How many bottles are in each box?`,
+      },
+      type: "word_problem",
+      correctAnswer: finalAnswer,
+      context: { numA, denomA, numB, denomB, correctNum, correctDenom, boxes, finalNum, finalDenom },
+      generatorKey: "fractions_divide_by_fraction",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first division and
+    // gives the total bottle count, forgetting the second split into boxes.
+    const stoppedAtBottleCount = correctAnswer;
+    const distractors = [stoppedAtBottleCount].filter((d) => d !== finalAnswer);
+    question.options = shuffleOptions(finalAnswer, distractors);
+    while (question.options.length < 3) {
+      const candidate = `${finalNum}/${finalDenom + randInt(1, 4)}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the bottle size and how many bottles were
   // filled, find the original jar amount — multiplying back.
@@ -333,6 +371,7 @@ export function generateFractionsDivideMixedByFraction(params: GeneratorParams):
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const materials = ["reben", "tali", "wayar"] as const;
   const materialsEn: Record<(typeof materials)[number], string> = { reben: "ribbon", tali: "rope", wayar: "wire" };
@@ -351,6 +390,41 @@ export function generateFractionsDivideMixedByFraction(params: GeneratorParams):
   const correctNum = rawNum / g;
   const correctDenom = rawDenom / g;
   const correctAnswer = `${correctNum}/${correctDenom}`;
+
+  // ---- challenge (TP6 / non-routine): the piece count from the first
+  // division is itself shared AGAIN among a second whole number of people
+  // — same "compound sharing" shape as the other fraction-division
+  // generators' challenge branches.
+  if (challenge) {
+    const people = randInt(2, 5);
+    const rawDenom2 = rawDenom * people;
+    const g2 = gcd(rawNum, rawDenom2);
+    const finalNum = rawNum / g2;
+    const finalDenom = rawDenom2 / g2;
+    const finalAnswer = `${finalNum}/${finalDenom}`;
+    const material = pick(materials);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Seutas ${material} sepanjang ${wholePart} ${fracNum}/${denomA} meter dipotong kepada bahagian, setiap satu sepanjang ${numB}/${denomB} meter. Semua bahagian itu kemudiannya dikongsi sama rata antara ${people} orang murid. Berapa bahagian ${material} yang diterima setiap murid?`,
+        en: `A piece of ${materialsEn[material]} that is ${wholePart} ${fracNum}/${denomA} metres long is cut into pieces, each ${numB}/${denomB} metres long. All the pieces are then shared equally among ${people} students. How many pieces of ${materialsEn[material]} does each student receive?`,
+      },
+      type: "word_problem",
+      correctAnswer: finalAnswer,
+      context: { wholePart, fracNum, denomA, numB, denomB, improperNum, correctNum, correctDenom, people, finalNum, finalDenom },
+      generatorKey: "fractions_divide_mixed_by_fraction",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first division and
+    // gives the total piece count, forgetting the second split among students.
+    const stoppedAtPieceCount = correctAnswer;
+    const distractors = [stoppedAtPieceCount].filter((d) => d !== finalAnswer);
+    question.options = shuffleOptions(finalAnswer, distractors);
+    while (question.options.length < 3) {
+      const candidate = `${finalNum}/${finalDenom + randInt(1, 4)}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the piece size and how many pieces, find
   // the original total length — multiplying back.

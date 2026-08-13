@@ -27,6 +27,7 @@ export function generateWholeNumbersSubtractionY5(params: GeneratorParams): Gene
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const items = ["tin makanan", "botol air mineral", "beg beras"] as const;
   const itemsEn: Record<(typeof items)[number], string> = {
@@ -71,6 +72,42 @@ export function generateWholeNumbersSubtractionY5(params: GeneratorParams): Gene
   let b = randInt(min, max);
   if (b > a) [a, b] = [b, a]; // keep the result non-negative for this level
   const correct = a - b;
+
+  // ---- challenge (TP6 / non-routine): same "second deduction, keep going"
+  // shape as whole_numbers_subtraction (020), ported up to Y5's 6-digit
+  // range. Falls through to the base case on the rare draw where there's
+  // nothing meaningful left to take a second deduction from.
+  if (challenge) {
+    const afterFirst = correct;
+    if (afterFirst >= 2) {
+      const b2 = randInt(1, afterFirst - 1);
+      const finalRemaining = afterFirst - b2;
+      const name = pick(names);
+      const item = pick(items);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `Gudang ${name} ada ${a.toLocaleString("en-US")} ${item} pada awal bulan. ${b.toLocaleString("en-US")} dihantar keluar pada minggu pertama. Kemudian, ${b2.toLocaleString("en-US")} lagi dihantar keluar pada minggu kedua. Berapa ${item} yang tinggal?`,
+          en: `${name}'s warehouse starts the month with ${a.toLocaleString("en-US")} ${itemsEn[item]}. ${b.toLocaleString("en-US")} are shipped out in the first week. Then, ${b2.toLocaleString("en-US")} more are shipped out in the second week. How many ${itemsEn[item]} are left?`,
+        },
+        type: "word_problem",
+        correctAnswer: String(finalRemaining),
+        context: { a, b, b2, afterFirst, finalRemaining },
+        generatorKey: "whole_numbers_subtraction_y5",
+        difficulty: 2,
+      };
+      // Classic non-routine mistake: stops after the first week's shipment.
+      const stoppedAfterFirstWeek = String(afterFirst);
+      const distractors = [stoppedAfterFirstWeek].filter((d) => d !== String(finalRemaining));
+      question.options = shuffleOptions(String(finalRemaining), distractors);
+      while (question.options.length < 3) {
+        const candidate = String(Math.max(0, finalRemaining + randInt(100, 9999) * (Math.random() > 0.5 ? 1 : -1)));
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare draw where there's nothing
+    // meaningful left to take a second deduction from.
+  }
 
   // ---- errorSpotting: shown the classic "forgot to borrow" mistake,
   // must give the correct answer.

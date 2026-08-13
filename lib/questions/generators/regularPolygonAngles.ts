@@ -21,7 +21,49 @@ export function generateRegularPolygonAngles(params: GeneratorParams): Generated
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): a classic tiling problem — TWO
+  // different regular polygons are placed together so their edges meet
+  // at a common point. Find the remaining GAP angle needed to complete a
+  // full turn (360°) around that point. Genuine second hop past the base
+  // skill and reverseProblem (both only ever involve ONE polygon): (1)
+  // find EACH polygon's interior angle using the formula, THEN (2)
+  // subtract both from 360° to find the gap.
+  if (challenge) {
+    const [shapeA, shapeB] = [...POLYGONS].sort(() => Math.random() - 0.5).slice(0, 2);
+    const eachAngleA = ((shapeA.sides - 2) * 180) / shapeA.sides;
+    const eachAngleB = ((shapeB.sides - 2) * 180) / shapeB.sides;
+    const combinedAngle = eachAngleA + eachAngleB;
+    const gapAngle = 360 - combinedAngle;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah ${shapeA.ms} dan sebuah ${shapeB.ms} diletakkan bersebelahan supaya tepi kedua-duanya bertemu pada satu titik yang sama. Berapakah saiz sudut jurang yang tinggal untuk melengkapkan satu pusingan penuh (360°) di sekeliling titik itu?`,
+        en: `A ${shapeA.en} and a ${shapeB.en} are placed side by side so their edges meet at the same point. What is the size of the remaining gap angle needed to complete a full turn (360°) around that point?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(gapAngle),
+      context: { eachAngleA, eachAngleB, combinedAngle, gapAngle },
+      generatorKey: "regular_polygon_angles",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after adding both angles,
+    // forgets to subtract from 360° to find the gap.
+    const stoppedAtSum = combinedAngle;
+    // Classic non-routine mistake: only accounts for ONE of the two
+    // polygons, forgetting the second shape entirely.
+    const usedOnlyOneShape = 360 - eachAngleA;
+    const distractors = Array.from(
+      new Set([stoppedAtSum, usedOnlyOneShape].map(String).filter((d) => d !== String(gapAngle)))
+    );
+    question.options = shuffleOptions(String(gapAngle), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, gapAngle + randInt(5, 20) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the size of each interior angle, find how
   // many sides the polygon has — the genuine reverse of the base skill.

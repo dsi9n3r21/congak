@@ -2301,3 +2301,1068 @@ while adding the challenge guard, since it was directly adjacent code.
 
 Score distribution now `{ '0': 14, '1': 71 }` — 71 topics left. All 85
 still at least the Round-19 gold bar.
+
+### Round 20, batch 6 — 3 more: Y5 division, Y6 multiplication, Y5 addition
+`...025` (Bahagi Dengan Nombor 1 Digit, Y5), `...026` (Darab Nombor 4 Digit
+Dengan Nombor 2 Digit, Y6), `...030` (Tambah Nombor Bulat Hingga 1,000,000,
+Y5) — all wired end-to-end, smoke-tested at 1000x for pass rate + hit rate
+(all three: 1000/1000 both), then re-verified via the real `generateQuestion`
+dispatcher across all 18 template configs (300x each, 100% pass).
+
+- **`...025` division**: same "regroup the same total into a different
+  number of students" shape as `...022`, ported down to 1-digit divisors
+  (dividend built as `divisor × divisor2 × k` for a guaranteed clean split
+  both ways). 1000/1000 hit rate, no fallthrough needed.
+- **`...026` multiplication**: same "daily-rate-then-project-to-a-
+  different-day-count" shape as `...021`, ported up to Y6's 4-digit ×
+  2-digit range. 1000/1000 hit rate.
+- **`...030` addition**: same "second delivery arrives, don't stop after
+  the first" shape as `...001`, ported up to Y5's 6-digit range. 1000/1000
+  hit rate.
+
+All three were straight ports of an already-solved Y4/Y5/2-digit shape to
+a sibling Y5/Y6/1-digit topic — same "solve the hard design work once,
+then port down/up" approach validated in batch 4.
+
+**Bonus fix**: `...030`'s `classify.ts` case had the exact same
+pre-existing gap batch 5 found in `...001`/`...020` — its reverseProblem
+variant's context shape has `total` (no `correct` field), but the case
+destructured `correct` unconditionally, so reverseProblem wrong-answers
+silently fell through to a generic "add again" hint instead of the
+correct "subtract back" one. Fixed while adding the challenge guard,
+since it was directly adjacent code. Worth grep-checking any topic not
+yet touched by this round for the same pattern before assuming its
+classify case is complete.
+
+Score distribution now `{ '0': 17, '1': 68 }` — 68 topics left. All 85
+still at least the Round-19 gold bar.
+
+### Round 20, batch 7 — 3 more: Y5 subtraction, Y6 add-three, Y6 round-number subtraction
+`...031` (Tolak Nombor Bulat Hingga 1,000,000, Y5), `...032` (Tambah Tiga
+Nombor Bulat, Y6), `...033` (Tolak Daripada Nombor Bulat, Y6) — all wired
+end-to-end, smoke-tested at 1000x for pass rate + hit rate (all three
+1000/1000 both), then re-verified via the real `generateQuestion`
+dispatcher across all 18 template configs (300x each, 100% pass after
+the errorSpotting fix below).
+
+- **`...031` subtraction**: same "second deduction, keep going" shape as
+  `...020`, ported up to Y5's 6-digit range. 1000/1000 hit rate, no
+  fallthrough needed at these number sizes.
+- **`...032` add-three-numbers**: rather than force a same-shape 3-number
+  variant, extended the topic's own native skill — a genuinely FOURTH
+  figure turns up after the three-month subtotal is computed, so the
+  challenge exercises "don't stop at the taught three-number shape" on
+  top of the three-number skill itself, not a different operation.
+  1000/1000 hit rate, no fallthrough.
+- **`...033` subtract-from-round-number**: designed carefully so BOTH
+  hops actually exercise the topic's distinctive skill — phase 1 computes
+  `target − produced1` (the cascading-zero-borrow this topic is about),
+  phase 2 is an ordinary subtraction on that intermediate. First draft
+  mislabeled which variable was "given" vs "computed" and would have
+  skipped the borrow skill on the second hop entirely — caught by
+  re-reading the prompt against the arithmetic before smoke-testing, not
+  after. 1000/1000 hit rate once corrected.
+
+**Two pre-existing bugs found and fixed while in this code**:
+1. `...031`'s `classify.ts` case had the same gap batches 5/6 found
+   elsewhere — its reverseProblem context has `remaining` (no `correct`),
+   but the case destructured `correct` unconditionally. Fixed with a
+   `remaining !== undefined` guard, same pattern as before.
+2. **New bug family, distinct from the classify gaps**: `wholeNumbersAdditionY6.ts`
+   and `wholeNumbersSubtractionY6.ts`'s `errorSpotting` branches were
+   missing the mandatory options-padding loop entirely (documented in
+   this file's own "Architecture patterns" section as a MUST) — they
+   returned only 2 raw options (correct + 1 distractor) via
+   `shuffleOptions`, which does not pad. This had been silently failing
+   the "3+ unique options" contract in production since these two
+   generators were first written, not something introduced by this
+   batch. Caught by the batch's own smoke test (0/300 pass on both
+   templates) rather than by inspection — worth remembering that the
+   full-dispatcher re-verify step catches bugs in *untouched* templates
+   on a topic too, not just the ones being changed. Fixed both by adding
+   the standard padding loop; re-verified 300/300 after.
+
+Score distribution now `{ '0': 20, '1': 65 }` — 65 topics left. All 85
+still at least the Round-19 gold bar.
+
+### Round 20, batch 8 — 3 more: Y4 fraction subtraction, Y4 & Y5 decimal add/subtract
+`...034` (Tolak Pecahan Penyebut Sama, Y4), `...035` (Tambah & Tolak
+Perpuluhan 1dp, Y4), `...005` (Tambah & Tolak Perpuluhan, Y5) — all wired
+end-to-end, smoke-tested at 1000x for pass rate + hit rate (all three
+1000/1000 both), then re-verified via the real `generateQuestion`
+dispatcher across all 18 template configs (300x each, 100% pass).
+
+- **`...034` fraction subtraction**: same "three portions, don't stop
+  after two" shape as `...002` (fractions_same_denominator's addition
+  challenge), ported to subtraction — a second slice is eaten after the
+  first, asking what's left after both. Falls through to the base case
+  on the rare draw where nothing's left after the first bite for a
+  second bite to come from. 1000/1000 hit rate.
+- **`...035` / `...005` decimal add/subtract**: same "third
+  session/item, keep going" shape as `...001`/`...030`'s addition
+  chains, ported to 1dp running-distance and 2dp shopping contexts
+  respectively (reusing each topic's own existing word-problem framing
+  rather than inventing a new scenario). Both 1000/1000 hit rate, no
+  fallthrough needed since a third decimal draw is always well-formed.
+
+**Scope note, not fixed this batch**: both decimal `classify.ts` cases
+(`decimal_add_subtract` and `decimal_add_subtract_y4`) turned out to be
+far more simplistic than every other case in this file — they don't
+destructure `question.context` at all and always return the same
+generic `decimal_point_misalignment` hint regardless of what the actual
+mistake was, for base/errorSpotting/reverseProblem alike. This is a
+pre-existing simplification, not something introduced by this batch.
+Added a proper `finalTotal !== undefined` challenge guard to each (so
+the new challenge-tier questions at least get a correct hint), but did
+NOT expand these into full context-aware classify cases for the
+base/reverseProblem paths too — that's a real gap worth a dedicated
+pass, but it's a different kind of fix (retrofitting an under-built
+classify case) than this round's actual mandate (adding challenge
+branches), and doing it as a drive-by here risked scope creep without
+the same 1000x verification rigor the rest of this file gets. Flagging
+for a future batch rather than quietly leaving it undiscovered.
+
+Score distribution now `{ '0': 23, '1': 62 }` — 62 topics left. All 85
+still at least the Round-19 gold bar.
+
+### Round 20, batch 9 — 3 more: perimeter, area, circumference (measurement→cost)
+`...004` (Perimeter Bentuk Mudah, Y4), `...011` (Luas Segi Empat Tepat &
+Segi Empat Sama, Y4), `...018` (Lilitan Bulatan, Y6) — a new shape family
+for this round: the topic's own measurement skill (perimeter/area/
+circumference) feeds into a real cost calculation via a cost-per-unit
+rate, rather than a second measurement step. All three reused an example
+scenario already sitting in the topic's own `explanation` text (Pak Ali's
+fencing, the grass-planting plot, the circular pond needing a fence) —
+no new framing invented. All wired end-to-end, smoke-tested at 1000x for
+pass rate + hit rate (all three 1000/1000 both — no fallthrough needed,
+since a random cost-per-unit rate is always well-formed), then
+re-verified via the real `generateQuestion` dispatcher across all 18
+template configs (300x each, 100% pass).
+
+- **`...004` perimeter → fencing cost**: perimeter × cost-per-metre.
+  Distractor: stops at the perimeter itself (`RM${perimeter}`), forgetting
+  to price it.
+- **`...011` area → grass cost**: area × cost-per-square-metre. Same
+  distractor shape.
+- **`...018` circumference → fencing cost**: circumference × cost-per-
+  metre, reusing the circular-pond example already in this topic's
+  explanation almost verbatim.
+
+All three classify.ts cases needed the same fix before adding the
+challenge guard: they destructured `{ length, width, correct }` (or
+`{ radius, correct }`) unconditionally with no reverseProblem/challenge
+context check at all — for the challenge branch specifically this would
+have meant `correct` reading as `undefined` and the mistake hint always
+falling through to a generic "try again" message. Added a
+`totalCost !== undefined` guard before the unconditional destructure in
+all three, following the same pattern used everywhere else in this file.
+
+Score distribution now `{ '0': 26, '1': 59 }` — 59 topics left. All 85
+still at least the Round-19 gold bar.
+
+### Round 20, batch 10 — 3 more: liquid volume, triangle area, circle area
+`...010` (Isipadu Cecair, Y6), `...016` (Luas Segi Tiga, Y6), `...019`
+(Luas Bulatan, Y6) — all wired end-to-end, smoke-tested at 1000x for
+pass rate + hit rate (all three 1000/1000 both), then re-verified via
+the real `generateQuestion` dispatcher across all 18 template configs
+(300x each, 100% pass after the volume errorSpotting fix below).
+
+- **`...010` volume**: a genuine second event — poured IN, then poured
+  OUT — rather than the measurement→cost family (this topic is already
+  about combining two quantities, so the natural TP6 step is a third
+  quantity/event, matching `...001`/`...030`'s sequential-events shape).
+  1000/1000 hit rate; `mlC` draw is bounded so a valid pour-out amount is
+  always available, no fallthrough needed.
+- **`...016` / `...019` triangle & circle area**: continued the
+  measurement→cost family from batch 9 — area × cost-per-square-
+  centimetre, framed as buying cloth / covering a tabletop with canvas
+  (both already the topic's own explanation scenario). Both 1000/1000.
+
+**Third occurrence of the missing-options-padding bug**, this time in
+`volume.ts`'s errorSpotting branch — same family first caught in batch 7
+(`wholeNumbersAdditionY6`/`wholeNumbersSubtractionY6`). Pre-existing,
+caught by the batch's own dispatcher smoke test (0/300) on an untouched
+template, not by inspection. Fixed with the same padding-loop pattern.
+Worth explicitly checking every `errorSpotting` branch across the
+remaining ~56 topics for this exact shape before assuming it's fine —
+three unrelated generators have now shipped with it, so it's likely not
+the last.
+
+All three classify.ts cases needed the same context-guard fix already
+routine by this point: unconditional `{ ..., correct }` destructure with
+no check for the new challenge context shape, fixed by adding a
+`totalCost`/`finalMl` guard before it, following the established pattern.
+
+Score distribution now `{ '0': 29, '1': 56 }` — 56 topics left. All 85
+still at least the Round-19 gold bar.
+
+### Round 20, batch 11 — 3 more: money add/subtract, money multiply/divide, decimal multiply
+`...039` (Tambah & Tolak Wang, Y4), `...040` (Darab & Bahagi Wang, Y4),
+`...036` (Darab Perpuluhan, Y5) — all wired end-to-end, smoke-tested at
+1000x for pass rate + hit rate (all three 1000/1000 both), then
+re-verified via the real `generateQuestion` dispatcher across all 18
+template configs (300x each, 100% pass).
+
+- **`...039` money add/subtract**: same "third item, keep going" shape as
+  `...001`/`...005`/`...035`'s addition chains, ported to a Malaysian
+  shopping-list context (sayur/ikan/beras/buah-buahan/roti).
+- **`...040` money multiply/divide**: same "rate, then project to a
+  DIFFERENT quantity" shape as `...021`/`...026`'s daily-rate-projection,
+  ported to a unit-price context (buy N items, then asked about a
+  different quantity M at the same unit price).
+- **`...036` decimal multiply**: same shape again, ported to a
+  bottles-of-liquid context already sitting in the topic's own
+  explanation text.
+
+**Proactive bug sweep, prompted by batch 10's note that 3 unrelated
+generators had now shipped with the missing-options-padding bug.**
+Wrote a quick awk scan across every `generators/*.ts` file for
+`if (errorSpotting)` blocks with no `while (question.options...` padding
+loop before their `return`. It flagged ~19 hits across many files;
+triaged by shape rather than fixing blind:
+- `decimals.ts`'s 4 hits were FALSE POSITIVES — that file already has
+  its own `finalizeOptions()` helper that pads internally, the scan just
+  doesn't recognize that pattern.
+- `money.ts`'s 6 hits (across 5 `if (errorSpotting)` blocks — `money_
+  multiply_divide` has two separate `return`s, multiply and divide) were
+  ALL REAL: `money_add_subtract`, `money_multiply_divide` (both
+  branches), `simple_interest`, `profit_loss`, `discount`. Fixed all six
+  with the standard padding loop, whether or not the topic got a
+  challenge branch this batch (`simple_interest`/`profit_loss`/
+  `discount` — topics `...041`/`...042`/`...050` — did NOT get challenge
+  branches this batch, just the padding fix).
+- Did NOT triage the remaining ~9 hits (angles/coordinates/likelihood/
+  linePair/primeComposite/writeRatio/time) this batch — those are mostly
+  small-fixed-label classification questions (e.g. "acute"/"obtuse"/
+  "right") that plausibly don't need numeric padding at all, unlike the
+  quantity-based money/decimal/whole-number generators where every
+  confirmed hit so far has been real. Worth a dedicated triage pass
+  before assuming they're fine, but distinguishing "fine by design" from
+  "actually broken" for each needs reading the surrounding code, not
+  just the awk signal — flagging rather than rubber-stamping.
+
+Both classify.ts cases (`money_add_subtract`, `money_multiply_divide`)
+were the same bare generic-fallback shape found in batch 8's decimal
+cases (no context destructuring, one hint for everything). Added proper
+challenge guards to both (imported `formatRM` from money.ts into
+classify.ts for this), same scope decision as batch 8: fix the new
+challenge path properly, leave the pre-existing base/reverseProblem
+under-specification as a flagged gap rather than a drive-by rewrite.
+
+Score distribution now `{ '0': 32, '1': 53 }` — 53 topics left. All 85
+still at least the Round-19 gold bar.
+
+### Padding-bug triage — finished the sweep batch 11 started
+Went back through the ~9 untriaged hits from batch 11's awk scan
+(anglesClassify/coordinates/fractions/insuranceTakaful/likelihood/
+linePairClassify/primeComposite/writeRatio, plus assetLiability caught
+in the same pass) before starting new topics, per that batch's own
+note. Read each block's actual code rather than trusting the signal:
+
+- **Real bugs, fixed**: `angles_classify`'s errorSpotting only offered 2
+  options (`obtuse`/`right`) when there are 4 valid angle-type labels —
+  now draws a third distinct type. `write_ratio`'s errorSpotting only
+  offered 2 options with no padding — added the standard loop. (`time_
+  duration`'s errorSpotting was also real and fixed in the same pass,
+  found while re-scanning `time.ts` for the batch 12 work below — same
+  missing-padding shape.)
+- **False positives, no fix needed**: `assetLiability`, `insuranceTakaful`
+  (genuine binary classification, 2 options is correct by design),
+  `likelihood`, `linePairClassify`, `primeComposite` (all draw from a
+  small FIXED label set via `.filter(r => r !== correct)`, always
+  produces the full remaining set, no padding possible or needed),
+  `fractions.ts`'s same-denominator addition (always yields exactly 2
+  unique numeric distractors by construction, no collision possible).
+- **Different bug, flagged not fixed**: `coordinates.ts`'s errorSpotting
+  has an outer `if (wrongAnswer !== correct)` guard with no `else` —
+  when the point lies on the diagonal (x === y), the block silently
+  falls through and returns whatever the base/word_problem logic
+  produces instead of an actual error-spotting question. Rare (only
+  diagonal grid points trigger it) and not the padding-bug family, so
+  left as a flagged edge case rather than fixed inline this batch.
+
+This confirms the padding bug is a real, recurring pattern specifically
+in numeric-quantity generators (money/decimal/time/whole-number), not
+in the small-fixed-label classification generators — worth remembering
+that distinction so future scans can be triaged faster.
+
+### Round 20, batch 12 — 3 more: decimal divide, simple interest, time add/subtract
+`...037` (Bahagi Perpuluhan, Y5), `...041` (Faedah Mudah, Y5), `...043`
+(Tambah & Tolak Masa, Y4) — all wired end-to-end, smoke-tested at 1000x
+for pass rate + hit rate (all three 1000/1000 both), then re-verified
+via the real `generateQuestion` dispatcher across all 18 template
+configs (300x each, 100% pass).
+
+- **`...037` decimal divide**: same "regroup the same total into a
+  different number of pieces" shape as `...022`/`...025`, ported to
+  decimals — a rope is cut into N pieces, then the SAME rope is re-cut
+  into a different number of pieces. Built as `divisor1 × divisor2 × k`
+  (in tenths) so it divides cleanly both ways by construction, matching
+  the whole-number division challenge's approach.
+- **`...041` simple interest**: didn't port an existing shape — instead
+  turned the topic's own already-documented `commonMistakes` entry
+  ("confuses principal with interest, reports the total instead of just
+  the interest") into the actual challenge question: find the interest,
+  then add it to the principal for the TOTAL amount in the account.
+  Arguably a better fit than porting a foreign shape, since it's a
+  mistake real students already demonstrably make on this exact topic.
+- **`...043` time add/subtract**: same "third item, keep going" shape as
+  the addition-chain family, ported to time — a third subject is studied
+  after the first two, reusing the topic's own explanation-text scenario
+  (Ahmad studying Maths then Science) almost verbatim, just extended by
+  one subject.
+
+Both `money.ts`'s `simple_interest` and `time.ts`'s `time_add_subtract`
+classify.ts cases were the same bare generic-fallback shape found
+repeatedly since batch 8 (no context destructuring, one hint for
+everything) — added proper challenge guards to both, same scope
+decision as before: fix the new challenge path, leave the pre-existing
+base-case under-specification as a flagged gap. Had to export
+`formatDurationNeutral` from `time.ts` (previously module-private) to
+reuse it in classify.ts's new time_add_subtract guard — same pattern as
+importing `formatRM` from `money.ts` in batch 11.
+
+Score distribution now `{ '0': 35, '1': 50 }` — 50 topics left. All 85
+still at least the Round-19 gold bar.
+
+### Round 20, batch 13 — 3 more: profit/loss, length add/subtract, discount
+`...042` (Untung dan Rugi, Y6), `...044` (Tambah & Tolak Panjang, Y4),
+`...050` (Diskaun, Y6) — all wired end-to-end, smoke-tested at 1000x for
+pass rate + hit rate (all three 1000/1000 both), then re-verified via
+the real `generateQuestion` dispatcher across all 18 template configs
+(300x each, 100% pass after the pluralization fix below).
+
+- **`...042` profit/loss**: same "rate, then project to a quantity" shape
+  as `money_multiply_divide`/`decimal_multiply` — per-item profit/loss is
+  known, question asks about the total across several identical items
+  sold, not just one.
+- **`...044` length add/subtract**: same "third piece, keep going" shape
+  as `time_add_subtract`/the addition-chain family, ported to length — a
+  third piece is joined after the first two.
+- **`...050` discount**: a genuinely different, real-world non-routine
+  shape — a SECOND, stacked discount applied to the already-discounted
+  price (not the original). The natural non-routine mistake here is
+  adding the two percentages into one flat discount off the original
+  price, which is qualitatively different from a "stopped at the first
+  step" mistake — both distractors are offered (stopped-at-first-discount,
+  and added-the-percentages).
+
+**Bug introduced and caught by the batch's own sample-prompt read, not
+by the pass-rate number**: `profit_loss`'s challenge branch was the
+first place in that generator that ever needed a plural noun form (base/
+errorSpotting/reverseProblem all talk about one item at a time); reusing
+the existing `itemsEn` map with naive `${itemsEn[item]}s` concatenation
+produced "watchs" for the watch item. Added a proper `itemsEnPlural` map
+and fixed it — 1000/1000 pass rate would never have caught this since
+it's a grammar defect, not a correctness one, which is exactly why this
+project's process insists on reading sample prompts, not just checking
+the pass/hit numbers.
+
+**Flagged, not fixed**: while reading discount's sample prompts, noticed
+its pre-existing base-case word_problem wording ("A shoes costs RM54")
+mishandles the one item in its list that's inherently plural in English
+("kasut" → "shoes"). This predates this batch — the challenge branch
+reused the exact same wording pattern already established by the base
+case rather than introducing a new one. Didn't fix it here since it
+would mean auditing every generator's items list for singular/plural-
+safe English wording, which is a separate, broader cleanup than this
+round's mandate.
+
+Both `length.ts`'s `length_add_subtract` and `money.ts`'s `profit_loss`/
+`discount` classify.ts cases needed the now-familiar guard: unconditional
+context destructure with no check for the new challenge shape. Fixed all
+three following the established pattern; `discount`'s base case was
+already properly context-aware (unlike several other money.ts cases
+found in this state in batches 8/11/12), so only the challenge guard was
+needed there, not a full rebuild.
+
+Score distribution now `{ '0': 38, '1': 47 }` — 47 topics left, just
+under 45% still to go. All 85 still at least the Round-19 gold bar.
+
+### Round 20, batch 14 — 3 more: time duration, simplify ratio, fraction multiply
+`...007` (Waktu dan Masa, Y5), `...009` (Nisbah Mudah, Y6), `...054`
+(Darab Pecahan, Y5) — all wired end-to-end, smoke-tested at 1000x for
+pass rate + hit rate, then re-verified via the real `generateQuestion`
+dispatcher across all 18 template configs (300x each, 100% pass).
+
+- **`...007` time duration**: same "second class, keep going" shape as
+  the addition-chain family, framed as a schedule (this topic's own
+  daily-life shape) — a second class starts right after the first ends.
+  1000/1000 hit rate.
+- **`...054` fraction multiply**: same "rate, then project to a
+  DIFFERENT quantity" shape as the whole-number/money/decimal
+  multiplication challenges — per-loaf flour amount known, question asks
+  about a different number of loaves. 1000/1000 hit rate.
+- **`...009` simplify ratio**: a different shape from either family —
+  share a total in a ratio to find BOTH actual parts, then find the
+  DIFFERENCE between them (a genuine second hop past the topic's own
+  reverseProblem skill, not a repeat of it).
+
+**Caught by the batch's OWN hit-rate check, not by a separate audit**:
+`...009`'s first draft used a `simplifiedA !== simplifiedB` guard and
+fell through to the (non-challenge) base case whenever that was false —
+which, since `baseA`/`baseB` are drawn independently from 1-6, happens
+~1 in 6 times (matches observed 824/1000 hit rate almost exactly). That
+fallback rate is far higher than every other challenge branch shipped
+so far (which fall through only on genuine edge cases, <1% of draws),
+so it wasn't treated as an acceptable "rare degenerate case" — fixed by
+resampling locally within the challenge branch (bounded retry loop)
+until the ratio parts differ, instead of silently downgrading to a
+different question type. Re-verified at 1000/1000 after the fix. Worth
+noting as a threshold: a documented fallback is fine when it's a true
+edge case (a handful of batches have used this pattern safely), but a
+~17% fallback rate means the challenge template just doesn't reliably
+test the challenge skill — that's a bug, not a documented exception.
+
+Both `time.ts`'s `time_duration` and `lib/questions/generators/ratio.ts`'s
+`simplify_ratio` classify.ts cases got the now-standard challenge guard
+before their existing checks. `fractions_multiply`'s case needed the
+guard placed carefully since its reverseProblem check itself relies on
+`correctNum`/`correctDenom` being defined — added an explicit
+`!== undefined` check there so the challenge context (which has neither
+field) doesn't fall through into a broken reverseProblem branch first.
+
+Score distribution now `{ '0': 41, '1': 44 }` — 44 topics left, just
+under half the curriculum done. All 85 still at least the Round-19 gold
+bar.
+
+### Round 20, batch 15 — 3 more: angles on a straight line, area of composite shapes, sum of angles in a triangle
+`...012` (Sudut Pada Garis Lurus, Y5), `...013` (Luas Bentuk Gubahan, Y5),
+`...014` (Jumlah Sudut Dalam Segi Tiga, Y6) — all wired end-to-end,
+smoke-tested at 1000x for pass rate + hit rate (all three 1000/1000
+both), then re-verified via the real `generateQuestion` dispatcher
+across all 18 template configs (300x each, 100% pass).
+
+- **`...012` angles on a straight line**: extends the base two-angle
+  case to THREE angles on the line, where the second is a multiple of
+  the third. Genuine second hop past the existing reverseProblem (which
+  only ever used a difference between two angles): subtract the given
+  angle from 180 degrees to get the combined remainder, THEN split that
+  remainder by the ratio to isolate the smallest angle.
+- **`...014` sum of angles in a triangle**: an isosceles triangle, given
+  only the apex angle — find each of the two equal base angles. Same
+  two-hop shape (subtract from 180 degrees, then divide by the count)
+  applied to a genuinely different triangle case than reverseProblem's
+  "third angle given the other two."
+- **`...013` area of composite shapes**: a deliberately different shape
+  from every existing branch — SUBTRACTION instead of addition. A
+  rectangular pond cut out of the middle of a rectangular garden; find
+  the remaining (non-pond) area. Every other branch here teaches "split
+  into rectangles and ADD"; this is the "cut a shape OUT and SUBTRACT"
+  variant, matching the discount topic's precedent (batch 13) for using
+  a genuinely different shape rather than porting an existing one.
+
+No bugs found this batch — all three generators clean on first
+implementation (1000/1000 pass+hit, no fallback-rate issues, no
+plural/wording defects on sample-prompt read).
+
+All three `classify.ts` cases (`angles_straight_line`, `area_composite`,
+`angles_triangle_sum`) got the now-standard challenge guard, checking a
+distinguishing context field (`multiple`, `outerArea`, `apex`
+respectively) before falling through to the existing base-case
+destructure — same pattern as `area_triangle`/`circumference`'s
+`totalCost` guard.
+
+Score distribution now `{ '0': 44, '1': 41 }` — 41 topics left, just
+over half the curriculum done. All 85 still at least the Round-19 gold
+bar.
+
+### Round 20, batch 16 — 3 more: angles at a point, combined operations, converting units of length
+`...017` (Sudut Pada Satu Titik, Y5), `...027` (Operasi Bergabung Tanpa
+Kurungan, Y6), `...045` (Tukar Unit Panjang, Y4) — all wired end-to-end,
+smoke-tested at 1000x for pass rate + hit rate (all three 1000/1000
+both), then re-verified via the real `generateQuestion` dispatcher
+across all 18 template configs (300x each, 100% pass).
+
+- **`...017` angles at a point**: ports the batch 15 "one angle given,
+  other two in a ratio" shape from the straight-line case to the
+  360°-total point case. Base skill and reverseProblem both give TWO of
+  the three angles directly; the challenge gives only ONE, requiring
+  (1) subtract from 360° THEN (2) split the remainder by the ratio.
+- **`...027` combined operations without brackets**: extends the base
+  "a + b×c" (one multiplication term) to "a + b×c + d×e" (two
+  multiplication terms to evaluate and combine) — a real second gift on
+  top of the first, so stopping after the first multiplication or
+  forgetting to multiply the second term are both genuine, distinct
+  wrong answers rather than a repeat of the base left-to-right mistake.
+- **`...045` converting units of length**: a COMPOUND measurement ("4 m
+  13 cm" converted entirely to cm) — the base generator only ever
+  converts a single clean quantity. Genuine second hop: (1) convert the
+  big-unit part, THEN (2) add the small-unit remainder; skipping either
+  gives a distinct classic wrong answer (forgot the remainder / forgot
+  to convert at all). `unit_convert` is shared across 5 topics
+  (045-049, differing only by `pairs` config) — only 045 got the
+  challenge template this batch, following the established one-topic-
+  at-a-time rollout pattern for shared generators; 046-049 remain open
+  for a future batch (same generator, no new code needed, just add the
+  template + config to each topic).
+
+No bugs found this batch — all three generators clean on first
+implementation (1000/1000 pass+hit, no fallback-rate issues, no
+plural/wording defects on sample-prompt read).
+
+All three `classify.ts` cases (`angles_at_point`, `mixed_operations`,
+`unit_convert`) got the now-standard challenge guard, checking a
+distinguishing context field (`multiple`, `d`, `smallRemainder`
+respectively) before falling through to the existing base-case
+destructure.
+
+Score distribution now `{ '0': 47, '1': 38 }` — 38 topics left, over
+half the challenge-tier rollout done. All 85 still at least the
+Round-19 gold bar.
+
+### Round 20, batch 17 — 3 more: converting units of mass, volume of liquid, time (all `unit_convert`, zero new generator code)
+`...046` (Tukar Unit Jisim, Y5), `...047` (Tukar Unit Isipadu Cecair,
+Y5), `...048` (Tukar Unit Masa, Y4) — the challenge branch for
+`unit_convert` already existed from batch 16 (topic `...045`), so this
+batch was pure template wiring: added a `challenge: true` config to
+each topic's `questionTemplates` using that topic's own `pairs`.
+Smoke-tested at 500x per template across all 15 templates on the three
+topics (100% pass), plus `classifyMistake` sanity-checked on every
+challenge sample.
+
+**Bug found and fixed during smoke-test review**: the batch 16
+`unit_convert` challenge sentence was hardcoded as "the length of a
+piece of wood is X big Y small" regardless of unit kind — so mass,
+volume, and duration pairs produced nonsense ("a piece of wood is 2 kg
+71 g", "a piece of wood is 1 wk 4 day"). This wasn't caught in batch 16
+because topic 045 (length) was the only one exercising it and length
+happens to match the hardcoded wording. Fixed by adding a `unitKind`
+lookup (covering all 11 pairs used across every unit-conversion topic:
+length/mass/volume/duration) and a `compoundSubject` map, reusing the
+verb phrasing already in `measurePhrase`. Re-verified all four kinds
+(length/mass/volume/duration) read naturally after the fix — this is
+the kind of bug the "read the sample prompts, don't just check
+pass/hit counts" step in the smoke test is specifically for; worth
+remembering for any future generator that's shared across topics with
+different real-world units.
+
+`unit_convert` now has the challenge template on 4 of its 5 topics
+(045-048); `...049` (Tukar Unit Masa Lanjutan — hr/min, yr/mth, dec/yr,
+c/dec) is the last one left, same zero-new-code wiring next time.
+
+Score distribution now `{ '0': 50, '1': 35 }` — 35 topics left, well
+past the halfway mark. All 85 still at least the Round-19 gold bar.
+
+### Round 20, batch 18 — 3 more: converting units of time (advanced), percentage of a quantity, converting fractions and percentages
+`...049` (Tukar Unit Masa Lanjutan, Y5), `...052` (Peratus Suatu
+Kuantiti Asas, Y4), `...053` (Tukar Pecahan dan Peratus, Y4).
+Smoke-tested at 1000x for the challenge branch on each generator (all
+1000/1000), then re-verified via the real `generateQuestion` dispatcher
+across all 17 template configs (400x each, 100% pass), plus
+`classifyMistake` sanity-checked on every challenge sample.
+
+- **`...049`**: zero new code — same `unit_convert` compound-measurement
+  challenge from batches 16-18, just added the template with this
+  topic's own `pairs` (hr/min, yr/mth, dec/yr, c/dec). `unit_convert`
+  now has the challenge template on all 5 of its topics (045-049) —
+  that generator's rollout is complete.
+- **`...052`**: zero new code — `percentage_of_quantity`'s cascading-
+  percentage challenge branch (two sequential percentage cuts, second
+  cut off the REMAINDER not the original) and its `classify.ts` guard
+  already existed from an earlier round (built for topic `...006`,
+  which shares the same generator) but had never been wired into
+  `...052`'s own `questionTemplates`. Pure template wiring.
+- **`...053`**: genuine new generator work. The base skill converts a
+  fraction to a percentage by scaling the denominator to 100; the
+  challenge gives the fraction UNSIMPLIFIED with a denominator that
+  does NOT divide evenly into 100 (e.g. 42/50 stays fine, but something
+  like 51/75 needs simplifying to 17/25 before the taught method
+  applies at all). Genuine second hop: (1) simplify to lowest terms,
+  THEN (2) scale the simplified denominator to 100. Distractors: used
+  the unsimplified numerator directly, or tried scaling the
+  unsimplified denominator with a rounded (wrong) factor. Also gave the
+  existing `fractions_percentage_convert` classify.ts case (previously
+  a single generic fallback with no context destructuring at all) its
+  first real challenge guard.
+
+No bugs found this batch — all clean on first implementation. Also
+reinstalled `node_modules` this session (had been stripped for the
+batch-17 zip export) — worth remembering that `npx tsc --noEmit` will
+throw a wall of unrelated "Cannot find module" errors if `node_modules`
+isn't present; that's an environment issue, not a code regression, and
+`npm install` clears it immediately.
+
+Score distribution now `{ '0': 53, '1': 32 }` — 32 topics left, nearly
+two-thirds of the challenge-tier rollout done. All 85 still at least
+the Round-19 gold bar.
+
+### Round 20, batch 19 — 3 more: converting decimals and percentages, adding & subtracting percentages, proportion to find a value
+`...055` (Tukar Perpuluhan dan Peratus, Y5), `...056` (Tambah & Tolak
+Peratus, Y6), `...058` (Perkadaran Untuk Cari Nilai, Y5) — all genuine
+new generator work this batch. Smoke-tested at 1000x for the challenge
+branch on each (all 1000/1000), then re-verified via the real
+`generateQuestion` dispatcher across all 18 template configs (400x
+each, 100% pass), plus `classifyMistake` sanity-checked on every
+challenge sample.
+
+- **`...055` decimals and percentages**: two decimal scores from two
+  attempts at the same test — find the percentage-POINT improvement.
+  Genuine second hop past the base skill (single conversion) and
+  reverseProblem (convert-then-complement): (1) subtract the two
+  decimals, THEN (2) convert the difference to a percentage.
+  Distractors: subtracted but forgot to convert to %, or converted the
+  second score alone and ignored the first attempt.
+- **`...056` adding & subtracting percentages**: THREE chained
+  percentage changes (price rises twice, then falls once) instead of
+  two. Genuine second hop: combine the first two, then apply the third
+  — stopping after the first two rises or skipping the middle value are
+  both distinct classic wrong answers.
+- **`...058` proportion**: extends the base two-part ratio (cats:dogs)
+  to a THREE-part ratio (cats:dogs:rabbits) given only the TOTAL, not a
+  directly-known part. Genuine second hop: (1) sum all three ratio
+  numbers to get total ratio units, THEN (2) divide the total by that
+  to get the scale factor, THEN (3) multiply by the target's ratio
+  number. Distractors: split the total evenly across 3 species
+  (ignoring the ratio), or gave the whole total as the answer.
+
+No bugs found this batch — all three generators clean on first
+implementation, sample prompts read naturally on review.
+
+All three `classify.ts` cases (`decimal_percentage_convert`,
+`percentage_add_subtract`, `proportion`) got the now-standard challenge
+guard. Worth noting: `decimal_percentage_convert` and
+`percentage_add_subtract` previously had NO context destructuring at
+all — every wrong answer on those two topics (across every existing
+template, not just the new challenge one) fell through to one generic
+hint. The challenge guard added real per-mistake hints for the new
+branch; the base/reverseProblem/errorSpotting branches on those two
+topics still share the old generic fallback, which is out of scope for
+this batch but worth flagging for a future "hint quality" pass if one
+ever happens.
+
+Score distribution now `{ '0': 56, '1': 29 }` — 29 topics left.
+
+### Round 20, batch 20 — 3 more: dividing a mixed number by a whole number, dividing a fraction by a fraction, dividing a mixed number by a fraction
+`...057` (Bahagi Nombor Bercampur Dengan Nombor Bulat, Y6), `...062`
+(Bahagi Pecahan Dengan Pecahan, Y6), `...063` (Bahagi Nombor Bercampur
+Dengan Pecahan, Y6). Smoke-tested at 1000x for the challenge branch on
+each (all 1000/1000), then re-verified via the real `generateQuestion`
+dispatcher across all 18 template configs (400x each, 100% pass), plus
+`classifyMistake` sanity-checked on every challenge sample.
+
+All three reuse the "compound sharing" challenge shape that
+`fractions_divide_by_whole` (a sibling topic in the same fraction-
+division family) already had from an earlier round: the quotient from
+the first division is itself divided AGAIN by a second whole number —
+genuine second hop past both the base skill and reverseProblem, which
+only ever do one division. Ported to each topic's own real-world frame:
+- **`...057`**: flour/rice/sugar divided into containers, then each
+  container's contents divided again into small bags.
+- **`...062`**: paint/juice/oil filling bottles (fraction ÷ fraction),
+  then all the filled bottles packed again into boxes.
+- **`...063`**: ribbon/rope/wire cut into pieces (mixed ÷ fraction),
+  then all the pieces shared again among students.
+
+Same distractor shape throughout: "stopped after the first division"
+(gave the intermediate quotient as the final answer). All three
+`classify.ts` cases got the guard, checking `finalNum !== undefined`
+before falling through to the existing base-case logic — same idiom as
+`fractions_divide_by_whole`'s pre-existing guard, which this batch's
+guards were modeled on directly.
+
+No bugs found this batch — all three generators clean on first
+implementation, sample prompts read naturally.
+
+Score distribution now `{ '0': 59, '1': 26 }` — 26 topics left.
+
+### Round 20, batch 21 — 3 more: invoice/receipt/service tax, interest and dividend, adding & subtracting time (bigger units)
+`...059` (Invois, Resit, dan Cukai Perkhidmatan, Y6), `...060` (Faedah
+dan Dividen, Y6), `...064` (Tambah & Tolak Masa - Unit Lebih Besar,
+Y5) — all genuine new generator work. Smoke-tested at 1000x for the
+challenge branch on each (all 1000/1000), then re-verified via the
+real `generateQuestion` dispatcher across all 19 template configs
+(400x each, 100% pass), plus `classifyMistake` sanity-checked on every
+challenge sample.
+
+- **`...059` service tax**: a discount is applied FIRST, then service
+  tax is charged on the DISCOUNTED price — a real Malaysian retail
+  order-of-operations non-routine skill. Genuine second hop past the
+  base skill and reverseProblem (both only ever tax a given amount
+  once): (1) subtract the discount, THEN (2) add tax calculated on
+  the discounted price. Distractors: taxed the ORIGINAL price instead
+  of the discounted one (classic order-of-operations slip), or stopped
+  after the discount and forgot the tax entirely.
+- **`...060` dividend**: shares in TWO different companies with
+  DIFFERENT dividend rates — find the combined total. Genuine second
+  hop past the base skill and reverseProblem (both only involve one
+  company): find each company's dividend separately, then add.
+  Distractors: stopped after the first company, or summed the share
+  counts but only applied the first company's rate.
+- **`...064` adding & subtracting time (bigger units)**: THREE
+  durations chained (a building's age, then two separate renovations)
+  instead of two. Genuine second hop past the base skill and
+  reverseProblem (both only ever combine two durations): add the first
+  two with regrouping, then add the third with regrouping again.
+  Distractors: stopped after the first two additions, or added all
+  three durations' big/small parts separately without ever regrouping
+  the small-unit overflow.
+
+No bugs found this batch — all three generators clean on first
+implementation, sample prompts read naturally (checked the discount+tax
+arithmetic and the three-way time addition by hand against samples).
+
+All three `classify.ts` cases (`service_tax`, `dividend`,
+`time_unit_add_subtract`) got the now-standard challenge guard,
+checking a distinguishing context field (`discountPct`, `shares1`,
+`cSmall` respectively) before falling through to the existing base-case
+logic.
+
+Score distribution now `{ '0': 62, '1': 23 }` — 23 topics left, nearly
+three-quarters of the challenge-tier rollout done.
+
+### Round 20, batch 22 — 3 more: asset and liability, distance between two coordinates, purchasing via cash or instalment
+`...061` (Aset dan Liabiliti, Y6), `...065` (Jarak Antara Dua
+Koordinat, Y6), `...067` (Beli Secara Tunai atau Ansuran, Y5) — all
+genuine new generator work. Smoke-tested at 1000x for the challenge
+branch on each (all 1000/1000), then re-verified via the real
+`generateQuestion` dispatcher across all 20 template configs (400x
+each, 100% pass), plus `classifyMistake` sanity-checked on every
+challenge sample.
+
+- **`...061` asset and liability**: a short list of items, each with a
+  RM value — find the NET WORTH (assets minus liabilities). Genuine
+  second hop past the base skill, reverseProblem, and word_problem (all
+  three only ever COUNT items, never use a value): classify each item,
+  sum the asset values, sum the liability values, then subtract.
+  Distractors: added everything together instead of subtracting, or
+  gave the asset total alone.
+- **`...065` distance between two coordinates**: a two-leg L-shaped
+  journey (vertical leg then horizontal leg) with a map scale — find
+  the TOTAL real distance walked. Genuine second hop past the "scaled"
+  branch (which only ever scales ONE grid distance): find each leg's
+  grid distance, add them, THEN multiply by the scale. Distractors:
+  stopped after the first leg, or added the grid distances but forgot
+  to apply the scale at all.
+- **`...067` purchasing via cash or instalment**: TWO different stores'
+  instalment plans for the same item — find the price difference
+  between the two plans. Genuine second hop past the base skill and
+  reverseProblem (both only ever compare ONE instalment plan against
+  cash, never two plans against each other): find each store's total,
+  then subtract. Distractors: gave one store's total instead of the
+  difference, or added both totals together.
+
+One false alarm during this batch's own smoke-test review (not a code
+bug): the scratch harness required every MCQ to have ≥3 options, but
+`asset_liability`'s binary classification branches (`pool: "asset"`,
+`pool: "liability"`, base `{}`, `errorSpotting`) have always
+legitimately offered only 2 options (asset vs. liability) — that's
+pre-existing and correct, not something this batch touched. Fixed the
+harness's check, not the generator, and confirmed 400/400 across every
+template afterward. Worth remembering for future smoke scripts touching
+binary-classification generators (this one, `angles_classify`,
+`likelihood`, `line_pair_classify`) — don't assume every MCQ needs 3+
+options.
+
+Also worth noting for `coordinate_distance`: the challenge context and
+the existing "scaled" branch's context BOTH carry a `scaleUnitMeters`
+field, so the `classify.ts` guard for the new challenge branch had to
+be checked (via a more specific field, `leg1Grid`) BEFORE the existing
+`scaleUnitMeters` check, not after — a preexisting field name collision
+across branches that's worth checking for whenever adding a challenge
+branch to a generator that already has other named branches.
+
+Score distribution now `{ '0': 65, '1': 20 }` — 20 topics left, over
+three-quarters of the challenge-tier rollout done.
+
+### Round 20, batch 23 — 3 more: insurance and takaful, combined length and mass, time zones
+`...068` (Insurans dan Takaful, Y6), `...069` (Panjang dan Jisim
+Bergabung, Y6), `...073` (Zon Waktu, Y6) — all genuine new generator
+work. Smoke-tested at 1000x for the challenge branch on each (all
+1000/1000), then re-verified via the real `generateQuestion` dispatcher
+across all 19 template configs (400x each, 100% pass), plus
+`classifyMistake` sanity-checked on every challenge sample.
+
+- **`...068` insurance and takaful**: a short list of plans, each with a
+  coverage VALUE — find the TOTAL coverage of the TAKAFUL plans only.
+  Genuine second hop past the base skill, reverseProblem, and
+  word_problem (all three only ever COUNT plans, never use a value):
+  classify each plan, then sum only the takaful ones' values. Same
+  "classify + sum a subset" shape as `asset_liability`'s net-worth
+  challenge from batch 22, ported to this topic's classification pair.
+  Distractors: summed every plan's value (forgot to filter), or summed
+  the wrong (insurance) group entirely.
+- **`...069` combined length and mass**: TWO ropes, each with its own
+  length and mass, are COMBINED and then cut into equal pieces. Genuine
+  second hop past the base skill and reverseProblem (both only ever
+  involve ONE rope): add the two ropes' lengths (or masses) together,
+  THEN divide by the pieces. Distractors: used only Rope A's value
+  (forgot to combine with Rope B), or answered with the other
+  quantity's per-piece value (reusing the base's existing "mixed up
+  which quantity" mistake).
+- **`...073` time zones**: a flight departs one city at a given LOCAL
+  time and takes several hours to reach another city — find the LOCAL
+  ARRIVAL time. Genuine second hop past the base skill and both
+  existing branches (which only ever apply a GMT offset to a
+  stationary time): add the flight duration to departure time, THEN
+  adjust for the GMT offset difference. Distractors: added the flight
+  duration but forgot the timezone shift, or applied the timezone
+  shift but forgot to add the flight duration.
+
+No bugs found this batch — all three generators clean on first
+implementation, sample prompts read naturally and arithmetic checked
+by hand against samples (e.g. KL→Moscow flight: depart 08:00 GMT+8,
+9hr flight, GMT+3 → land 12:00 local, confirmed correct).
+
+All three `classify.ts` cases got the now-standard challenge guard,
+each checked BEFORE the pre-existing branch logic using a distinguishing
+context field (`totalTakaful`, `lengthACm`, `flightHours`
+respectively).
+
+Score distribution now `{ '0': 68, '1': 17 }` — 17 topics left, exactly
+80% of the challenge-tier rollout done.
+
+### Round 20, batch 24 — 3 more: combined length and volume, combined mass and volume, compound interest
+`...070` (Panjang dan Isipadu Bergabung, Y6), `...071` (Jisim dan
+Isipadu Bergabung, Y6), `...076` (Faedah Kompaun, Y5). Smoke-tested at
+1000x for the challenge branch on each (all 1000/1000), then
+re-verified via the real `generateQuestion` dispatcher across all 18
+template configs (400x each, 100% pass), plus `classifyMistake`
+sanity-checked on every challenge sample.
+
+- **`...070`/`...071`**: directly ported the "combine two items, then
+  divide" shape from `combined_length_mass` (topic 069, batch 23) to
+  its two sibling generators in the same file — two gardens' hoses and
+  fertiliser bottles combined for 070, two batters' flour and milk
+  combined for 071. Same distractor shape both times: used only the
+  first item's value (forgot to combine), or answered with the other
+  quantity's per-piece value (reusing each generator's existing
+  "mixed up which quantity" mistake).
+- **`...076` compound interest**: find the interest earned in the FINAL
+  year ALONE, not the total across all years. Genuine second hop past
+  the base skill (total) and reverseProblem (year 1 alone): compound
+  the amount through the earlier years first, THEN calculate just the
+  final year's interest on that grown amount. Distractors: gave the
+  total compound interest instead of isolating the final year, or
+  calculated the final year's interest on the ORIGINAL principal
+  instead of the grown amount. Hand-verified one sample by hand (RM700
+  @ 8%: year 1 → RM756, year 2 interest = RM756 × 8% = RM60.48,
+  matched the generator's output).
+
+No bugs found this batch — all three clean on first implementation.
+Worth noting for `compound_interest`'s `classify.ts` case: the new
+challenge context and the existing reverseProblem context both carry a
+`principalRM` field, so the challenge guard had to be checked BEFORE
+the reverseProblem check (same field-collision pattern flagged in
+batch 22 for `coordinate_distance` — worth checking for on every batch
+now, not just when it's bitten before).
+
+Score distribution now `{ '0': 71, '1': 14 }` — 14 topics left.
+
+### Round 20, batch 25 — 3 more: volume of a cuboid, volume of composite shapes, perimeter of composite shapes
+`...079` (Isi Padu Kuboid, Y4), `...080` (Isi Padu Bentuk Gubahan, Y5),
+`...081` (Perimeter Bentuk Gubahan, Y5). Smoke-tested at 1000x for the
+challenge branch on each (all 1000/1000), then re-verified via the
+real `generateQuestion` dispatcher across all 18 template configs
+(400x each, 100% pass), plus `classifyMistake` sanity-checked on every
+challenge sample.
+
+- **`...079` volume of a cuboid**: how many SMALL cuboid boxes fit
+  exactly into a LARGE cuboid box? Genuine second hop past the base
+  skill and reverseProblem (both only involve ONE cuboid): find the
+  small box's volume, find the large box's volume, THEN divide.
+  Distractors: gave the large box's volume directly (forgot to
+  divide), or scaled by only ONE dimension's ratio (forgot the other
+  two dimensions also scaled up).
+- **`...080` volume of composite shapes**: ported `area_composite`'s
+  batch-15 "subtraction instead of addition" shape to 3D — a
+  rectangular storage compartment cut out of a solid cuboid block;
+  find the remaining solid volume. Every other branch here teaches
+  "split into cuboids and ADD"; this is the "cut a cuboid OUT and
+  SUBTRACT" variant. Distractors: forgot to subtract the cut-out, or
+  added it instead of subtracting.
+- **`...081` perimeter of composite shapes**: a genuinely different
+  geometric case from the base skill's key insight (a CORNER notch
+  never changes a rectangle's perimeter) — a notch cut into the
+  MIDDLE of one side instead, which DOES add to the perimeter (2× the
+  notch's depth). This directly tests whether the student
+  over-generalizes the base topic's own "notch doesn't matter" rule to
+  a case where it doesn't apply — a rich, well-motivated non-routine
+  distinction rather than just a bigger version of the same skill.
+  Distractors: over-applied the corner-notch rule (gave the unchanged
+  perimeter), or added the notch's WIDTH instead of its DEPTH.
+
+No bugs found this batch — all three generators clean on first
+implementation, sample prompts read naturally and the perimeter
+arithmetic checked by hand (14m×11m rectangle, 3m-deep notch: 2×(14+11)
++ 2×3 = 50+6 = 56, matched the sample).
+
+All three `classify.ts` cases got the now-standard challenge guard,
+checked BEFORE the pre-existing branch logic using a distinguishing
+context field (`boxesCount`, `bigVolume`, `notchDepth` respectively).
+
+Score distribution now `{ '0': 74, '1': 11 }` — 11 topics left.
+
+### Round 20, batch 26 — 3 more: interior angles of regular polygons, prime and composite numbers, 12-hour and 24-hour time
+`...074` (Nombor Perdana dan Nombor Gubahan, Y6), `...075` (Sudut
+Pedalaman Poligon Sekata, Y6), `...085` (Format 12 Jam dan 24 Jam, Y5).
+Smoke-tested at 1000x for the challenge branch on each (all
+1000/1000), then re-verified via the real `generateQuestion` dispatcher
+across all 17 template configs (400x each, 100% pass), plus
+`classifyMistake` checked on EVERY template's wrong answer this batch
+(not just the challenge branch — see below).
+
+- **`...075` interior angles of regular polygons**: a classic tiling
+  problem — TWO different regular polygons meet at a common point;
+  find the GAP angle needed to complete 360° around that point.
+  Genuine second hop past the base skill and reverseProblem (both only
+  ever involve ONE polygon): find each polygon's interior angle, add
+  them, THEN subtract from 360°. Distractors: stopped after adding
+  both angles (forgot the 360° subtraction), or used only one polygon.
+- **`...074` prime and composite numbers**: how many PRIME numbers are
+  there in a given range? Genuine second hop past the base skill and
+  errorSpotting (both only ever classify ONE number): check every
+  number in the range and count. Distractors: counted the composite
+  numbers instead, or miscounted by one (a plausible boundary slip).
+- **`...085` 12-hour and 24-hour time**: a two-leg bus journey WITH A
+  TRANSFER — ride, wait through a layover, ride again — find the final
+  arrival time. Genuine second hop past the existing reverseProblem
+  (which already adds one duration to a departure time — itself a
+  compound skill): add the first leg, THEN the layover, THEN the
+  second leg. Distractors: stopped at the transfer station (forgot the
+  layover and second leg), or added both legs but skipped the layover
+  wait.
+
+**Found and fixed a real pre-existing gap while adding `...085`'s
+challenge**: `time_format_convert` had NO `classify.ts` case at all —
+every wrong answer on ANY of its 6 existing templates (base to24/to12,
+bus-schedule word problems, errorSpotting, reverseProblem) fell through
+to the generic `"unknown"` mistakeType with a useless "check your
+answer again" hint. Added a full case covering all of them: the
+noon/midnight swap, added-12-to-a.m., forgot-to-add-12-for-p.m., and
+wrong-a.m./p.m.-period mistakes for the base branches, plus the new
+transfer-journey challenge. Verified with a stricter smoke check this
+batch — classify EVERY template's wrong answer, not just the challenge
+one, and flag any `"unknown"` result — confirming zero unknowns
+remain on any of the three topics' templates. `to12String` had to be
+exported from `time.ts` and imported into `classify.ts` to support this.
+
+Also had to fix a copy-paste typo caught before the smoke run: the
+Malay prompt for the new time_format_convert challenge briefly
+duplicated the departure timestamp mid-sentence ("... penumpang" vs
+"... ${to24String(...)} penumpang") — fixed before running any tests,
+not a shipped bug.
+
+Score distribution now `{ '0': 77, '1': 8 }` — 8 topics left.
+
+### Round 20, batch 27 — 3 more: likelihood, reading pictographs, reading coordinates
+`...051` (Kebarangkalian, Y6), `...077` (Membaca Piktograf, Y4),
+`...024` (Membaca Koordinat, Y5). Smoke-tested at 1000x for the
+challenge branch on each (all 1000/1000), then re-verified via the
+real `generateQuestion` dispatcher across all 16 template configs
+(400x each, 100% pass), plus `classifyMistake` checked on every
+template's wrong answer (not just the challenge branch).
+
+- **`...051` likelihood**: WITHOUT REPLACEMENT — a marble is already
+  picked and not put back, then ask about the likelihood of picking
+  that same colour again. Genuine second hop past the base skill and
+  errorSpotting (both only ever classify from a STATIC count): update
+  the count after the first pick, THEN classify using the NEW counts.
+  Distractor: classified using the ORIGINAL (pre-removal) counts — the
+  single most natural non-routine mistake for this skill.
+- **`...077` reading pictographs**: find the COMBINED total for TWO
+  different sellers. Genuine second hop past the base "count" variant
+  (one seller) and "difference" variant (subtract, not add): apply the
+  key to each seller's icon count, then add both totals. Distractors:
+  summed the icon counts directly (forgot the key entirely), or
+  stopped after converting just the first seller.
+- **`...024` reading coordinates**: find the MIDPOINT between two
+  named points, given as coordinates in the question text — no diagram
+  needed, following `coordinate_distance`'s precedent for text-based
+  challenge scenarios on diagram-dependent topics. Genuine second hop:
+  add both x-values and halve, then do the same for y. Distractors:
+  added but forgot to halve, or used only the first point.
+
+**Bug caught and fixed during this batch's own smoke-test review**:
+the coordinates challenge's random point generation could place point
+B outside the stated `gridSize` bound (e.g. `gridSize: 10` but a
+sampled y-coordinate of 11) — an off-by-construction bug in how the
+delta and starting point were sized independently instead of jointly.
+Fixed by picking the delta first and bounding the starting point
+against it, verified the fix keeps every coordinate within
+`gridSize - 1` for all three gridSize configs in use (6, 10, 12) with
+a re-run smoke check.
+
+All three `classify.ts` cases (`likelihood`, `pictograph`,
+`coordinates`) got the now-standard challenge guard, checked before
+the pre-existing branch logic using a distinguishing context field
+(`newCountA`, `variant === "challenge"`, `x1` respectively).
+
+Note: `coordinates`' challenge is only wired on topic `...024` (Y5,
+gridSize 10) this batch — the sibling topic `...082` (Y4, same
+generator, gridSize 6) shares the exact same code path and could get
+the template added with zero new work in a future batch, same pattern
+as the `unit_convert` staged rollout.
+
+Score distribution now `{ '0': 80, '1': 5 }` — only 5 topics left.
+
+### Round 20, batch 28 — 3 more: types of angles, reading coordinates (Y4), proportion — 83/85 DONE, 2 intentionally out of scope
+`...015` (Jenis-Jenis Sudut, Y4), `...082` (Membaca Koordinat, Y4),
+`...084` (Kadaran, Y4). Smoke-tested at 1000x for the challenge branch
+on each (all 1000/1000), then re-verified via the real
+`generateQuestion` dispatcher across all 16 template configs (400x
+each, 100% pass), plus `classifyMistake` checked on every template's
+wrong answer.
+
+- **`...082`**: zero new code — same `coordinates` midpoint challenge
+  from batch 27's topic `...024`, just wired onto this Y4 sibling with
+  its own `gridSize: 6` config.
+- **`...015` types of angles**: two angles lie on a straight line — given
+  the FIRST angle's exact degree, classify the TYPE (not degree) of the
+  SECOND angle. Text-based, no diagram. Genuine second hop past the
+  base skill and errorSpotting (both only ever classify a directly-shown
+  angle): subtract from 180°, THEN classify the result. Distractor:
+  classified the FIRST (given) angle instead of computing and
+  classifying the second one.
+- **`...084` proportion**: TWO different items, each with its own group
+  price — find the combined cost of new quantities of BOTH. Stays
+  firmly within the Y4 unitary method (same skill, applied twice + a
+  sum — no new maths content, just chained): find each item's one-item
+  price, scale it, then add. Distractors: stopped after the first item,
+  or skipped the unit step for both items (the base skill's own classic
+  mistake, applied twice).
+
+**Two topics intentionally left at score 1 (no challenge), not a gap**:
+`...078` (Parallel and Perpendicular Lines) and `...083` (Ratio, Y4)
+both have explicit code comments documenting a deliberate "no
+higher-year concepts" scope boundary — `line_pair_classify.ts` states
+outright that reversing this Y4 concept numerically is Y5/6 content,
+and `write_ratio.ts` states that general a:b ratio comparison
+(topic `...058`) and ratio simplification (topic `...009`, "Nisbah
+Mudah") are explicitly OTHER topics' territory, both of which already
+have challenge tiers from earlier rounds. Forcing a numeric non-routine
+challenge onto either `...078` or `...083` would duplicate/conflict
+with those already-covered topics and violate the scope boundary a
+previous round deliberately encoded. Recommend leaving these two as-is
+unless the DSKP curriculum boundary itself is revisited.
+
+No bugs found this batch — all three generators clean on first
+implementation.
+
+Score distribution now `{ '0': 83, '1': 2 }` — Challenge-tier rollout
+is functionally COMPLETE. The 2 remaining topics are an intentional,
+documented exception, not unfinished work.
+
+### Post-rollout: confirmed 078/083 are on par, and a UI change — collapsible Bidang sections
+Two follow-ups after the batch 28 wrap-up:
+
+1. **Confirmed `...078` and `...083` meet the same gold-standard bar as
+   every other topic** — directly checked their live `tips`/`commonMistakes`/
+   `questionTemplates` counts (3/4/5, same floor every other topic clears)
+   plus `workedExample`/`howTo` presence. They're only missing the extra
+   Challenge (TP6) question, by the documented scope decision — nothing
+   about their base content quality is behind.
+
+2. **`TopicYearBrowser.tsx`** (shared by `/learn` and `/practice`): each
+   Bidang section (the 4 KSSR learning-area groupings within a year) now
+   collapses into a dropdown/accordion instead of always showing every
+   topic expanded. Tap the Bidang header to toggle it open/closed — a
+   topic count and a rotating chevron sit on the header. The first
+   section for the student's year starts open on load so the page isn't
+   entirely collapsed; every other section starts closed. Nothing else
+   changed — same topic cards, same year-tab picker, same styling tokens
+   (`rounded-kite`, `shadow-card`, `ungu`) as the rest of the app.
+   `tsc --noEmit` clean. (`npm run build` fails in this sandbox only
+   because Google Fonts is unreachable — unrelated to this change,
+   confirmed by checking the failure is 100% font-fetch errors in
+   `app/layout.tsx`, nothing from the touched file.)

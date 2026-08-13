@@ -17,7 +17,51 @@ export function generateMixedOperations(params: GeneratorParams): GeneratedQuest
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): a genuine second hop past the
+  // base skill — TWO multiplication terms to evaluate and combine
+  // ("a + b×c + d×e") instead of one. The base skill and reverseProblem
+  // both only ever require doing ONE multiplication before combining;
+  // this needs the student to keep applying order-of-operations across
+  // a longer expression rather than stopping after the first term.
+  if (challenge) {
+    const a = randInt(min, max);
+    const b = randInt(2, 9);
+    const c = randInt(min, max);
+    const d = randInt(2, 9);
+    const e = randInt(min, max);
+    const firstHop = a + b * c;
+    const correct = firstHop + d * e;
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} ada RM${a}. Ibunya beri ${b} keping not RM${c}, dan bapanya beri ${d} keping not RM${e}. Berapakah jumlah wang ${name} sekarang?`,
+        en: `${name} has RM${a}. Their mother gives them ${b} pieces of RM${c} notes, and their father gives them ${d} pieces of RM${e} notes. How much money does ${name} have now?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(correct),
+      context: { a, b, c, d, e, firstHop, correct },
+      generatorKey: "mixed_operations",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first gift, ignores
+    // the second multiplication term entirely.
+    const stoppedAtFirstHop = String(firstHop);
+    // Classic non-routine mistake: forgets to multiply the second gift,
+    // just adds the note count instead of note count × value.
+    const forgotSecondMultiply = String(firstHop + d);
+    const distractors = Array.from(new Set([stoppedAtFirstHop, forgotSecondMultiply])).filter(
+      (dd) => dd !== String(correct)
+    );
+    question.options = shuffleOptions(String(correct), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(0, correct + randInt(1, 20) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const a = randInt(min, max);
   const b = randInt(2, 9);

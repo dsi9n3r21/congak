@@ -22,6 +22,7 @@ export function generateLengthAddSubtract(params: GeneratorParams): GeneratedQue
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const items = ["reben", "tali", "wayar", "kain"] as const;
   const itemsEn: Record<(typeof items)[number], string> = {
@@ -38,6 +39,39 @@ export function generateLengthAddSubtract(params: GeneratorParams): GeneratedQue
 
   const correctCm = op === "add" ? aCm + bCm : aCm - bCm;
   const symbol = op === "add" ? "+" : "−";
+
+  // ---- challenge (TP6 / non-routine): same "third piece, keep going"
+  // shape as time_add_subtract, ported to length — a THIRD piece is
+  // joined after the first two, matching the topic's own explanation
+  // text (two ribbons joined) extended by one more.
+  if (challenge) {
+    const name = pick(names);
+    const item = pick(items);
+    const cCm = randInt(1, maxMetres) * 100 + randInt(0, 99);
+    const subtotal = aCm + bCm;
+    const finalTotal = subtotal + cCm;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Seutas ${item} panjangnya ${formatLength(aCm)}. Seutas lagi ${item} panjangnya ${formatLength(bCm)}. ${name} menyambungkan kedua-duanya, kemudian menyambungkan seutas ${item} lagi sepanjang ${formatLength(cCm)}. Berapakah jumlah panjang ${item} itu kesemuanya?`,
+        en: `One piece of ${itemsEn[item]} is ${formatLength(aCm)} long. Another piece is ${formatLength(bCm)} long. ${name} joins both together, then joins on another piece of ${itemsEn[item]} that is ${formatLength(cCm)} long. What is the total length of the ${itemsEn[item]} altogether?`,
+      },
+      type: "word_problem",
+      correctAnswer: formatLength(finalTotal),
+      context: { aCm, bCm, cCm, subtotal, finalTotal },
+      generatorKey: "length_add_subtract",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after joining the first two pieces.
+    const stoppedAtTwo = formatLength(subtotal);
+    const distractors = [stoppedAtTwo].filter((d) => d !== formatLength(finalTotal));
+    question.options = shuffleOptions(formatLength(finalTotal), distractors);
+    while (question.options.length < 3) {
+      const candidateCm = Math.max(0, finalTotal + randInt(5, 80) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatLength(candidateCm);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the total length and one piece's length,
   // find the other piece's length (subtraction).

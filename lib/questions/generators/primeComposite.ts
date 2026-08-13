@@ -25,7 +25,52 @@ function isPrime(n: number): boolean {
 export function generatePrimeComposite(params: GeneratorParams): GeneratedQuestion {
   const type = (params.type as "mcq" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): how many PRIME numbers are there
+  // in a given range? Genuine second hop past the base skill and
+  // errorSpotting (both only ever classify ONE number): the student must
+  // check EVERY number in the range and COUNT how many are prime,
+  // instead of classifying a single number.
+  if (challenge) {
+    const lo = randInt(10, 30);
+    const hi = lo + randInt(8, 15);
+    let primeCount = 0;
+    let compositeCount = 0;
+    for (let n = lo; n <= hi; n++) {
+      if (n === 1) continue;
+      if (isPrime(n)) primeCount++;
+      else compositeCount++;
+    }
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Berapa banyakkah nombor PERDANA antara ${lo} dan ${hi} (termasuk kedua-dua nombor itu)? ${name} perlu menyemak setiap nombor satu demi satu.`,
+        en: `How many PRIME numbers are there between ${lo} and ${hi} (inclusive)? ${name} needs to check each number one by one.`,
+      },
+      type: "word_problem",
+      correctAnswer: String(primeCount),
+      context: { lo, hi, primeCount, compositeCount },
+      generatorKey: "prime_composite",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: counts the COMPOSITE numbers instead
+    // of the prime ones.
+    const countedCompositeInstead = compositeCount;
+    // Classic non-routine mistake: miscounts by one, missing or
+    // double-counting a boundary number.
+    const offByOne = primeCount + (Math.random() > 0.5 ? 1 : -1);
+    const distractors = Array.from(
+      new Set([countedCompositeInstead, offByOne].map(String).filter((d) => d !== String(primeCount) && Number(d) >= 0))
+    );
+    question.options = shuffleOptions(String(primeCount), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(0, primeCount + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- errorSpotting: shown the single most common documented mistake —
   // claiming 1 is prime — must give the correct classification.

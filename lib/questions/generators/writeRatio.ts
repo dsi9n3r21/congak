@@ -43,7 +43,7 @@ export function generateWriteRatio(params: GeneratorParams): GeneratedQuestion {
     const errN = randInt(2, 10);
     const correct = `1:${errN}`;
     const wrong = `${errN}:1`;
-    return {
+    const question: GeneratedQuestion = {
       prompt: {
         ms: `Bagi setiap 1 ${itemAMs}, terdapat ${errN} ${itemBMs}. ${name} menulis nisbah ${itemAMs} kepada ${itemBMs} sebagai ${wrong}. Apakah jawapan yang betul?`,
         en: `For every 1 ${itemAEn}, there are ${errN} ${itemBEn}. ${name} writes the ratio of ${itemAEn} to ${itemBEn} as ${wrong}. What is the correct answer?`,
@@ -55,6 +55,12 @@ export function generateWriteRatio(params: GeneratorParams): GeneratedQuestion {
       difficulty: 3,
       options: shuffleOptions(correct, [wrong]),
     };
+    while (question.options!.length < 3) {
+      const candidateN = Math.max(2, errN + randInt(1, 4) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = `1:${candidateN}`;
+      if (!question.options!.includes(candidate)) question.options!.push(candidate);
+    }
+    return question;
   }
 
   if (scale) {

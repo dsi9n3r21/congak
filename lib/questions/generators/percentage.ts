@@ -208,6 +208,7 @@ export function generateDecimalPercentageConvert(params: GeneratorParams): Gener
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const subjects = ["ujian Matematik", "kuiz Sains", "peperiksaan Bahasa Melayu"] as const;
   const subjectsEn: Record<(typeof subjects)[number], string> = {
@@ -215,6 +216,49 @@ export function generateDecimalPercentageConvert(params: GeneratorParams): Gener
     "kuiz Sains": "Science quiz",
     "peperiksaan Bahasa Melayu": "Malay exam",
   };
+
+  // ---- challenge (TP6 / non-routine): TWO decimal scores from two
+  // attempts at the same test — find the percentage-point IMPROVEMENT.
+  // Genuine second hop past the base skill (a single conversion) and
+  // reverseProblem (convert-then-complement): (1) subtract the two
+  // decimal scores, THEN (2) convert that difference to a percentage —
+  // skipping either hop gives a distinct classic wrong answer.
+  if (challenge) {
+    const h1 = pick([5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]);
+    let h2 = pick([5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95]);
+    while (h2 <= h1) h2 = pick([5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95]);
+    const decimal1 = h1 / 100;
+    const decimal2 = h2 / 100;
+    const diffPct = h2 - h1;
+    const name = pick(names);
+    const subject = pick(subjects);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} mendapat markah ${decimal1} daripada 1 dalam percubaan pertama ${subject}, kemudian ${decimal2} daripada 1 dalam percubaan kedua. Berapa banyak mata peratus markahnya bertambah baik?`,
+        en: `${name} scored ${decimal1} out of 1 on the first attempt of the ${subjectsEn[subject]}, then ${decimal2} out of 1 on the second attempt. By how many percentage points did the score improve?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(diffPct),
+      context: { decimal1, decimal2, h1, h2, diffPct },
+      generatorKey: "decimal_percentage_convert",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: subtracts the decimals but forgets to
+    // convert the difference to a percentage.
+    const decimalDiffOnly = (decimal2 - decimal1).toFixed(2);
+    // Classic non-routine mistake: converts only the second score to a
+    // percentage, forgetting to subtract the first attempt at all.
+    const gaveSecondScoreOnly = String(h2);
+    const distractors = Array.from(
+      new Set([decimalDiffOnly, gaveSecondScoreOnly].filter((d) => d !== String(diffPct)))
+    );
+    question.options = shuffleOptions(String(diffPct), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, diffPct + randInt(1, 9) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const whole = randInt(0, maxWhole);
   const hundredths = pick([5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 95]);
@@ -394,6 +438,49 @@ export function generatePercentageAddSubtract(params: GeneratorParams): Generate
   const extraInfoChance = Number(params.extraInfoChance ?? 0);
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): THREE percentage changes chained
+  // together — a price rises twice, then falls once (or similar) — so
+  // the student must combine three values instead of two. Genuine second
+  // hop past the base skill and reverseProblem (both only ever combine
+  // exactly two percentages): (1) combine the first two, THEN (2) apply
+  // the third on top, keeping track of which operation goes with which
+  // value.
+  if (challenge) {
+    const item = pick(["durian", "bas sekolah", "buku teks", "kek raya"] as const);
+    const itemEn = { durian: "durians", "bas sekolah": "the school bus fare", "buku teks": "textbooks", "kek raya": "Raya cakes" }[item];
+    const p1 = randInt(5, maxPct);
+    const p2 = randInt(5, maxPct);
+    const p3 = randInt(5, Math.min(maxPct, p1 + p2 - 1));
+    const afterTwoRises = p1 + p2;
+    const correct = afterTwoRises - p3;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Harga ${item} naik ${p1}% bulan pertama, naik lagi ${p2}% bulan kedua, kemudian turun ${p3}% bulan ketiga semasa jualan murah. Berapakah jumlah peratus perubahan harga berbanding harga asal?`,
+        en: `The price of ${itemEn} rose ${p1}% in the first month, rose another ${p2}% in the second month, then fell ${p3}% in the third month during a sale. What is the total percentage change compared to the original price?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(correct),
+      context: { p1, p2, p3, afterTwoRises, correct },
+      generatorKey: "percentage_add_subtract",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after combining the first two
+    // rises, forgets the third (falling) change entirely.
+    const stoppedAfterTwoRises = String(afterTwoRises);
+    // Classic non-routine mistake: subtracts p3 from p1 only, ignoring p2.
+    const ignoredMiddleValue = String(p1 - p3);
+    const distractors = Array.from(
+      new Set([stoppedAfterTwoRises, ignoredMiddleValue].filter((d) => d !== String(correct) && Number(d) >= 0))
+    );
+    question.options = shuffleOptions(String(correct), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(0, correct + randInt(1, 9) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const op = opFixed ?? pick(["add", "subtract"] as const);
   let a = randInt(5, maxPct);

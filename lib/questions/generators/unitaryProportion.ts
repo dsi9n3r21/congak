@@ -24,6 +24,7 @@ export function generateUnitaryProportion(params: GeneratorParams): GeneratedQue
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const items = ["pensel", "buku tulis", "epal", "biskut"] as const;
   const itemsEn: Record<(typeof items)[number], string> = {
@@ -32,6 +33,61 @@ export function generateUnitaryProportion(params: GeneratorParams): GeneratedQue
     epal: "apples",
     biskut: "biscuits",
   };
+
+  // ---- challenge (TP6 / non-routine): TWO different items, each with
+  // its own group price — find the COMBINED cost of new quantities of
+  // BOTH. Stays firmly within the Y4 unitary method (no new maths, just
+  // the same skill applied twice): genuine second hop past the base
+  // skill and reverseProblem (both only ever involve ONE item): (1)
+  // find item A's one-item price and scale it, (2) find item B's
+  // one-item price and scale it, THEN (3) add both together.
+  if (challenge) {
+    const pricePerItemA = randInt(1, 5);
+    const unitQtyA = randInt(2, 5);
+    const unitCostA = pricePerItemA * unitQtyA;
+    let targetQtyA = randInt(2, 10);
+    if (targetQtyA === unitQtyA) targetQtyA = targetQtyA === 10 ? 9 : targetQtyA + 1;
+
+    const pricePerItemB = randInt(1, 5);
+    const unitQtyB = randInt(2, 5);
+    const unitCostB = pricePerItemB * unitQtyB;
+    let targetQtyB = randInt(2, 10);
+    if (targetQtyB === unitQtyB) targetQtyB = targetQtyB === 10 ? 9 : targetQtyB + 1;
+
+    const costA = pricePerItemA * targetQtyA;
+    const costB = pricePerItemB * targetQtyB;
+    const combined = costA + costB;
+
+    const [itemA, itemB] = [...items].sort(() => Math.random() - 0.5).slice(0, 2);
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${unitQtyA} batang ${itemA} berharga RM${unitCostA}, dan ${unitQtyB} batang ${itemB} berharga RM${unitCostB}. Pada kadar yang sama, berapakah JUMLAH harga bagi ${targetQtyA} batang ${itemA} DAN ${targetQtyB} batang ${itemB} bersama-sama, yang ${name} ingin beli?`,
+        en: `${unitQtyA} ${itemsEn[itemA]} cost RM${unitCostA}, and ${unitQtyB} ${itemsEn[itemB]} cost RM${unitCostB}. At the same rates, what is the TOTAL cost of ${targetQtyA} ${itemsEn[itemA]} AND ${targetQtyB} ${itemsEn[itemB]} together, which ${name} wants to buy?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(combined),
+      context: { pricePerItemA, targetQtyA, costA, pricePerItemB, targetQtyB, costB, combined },
+      generatorKey: "unitary_proportion",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first item, forgets
+    // the second item's cost entirely.
+    const stoppedAtFirstItem = costA;
+    // Classic mistake: skips the unit step for BOTH items, using the
+    // group price directly for each (the base skill's own classic
+    // mistake, applied twice).
+    const forgotUnitStepBoth = unitCostA * targetQtyA + unitCostB * targetQtyB;
+    const distractors = Array.from(
+      new Set([stoppedAtFirstItem, forgotUnitStepBoth].map(String).filter((d) => d !== String(combined)))
+    );
+    question.options = shuffleOptions(String(combined), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, combined + randInt(1, 5) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the group price and a total spent on more
   // of the same item, find how many were bought — still the unitary

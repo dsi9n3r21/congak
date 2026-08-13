@@ -20,6 +20,7 @@ export function generatePictograph(params: GeneratorParams): GeneratedQuestion {
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const variant = pick(["count", "difference"]);
 
   const unitsPerIcon = pick(UNITS_PER_ICON_OPTIONS);
@@ -27,6 +28,48 @@ export function generatePictograph(params: GeneratorParams): GeneratedQuestion {
   const labels = LABELS.slice(0, numCategories);
   const iconCounts = labels.map(() => randInt(1, 8));
   const totals = iconCounts.map((c) => c * unitsPerIcon);
+
+  // ---- challenge (TP6 / non-routine): find the COMBINED total for TWO
+  // different sellers. Genuine second hop past the base "count" variant
+  // (one seller) and the "difference" variant (subtract, don't add):
+  // (1) apply the key to convert EACH seller's icon count to an actual
+  // total, THEN (2) add both totals together.
+  if (challenge) {
+    const [i, j] = [...labels.keys()].sort(() => Math.random() - 0.5).slice(0, 2);
+    const combined = totals[i] + totals[j];
+    const name = pick(PICTOGRAPH_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Piktograf di bawah menunjukkan buah-buahan yang dijual oleh ${labels.length} orang peniaga. Setiap ikon mewakili ${unitsPerIcon} biji buah. ${name} ingin tahu jumlah buah yang dijual oleh peniaga ${labels[i]} DAN peniaga ${labels[j]} secara bersama-sama. Berapakah jumlahnya?`,
+        en: `The pictograph below shows fruit sold by ${labels.length} different sellers. Each icon represents ${unitsPerIcon} fruits. ${name} wants to know the COMBINED total fruit sold by seller ${labels[i]} AND seller ${labels[j]} together. What is that total?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(combined),
+      context: { variant: "challenge", unitsPerIcon, i, j, iconCountI: iconCounts[i], iconCountJ: iconCounts[j], totalI: totals[i], totalJ: totals[j], combined },
+      generatorKey: "pictograph",
+      difficulty: 3,
+      diagram: {
+        kind: "pictograph",
+        segments: labels.map((label, idx) => ({ label, iconCount: iconCounts[idx] })),
+        unitsPerIcon,
+      },
+    };
+    // Classic non-routine mistake: sums the ICON COUNTS directly, forgetting
+    // to apply the key at all.
+    const summedIconsOnly = iconCounts[i] + iconCounts[j];
+    // Classic non-routine mistake: stops after converting the first
+    // seller, forgets to add the second seller's total.
+    const gaveOneSellerOnly = totals[i];
+    const distractors = Array.from(
+      new Set([summedIconsOnly, gaveOneSellerOnly].map(String).filter((d) => d !== String(combined)))
+    );
+    question.options = shuffleOptions(String(combined), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, combined + randInt(unitsPerIcon, unitsPerIcon * 3) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the actual total and the key, find how
   // many icons should be drawn — dividing instead of multiplying.

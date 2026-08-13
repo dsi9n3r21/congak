@@ -47,7 +47,55 @@ export function generateInsuranceTakaful(params: GeneratorParams): GeneratedQues
   const listSize = Number(params.listSize ?? 3);
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const name = pick(NAMES);
+
+  // ---- challenge (TP6 / non-routine): a short list of plans, each with
+  // a coverage VALUE — find the TOTAL coverage of the TAKAFUL plans only.
+  // Genuine second hop past the base skill, reverseProblem, and
+  // word_problem (all three only ever COUNT plans, never use a value):
+  // (1) classify EACH plan, THEN (2) sum only the values of the ones
+  // classified as takaful, ignoring the insurance ones.
+  if (challenge) {
+    const takafulScenarios = SCENARIOS.filter((s) => s.answer === "takaful");
+    const insuranceScenarios = SCENARIOS.filter((s) => s.answer === "insurance");
+    const takafulValues = takafulScenarios.map(() => randInt(20, 80) * 100);
+    const insuranceValues = insuranceScenarios.map(() => randInt(20, 80) * 100);
+    const totalTakaful = takafulValues.reduce((a, b) => a + b, 0);
+    const totalInsurance = insuranceValues.reduce((a, b) => a + b, 0);
+    const items = [
+      ...takafulScenarios.map((s, i) => ({ s, value: takafulValues[i] })),
+      ...insuranceScenarios.map((s, i) => ({ s, value: insuranceValues[i] })),
+    ].sort(() => Math.random() - 0.5);
+    const listMs = items.map((x, i) => `(${i + 1}) ${x.s.ms}, dengan perlindungan RM${x.value}`).join("; ");
+    const listEn = items.map((x, i) => `(${i + 1}) ${x.s.en}, with RM${x.value} coverage`).join("; ");
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membandingkan pelan berikut: ${listMs}. Berapakah JUMLAH perlindungan bagi pelan TAKAFUL sahaja?`,
+        en: `${name} compares the following plans: ${listEn}. What is the TOTAL coverage for the TAKAFUL plans only?`,
+      },
+      type: "word_problem",
+      correctAnswer: `RM${totalTakaful}`,
+      context: { totalTakaful, totalInsurance },
+      generatorKey: "insurance_takaful",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: sums every plan's value, forgetting to
+    // filter to takaful plans only.
+    const summedEverything = `RM${totalTakaful + totalInsurance}`;
+    // Classic non-routine mistake: classifies backward and sums the
+    // insurance plans' values instead.
+    const summedWrongGroup = `RM${totalInsurance}`;
+    const distractors = Array.from(
+      new Set([summedEverything, summedWrongGroup].filter((d) => d !== `RM${totalTakaful}`))
+    );
+    question.options = shuffleOptions(`RM${totalTakaful}`, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = `RM${Math.max(0, totalTakaful + randInt(1, 8) * 100 * (Math.random() > 0.5 ? 1 : -1))}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given a total plan count and how many are
   // takaful, find how many are conventional insurance (subtraction).

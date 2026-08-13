@@ -15,6 +15,7 @@ export function generateFractionsDivideMixedByWhole(params: GeneratorParams): Ge
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const items = ["tepung", "beras", "gula"] as const;
   const itemsEn: Record<(typeof items)[number], string> = { tepung: "flour", beras: "rice", gula: "sugar" };
@@ -30,6 +31,42 @@ export function generateFractionsDivideMixedByWhole(params: GeneratorParams): Ge
   const correctNum = improperNum / g;
   const correctDenom = rawDenom / g;
   const correctAnswer = `${correctNum}/${correctDenom}`;
+
+  // ---- challenge (TP6 / non-routine): a genuine two-hop question — the
+  // share from the first division is split AGAIN among more containers (a
+  // second ÷ by a whole number), same "compound sharing" shape already
+  // used in fractions_divide_by_whole's challenge.
+  if (challenge) {
+    const divisor2 = randInt(2, 5);
+    const rawDenom2 = rawDenom * divisor2;
+    const g2 = gcd(improperNum, rawDenom2);
+    const finalNum = improperNum / g2;
+    const finalDenom = rawDenom2 / g2;
+    const finalAnswer = `${finalNum}/${finalDenom}`;
+    const name = pick(names);
+    const item = pick(items);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} mempunyai ${wholePart} ${fracNum}/${denom} kg ${item}. ${item[0].toUpperCase() + item.slice(1)} itu dibahagikan sama rata kepada ${divisor} bekas. Kemudian, kandungan SETIAP bekas itu dibahagikan lagi sama rata kepada ${divisor2} beg kecil. Berapa kg ${item} dalam setiap beg kecil?`,
+        en: `${name} has ${wholePart} ${fracNum}/${denom} kg of ${itemsEn[item]}. It is divided equally into ${divisor} containers. Then, the contents of EACH container are divided again equally into ${divisor2} small bags. How many kg of ${itemsEn[item]} is in each small bag?`,
+      },
+      type: "word_problem",
+      correctAnswer: finalAnswer,
+      context: { wholePart, fracNum, denom, divisor, improperNum, correctNum, correctDenom, divisor2, finalNum, finalDenom },
+      generatorKey: "fractions_divide_mixed_by_whole",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first division and
+    // gives that per-container amount, forgetting the second split.
+    const stoppedAtFirstShare = correctAnswer;
+    const distractors = [stoppedAtFirstShare].filter((d) => d !== finalAnswer);
+    question.options = shuffleOptions(finalAnswer, distractors);
+    while (question.options.length < 3) {
+      const candidate = `${finalNum}/${finalDenom + randInt(1, 4)}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the per-container amount and how many
   // containers, find the original total — multiplying back.

@@ -290,6 +290,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: segi empat tepat 8 cm × 5 cm dikira sebagai 8 × 5 = 40 cm. SALAH — itu ialah LUAS, bukan perimeter. Perimeter yang betul ialah 2 × (8 + 5) = 26 cm.",
         en: "DON'T do this: a rectangle 8 cm × 5 cm calculated as 8 × 5 = 40 cm. WRONG — that's AREA, not perimeter. The correct perimeter is 2 × (8 + 5) = 26 cm.",
       },
+      {
+        ms: "Cabaran: jika soalan tanya kos memagar (bukan hanya panjang pagar), cari perimeter dahulu, kemudian darabkan dengan kos setiap meter.",
+        en: "Challenge: if the question asks for the COST of fencing (not just the fencing length), find the perimeter first, then multiply by the cost per metre.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti bentuk itu — segi empat tepat atau segi empat sama.", en: "Identify the shape — rectangle or square." },
@@ -311,6 +315,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "forgot_double_perimeter", description: { ms: "Murid terlupa gandakan (panjang + lebar) dengan 2.", en: "The student forgets to double (length + width) by 2." } },
       { mistakeType: "wrong_dimensions_used", description: { ms: "Dalam soalan berbalik, murid guna perimeter secara terus sebagai sisi, tanpa bahagikan dengan 2 dahulu.", en: "In reverse-style questions, the student uses the perimeter directly as a side length, without dividing by 2 first." } },
       { mistakeType: "arithmetic_error_in_formula", description: { ms: "Murid guna formula yang betul tetapi tersilap kira semasa menambah atau mendarab.", en: "The student uses the correct formula but makes an arithmetic slip while adding or multiplying." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (kos memagar), murid berhenti selepas cari perimeter dan tidak teruskan mendarab dengan kos setiap meter.", en: "In the challenge-tier question (cost of fencing), the student stops after finding the perimeter and doesn't continue to multiply by the cost per metre." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "perimeter", config: { min: 3, max: 12 } },
@@ -318,6 +323,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "perimeter", config: { min: 3, max: 12, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "perimeter", config: { min: 3, max: 12, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "perimeter", config: { min: 3, max: 12, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "perimeter", config: { min: 3, max: 12, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000005": {
@@ -334,6 +340,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Titik ke titik, segaris betul — susun titik perpuluhan lurus dahulu sebelum mengira!", en: "Point to point, line them right — align the decimal points before you calculate!" },
       { ms: "JANGAN buat ini: RM12.5 + RM3.20 dikira sebagai 125 + 320 = 445 (abaikan titik terus). SALAH — titik perpuluhan MESTI disusun segaris dahulu; RM12.50 + RM3.20 = RM15.70.", en: "DON'T do this: RM12.5 + RM3.20 calculated as 125 + 320 = 445 (ignoring the decimal point entirely). WRONG — the decimal points MUST be aligned first; RM12.50 + RM3.20 = RM15.70." },
       { ms: "Petua pantas: tambah sifar pada nombor yang lebih pendek supaya kedua-dua nombor ada bilangan digit selepas titik yang sama sebelum mengira.", en: "Quick trick: add a trailing zero to the shorter number so both numbers have the same number of digits after the point before calculating." },
+      { ms: "Cabaran: jika ada barang KETIGA yang dibeli selepas dua yang pertama, jangan berhenti awal — tambah ketiga-tiga harga itu.", en: "Challenge: if a THIRD item is bought after the first two, don't stop early — add all three prices together." },
     ],
     howTo: [
       { ms: "Kenal pasti kedua-dua nombor perpuluhan yang perlu dikira.", en: "Identify the two decimal numbers to be calculated." },
@@ -359,6 +366,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "unit_confusion", description: { ms: "Murid mengabaikan titik perpuluhan sepenuhnya dan mengira kedua-dua nombor seolah-olah nombor bulat (contohnya 12.5 dikira sebagai 125).", en: "Student ignores the decimal point entirely and calculates both numbers as if they were whole numbers (e.g. 12.5 treated as 125)." } },
       { mistakeType: "special_case_error", description: { ms: "Apabila satu nombor mempunyai lebih sedikit digit selepas titik perpuluhan (contohnya 12.5 berbanding 3.25), murid tidak tambah sifar dan salah jajar digit.", en: "When one number has fewer digits after the decimal point (e.g. 12.5 vs 3.25), student doesn't add a trailing zero and misaligns the digits." } },
       { mistakeType: "wrong_operation", description: { ms: "Semasa menolak, murid tidak pinjam merentasi titik perpuluhan apabila digit atas lebih kecil daripada digit bawah dalam bahagian perpuluhan.", en: "While subtracting, student doesn't borrow across the decimal point when the top digit is smaller than the bottom digit in the decimal part." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (barang ketiga dibeli selepas dua yang pertama), murid berhenti selepas dua barang pertama dan tidak teruskan menambah barang ketiga.", en: "In the challenge-tier question (a third item bought after the first two), the student stops after the first two items and doesn't continue to add the third." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "decimal_add_subtract", config: { maxWhole: 10 } },
@@ -366,6 +374,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "decimal_add_subtract", config: { type: "word_problem", maxWhole: 20 } },
       { type: "mcq", difficulty: 3, generatorKey: "decimal_add_subtract", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "decimal_add_subtract", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "decimal_add_subtract", config: { maxWhole: 20, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000006": {
@@ -440,6 +449,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Pisah dahulu, tambah kemudian — pecahkan tempoh masa kepada jam dan minit sebelum mengira!", en: "Split first, add later — break the duration into hours and minutes before calculating!" },
       { ms: "JANGAN buat ini: 2:45 + 30 minit dikira sebagai 2:75. SALAH — 75 minit bukan format masa yang sah. Tukar dahulu: 45+30=75 minit = 1 jam 15 minit, jadi jawapannya 3:15.", en: "DON'T do this: 2:45 + 30 minutes calculated as 2:75. WRONG — 75 minutes isn't a valid time format. Convert first: 45+30=75 minutes = 1 hour 15 minutes, so the answer is 3:15." },
       { ms: "Petua pantas: jika jumlah minit anda 60 atau lebih, tolak 60 daripada minit itu dan tambah 1 pada jam.", en: "Quick trick: if your total minutes is 60 or more, subtract 60 from the minutes and add 1 to the hour." },
+      { ms: "Cabaran: jika ada kelas KEDUA sejurus selepas kelas pertama tamat, jangan berhenti pada waktu tamat kelas pertama — teruskan tambah tempoh kelas kedua.", en: "Challenge: if a SECOND class starts right after the first ends, don't stop at the first class's end time — keep adding the second class's duration." },
     ],
     howTo: [
       { ms: "Kenal pasti masa mula dan tempoh masa yang diberi.", en: "Identify the start time and the given duration." },
@@ -465,6 +475,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "wrong_operation", description: { ms: "Murid menambah tempoh masa hanya pada bahagian jam sahaja, mengabaikan bahagian minit dalam tempoh itu.", en: "Student only adds the duration to the hour part, ignoring the minute part of the duration." } },
       { mistakeType: "special_case_error", description: { ms: "Apabila jam mencecah 12, murid tidak tahu cara menyambung semula ke 1 (contohnya 11:30 + 1 jam menjadi 12:30, bukan 0:30 atau terus ke 13).", en: "When the hour reaches 12, student doesn't know how to wrap back to 1 (e.g. 11:30 + 1 hour becomes 12:30, not 0:30 or straight to 13)." } },
       { mistakeType: "place_value_error", description: { ms: "Murid keliru antara bilangan minit dan bilangan jam semasa memisahkan tempoh masa (contohnya menganggap 90 minit sebagai 9 jam).", en: "Student confuses the number of minutes with the number of hours when splitting the duration (e.g. treats 90 minutes as 9 hours)." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (kelas kedua sejurus selepas kelas pertama), murid beri waktu tamat kelas pertama sahaja, tidak teruskan tambah tempoh kelas kedua.", en: "In the challenge-tier question (a second class right after the first), the student gives just the first class's end time, without continuing to add the second class's duration." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "time_duration", config: {} },
@@ -472,6 +483,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "time_duration", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "time_duration", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "time_duration", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_duration", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000008": {
@@ -556,6 +568,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: nisbah 12:18 dipermudahkan kepada 6:9 (bahagi dengan 2 sahaja) dan berhenti. SALAH — 6 dan 9 masih ada faktor sepunya (3). Anda MESTI teruskan membahagi sehingga tiada faktor sepunya lagi. Jawapan yang betul ialah 2:3.",
         en: "DON'T do this: the ratio 12:18 simplified to 6:9 (only divided by 2) and stopped there. WRONG — 6 and 9 still share a common factor (3). You MUST keep dividing until there's no common factor left. The correct answer is 2:3.",
       },
+      {
+        ms: "Cabaran: jika soalan tanya BEZA antara dua bahagian (bukan hanya satu bahagian), cari nilai SEBENAR kedua-dua bahagian dahulu, kemudian tolak.",
+        en: "Challenge: if the question asks for the DIFFERENCE between the two parts (not just one part), find the ACTUAL value of both parts first, then subtract.",
+      },
     ],
     howTo: [
       { ms: "Cari faktor sepunya terbesar (HCF/GCD) bagi kedua-dua nombor dalam nisbah.", en: "Find the highest common factor (HCF/GCD) of both numbers in the ratio." },
@@ -577,6 +593,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "ratio_order_reversed", description: { ms: "Murid menukar susunan nisbah secara tidak sengaja.", en: "The student accidentally reverses the order of the ratio." } },
       { mistakeType: "ratio_scaling_error", description: { ms: "Semasa mengagihkan jumlah mengikut nisbah, murid membahagikan jumlah itu sama rata dua-dua bahagian, bukan mengikut nisbah.", en: "When sharing a total according to a ratio, the student divides the total equally between the two parts instead of by the ratio." } },
       { mistakeType: "ratio_part_swapped", description: { ms: "Murid memberikan nilai bahagian yang satu lagi, bukan bahagian yang ditanya.", en: "The student gives the value of the other part, not the one the question asked for." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (beza antara dua bahagian), murid beri nilai satu bahagian sahaja, tidak teruskan tolak untuk cari beza.", en: "In the challenge-tier question (difference between two parts), the student gives just one part's value, without continuing to subtract for the difference." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "simplify_ratio", config: { maxMultiplier: 4 } },
@@ -584,6 +601,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "fill", difficulty: 2, generatorKey: "simplify_ratio", config: { maxMultiplier: 8 } },
       { type: "mcq", difficulty: 3, generatorKey: "simplify_ratio", config: { maxMultiplier: 6, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "simplify_ratio", config: { maxMultiplier: 4, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "simplify_ratio", config: { maxMultiplier: 4, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000010": {
@@ -600,6 +618,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Liter ke ml, darab seribu — 1 L sentiasa bersamaan 1000 ml!", en: "Litres to ml, times a thousand — 1 L always equals 1000 ml!" },
       { ms: "JANGAN buat ini: 1 L 250 ml + 300 ml dikira sebagai 1+250+300=551. SALAH — anda tidak boleh tambah bilangan liter terus dengan ml; tukar 1 L kepada 1000 ml dahulu: 1000+250+300=1550 ml.", en: "DON'T do this: 1 L 250 ml + 300 ml calculated as 1+250+300=551. WRONG — you can't add the litre count directly to ml; convert 1 L to 1000 ml first: 1000+250+300=1550 ml." },
       { ms: "Petua pantas: selepas mengira dalam ml, bahagi dengan 1000 untuk semak berapa liter penuh yang terkandung dalam jawapan anda.", en: "Quick trick: after calculating in ml, divide by 1000 to check how many full litres are in your answer." },
+      { ms: "Cabaran: jika ada peristiwa KEDUA (dituang keluar selepas dituang masuk), jangan berhenti awal — kira kedua-dua peristiwa itu.", en: "Challenge: if there's a SECOND event (poured out after poured in), don't stop early — account for both events." },
     ],
     howTo: [
       { ms: "Kenal pasti kedua-dua isipadu yang perlu dikira.", en: "Identify the two volumes to be calculated." },
@@ -624,6 +643,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "unit_confusion", description: { ms: "Murid hanya menambah bahagian ml sahaja, mengabaikan bahagian liter sepenuhnya.", en: "Student only adds the ml parts, ignoring the litre part entirely." } },
       { mistakeType: "place_value_error", description: { ms: "Murid tersilap kira semasa menukar liter kepada ml (contohnya 2 L dikira sebagai 200 ml bukan 2000 ml).", en: "Student miscalculates when converting litres to ml (e.g. 2 L treated as 200 ml instead of 2000 ml)." } },
       { mistakeType: "wrong_operation", description: { ms: "Semasa menolak isipadu, murid menambah bukannya menolak, kerana tidak membaca konteks soalan (dituang keluar) dengan teliti.", en: "While subtracting volumes, student adds instead of subtracting, from not reading the question's context (poured out) carefully." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (dituang keluar selepas dituang masuk), murid berhenti selepas peristiwa pertama dan tidak teruskan mengira peristiwa kedua.", en: "In the challenge-tier question (poured out after poured in), the student stops after the first event and doesn't continue to account for the second." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "volume", config: {} },
@@ -631,6 +651,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "volume", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "volume", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "volume", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "volume", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000011": {
@@ -656,6 +677,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: segi empat tepat 7 cm × 4 cm dikira sebagai perimeter 2×(7+4) = 22 cm. SALAH — soalan minta LUAS, bukan perimeter. Luas yang betul ialah 7 × 4 = 28 cm².",
         en: "DON'T do this: a rectangle 7 cm × 4 cm calculated as the perimeter 2×(7+4) = 22 cm. WRONG — the question asks for AREA, not perimeter. The correct area is 7 × 4 = 28 cm².",
       },
+      {
+        ms: "Cabaran: jika soalan tanya kos rumput (bukan hanya luas), cari luas dahulu, kemudian darabkan dengan kos setiap meter persegi.",
+        en: "Challenge: if the question asks for the COST of grass (not just the area), find the area first, then multiply by the cost per square metre.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti panjang dan lebar bentuk itu.", en: "Identify the length and width of the shape." },
@@ -677,6 +702,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "forgot_multiply_area", description: { ms: "Murid menambah panjang dan lebar, bukan mendarabkannya.", en: "The student adds the length and width instead of multiplying them." } },
       { mistakeType: "wrong_dimension_used", description: { ms: "Dalam soalan berbalik, murid tolak berbanding bahagi untuk mencari sisi yang tidak diketahui.", en: "In reverse-style questions, the student subtracts instead of dividing to find the missing side." } },
       { mistakeType: "arithmetic_error_in_multiplication", description: { ms: "Murid kenal pasti panjang dan lebar dengan betul tetapi tersilap kira semasa mendarab.", en: "The student correctly identifies the length and width but makes an arithmetic slip while multiplying." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (kos rumput), murid berhenti selepas cari luas dan tidak teruskan mendarab dengan kos setiap meter persegi.", en: "In the challenge-tier question (cost of grass), the student stops after finding the area and doesn't continue to multiply by the cost per square metre." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "area_rectangle", config: { min: 3, max: 10 } },
@@ -684,6 +710,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "area_rectangle", config: { min: 3, max: 10, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "area_rectangle", config: { min: 3, max: 10, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "area_rectangle", config: { min: 3, max: 10, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "area_rectangle", config: { min: 3, max: 10, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000012": {
@@ -736,6 +763,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "angles_straight_line", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "angles_straight_line", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "angles_straight_line", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "angles_straight_line", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000013": {
@@ -789,6 +817,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "area_composite", config: { min: 3, max: 10, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "area_composite", config: { min: 3, max: 10, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "area_composite", config: { min: 2, max: 8, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "area_composite", config: { min: 2, max: 6, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000014": {
@@ -841,6 +870,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "angles_triangle_sum", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "angles_triangle_sum", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "angles_triangle_sum", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "angles_triangle_sum", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000015": {
@@ -887,6 +917,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "mcq", difficulty: 1, generatorKey: "angles_classify", config: {} },
       { type: "word_problem", difficulty: 2, generatorKey: "angles_classify", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "angles_classify", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "angles_classify", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000016": {
@@ -912,6 +943,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: tapak 8 cm, tinggi 5 cm dikira sebagai 8 × 5 = 40 cm² dan berhenti di situ. SALAH — anda MESTI bahagi dengan 2 selepas darab. Jawapan yang betul ialah 40 ÷ 2 = 20 cm².",
         en: "DON'T do this: base 8 cm, height 5 cm calculated as 8 × 5 = 40 cm² and stopping there. WRONG — you MUST divide by 2 after multiplying. The correct answer is 40 ÷ 2 = 20 cm².",
       },
+      {
+        ms: "Cabaran: jika soalan tanya kos kain (bukan hanya luas), cari luas dahulu, kemudian darabkan dengan kos setiap sentimeter persegi.",
+        en: "Challenge: if the question asks for the COST of the cloth (not just the area), find the area first, then multiply by the cost per square centimetre.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti tapak dan tinggi segi tiga itu.", en: "Identify the triangle's base and height." },
@@ -934,6 +969,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "halved_both_dimensions", description: { ms: "Murid membahagikan tapak dan tinggi dengan 2 secara berasingan sebelum mendarab.", en: "The student divides the base and height by 2 separately before multiplying." } },
       { mistakeType: "used_slanted_side_as_height", description: { ms: "Murid guna panjang sisi condong sebagai tinggi, bukan jarak tegak lurus sebenar.", en: "The student uses the length of a slanted side as the height, instead of the actual perpendicular distance." } },
       { mistakeType: "arithmetic_error_in_division", description: { ms: "Murid darab tapak dan tinggi dengan betul tetapi tersilap kira semasa bahagi dengan 2.", en: "The student multiplies the base and height correctly but makes an arithmetic slip while dividing by 2." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (kos kain), murid berhenti selepas cari luas dan tidak teruskan mendarab dengan kos setiap sentimeter persegi.", en: "In the challenge-tier question (cost of cloth), the student stops after finding the area and doesn't continue to multiply by the cost per square centimetre." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "area_triangle", config: { min: 4, max: 16 } },
@@ -941,6 +977,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "area_triangle", config: { min: 6, max: 20, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "area_triangle", config: { min: 4, max: 16, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "area_triangle", config: { min: 6, max: 20, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "area_triangle", config: { min: 6, max: 20, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000017": {
@@ -993,6 +1030,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "angles_at_point", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "angles_at_point", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "angles_at_point", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "angles_at_point", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000018": {
@@ -1018,6 +1056,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: jejari 7 cm dikira sebagai lilitan = 3.142 × 7 = 21.99 cm (terlepas gandakan dahulu). SALAH — anda MESTI gandakan jejari dengan 2 SEBELUM darab dengan π. Jawapan yang betul ialah 2 × 3.142 × 7 = 43.99 cm.",
         en: "DON'T do this: radius 7 cm calculated as circumference = 3.142 × 7 = 21.99 cm (missing the doubling step). WRONG — you MUST double the radius by 2 BEFORE multiplying by π. The correct answer is 2 × 3.142 × 7 = 43.99 cm.",
       },
+      {
+        ms: "Cabaran: jika soalan tanya kos pagar (bukan hanya lilitan), cari lilitan dahulu, kemudian darabkan dengan kos setiap meter.",
+        en: "Challenge: if the question asks for the COST of fencing (not just the circumference), find the circumference first, then multiply by the cost per metre.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti jejari bulatan itu.", en: "Identify the circle's radius." },
@@ -1039,6 +1081,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "confused_with_area_formula", description: { ms: "Murid menggunakan formula luas (π × jejari²) berbanding formula lilitan.", en: "The student uses the area formula (π × radius²) instead of the circumference formula." } },
       { mistakeType: "wrong_reverse_method", description: { ms: "Dalam soalan berbalik, murid bahagikan lilitan dengan π sahaja tanpa bahagi 2 juga, jadi dapat diameter bukan jejari.", en: "In reverse-style questions, the student divides the circumference by π alone without also dividing by 2, getting the diameter instead of the radius." } },
       { mistakeType: "arithmetic_error_in_multiplication", description: { ms: "Murid guna formula yang betul tetapi tersilap kira semasa mendarab.", en: "The student uses the correct formula but makes an arithmetic slip while multiplying." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (kos pagar), murid berhenti selepas cari lilitan dan tidak teruskan mendarab dengan kos setiap meter.", en: "In the challenge-tier question (cost of fencing), the student stops after finding the circumference and doesn't continue to multiply by the cost per metre." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "circumference", config: { min: 3, max: 20 } },
@@ -1046,6 +1089,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "circumference", config: { min: 3, max: 20, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "circumference", config: { min: 3, max: 20, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "circumference", config: { min: 3, max: 20, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "circumference", config: { min: 3, max: 20, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000019": {
@@ -1071,6 +1115,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: jejari 5 cm dikira sebagai luas = 2 × 3.142 × 5 = 31.42 cm² (guna formula lilitan). SALAH — luas MESTI guna jejari × jejari, bukan × 2. Jawapan yang betul ialah 3.142 × 5 × 5 = 78.55 cm².",
         en: "DON'T do this: radius 5 cm calculated as area = 2 × 3.142 × 5 = 31.42 cm² (using the circumference formula). WRONG — area MUST use radius × radius, not × 2. The correct answer is 3.142 × 5 × 5 = 78.55 cm².",
       },
+      {
+        ms: "Cabaran: jika soalan tanya kos kanvas (bukan hanya luas), cari luas dahulu, kemudian darabkan dengan kos setiap sentimeter persegi.",
+        en: "Challenge: if the question asks for the COST of canvas (not just the area), find the area first, then multiply by the cost per square centimetre.",
+      },
     ],
     howTo: [
       { ms: "Kenal pasti jejari bulatan itu (bahagikan diameter dengan 2 jika perlu).", en: "Identify the circle's radius (divide the diameter by 2 if needed)." },
@@ -1092,6 +1140,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "squared_diameter_instead", description: { ms: "Murid mendarab diameter dengan dirinya, bukan jejari.", en: "The student squares the diameter instead of the radius." } },
       { mistakeType: "wrong_reverse_method", description: { ms: "Dalam soalan berbalik, murid guna kaedah bahagi lilitan (÷π÷2) berbanding punca kuasa dua yang betul untuk cari jejari.", en: "In reverse-style questions, the student uses the circumference-division method (÷π÷2) instead of correctly working back through the square to find the radius." } },
       { mistakeType: "arithmetic_error_in_multiplication", description: { ms: "Murid guna formula yang betul tetapi tersilap kira semasa mendarab.", en: "The student uses the correct formula but makes an arithmetic slip while multiplying." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (kos kanvas), murid berhenti selepas cari luas dan tidak teruskan mendarab dengan kos setiap sentimeter persegi.", en: "In the challenge-tier question (cost of canvas), the student stops after finding the area and doesn't continue to multiply by the cost per square centimetre." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "area_circle", config: { min: 3, max: 15 } },
@@ -1099,6 +1148,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "area_circle", config: { min: 3, max: 15, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "area_circle", config: { min: 3, max: 15, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "area_circle", config: { min: 3, max: 15, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "area_circle", config: { min: 3, max: 15, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000020": {
@@ -1385,6 +1435,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "mcq", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 12 } },
       { type: "word_problem", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 10, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "coordinates", config: { gridSize: 10, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "coordinates", config: { gridSize: 10, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000025": {
@@ -1410,6 +1461,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 738 ÷ 6 dikira sebagai 738 − 6 = 732 (tolak sekali sahaja). SALAH — pembahagian bermaksud cari berapa KALI 6 boleh masuk ke dalam 738, bukan tolak sekali. Jawapan yang betul ialah 123.",
         en: "DON'T do this: 738 ÷ 6 calculated as 738 − 6 = 732 (subtracting just once). WRONG — division means finding how many TIMES 6 fits into 738, not subtracting once. The correct answer is 123.",
       },
+      {
+        ms: "Cabaran: jika jumlah yang SAMA diagihkan semula kepada bilangan murid yang berbeza, anda perlu bahagi DUA kali — sekali untuk setiap pengagihan, bukan hanya yang pertama.",
+        en: "Challenge: if the SAME total is regrouped among a different number of students, you need to divide TWICE — once for each sharing, not just the first.",
+      },
     ],
     howTo: [
       { ms: "Anggarkan berapa kali pembahagi boleh masuk ke dalam bahagi, digit demi digit dari kiri.", en: "Estimate how many times the divisor fits into the dividend, digit by digit from the left." },
@@ -1432,6 +1487,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "added_instead_of_divided", description: { ms: "Murid menambah pembahagi kepada bahagi berbanding membahagikannya.", en: "The student adds the divisor to the dividend instead of dividing." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak semula dengan darab, jadi tidak perasan anggaran mereka masih terlalu jauh daripada bahagi sebenar.", en: "The student doesn't check back by multiplying, so doesn't notice their estimate is still far off from the actual dividend." } },
       { mistakeType: "multiplied_instead_of_divided", description: { ms: "Dalam soalan songsang (cari bilangan kumpulan/murid), murid darab bahagi dengan hasil bahagi, bukan membahagikannya.", en: "In the reverse-direction question (finding the number of groups/students), the student multiplies the dividend by the quotient, instead of dividing." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (agihan disusun semula kepada bilangan murid yang berbeza), murid berhenti selepas pengagihan pertama dan tidak teruskan ke pengagihan kedua.", en: "In the challenge-tier question (the same total regrouped among a different number of students), the student stops after the first sharing and doesn't continue to the second." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 999 } },
@@ -1439,6 +1495,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 500, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 500, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division_y5", config: { minQuotient: 100, maxQuotient: 400, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_division_y5", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000026": {
@@ -1464,6 +1521,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 3450 × 34 dikira sebagai 3450×3 + 3450×4 = 10,350 + 13,800 = 24,150 (tak anjak hasil darab puluh). SALAH — 3450 × 30 = 103,500, bukan 3450 × 3 = 10,350. Anda MESTI darab dengan nilai puluh sebenar (30), bukan digit itu sahaja (3). Jawapan yang betul ialah 117,300.",
         en: "DON'T do this: 3450 × 34 calculated as 3450×3 + 3450×4 = 10,350 + 13,800 = 24,150 (not shifting the tens product). WRONG — 3450 × 30 = 103,500, not 3450 × 3 = 10,350. You MUST multiply by the actual tens value (30), not just the digit (3). The correct answer is 117,300.",
       },
+      {
+        ms: "Cabaran: jika soalan tanya tentang bilangan hari yang BERBEZA daripada jumlah asal, cari kadar harian dahulu (jumlah ÷ hari), kemudian darab semula dengan bilangan hari yang baharu.",
+        en: "Challenge: if the question asks about a DIFFERENT number of days than the original total, find the daily rate first (total ÷ days), then multiply again by the new number of days.",
+      },
     ],
     howTo: [
       { ms: "Darabkan nombor pertama dengan digit sa nombor kedua.", en: "Multiply the first number by the ones digit of the second number." },
@@ -1485,6 +1546,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "added_instead_of_multiplied", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan hasil darab dahulu, jadi tidak perasan jawapan akhir tidak munasabah (contohnya lebih kecil daripada salah satu nombor asal).", en: "The student doesn't estimate the product first, so doesn't notice when the final answer doesn't make sense (e.g. smaller than one of the original numbers)." } },
       { mistakeType: "multiplied_instead_of_divided", description: { ms: "Dalam soalan songsang (cari nilai harian daripada jumlah), murid darab semula jumlah itu dengan bilangan hari, bukan bahagikannya.", en: "In the reverse-direction question (finding the daily rate from a total), the student multiplies the total by the number of days again, instead of dividing." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (unjurkan kadar harian ke bilangan hari yang berbeza), murid berhenti selepas cari kadar harian dan tidak teruskan mendarab dengan bilangan hari yang baharu.", en: "In the challenge-tier question (projecting the daily rate over a different number of days), the student stops after finding the daily rate and doesn't continue to multiply by the new number of days." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 9999 } },
@@ -1492,6 +1554,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 5000, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 5000, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { min: 1000, max: 5000, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_multiplication_y6", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000027": {
@@ -1544,6 +1607,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50 } },
       { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 8, max: 30, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000028": {
@@ -1689,6 +1753,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 245600 + 318750 disusun sa bertentang sa dengan sa terakhir sahaja (bukan ikut nilai tempat sebenar). SALAH — anda MESTI susun ikut nilai tempat (sa di bawah sa, puluh di bawah puluh). Jawapan yang betul ialah 564,350.",
         en: "DON'T do this: 245600 + 318750 lined up flush-right by digit count (not real place value). WRONG — you MUST line up by place value (ones under ones, tens under tens). The correct answer is 564,350.",
       },
+      {
+        ms: "Cabaran: jika ada penghantaran KEDUA selepas yang pertama, jangan berhenti awal — tambahkan KETIGA-TIGA nombor itu.",
+        en: "Challenge: if there's a SECOND delivery after the first, don't stop early — add all THREE numbers together.",
+      },
     ],
     howTo: [
       { ms: "Susun kedua-dua nombor ikut nilai tempat.", en: "Line up both numbers by place value." },
@@ -1714,6 +1782,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "place_value_misalignment", description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." } },
       { mistakeType: "wrong_operation", description: { ms: "Murid menolak berbanding menambah (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student subtracts instead of adding (or vice versa) when solving the problem." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak anggarkan jawapan dahulu, jadi tidak perasan jawapan akhir tidak masuk akal.", en: "The student doesn't estimate the answer first, so doesn't notice when the final answer doesn't make sense." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (penghantaran kedua selepas yang pertama), murid berhenti selepas penghantaran pertama dan tidak teruskan menambah penghantaran kedua.", en: "In the challenge-tier question (a second delivery after the first), the student stops after the first delivery and doesn't continue to add the second one." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 999999 } },
@@ -1721,6 +1790,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 500000, type: "word_problem" } },
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 999999, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_addition_y5", config: { min: 100000, max: 500000, reverseProblem: true } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_addition_y5", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000031": {
@@ -1745,6 +1815,10 @@ export const TOPICS: Record<string, TopicContent> = {
       {
         ms: "JANGAN buat ini: 876400 − 123850 (dalam satu lajur) dikira dengan tolak digit lebih kecil daripada digit lebih besar, tidak kira susunan. SALAH — anda MESTI pinjam 1 daripada lajur sebelah kiri apabila digit atas lebih kecil, bukan tukar susunan.",
         en: "DON'T do this: 876400 − 123850 (within one column) calculated by subtracting the smaller digit from the larger one, regardless of position. WRONG — you MUST borrow 1 from the column on the left when the top digit is smaller, not swap the order around.",
+      },
+      {
+        ms: "Cabaran: jika ada penolakan KEDUA selepas yang pertama, jangan berhenti awal — tolak kedua-dua jumlah itu daripada nombor asal.",
+        en: "Challenge: if there's a SECOND deduction after the first, don't stop early — subtract both amounts from the original number.",
       },
     ],
     howTo: [
@@ -1771,6 +1845,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "place_value_misalignment", description: { ms: "Murid tidak susun nombor ikut nilai tempat dengan betul.", en: "The student doesn't line up digits by the correct place value column." } },
       { mistakeType: "wrong_operation", description: { ms: "Murid menambah berbanding menolak (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student adds instead of subtracting (or vice versa) when solving the problem." } },
       { mistakeType: "chained_borrow_error", description: { ms: "Murid pinjam dengan betul di satu lajur tetapi lupa tolak 1 daripada lajur yang dipinjam pada langkah seterusnya.", en: "The student borrows correctly in one column but forgets to subtract 1 from the borrowed-from column in the next step." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (penolakan kedua selepas yang pertama), murid berhenti selepas penolakan pertama dan tidak teruskan menolak jumlah kedua.", en: "In the challenge-tier question (a second deduction after the first), the student stops after the first deduction and doesn't continue to subtract the second." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_subtraction_y5", config: { min: 100000, max: 999999 } },
@@ -1778,6 +1853,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_subtraction_y5", config: { min: 200000, max: 900000, type: "word_problem" } },
       { type: "mcq", difficulty: 2, generatorKey: "whole_numbers_subtraction_y5", config: { min: 100000, max: 999999, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_subtraction_y5", config: { min: 200000, max: 900000, reverseProblem: true } },
+      { type: "word_problem", difficulty: 2, generatorKey: "whole_numbers_subtraction_y5", config: { min: 200000, max: 900000, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000032": {
@@ -1794,6 +1870,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Dua-dua, tiga-tiga — tambah DUA dahulu, baru tambah nombor KETIGA!", en: "Two then three — add the first TWO, then add the THIRD to that!" },
       { ms: "JANGAN buat ini: tambah dua nombor sahaja dan lupa nombor ketiga (12,450 + 15,800 = 28,250, terus jadi jawapan akhir). SALAH — masih ada 9,670 yang belum ditambah!", en: "DON'T do this: add only two numbers and forget the third (12,450 + 15,800 = 28,250, treated as the final answer). WRONG — there's still 9,670 left to add!" },
       { ms: "Petua pantas: selepas dapat jumlah dua nombor pertama, tanya diri anda 'adakah masih ada nombor lagi?' sebelum tulis jawapan akhir.", en: "Quick trick: after getting the subtotal of the first two numbers, ask yourself 'is there still another number?' before writing your final answer." },
+      { ms: "Cabaran: jika ada catatan KEEMPAT yang ditemui selepas jumlah tiga bulan itu, jangan berhenti — tambah catatan itu juga.", en: "Challenge: if a FOURTH figure turns up after the three-month subtotal, don't stop there — add that figure too." },
     ],
     howTo: [
       { ms: "Kenal pasti ketiga-tiga nombor yang perlu ditambah.", en: "Identify all three numbers that need to be added." },
@@ -1818,6 +1895,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "place_value_error", description: { ms: "Semasa menambah nombor besar (5-6 digit), murid tersalah jajar lajur nilai tempat, menyebabkan jawapan tersasar jauh.", en: "While adding large numbers (5-6 digits), student misaligns the place-value columns, causing the answer to be far off." } },
       { mistakeType: "special_case_error", description: { ms: "Apabila menambah tiga nombor menyebabkan simpan (carry) berlaku dua kali berturut-turut, murid hanya simpan sekali dan lupa simpan yang kedua.", en: "When adding three numbers causes a carry to happen twice in a row, student only carries once and forgets the second carry." } },
       { mistakeType: "keyword_only_classification", description: { ms: "Murid tambah nombor mengikut susunan yang salah (contohnya nombor kedua dan ketiga dahulu, bukan pertama dan kedua), menyebabkan kekeliruan semasa menyemak jawapan.", en: "Student adds the numbers in the wrong order (e.g. the second and third first, not the first and second), causing confusion when checking the answer." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (catatan keempat ditemui selepas jumlah tiga bulan), murid berhenti pada jumlah tiga bulan dan tidak teruskan menambah catatan keempat.", en: "In the challenge-tier question (a fourth figure turns up after the three-month subtotal), the student stops at the three-month subtotal and doesn't continue to add the fourth." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_addition_y6", config: { min: 10000, max: 99999 } },
@@ -1825,6 +1903,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_addition_y6", config: { min: 5000, max: 50000 } },
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_addition_y6", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_addition_y6", config: { min: 5000, max: 50000, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_addition_y6", config: { min: 5000, max: 50000, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000033": {
@@ -1841,6 +1920,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Sifar tak boleh pinjam — pinjam dari yang BUKAN sifar, semua sifar di antaranya jadi 9!", en: "A zero can't lend — borrow from the nearest NON-zero, every zero in between turns into a 9!" },
       { ms: "JANGAN buat ini: 500,000 − 187,650, tolak digit lebih kecil daripada lebih besar tanpa pinjam (0−0=0, 0−5=5 kerana 'tak boleh negatif'). SALAH — anda MESTI pinjam merentasi kesemua sifar itu dahulu.", en: "DON'T do this: for 500,000 − 187,650, subtracting the smaller digit from the larger regardless of position (0−0=0, 0−5=5 because 'can't be negative'). WRONG — you MUST borrow across all those zeros first." },
       { ms: "Semak jawapan anda: tambah jawapan dengan nombor yang ditolak — ia MESTI menyamai nombor bulat asal.", en: "Check your answer: add your result to the number you subtracted — it MUST equal the original round number." },
+      { ms: "Cabaran: jika ada dua fasa pengeluaran, cari baki selepas fasa pertama dahulu, kemudian tolak fasa kedua daripada baki itu.", en: "Challenge: with two production phases, find the remainder after phase one first, then subtract phase two from that remainder." },
     ],
     howTo: [
       { ms: "Kenal pasti nombor bulat (minuend) dan nombor yang ditolak (subtrahend).", en: "Identify the round number (minuend) and the number being subtracted (subtrahend)." },
@@ -1870,6 +1950,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "place_value_error", description: { ms: "Murid pinjam daripada lajur yang salah (bukan lajur bukan-sifar terdekat), menyebabkan lajur pertengahan tersalah nilai.", en: "Student borrows from the wrong column (not the nearest non-zero one), causing middle columns to end up with the wrong value." } },
       { mistakeType: "special_case_error", description: { ms: "Murid lupa menukar SEMUA lajur 0 di antara kepada 9 — hanya menukar satu atau dua, meninggalkan baki lajur sebagai 0.", en: "Student forgets to change ALL the zero columns in between to 9 — only changes one or two, leaving the rest as 0." } },
       { mistakeType: "unit_confusion", description: { ms: "Murid keliru nilai tempat setiap digit (contohnya menganggap digit ratus ribu sebagai puluh ribu), menyebabkan jawapan tersasar dengan faktor 10.", en: "Student confuses the place value of a digit (e.g. treats the hundred-thousands digit as ten-thousands), causing the answer to be off by a factor of 10." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (dua fasa pengeluaran daripada sasaran yang sama), murid berhenti selepas fasa pertama dan tidak teruskan menolak fasa kedua.", en: "In the challenge-tier question (two production phases against the same target), the student stops after phase one and doesn't continue to subtract phase two." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_subtraction_y6", config: { min: 10000, max: 99999 } },
@@ -1877,6 +1958,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_subtraction_y6", config: { min: 10000, max: 80000 } },
       { type: "mcq", difficulty: 3, generatorKey: "whole_numbers_subtraction_y6", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_subtraction_y6", config: { min: 10000, max: 80000, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "whole_numbers_subtraction_y6", config: { min: 10000, max: 80000, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000034": {
@@ -1902,6 +1984,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 5/8 − 2/8 dikira sebagai 3/0 (tolak penyebut juga, 8−8=0). SALAH — penyebut MESTI kekal sama, hanya pengangka yang ditolak. Jawapan yang betul ialah 3/8.",
         en: "DON'T do this: 5/8 − 2/8 calculated as 3/0 (subtracting the denominators too, 8−8=0). WRONG — the denominator MUST stay the same, only the numerator gets subtracted. The correct answer is 3/8.",
       },
+      {
+        ms: "Cabaran: jika ada bahagian KEDUA yang dimakan selepas yang pertama, jangan berhenti awal — tolak kedua-dua bahagian itu daripada pengangka asal.",
+        en: "Challenge: if a SECOND portion is eaten after the first, don't stop early — subtract both portions from the original numerator.",
+      },
     ],
     howTo: [
       { ms: "Semak sama ada kedua-dua pecahan mempunyai penyebut yang sama.", en: "Check that both fractions have the same denominator." },
@@ -1922,6 +2008,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "denominator_subtraction_error", description: { ms: "Murid turut menolak penyebut.", en: "The student also subtracts the denominators." } },
       { mistakeType: "fraction_calculation_error", description: { ms: "Semasa cari jumlah permulaan (diberi baki dan bahagian yang dimakan), murid tolak berbanding tambah.", en: "When finding the starting amount (given the remainder and the part eaten), the student subtracts instead of adding." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada jawapan itu munasabah — pecahan hasil tolak mesti lebih kecil daripada pecahan pertama.", en: "The student doesn't check whether the answer is reasonable — the resulting fraction should be smaller than the first fraction." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (bahagian kedua dimakan selepas yang pertama), murid berhenti selepas bahagian pertama dan tidak teruskan menolak bahagian kedua.", en: "In the challenge-tier question (a second portion eaten after the first), the student stops after the first portion and doesn't continue to subtract the second." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [4, 5, 6, 8, 10, 12] } },
@@ -1929,6 +2016,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 1, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [4, 5, 6, 8], type: "word_problem" } },
       { type: "mcq", difficulty: 2, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [6, 8, 10, 12], errorSpotting: true } },
       { type: "word_problem", difficulty: 2, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [5, 6, 8, 10], reverseProblem: true } },
+      { type: "word_problem", difficulty: 2, generatorKey: "fractions_subtract_same_denominator", config: { denominators: [8, 10, 12], challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000035": {
@@ -1945,6 +2033,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Titik lurus, jawapan tepat — susun titik perpuluhan sebelum mengira apa-apa!", en: "Straight point, correct answer — line up the decimal points before calculating anything!" },
       { ms: "JANGAN buat ini: 2.4 + 1.3 dikira sebagai 2+1=3 (abaikan .4 dan .3 terus). SALAH — persepuluhan MESTI dikira juga; jawapan yang betul ialah 3.7, bukan 3.", en: "DON'T do this: 2.4 + 1.3 calculated as 2+1=3 (ignoring the .4 and .3 entirely). WRONG — the tenths MUST be included too; the correct answer is 3.7, not 3." },
       { ms: "Petua pantas: fikirkan tempat persepuluhan seperti sen dalam wang — 0.5 hampir sama konsepnya dengan RM0.50.", en: "Quick trick: think of the tenths place like small change — 0.5 works similarly to thinking about half of something." },
+      { ms: "Cabaran: jika ada sesi KETIGA selepas dua yang pertama, jangan berhenti awal — tambah KETIGA-TIGA jarak itu.", en: "Challenge: if there's a THIRD session after the first two, don't stop early — add all THREE distances together." },
     ],
     howTo: [
       { ms: "Kenal pasti kedua-dua nombor perpuluhan yang perlu dikira.", en: "Identify the two decimal numbers to be calculated." },
@@ -1970,6 +2059,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "place_value_error", description: { ms: "Murid tidak susun titik perpuluhan dengan betul semasa mengira secara menegak, menyebabkan digit tercampur pada lajur yang salah.", en: "Student doesn't line up the decimal points correctly when calculating vertically, causing digits to mix into the wrong columns." } },
       { mistakeType: "special_case_error", description: { ms: "Apabila jumlah persepuluhan mencecah 10 (contohnya 6+7=13), murid tidak simpan 1 ke lajur nombor bulat.", en: "When the tenths sum reaches 10 or more (e.g. 6+7=13), student doesn't carry the 1 into the whole-number column." } },
       { mistakeType: "wrong_operation", description: { ms: "Semasa menolak, murid tidak pinjam daripada nombor bulat apabila persepuluhan yang ditolak lebih besar daripada persepuluhan asal.", en: "While subtracting, student doesn't borrow from the whole number when the tenths being subtracted is larger than the original tenths." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (sesi ketiga selepas dua yang pertama), murid berhenti selepas dua sesi pertama dan tidak teruskan menambah sesi ketiga.", en: "In the challenge-tier question (a third session after the first two), the student stops after the first two sessions and doesn't continue to add the third." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "decimal_add_subtract_y4", config: { maxWhole: 10 } },
@@ -1977,6 +2067,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "decimal_add_subtract_y4", config: { type: "word_problem", maxWhole: 15 } },
       { type: "mcq", difficulty: 3, generatorKey: "decimal_add_subtract_y4", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "decimal_add_subtract_y4", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 2, generatorKey: "decimal_add_subtract_y4", config: { maxWhole: 15, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000036": {
@@ -2002,6 +2093,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 1.5 × 4 dijawab sebagai 60 (darab 15 × 4 tetapi lupa letak titik semula). SALAH — 1.5 ada 1 tempat perpuluhan, jadi jawapan MESTI juga ada 1 tempat perpuluhan: 6.0.",
         en: "DON'T do this: 1.5 × 4 answered as 60 (multiplying 15 × 4 but forgetting to put the point back). WRONG — 1.5 has 1 decimal place, so the answer MUST also have 1 decimal place: 6.0.",
       },
+      {
+        ms: "Cabaran: jika soalan tanya tentang bilangan botol yang BERBEZA daripada jumlah asal, cari jumlah sebotol dahulu, kemudian darab semula dengan bilangan botol yang baharu.",
+        en: "Challenge: if the question asks about a DIFFERENT number of bottles than the original total, find the per-bottle amount first, then multiply again by the new bottle count.",
+      },
     ],
     howTo: [
       { ms: "Darab kedua-dua nombor seolah-olah nombor bulat, abaikan titik perpuluhan.", en: "Multiply both numbers as if they were whole numbers, ignoring the decimal point." },
@@ -2024,6 +2119,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "wrong_operation", description: { ms: "Murid menambah kedua-dua nombor berbanding mendarabkannya.", en: "The student adds the two numbers instead of multiplying them." } },
       { mistakeType: "misplaced_decimal_point", description: { ms: "Murid letakkan titik perpuluhan pada kedudukan yang salah (cth. dua tempat perpuluhan berbanding satu).", en: "The student places the decimal point in the wrong position (e.g. two decimal places instead of one)." } },
       { mistakeType: "arithmetic_error_in_multiplication", description: { ms: "Murid abaikan titik perpuluhan dengan betul tetapi tersilap kira pendaraban asas itu sendiri.", en: "The student correctly ignores the decimal point but makes an error in the basic multiplication itself." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (bilangan botol berbeza daripada jumlah asal), murid berhenti selepas cari jumlah sebotol dan tidak teruskan mendarab dengan bilangan botol yang baharu.", en: "In the challenge-tier question (a different number of bottles than the original total), the student stops after finding the per-bottle amount and doesn't continue to multiply by the new bottle count." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "decimal_multiply", config: { maxWhole: 10 } },
@@ -2031,6 +2127,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "decimal_multiply", config: { maxWhole: 8 } },
       { type: "mcq", difficulty: 3, generatorKey: "decimal_multiply", config: { maxWhole: 10, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "decimal_multiply", config: { maxWhole: 8, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "decimal_multiply", config: { maxWhole: 8, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000037": {
@@ -2056,6 +2153,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 7.2 ÷ 3 dijawab sebagai 24 (bahagi 72 ÷ 3 tetapi lupa letak titik semula). SALAH — jawapan MESTI juga ada 1 tempat perpuluhan, sama seperti nombor asal: 2.4.",
         en: "DON'T do this: 7.2 ÷ 3 answered as 24 (dividing 72 ÷ 3 but forgetting to put the point back). WRONG — the answer MUST also have 1 decimal place, same as the original number: 2.4.",
       },
+      {
+        ms: "Cabaran: jika tali yang sama dipotong semula kepada bilangan bahagian yang BERBEZA, jangan berhenti pada potongan pertama — bahagikan semula panjang asal dengan bilangan bahagian yang baharu.",
+        en: "Challenge: if the same rope is re-cut into a DIFFERENT number of pieces, don't stop at the first cut — divide the original length again by the new number of pieces.",
+      },
     ],
     howTo: [
       { ms: "Letakkan titik perpuluhan pada jawapan, terus di atas titik perpuluhan bahagi.", en: "Place the decimal point in the answer, directly above the decimal point being divided." },
@@ -2078,6 +2179,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "wrong_operation", description: { ms: "Murid mendarab kedua-dua nombor berbanding membahagikannya.", en: "The student multiplies the two numbers instead of dividing them." } },
       { mistakeType: "misplaced_decimal_point", description: { ms: "Murid letakkan titik perpuluhan pada kedudukan yang salah dalam jawapan.", en: "The student places the decimal point in the wrong position in the answer." } },
       { mistakeType: "remainder_confusion", description: { ms: "Murid berhenti selepas langkah pertama pembahagian dan tidak bawa turun digit persepuluhan yang berbaki.", en: "The student stops after the first division step and doesn't bring down the remaining tenths digit." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (dipotong semula kepada bilangan bahagian berbeza), murid berhenti selepas potongan pertama dan tidak teruskan membahagi semula.", en: "In the challenge-tier question (re-cut into a different number of pieces), the student stops after the first cut and doesn't continue to divide again." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "decimal_divide", config: { maxQuotientWhole: 10 } },
@@ -2085,6 +2187,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "decimal_divide", config: { maxQuotientWhole: 8 } },
       { type: "mcq", difficulty: 3, generatorKey: "decimal_divide", config: { maxQuotientWhole: 10, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "decimal_divide", config: { maxQuotientWhole: 8, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "decimal_divide", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000038": {
@@ -2160,6 +2263,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Seratus sen sama dengan satu ringgit — simpan 1 ringgit apabila sen mencecah 100!", en: "A hundred sen equals one ringgit — carry 1 ringgit whenever the sen reaches 100!" },
       { ms: "JANGAN buat ini: RM8.50 + RM12.30 dikira sebagai 850 + 1230 = 2080, terus ditulis RM20.80 tanpa semak sen. SALAH secara kebetulan sahaja di sini — tambah sen dan ringgit BERASINGAN dahulu (50+30=80 sen, 8+12=20 ringgit), baru gabungkan; jangan hanya sambungkan digit.", en: "DON'T do this: RM8.50 + RM12.30 calculated as 850 + 1230 = 2080, written straight as RM20.80 without checking the sen. This only happens to work here — add the sen and ringgit SEPARATELY first (50+30=80 sen, 8+12=20 ringgit), then combine; don't just concatenate digits." },
       { ms: "Semak jawapan anda: tolak salah satu jumlah asal daripada jawapan — ia mesti kembali kepada jumlah yang satu lagi.", en: "Check your answer: subtract one of the original amounts from your answer — it should return the other original amount." },
+      { ms: "Cabaran: jika ada barang KETIGA yang dibeli selepas dua yang pertama, jangan berhenti awal — tambah ketiga-tiga harga itu.", en: "Challenge: if a THIRD item is bought after the first two, don't stop early — add all three prices together." },
     ],
     howTo: [
       { ms: "Kenal pasti kedua-dua jumlah wang yang perlu dikira.", en: "Identify both money amounts to be calculated." },
@@ -2184,6 +2288,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "unit_confusion", description: { ms: "Murid mencampurkan ringgit dan sen sebagai satu nombor bulat (contohnya RM8.50 dikira sebagai 850) tanpa mengekalkan tempat perpuluhan yang betul.", en: "Student merges ringgit and sen into one whole number (e.g. RM8.50 treated as 850) without keeping the correct decimal place." } },
       { mistakeType: "place_value_error", description: { ms: "Murid tidak menyusun titik perpuluhan segaris semasa mengira secara menegak, menyebabkan sen dan ringgit tercampur pada lajur yang salah.", en: "Student doesn't align the decimal points when calculating vertically, causing sen and ringgit to mix into the wrong columns." } },
       { mistakeType: "wrong_operation", description: { ms: "Semasa menolak, murid tidak pinjam daripada ringgit apabila sen yang ditolak lebih besar daripada sen asal.", en: "While subtracting, student doesn't borrow from the ringgit when the sen being subtracted is larger than the original sen." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (barang ketiga dibeli selepas dua yang pertama), murid berhenti selepas dua barang pertama dan tidak teruskan menambah barang ketiga.", en: "In the challenge-tier question (a third item bought after the first two), the student stops after the first two items and doesn't continue to add the third." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 1, generatorKey: "money_add_subtract", config: { maxRM: 20 } },
@@ -2191,6 +2296,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "money_add_subtract", config: { type: "word_problem", maxRM: 15 } },
       { type: "mcq", difficulty: 3, generatorKey: "money_add_subtract", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "money_add_subtract", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "money_add_subtract", config: { maxRM: 15, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000040": {
@@ -2207,6 +2313,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Darab macam nombor biasa, letak titik balik kemudian — kira dahulu tanpa titik, baru letak semula!", en: "Multiply like a regular number, put the point back after — calculate first without the point, then put it back!" },
       { ms: "JANGAN buat ini: RM4.50 × 3 dikira dengan titik perpuluhan dikekalkan sepanjang pengiraan (4.50 × 3 dianggap seperti 4 × 3 = 12, .50 diabaikan). SALAH — kira 450 × 3 = 1350 dahulu, BARU letak titik semula: RM13.50.", en: "DON'T do this: RM4.50 × 3 calculated with the decimal point kept throughout (treating 4.50 × 3 like 4 × 3 = 12, ignoring the .50). WRONG — calculate 450 × 3 = 1350 first, THEN place the point back: RM13.50." },
       { ms: "Petua pantas: anggarkan dahulu untuk semak jawapan munasabah (cth. RM4.50 × 3 ≈ RM5 × 3 = RM15).", en: "Quick trick: estimate first to check your answer is reasonable (e.g. RM4.50 × 3 ≈ RM5 × 3 = RM15)." },
+      { ms: "Cabaran: jika soalan tanya tentang bilangan yang BERBEZA daripada jumlah asal, cari harga seunit dahulu, kemudian darab semula dengan bilangan yang baharu.", en: "Challenge: if the question asks about a DIFFERENT quantity than the original total, find the unit price first, then multiply again by the new quantity." },
     ],
     howTo: [
       { ms: "Kenal pasti sama ada soalan itu darab atau bahagi.", en: "Identify whether the question is multiplication or division." },
@@ -2231,6 +2338,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "unit_confusion", description: { ms: "Murid mendarab atau membahagi hanya bahagian ringgit, mengabaikan bahagian sen sepenuhnya.", en: "Student multiplies or divides only the ringgit part, ignoring the sen part entirely." } },
       { mistakeType: "wrong_operation", description: { ms: "Murid menambah harga berulang kali secara manual dan tersilap kira bilangan kali, bukan mendarab terus.", en: "Student adds the price repeatedly by hand and miscounts the number of times, instead of multiplying directly." } },
       { mistakeType: "special_case_error", description: { ms: "Semasa membahagi, murid tidak sedar jawapan sepatutnya kurang daripada jumlah asal, dan tidak menyedari kesilapan walaupun jawapannya tidak munasabah.", en: "While dividing, student doesn't realize the answer should be smaller than the original total, and doesn't notice the mistake even when the answer isn't reasonable." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (bilangan berbeza daripada jumlah asal), murid berhenti selepas cari harga seunit dan tidak teruskan mendarab dengan bilangan yang baharu.", en: "In the challenge-tier question (a different quantity than the original total), the student stops after finding the unit price and doesn't continue to multiply by the new quantity." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "money_multiply_divide", config: { maxRM: 10 } },
@@ -2238,6 +2346,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "money_multiply_divide", config: { type: "word_problem", maxRM: 8 } },
       { type: "mcq", difficulty: 3, generatorKey: "money_multiply_divide", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "money_multiply_divide", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "money_multiply_divide", config: { maxRM: 8, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000041": {
@@ -2254,6 +2363,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "P-R-T bahagi seratus — Prinsipal kali Rate kali Tahun, baru bahagi 100!", en: "P-R-T over one hundred — Principal times Rate times Time, then divide by 100!" },
       { ms: "JANGAN buat ini: RM500 pada 4% selama 2 tahun dikira sebagai (500×4)÷100=20, terus jadikan jawapan akhir. SALAH — anda TERLUPA darab dengan bilangan tahun (2); jawapan yang betul ialah RM40.00, bukan RM20.00.", en: "DON'T do this: RM500 at 4% for 2 years calculated as (500×4)÷100=20, treated as the final answer. WRONG — you FORGOT to multiply by the number of years (2); the correct answer is RM40.00, not RM20.00." },
       { ms: "Petua pantas: kadar peratus SENTIASA dibahagi 100 sebelum jawapan akhir — jika jawapan anda kelihatan terlalu besar (beribu-ribu ringgit), semak semula.", en: "Quick trick: the percentage rate ALWAYS gets divided by 100 before the final answer — if your answer looks way too big (thousands of ringgit), double-check." },
+      { ms: "Cabaran: jika soalan tanya jumlah WANG KESELURUHAN (bukan hanya faedah), cari faedah dahulu, kemudian tambahkan dengan prinsipal.", en: "Challenge: if the question asks for the TOTAL amount (not just the interest), find the interest first, then add it to the principal." },
     ],
     howTo: [
       { ms: "Kenal pasti prinsipal, kadar faedah (%), dan tempoh (tahun).", en: "Identify the principal, interest rate (%), and time period (years)." },
@@ -2278,6 +2388,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "forgot_conversion", description: { ms: "Murid terlupa bahagikan dengan 100, menganggap kadar peratus sebagai pendarab bulat biasa.", en: "Student forgets to divide by 100, treating the percentage rate as a plain whole-number multiplier." } },
       { mistakeType: "place_value_error", description: { ms: "Murid tersilap letak titik perpuluhan semasa menulis jawapan akhir dalam format RM.", en: "Student misplaces the decimal point when writing the final answer in RM format." } },
       { mistakeType: "unit_confusion", description: { ms: "Murid mengelirukan prinsipal dengan faedah, dan melaporkan jumlah keseluruhan (prinsipal + faedah) sebagai jawapan akhir bukannya faedah sahaja.", en: "Student confuses the principal with the interest, reporting the total amount (principal + interest) as the final answer instead of just the interest." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (jumlah wang keseluruhan), murid berhenti selepas cari faedah dan tidak teruskan menambahkannya dengan prinsipal.", en: "In the challenge-tier question (total amount), the student stops after finding the interest and doesn't continue to add it to the principal." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "simple_interest", config: { maxPrincipalRM: 20 } },
@@ -2285,6 +2396,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "simple_interest", config: { maxPrincipalRM: 15 } },
       { type: "mcq", difficulty: 3, generatorKey: "simple_interest", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "simple_interest", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "simple_interest", config: { maxPrincipalRM: 15, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000042": {
@@ -2325,6 +2437,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "special_case_error", description: { ms: "Murid keliru antara untung dan rugi apabila harga jualan hampir sama dengan harga kos, dan tersilap arah perbandingan.", en: "Student confuses profit and loss when the selling price is close to the cost price, getting the comparison direction wrong." } },
       { mistakeType: "unit_confusion", description: { ms: "Murid melaporkan harga jualan atau harga kos itu sendiri sebagai jawapan, bukan beza antara kedua-duanya.", en: "Student reports the selling price or cost price itself as the answer, not the difference between them." } },
       { mistakeType: "place_value_error", description: { ms: "Murid tersilap letak titik perpuluhan semasa menulis jawapan akhir dalam format RM.", en: "Student misplaces the decimal point when writing the final answer in RM format." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (jual beberapa item), murid beri untung/rugi bagi satu item sahaja, tidak darab dengan bilangan item yang dijual.", en: "In the challenge-tier question (selling several items), the student gives the profit/loss for just one item, without multiplying by the number of items sold." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "profit_loss", config: { maxRM: 100 } },
@@ -2332,6 +2445,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "profit_loss", config: { type: "word_problem", maxRM: 80 } },
       { type: "mcq", difficulty: 3, generatorKey: "profit_loss", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "profit_loss", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "profit_loss", config: { maxRM: 80, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000043": {
@@ -2357,6 +2471,10 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: 1 jam 45 minit + 50 minit dijawab sebagai 1 jam 95 minit. SALAH — minit tidak boleh melebihi 59! 95 minit MESTI ditukar kepada 1 jam 35 minit dahulu, jadi jawapan sebenar ialah 2 jam 35 minit.",
         en: "DON'T do this: 1 hour 45 minutes + 50 minutes answered as 1 hour 95 minutes. WRONG — minutes can't exceed 59! 95 minutes MUST be converted into 1 hour 35 minutes first, so the real answer is 2 hours 35 minutes.",
       },
+      {
+        ms: "Cabaran: jika ada mata pelajaran KETIGA selepas dua yang pertama, jangan berhenti awal — tambah ketiga-tiga tempoh masa itu.",
+        en: "Challenge: if there's a THIRD subject after the first two, don't stop early — add all three durations together.",
+      },
     ],
     howTo: [
       { ms: "Tambah atau tolak minit dahulu.", en: "Add or subtract the minutes first." },
@@ -2379,6 +2497,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "wrong_operation", description: { ms: "Murid menambah berbanding menolak (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student adds instead of subtracting (or vice versa) when solving the problem." } },
       { mistakeType: "borrow_error", description: { ms: "Semasa menolak, murid tidak pinjam 60 minit daripada jam apabila minit yang ditolak lebih besar.", en: "When subtracting, the student doesn't borrow 60 minutes from the hours when the minutes being subtracted is larger." } },
       { mistakeType: "arithmetic_error_in_step", description: { ms: "Murid ikut kaedah yang betul tetapi tersilap kira semasa menambah atau menolak minit/jam.", en: "The student follows the correct method but makes an arithmetic slip while adding or subtracting the minutes or hours." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (mata pelajaran ketiga selepas dua yang pertama), murid berhenti selepas dua mata pelajaran pertama dan tidak teruskan menambah mata pelajaran ketiga.", en: "In the challenge-tier question (a third subject after the first two), the student stops after the first two subjects and doesn't continue to add the third." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "time_add_subtract", config: { maxHours: 5 } },
@@ -2386,6 +2505,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "time_add_subtract", config: { maxHours: 3 } },
       { type: "mcq", difficulty: 3, generatorKey: "time_add_subtract", config: { maxHours: 5, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "time_add_subtract", config: { maxHours: 3, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_add_subtract", config: { maxHours: 3, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000044": {
@@ -2433,6 +2553,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "wrong_operation", description: { ms: "Murid menambah berbanding menolak (atau sebaliknya) apabila menyelesaikan masalah.", en: "The student adds instead of subtracting (or vice versa) when solving the problem." } },
       { mistakeType: "borrow_error", description: { ms: "Semasa menolak, murid tidak pinjam 100 cm daripada meter apabila cm yang ditolak lebih besar.", en: "When subtracting, the student doesn't borrow 100 cm from the metres when the cm being subtracted is larger." } },
       { mistakeType: "arithmetic_error_in_step", description: { ms: "Murid ikut kaedah yang betul tetapi tersilap kira semasa menambah atau menolak cm/meter.", en: "The student follows the correct method but makes an arithmetic slip while adding or subtracting the cm or metres." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (keping ketiga disambungkan selepas dua yang pertama), murid berhenti selepas dua keping pertama dan tidak teruskan menambah keping ketiga.", en: "In the challenge-tier question (a third piece joined after the first two), the student stops after the first two pieces and doesn't continue to add the third." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "length_add_subtract", config: { maxMetres: 10 } },
@@ -2440,6 +2561,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "length_add_subtract", config: { maxMetres: 6 } },
       { type: "mcq", difficulty: 3, generatorKey: "length_add_subtract", config: { maxMetres: 10, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "length_add_subtract", config: { maxMetres: 6, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "length_add_subtract", config: { maxMetres: 6, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000045": {
@@ -2488,6 +2610,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "cm", small: "mm", factor: 10 }, { big: "m", small: "cm", factor: 100 }, { big: "km", small: "m", factor: 1000 }], maxBig: 8, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "cm", small: "mm", factor: 10 }, { big: "m", small: "cm", factor: 100 }], maxBig: 12, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "cm", small: "mm", factor: 10 }, { big: "m", small: "cm", factor: 100 }, { big: "km", small: "m", factor: 1000 }], maxBig: 8, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "m", small: "cm", factor: 100 }], maxBig: 8, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000046": {
@@ -2534,6 +2657,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 6, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 10, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 6, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "kg", small: "g", factor: 1000 }], maxBig: 6, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000047": {
@@ -2580,6 +2704,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 5, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 8, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 5, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "l", small: "ml", factor: 1000 }], maxBig: 5, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000048": {
@@ -2626,6 +2751,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "unit_convert", config: { pairs: [{ big: "day", small: "hr", factor: 24 }, { big: "wk", small: "day", factor: 7 }], maxBig: 4, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "day", small: "hr", factor: 24 }, { big: "wk", small: "day", factor: 7 }], maxBig: 6, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "day", small: "hr", factor: 24 }, { big: "wk", small: "day", factor: 7 }], maxBig: 4, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "day", small: "hr", factor: 24 }, { big: "wk", small: "day", factor: 7 }], maxBig: 4, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000049": {
@@ -2673,6 +2799,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "hr", small: "min", factor: 60 }, { big: "yr", small: "mth", factor: 12 }], maxBig: 4, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "hr", small: "min", factor: 60 }, { big: "yr", small: "mth", factor: 12 }, { big: "dec", small: "yr", factor: 10 }, { big: "c", small: "dec", factor: 10 }], maxBig: 6, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "hr", small: "min", factor: 60 }, { big: "yr", small: "mth", factor: 12 }, { big: "dec", small: "yr", factor: 10 }, { big: "c", small: "dec", factor: 10 }], maxBig: 5, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unit_convert", config: { pairs: [{ big: "hr", small: "min", factor: 60 }, { big: "yr", small: "mth", factor: 12 }, { big: "dec", small: "yr", factor: 10 }, { big: "c", small: "dec", factor: 10 }], maxBig: 5, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000050": {
@@ -2689,6 +2816,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { ms: "Diskaun dahulu, tolak kemudian — cari jumlah potongan sebelum tolak daripada harga asal!", en: "Discount first, subtract later — find the reduction amount before taking it off the original price!" },
       { ms: "JANGAN buat ini: baju RM80 dengan diskaun 25% dijawab terus sebagai RM20 (jumlah diskaun sahaja). SALAH — RM20 hanyalah JUMLAH DISKAUN, bukan harga akhir. Harga selepas diskaun ialah RM80 − RM20 = RM60.", en: "DON'T do this: a RM80 shirt with a 25% discount answered as just RM20 (only the discount amount). WRONG — RM20 is only the DISCOUNT AMOUNT, not the final price. The price after discount is RM80 − RM20 = RM60." },
       { ms: "Petua pantas: diskaun 50% bermakna anda bayar TEPAT separuh — jumlah diskaun dan harga akhir akan menjadi nombor yang SAMA.", en: "Quick trick: a 50% discount means you pay EXACTLY half — the discount amount and the final price will be the SAME number." },
+      { ms: "Cabaran: jika ada diskaun TAMBAHAN selepas diskaun pertama, kira diskaun kedua daripada harga yang TELAH didiskaun — JANGAN tambahkan kedua-dua peratus itu terus.", en: "Challenge: if there's an ADDITIONAL discount after the first, calculate the second discount on the price AFTER the first discount — DON'T just add the two percentages together." },
     ],
     howTo: [
       { ms: "Kenal pasti harga asal dan peratus diskaun.", en: "Identify the original price and the discount percentage." },
@@ -2713,6 +2841,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "wrong_operation", description: { ms: "Murid menambah jumlah diskaun kepada harga asal, bukan menolak.", en: "Student adds the discount amount to the original price, instead of subtracting." } },
       { mistakeType: "forgot_conversion", description: { ms: "Murid terlupa bahagikan dengan 100 semasa mengira jumlah diskaun daripada peratus.", en: "Student forgets to divide by 100 when calculating the discount amount from the percentage." } },
       { mistakeType: "place_value_error", description: { ms: "Murid tersilap letak titik perpuluhan semasa menulis jawapan akhir dalam format RM.", en: "Student misplaces the decimal point when writing the final answer in RM format." } },
+      { mistakeType: "calculation_error", description: { ms: "Dalam soalan cabaran (dua diskaun bertindih), murid tambah kedua-dua peratus diskaun terus dan tolak satu kali daripada harga asal, bukannya kira secara berperingkat.", en: "In the challenge-tier question (two stacked discounts), the student adds the two discount percentages together and subtracts once from the original price, instead of calculating in sequence." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 3, generatorKey: "discount", config: { maxRM: 100 } },
@@ -2720,6 +2849,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "discount", config: { type: "word_problem", maxRM: 80 } },
       { type: "mcq", difficulty: 3, generatorKey: "discount", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "discount", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "discount", config: { maxRM: 80, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000051": {
@@ -2761,6 +2891,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "mcq", difficulty: 3, generatorKey: "likelihood", config: {} },
       { type: "word_problem", difficulty: 2, generatorKey: "likelihood", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "likelihood", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "likelihood", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000052": {
@@ -2807,6 +2938,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 1, generatorKey: "percentage_of_quantity", config: { percentages: [10, 25, 50], maxQuantity: 30, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "percentage_of_quantity", config: { percentages: [10, 20, 25, 50], maxQuantity: 40, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "percentage_of_quantity", config: { percentages: [10, 25, 50], maxQuantity: 30, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "percentage_of_quantity", config: { percentages: [10, 20, 25, 50], maxQuantity: 40, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000053": {
@@ -2854,6 +2986,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "fractions_percentage_convert", config: { denominators: [2, 4, 5, 10, 20], type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "fractions_percentage_convert", config: { denominators: [2, 4, 5, 10, 20, 25, 50], errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_percentage_convert", config: { denominators: [2, 4, 5, 10, 20, 25, 50], reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_percentage_convert", config: { denominators: [4, 5, 10, 20, 25], challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000054": {
@@ -2872,6 +3005,10 @@ export const TOPICS: Record<string, TopicContent> = {
       {
         ms: "JANGAN buat ini: 3/4 × 3 dikira sebagai 3/12 (darab penyebut sahaja, seperti membahagi terbalik). SALAH — anda MESTI darab PENGANGKA dengan nombor bulat itu, bukan penyebut. Jawapan yang betul ialah 9/4.",
         en: "DON'T do this: 3/4 × 3 calculated as 3/12 (multiplying the denominator only, like dividing backwards). WRONG — you MUST multiply the NUMERATOR by the whole number, not the denominator. The correct answer is 9/4.",
+      },
+      {
+        ms: "Cabaran: jika soalan tanya tentang bilangan paun yang BERBEZA daripada jumlah asal, cari jumlah sebagi paun dahulu, kemudian darab semula dengan bilangan paun yang baharu.",
+        en: "Challenge: if the question asks about a DIFFERENT number of loaves than the original total, find the per-loaf amount first, then multiply again by the new number of loaves.",
       },
     ],
     howTo: [
@@ -2894,6 +3031,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "forgot_to_simplify", description: { ms: "Murid dapat jawapan yang betul tetapi tidak permudahkannya.", en: "The student gets the correct answer but doesn't simplify it." } },
       { mistakeType: "calculation_error", description: { ms: "Semasa cari nilai satu bahagian (diberi jumlah dan bilangan bahagian), murid darab semula berbanding bahagi.", en: "When finding the value of one share (given the total and number of shares), the student multiplies again instead of dividing." } },
       { mistakeType: "estimation_mismatch", description: { ms: "Murid tidak semak sama ada jawapan itu munasabah — hasil darab pecahan wajar dengan nombor bulat mesti lebih besar daripada pecahan asal.", en: "The student doesn't check whether the answer is reasonable — multiplying a proper fraction by a whole number should give something bigger than the original fraction." } },
+      { mistakeType: "stopped_at_intermediate_step", description: { ms: "Dalam soalan cabaran (bilangan paun berbeza daripada jumlah asal), murid berhenti selepas cari jumlah sebagi paun dan tidak teruskan mendarab dengan bilangan paun yang baharu.", en: "In the challenge-tier question (a different number of loaves than the original total), the student stops after finding the per-loaf amount and doesn't continue to multiply by the new number of loaves." } },
     ],
     questionTemplates: [
       { type: "mcq", difficulty: 2, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 5, 6, 8] } },
@@ -2901,6 +3039,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 6], type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "fractions_multiply", config: { denominators: [3, 4, 5, 6], errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 6], reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_multiply", config: { denominators: [2, 3, 4, 6], challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000055": {
@@ -2946,6 +3085,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "decimal_percentage_convert", config: { maxWhole: 0, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "decimal_percentage_convert", config: { maxWhole: 1, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "decimal_percentage_convert", config: { maxWhole: 0, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "decimal_percentage_convert", config: { maxWhole: 0, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000056": {
@@ -2994,6 +3134,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "percentage_add_subtract", config: { context: "price_change", extraInfoChance: 0.3 } },
       { type: "mcq", difficulty: 3, generatorKey: "percentage_add_subtract", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "percentage_add_subtract", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "percentage_add_subtract", config: { maxPct: 40, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000057": {
@@ -3041,6 +3182,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4], type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4, 5, 6], errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4], reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_whole", config: { denominators: [2, 3, 4], challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000058": {
@@ -3087,6 +3229,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "proportion", config: { maxScale: 5, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "proportion", config: { maxScale: 6, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "proportion", config: { maxScale: 5, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "proportion", config: { maxScale: 5, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000059": {
@@ -3132,6 +3275,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 150 } },
       { type: "mcq", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 200, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 150, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "service_tax", config: { maxRM: 150, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000060": {
@@ -3179,6 +3323,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "dividend", config: { maxShares: 300, extraInfoChance: 0.3 } },
       { type: "mcq", difficulty: 3, generatorKey: "dividend", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "dividend", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "dividend", config: { maxShares: 300, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000061": {
@@ -3227,6 +3372,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "asset_liability", config: { type: "word_problem", listSize: 4, extraInfoChance: 0.3 } },
       { type: "mcq", difficulty: 3, generatorKey: "asset_liability", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "asset_liability", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "asset_liability", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000062": {
@@ -3274,6 +3420,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4], type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4, 5, 6], errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4], reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_by_fraction", config: { denominators: [2, 3, 4], challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000063": {
@@ -3321,6 +3468,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4], type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4, 5, 6], errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4], reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "fractions_divide_mixed_by_fraction", config: { denominators: [2, 3, 4], challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000064": {
@@ -3369,6 +3517,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "dec", small: "yr", factor: 10 }], maxBig: 5, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "yr", small: "mth", factor: 12 }], maxBig: 6, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "dec", small: "yr", factor: 10 }], maxBig: 5, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_unit_add_subtract", config: { pairs: [{ big: "yr", small: "mth", factor: 12 }], maxBig: 5, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000065": {
@@ -3418,6 +3567,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 10, scaled: true, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 10, scaled: true, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 12, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "coordinate_distance", config: { maxCoord: 10, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000066": {
@@ -3513,6 +3663,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 1500 } },
       { type: "mcq", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 2000, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "credit_vs_cash", config: { maxCashRM: 1500, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "credit_vs_cash", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000068": {
@@ -3561,6 +3712,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "insurance_takaful", config: { type: "word_problem", listSize: 3 } },
       { type: "mcq", difficulty: 3, generatorKey: "insurance_takaful", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "insurance_takaful", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "insurance_takaful", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000069": {
@@ -3606,6 +3758,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 4 } },
       { type: "mcq", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 6, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 4, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "combined_length_mass", config: { maxPieces: 5, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000070": {
@@ -3651,6 +3804,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 4 } },
       { type: "mcq", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 6, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 4, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "combined_length_volume", config: { maxSections: 5, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000071": {
@@ -3696,6 +3850,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 4 } },
       { type: "mcq", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 6, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 4, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "combined_mass_volume", config: { maxBatches: 5, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000072": {
@@ -3793,6 +3948,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "time_zones", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "time_zones", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "time_zones", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_zones", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000074": {
@@ -3834,6 +3990,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "mcq", difficulty: 2, generatorKey: "prime_composite", config: {} },
       { type: "word_problem", difficulty: 2, generatorKey: "prime_composite", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "prime_composite", config: { errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "prime_composite", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000075": {
@@ -3879,6 +4036,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "regular_polygon_angles", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "regular_polygon_angles", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "regular_polygon_angles", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "regular_polygon_angles", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000076": {
@@ -3926,6 +4084,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 15, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 15, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 15, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "compound_interest", config: { maxPrincipalRM: 15, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000077": {
@@ -3971,6 +4130,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "pictograph", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "pictograph", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "pictograph", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "pictograph", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000078": {
@@ -4063,6 +4223,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "volume_cuboid", config: { min: 2, max: 8, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "volume_cuboid", config: { min: 2, max: 10, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "volume_cuboid", config: { min: 2, max: 8, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "volume_cuboid", config: { min: 1, max: 4, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000080": {
@@ -4110,6 +4271,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 6, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 6, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 6, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "volume_composite", config: { min: 2, max: 5, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000081": {
@@ -4155,6 +4317,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 25, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 25, errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 20, reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "perimeter_composite", config: { min: 8, max: 16, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000082": {
@@ -4200,6 +4363,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "fill", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 6 } },
       { type: "word_problem", difficulty: 2, generatorKey: "coordinates", config: { gridSize: 6, type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "coordinates", config: { gridSize: 6, errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "coordinates", config: { gridSize: 6, challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000083": {
@@ -4292,6 +4456,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "unitary_proportion", config: { type: "word_problem" } },
       { type: "mcq", difficulty: 3, generatorKey: "unitary_proportion", config: { errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "unitary_proportion", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "unitary_proportion", config: { challenge: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000085": {
@@ -4339,6 +4504,7 @@ export const TOPICS: Record<string, TopicContent> = {
       { type: "word_problem", difficulty: 2, generatorKey: "time_format_convert", config: { direction: "to24", context: "bus_schedule", extraInfoChance: 0.3 } },
       { type: "mcq", difficulty: 3, generatorKey: "time_format_convert", config: { direction: "to24", errorSpotting: true } },
       { type: "word_problem", difficulty: 3, generatorKey: "time_format_convert", config: { reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "time_format_convert", config: { challenge: true } },
     ],
   },
 };

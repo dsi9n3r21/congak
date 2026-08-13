@@ -11,7 +11,54 @@ export function generateVolumeCuboid(params: GeneratorParams): GeneratedQuestion
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): how many SMALL cuboid boxes fit
+  // exactly into a LARGE cuboid box? Genuine second hop past the base
+  // skill and reverseProblem (both only ever involve ONE cuboid): (1)
+  // find the small box's volume, (2) find the large box's volume, THEN
+  // (3) divide the large volume by the small volume.
+  if (challenge) {
+    const smallL = randInt(1, 4);
+    const smallW = randInt(1, 4);
+    const smallH = randInt(1, 4);
+    const smallVolume = smallL * smallW * smallH;
+    let a = randInt(1, 3), b = randInt(1, 3), c = randInt(1, 3);
+    while (a * b * c < 2) { a = randInt(1, 3); b = randInt(1, 3); c = randInt(1, 3); }
+    const bigL = smallL * a;
+    const bigW = smallW * b;
+    const bigH = smallH * c;
+    const bigVolume = bigL * bigW * bigH;
+    const boxesCount = a * b * c;
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah kotak simpanan besar berbentuk kuboid berukuran ${bigL} cm × ${bigW} cm × ${bigH} cm. ${name} ingin mengisinya dengan kotak kecil berbentuk kuboid berukuran ${smallL} cm × ${smallW} cm × ${smallH} cm setiap satu. Berapa banyak kotak kecil boleh muat TEPAT di dalam kotak besar itu?`,
+        en: `A large storage box shaped like a cuboid measures ${bigL} cm × ${bigW} cm × ${bigH} cm. ${name} wants to fill it with small cuboid boxes measuring ${smallL} cm × ${smallW} cm × ${smallH} cm each. How many small boxes fit EXACTLY inside the large box?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(boxesCount),
+      context: { smallVolume, bigVolume, boxesCount, a },
+      generatorKey: "volume_cuboid",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: gives the big box's volume directly,
+    // forgetting to divide by the small box's volume.
+    const gaveBigVolume = bigVolume;
+    // Classic non-routine mistake: only scales by ONE dimension's ratio,
+    // forgetting the other two dimensions also scaled up.
+    const usedOneDimensionOnly = a;
+    const distractors = Array.from(
+      new Set([gaveBigVolume, usedOneDimensionOnly].map(String).filter((d) => d !== String(boxesCount)))
+    );
+    question.options = shuffleOptions(String(boxesCount), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, boxesCount + randInt(1, 5) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the volume and two of the three
   // dimensions, find the missing dimension — dividing back.

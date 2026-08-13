@@ -16,7 +16,45 @@ export function generateAreaTriangle(params: GeneratorParams): GeneratedQuestion
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): same "measurement feeds into a
+  // real cost calculation" shape as perimeter/area_rectangle/circumference
+  // — find the cloth's area (this topic's own skill), then multiply by a
+  // cost-per-square-centimetre rate. Natural distractor: stops at the
+  // area itself, forgetting to price it.
+  if (challenge) {
+    const baseC = randInt(min, max);
+    let heightC = randInt(3, 12);
+    if ((baseC * heightC) % 2 !== 0) heightC += 1;
+    const areaC = (baseC * heightC) / 2;
+    const ratePerSqCm = randInt(2, 8);
+    const totalCost = areaC * ratePerSqCm;
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} hendak membeli kain berbentuk segi tiga dengan tapak ${baseC} cm dan tinggi ${heightC} cm. Kain itu berharga RM${ratePerSqCm} setiap sentimeter persegi. Berapakah jumlah kos kain itu?`,
+        en: `${name} wants to buy a triangular piece of cloth with base ${baseC} cm and height ${heightC} cm. The cloth costs RM${ratePerSqCm} per square centimetre. What is the total cost of the cloth?`,
+      },
+      type: "word_problem",
+      correctAnswer: `RM${totalCost}`,
+      context: { base: baseC, height: heightC, area: areaC, ratePerSqCm, totalCost },
+      generatorKey: "area_triangle",
+      difficulty: 3,
+      diagram: { kind: "triangle", base: baseC, height: heightC },
+    };
+    // Classic non-routine mistake: stops after finding the area,
+    // forgetting to multiply by the cost rate.
+    const stoppedAtArea = `RM${areaC}`;
+    const distractors = [stoppedAtArea].filter((d) => d !== `RM${totalCost}`);
+    question.options = shuffleOptions(`RM${totalCost}`, distractors);
+    while (question.options.length < 3) {
+      const candidate = `RM${Math.max(1, totalCost + randInt(1, 20) * (Math.random() > 0.5 ? 1 : -1))}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the area and the height, find the base —
   // dividing back through the area formula.

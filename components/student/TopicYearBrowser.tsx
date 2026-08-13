@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import { Star } from "lucide-react";
+import { Star, ChevronDown } from "lucide-react";
 import { Bi } from "@/lib/i18n/Bi";
 import type { Bilingual, Lang } from "@/lib/i18n/dictionary";
 import { getStrandStyle } from "@/lib/content/strandStyle";
@@ -53,6 +53,24 @@ export function TopicYearBrowser({
   const initialYear = studentYear && availableYears.includes(studentYear) ? studentYear : availableYears[0];
   const [selectedYear, setSelectedYear] = useState<number | undefined>(initialYear);
 
+  const BIDANG_ORDER = [
+    "Numbers and Operations",
+    "Measurement and Geometry",
+    "Relationship and Algebra",
+    "Statistics and Probability",
+  ];
+
+  // Each bidang section now collapses into a dropdown — the topic list
+  // per bidang got long once content grew past 70+ topics, so only the
+  // first section starts open and the rest need a tap to expand, same
+  // interaction as the year tabs above it. Computed once up front so the
+  // student lands on a page that isn't entirely collapsed.
+  const initialGroup = groups.find((g) => g.year === initialYear);
+  const firstBidangWithTopics = BIDANG_ORDER.find((bidangEn) => initialGroup?.topics.some((t) => t.bidang.en === bidangEn));
+  const [openBidang, setOpenBidang] = useState<Set<string>>(
+    () => new Set(firstBidangWithTopics ? [firstBidangWithTopics] : [])
+  );
+
   const active = groups.find((g) => g.year === selectedYear);
 
   // Group this year's topics by bidang (KSSR main learning area), in the
@@ -60,18 +78,21 @@ export function TopicYearBrowser({
   // appear in — so the sections always read Numbers & Operations →
   // Measurement & Geometry → Relationship & Algebra → Statistics &
   // Probability, matching the real textbook's chapter order.
-  const BIDANG_ORDER = [
-    "Numbers and Operations",
-    "Measurement and Geometry",
-    "Relationship and Algebra",
-    "Statistics and Probability",
-  ];
   const bidangSections = active
     ? BIDANG_ORDER.map((bidangEn) => ({
         bidang: active.topics.find((t) => t.bidang.en === bidangEn)?.bidang,
         topics: active.topics.filter((t) => t.bidang.en === bidangEn),
       })).filter((section) => section.topics.length > 0)
     : [];
+
+  function toggleBidang(key: string) {
+    setOpenBidang((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
 
   return (
     <>
@@ -106,61 +127,82 @@ export function TopicYearBrowser({
 
       <section className="mx-5 mt-4">
         {bidangSections.length > 0 ? (
-          <div className="space-y-5">
-            {bidangSections.map((section) => (
-              <div key={section.bidang!.en}>
-                <h2 className="mb-2 px-1 text-[11px] font-bold uppercase tracking-wide text-ink/40">
-                  <Bi text={section.bidang!} lang={lang} />
-                </h2>
-                <div className="space-y-2">
-                  {section.topics.map((topic) => {
-                    const { Icon, bg, fg } = getStrandStyle(topic.strand.en);
-                    return (
-                      <Link
-                        key={topic.id}
-                        href={topic.href}
-                        className="flex items-center gap-3 rounded-kite bg-white p-4 shadow-card active:scale-[0.98] transition-transform"
-                      >
-                        <span className={clsx("flex h-12 w-12 shrink-0 items-center justify-center rounded-kite shadow-card", bg)}>
-                          <Icon size={24} strokeWidth={2.25} className={fg} />
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs font-semibold text-ink/50">
-                            <Bi text={topic.strand} lang={lang} />
-                          </p>
-                          <p className="truncate font-display text-base font-bold text-ink">
-                            <Bi text={topic.title} lang={lang} />
-                          </p>
-                          {topic.score !== undefined && (
-                            <div className="mt-1.5 h-1 w-full rounded-full bg-ink/10">
-                              <div
-                                className={`h-1 rounded-full ${topic.score < 50 ? "bg-saga" : "bg-pandan"}`}
-                                style={{ width: `${topic.score}%` }}
-                              />
+          <div className="space-y-3">
+            {bidangSections.map((section) => {
+              const key = section.bidang!.en;
+              const isOpen = openBidang.has(key);
+              return (
+                <div key={key} className="overflow-hidden rounded-kite bg-white shadow-card">
+                  <button
+                    type="button"
+                    onClick={() => toggleBidang(key)}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 min-h-[44px] text-left active:bg-ink/5 transition-colors"
+                  >
+                    <span className="text-[11px] font-bold uppercase tracking-wide text-ink/40">
+                      <Bi text={section.bidang!} lang={lang} />
+                    </span>
+                    <span className="flex items-center gap-2 shrink-0">
+                      <span className="font-num text-xs font-semibold text-ink/30">{section.topics.length}</span>
+                      <ChevronDown
+                        size={18}
+                        strokeWidth={2.5}
+                        className={clsx("text-ink/40 transition-transform duration-200", isOpen && "rotate-180")}
+                      />
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div className="space-y-2 px-3 pb-3">
+                      {section.topics.map((topic) => {
+                        const { Icon, bg, fg } = getStrandStyle(topic.strand.en);
+                        return (
+                          <Link
+                            key={topic.id}
+                            href={topic.href}
+                            className="flex items-center gap-3 rounded-kite bg-white p-4 shadow-card active:scale-[0.98] transition-transform border border-ink/5"
+                          >
+                            <span className={clsx("flex h-12 w-12 shrink-0 items-center justify-center rounded-kite shadow-card", bg)}>
+                              <Icon size={24} strokeWidth={2.25} className={fg} />
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-semibold text-ink/50">
+                                <Bi text={topic.strand} lang={lang} />
+                              </p>
+                              <p className="truncate font-display text-base font-bold text-ink">
+                                <Bi text={topic.title} lang={lang} />
+                              </p>
+                              {topic.score !== undefined && (
+                                <div className="mt-1.5 h-1 w-full rounded-full bg-ink/10">
+                                  <div
+                                    className={`h-1 rounded-full ${topic.score < 50 ? "bg-saga" : "bg-pandan"}`}
+                                    style={{ width: `${topic.score}%` }}
+                                  />
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
-                        <div className="shrink-0">
-                          {topic.weak && (
-                            <span className="rounded-full bg-saga-light px-2 py-1 text-[10px] font-semibold text-saga-dark">
-                              {lang === "en" ? "Weak" : "Lemah"}
-                            </span>
-                          )}
-                          {topic.weak === false && (
-                            <span className="rounded-full bg-pandan-light px-2 py-1 text-[10px] font-semibold text-pandan-dark">
-                              {lang === "en" ? "Good" : "Baik"}
-                            </span>
-                          )}
-                          {topic.score !== undefined && (
-                            <p className="text-right font-num text-sm font-bold text-ink/60">{topic.score}%</p>
-                          )}
-                        </div>
-                      </Link>
-                    );
-                  })}
+                            <div className="shrink-0">
+                              {topic.weak && (
+                                <span className="rounded-full bg-saga-light px-2 py-1 text-[10px] font-semibold text-saga-dark">
+                                  {lang === "en" ? "Weak" : "Lemah"}
+                                </span>
+                              )}
+                              {topic.weak === false && (
+                                <span className="rounded-full bg-pandan-light px-2 py-1 text-[10px] font-semibold text-pandan-dark">
+                                  {lang === "en" ? "Good" : "Baik"}
+                                </span>
+                              )}
+                              {topic.score !== undefined && (
+                                <p className="text-right font-num text-sm font-bold text-ink/60">{topic.score}%</p>
+                              )}
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <p className="py-8 text-center text-sm text-ink/40">

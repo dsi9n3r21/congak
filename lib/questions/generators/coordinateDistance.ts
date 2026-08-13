@@ -20,7 +20,55 @@ export function generateCoordinateDistance(params: GeneratorParams): GeneratedQu
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
   const scaled = Boolean(params.scaled);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): a two-leg L-shaped journey
+  // (vertical leg then horizontal leg) with a map scale — find the TOTAL
+  // real distance walked. Genuine second hop past the "scaled" branch
+  // (which only ever scales ONE grid distance): (1) find each leg's grid
+  // distance and add them together, THEN (2) multiply the combined grid
+  // distance by the scale.
+  if (challenge) {
+    const scaleUnitMeters = pick([50, 100, 150, 200, 250]);
+    const x1 = randInt(0, maxCoord);
+    let y1 = randInt(0, maxCoord);
+    let y2 = randInt(0, maxCoord);
+    while (y2 === y1) y2 = randInt(0, maxCoord);
+    let x3 = randInt(0, maxCoord);
+    while (x3 === x1) x3 = randInt(0, maxCoord);
+    const leg1Grid = Math.abs(y2 - y1);
+    const leg2Grid = Math.abs(x3 - x1);
+    const totalGrid = leg1Grid + leg2Grid;
+    const totalReal = totalGrid * scaleUnitMeters;
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Pada peta sebuah taman (skala: 1 unit mewakili ${scaleUnitMeters} m), ${name} berjalan dari pintu masuk A(${x1}, ${y1}) ke gerai makanan B(${x1}, ${y2}), kemudian dari gerai makanan itu ke taman permainan C(${x3}, ${y2}). Berapakah JUMLAH jarak sebenar yang dilalui ${name}, dalam m?`,
+        en: `On a park map (scale: 1 unit represents ${scaleUnitMeters} m), ${name} walks from the entrance A(${x1}, ${y1}) to the food stall B(${x1}, ${y2}), then from the food stall to the playground C(${x3}, ${y2}). What is the TOTAL real distance ${name} walked, in m?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(totalReal),
+      context: { leg1Grid, leg2Grid, totalGrid, scaleUnitMeters, totalReal },
+      generatorKey: "coordinate_distance",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first leg, gives only
+    // that leg's real distance.
+    const stoppedAtFirstLeg = leg1Grid * scaleUnitMeters;
+    // Classic mistake: adds the grid distances but forgets to apply the
+    // scale at all.
+    const forgotScale = totalGrid;
+    const distractors = Array.from(
+      new Set([stoppedAtFirstLeg, forgotScale].map(String).filter((d) => d !== String(totalReal)))
+    );
+    question.options = shuffleOptions(String(totalReal), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(0, totalReal + randInt(1, 4) * scaleUnitMeters * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- scaled: converts the grid distance into a real-world distance
   // using a map scale ("1 unit represents X m") — this is the actual

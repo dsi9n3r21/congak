@@ -44,6 +44,7 @@ export function generateDecimalAddSubtractY4(params: GeneratorParams): Generated
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const activities = ["berlari", "berjalan", "berbasikal"] as const;
   const activitiesEn: Record<(typeof activities)[number], string> = { berlari: "ran", berjalan: "walked", berbasikal: "cycled" };
@@ -53,6 +54,35 @@ export function generateDecimalAddSubtractY4(params: GeneratorParams): Generated
   let b = randomDecimal1dp(maxWhole);
   if (op === "subtract" && b > a) [a, b] = [b, a]; // keep it non-negative for this level
   const correct = op === "add" ? Math.round((a + b) * 10) / 10 : Math.round((a - b) * 10) / 10;
+
+  // ---- challenge (TP6 / non-routine): same "third session, keep going"
+  // shape as whole_numbers_addition (001), ported to 1dp decimals — a
+  // THIRD session is run/walked/cycled after the first two, asking for
+  // the grand total across all three.
+  if (challenge) {
+    const name = pick(names);
+    const activity = pick(activities);
+    const c = randomDecimal1dp(maxWhole);
+    const subtotal = Math.round((a + b) * 10) / 10;
+    const finalTotal = Math.round((subtotal + c) * 10) / 10;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} ${activity} sejauh ${a} km pada waktu pagi, ${b} km pada waktu petang, dan ${c} km lagi pada waktu malam. Berapakah jumlah jarak ${activity} ${name} sepanjang hari itu?`,
+        en: `${name} ${activitiesEn[activity]} ${a} km in the morning, ${b} km in the evening, and ${c} km more at night. What is ${name}'s total distance ${activitiesEn[activity]} that day?`,
+      },
+      type: "word_problem",
+      correctAnswer: finalTotal.toFixed(1),
+      context: { a, b, c, subtotal, finalTotal },
+      generatorKey: "decimal_add_subtract_y4",
+      difficulty: 2,
+    };
+    // Classic non-routine mistake: stops after the first two sessions.
+    const stoppedAtTwo = subtotal.toFixed(1);
+    question.options = finalizeOptions(finalTotal.toFixed(1), [stoppedAtTwo], () =>
+      Math.max(0, Math.round((finalTotal + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 10) / 10).toFixed(1)
+    );
+    return question;
+  }
 
   // ---- reverseProblem: given the total distance and one leg, find the
   // other leg (subtraction).
@@ -176,6 +206,7 @@ export function generateDecimalAddSubtract(params: GeneratorParams): GeneratedQu
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const items = ["buku", "pensel", "beg sekolah", "botol air", "payung"] as const;
   const itemsEn: Record<(typeof items)[number], string> = {
@@ -191,6 +222,36 @@ export function generateDecimalAddSubtract(params: GeneratorParams): GeneratedQu
   let b = randomDecimal(maxWhole);
   if (op === "subtract" && b > a) [a, b] = [b, a];
   const correct = op === "add" ? Math.round((a + b) * 100) / 100 : Math.round((a - b) * 100) / 100;
+
+  // ---- challenge (TP6 / non-routine): same "third item, keep going" shape
+  // as whole_numbers_addition (001), ported to 2dp shopping decimals — a
+  // THIRD item is bought after the first two, asking for the grand total.
+  if (challenge) {
+    const name = pick(names);
+    const item1 = pick(items);
+    const item2 = pick(items.filter((i) => i !== item1));
+    const item3 = pick(items.filter((i) => i !== item1 && i !== item2));
+    const c = randomDecimal(maxWhole);
+    const subtotal = Math.round((a + b) * 100) / 100;
+    const finalTotal = Math.round((subtotal + c) * 100) / 100;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} membeli sebuah ${item1} berharga RM${a.toFixed(2)} dan sebuah ${item2} berharga RM${b.toFixed(2)}. Kemudian, ${name} membeli sebuah ${item3} lagi berharga RM${c.toFixed(2)}. Berapakah jumlah perbelanjaan ${name} kesemuanya?`,
+        en: `${name} buys a ${itemsEn[item1]} for RM${a.toFixed(2)} and a ${itemsEn[item2]} for RM${b.toFixed(2)}. Then, ${name} buys a ${itemsEn[item3]} for RM${c.toFixed(2)}. How much did ${name} spend in total?`,
+      },
+      type: "word_problem",
+      correctAnswer: `RM${finalTotal.toFixed(2)}`,
+      context: { a, b, c, subtotal, finalTotal },
+      generatorKey: "decimal_add_subtract",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first two items.
+    const stoppedAtTwo = `RM${subtotal.toFixed(2)}`;
+    question.options = finalizeOptions(`RM${finalTotal.toFixed(2)}`, [stoppedAtTwo], () =>
+      `RM${Math.max(0, Math.round((finalTotal + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 100) / 100).toFixed(2)}`
+    );
+    return question;
+  }
 
   // ---- reverseProblem: given the total spent and the price of one item,
   // find the price of the other (subtraction, framed as missing price).
@@ -309,6 +370,7 @@ export function generateDecimalMultiply(params: GeneratorParams): GeneratedQuest
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const liquids = ["jus", "susu", "air kelapa"] as const;
   const liquidsEn: Record<(typeof liquids)[number], string> = {
@@ -320,6 +382,39 @@ export function generateDecimalMultiply(params: GeneratorParams): GeneratedQuest
   const a = randomDecimal1dp(Math.max(maxWhole, 1)) || 0.1; // avoid a=0, which collapses every distractor to 0
   const b = randInt(2, 9);
   const correct = Math.round(a * b * 10) / 10;
+
+  // ---- challenge (TP6 / non-routine): same "rate, then project to a
+  // DIFFERENT quantity" shape as whole_numbers_multiplication (021) and
+  // money_multiply_divide, ported to decimals — the per-bottle amount is
+  // known, but the question asks about a different bottle count than the
+  // one first mentioned.
+  if (challenge) {
+    const name = pick(names);
+    const liquid = pick(liquids);
+    let b2 = randInt(2, 9);
+    while (b2 === b) b2 = randInt(2, 9);
+    const firstTotal = correct;
+    const finalTotal = Math.round(a * b2 * 10) / 10;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${b} botol ${liquid} mengandungi ${firstTotal} liter kesemuanya. Jika ${name} mempunyai ${b2} botol ${liquid} (setiap botol mengandungi jumlah yang sama), berapa liter ${liquid} kesemuanya?`,
+        en: `${b} bottles of ${liquidsEn[liquid]} hold ${firstTotal} litres in total. If ${name} has ${b2} bottles of ${liquidsEn[liquid]} (each bottle holding the same amount), how many litres of ${liquidsEn[liquid]} are there in total?`,
+      },
+      type: "word_problem",
+      correctAnswer: finalTotal.toFixed(1),
+      context: { a, b, b2, firstTotal, finalTotal },
+      generatorKey: "decimal_multiply",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after finding the per-bottle
+    // amount, or reuses the ORIGINAL total instead of recalculating.
+    const stoppedAtPerBottle = a.toFixed(1);
+    const reusedOriginalTotal = firstTotal.toFixed(1);
+    question.options = finalizeOptions(finalTotal.toFixed(1), [stoppedAtPerBottle, reusedOriginalTotal], () =>
+      (Math.round((finalTotal + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 10) / 10).toFixed(1)
+    );
+    return question;
+  }
 
   // ---- reverseProblem: given the per-bottle amount and the total, find how
   // many bottles there are (the whole-number factor).
@@ -429,6 +524,7 @@ export function generateDecimalDivide(params: GeneratorParams): GeneratedQuestio
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const materials = ["tali", "reben", "wayar", "kain"] as const;
   const materialsEn: Record<(typeof materials)[number], string> = {
@@ -447,6 +543,42 @@ export function generateDecimalDivide(params: GeneratorParams): GeneratedQuestio
   const dividendTenths = quotientTenths * divisor;
   const dividend = Math.round(dividendTenths) / 10;
   const quotient = Math.round(quotientTenths) / 10;
+
+  // ---- challenge (TP6 / non-routine): same "regroup the same total into
+  // a different number of pieces" shape as whole_numbers_division_y5
+  // (025), ported to decimals — the SAME rope is re-cut into a different
+  // number of pieces. Built as divisor1 × divisor2 × k so it divides
+  // cleanly both ways by construction.
+  if (challenge) {
+    const divisor1 = randInt(2, 9);
+    let divisor2 = randInt(2, 9);
+    while (divisor2 === divisor1) divisor2 = randInt(2, 9);
+    const k = randInt(2, 9);
+    const bigDividendTenths = divisor1 * divisor2 * k;
+    const bigDividend = bigDividendTenths / 10;
+    const quotient1 = (divisor2 * k) / 10;
+    const quotient2 = (divisor1 * k) / 10;
+    const name = pick(names);
+    const material = pick(materials);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Seutas ${material} sepanjang ${bigDividend.toFixed(1)} meter dipotong sama rata kepada ${divisor1} bahagian. Kemudian, ${material} yang SAMA dipotong semula kepada ${divisor2} bahagian sahaja. Berapakah panjang setiap bahagian selepas dipotong semula?`,
+        en: `A piece of ${materialsEn[material]} that is ${bigDividend.toFixed(1)} metres long is cut equally into ${divisor1} pieces. Then, the SAME ${materialsEn[material]} is re-cut into just ${divisor2} pieces instead. How long is each piece after re-cutting?`,
+      },
+      type: "word_problem",
+      correctAnswer: quotient2.toFixed(1),
+      context: { bigDividend, divisor1, divisor2, quotient1, quotient2 },
+      generatorKey: "decimal_divide",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first cut and gives
+    // that piece length as the final answer, ignoring the re-cut.
+    const stoppedAtFirstCut = quotient1.toFixed(1);
+    question.options = finalizeOptions(quotient2.toFixed(1), [stoppedAtFirstCut], () =>
+      (Math.round((quotient2 + randInt(1, 9) * (Math.random() > 0.5 ? 0.1 : -0.1)) * 10) / 10).toFixed(1)
+    );
+    return question;
+  }
 
   // ---- reverseProblem: given the piece length and how many pieces, find
   // the original total length (multiplication back through division).

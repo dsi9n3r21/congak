@@ -13,6 +13,7 @@ export function generateAreaComposite(params: GeneratorParams): GeneratedQuestio
   const max = Number(params.max ?? 10);
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
 
   // Composite shape = two rectangles joined together (an L-shape), the
   // KSSR-standard way composite area is introduced before circles/triangles.
@@ -25,6 +26,48 @@ export function generateAreaComposite(params: GeneratorParams): GeneratedQuestio
   const area2 = l2 * w2;
   const correct = area1 + area2;
   const context = { l1, w1, l2, w2, area1, area2, correct };
+
+  // ---- challenge (TP6 / non-routine): a genuinely different composite
+  // shape from every other branch here — SUBTRACTION instead of addition.
+  // A rectangular pond sits inside a rectangular garden; find the
+  // remaining (non-pond) area. Every other branch of this generator
+  // teaches "split into rectangles and ADD" — this is the "cut a shape
+  // OUT and SUBTRACT" variant, a real non-routine skill KSSR expects
+  // alongside the addition case, not a repeat of reverseProblem's
+  // missing-side algebra.
+  if (challenge) {
+    const outerL = randInt(min + 4, max + 6);
+    const outerW = randInt(min + 3, max + 5);
+    const innerL = randInt(min, Math.max(min, outerL - 2));
+    const innerW = randInt(min, Math.max(min, outerW - 2));
+    const outerArea = outerL * outerW;
+    const innerArea = innerL * innerW;
+    const chCorrect = outerArea - innerArea;
+    const name = pick(AREA_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} mempunyai sebuah taman berbentuk segi empat tepat berukuran ${outerL} m × ${outerW} m. Di tengah taman itu terdapat sebuah kolam ikan segi empat tepat berukuran ${innerL} m × ${innerW} m. Cari luas rumput (bahagian taman yang bukan kolam).`,
+        en: `${name} has a rectangular garden measuring ${outerL} m × ${outerW} m. In the middle of the garden is a rectangular fish pond measuring ${innerL} m × ${innerW} m. Find the area of grass (the part of the garden that is not the pond).`,
+      },
+      type: "word_problem",
+      correctAnswer: String(chCorrect),
+      context: { outerL, outerW, innerL, innerW, outerArea, innerArea, correct: chCorrect },
+      generatorKey: "area_composite",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: forgets to subtract the pond, gives
+    // the whole garden's area.
+    const forgotSubtract = String(outerArea);
+    // Classic mistake: adds the pond's area instead of subtracting it.
+    const addedInstead = String(outerArea + innerArea);
+    const distractors = Array.from(new Set([forgotSubtract, addedInstead])).filter((d) => d !== String(chCorrect));
+    question.options = shuffleOptions(String(chCorrect), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, chCorrect + randInt(1, 9) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the total area and every dimension except
   // one side of the second rectangle, find that missing side.

@@ -16,7 +16,47 @@ export function generateAnglesStraightLine(params: GeneratorParams): GeneratedQu
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): a genuine second hop past
+  // reverseProblem — THREE angles on a straight line instead of two. The
+  // first angle is given directly; the second is a multiple of the third.
+  // Solving requires (1) subtracting the given angle from 180° to get the
+  // combined remaining total, THEN (2) splitting that total by the ratio
+  // to isolate the smaller angle — reverseProblem only ever required step
+  // (1) with a difference, never a ratio split on top of it.
+  if (challenge) {
+    const multiple = randInt(2, 3);
+    const smallest = randInt(10, 30);
+    const middle = multiple * smallest;
+    const angleA = 180 - middle - smallest;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Tiga sudut berada pada satu garis lurus. Sudut pertama ialah ${angleA}°. Sudut kedua ialah ${multiple} kali ganda sudut ketiga. Cari sudut ketiga (yang paling kecil).`,
+        en: `Three angles lie on one straight line. The first angle is ${angleA}°. The second angle is ${multiple} times the third angle. Find the third (smallest) angle.`,
+      },
+      type: "word_problem",
+      correctAnswer: String(smallest),
+      context: { angleA, multiple, smallest, middle, remaining: middle + smallest },
+      generatorKey: "angles_straight_line",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first hop and gives
+    // the combined remaining total (middle + smallest) instead of
+    // splitting it by the ratio.
+    const stoppedAtRemaining = String(middle + smallest);
+    // Classic non-routine mistake: splits the remaining total evenly,
+    // ignoring the "times as many" relationship.
+    const splitEvenly = String(Math.round((middle + smallest) / 2));
+    const distractors = Array.from(new Set([stoppedAtRemaining, splitEvenly])).filter((d) => d !== String(smallest));
+    question.options = shuffleOptions(String(smallest), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, smallest + randInt(1, 9)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the difference between the two angles,
   // find the smaller one — a small simultaneous-equation step.

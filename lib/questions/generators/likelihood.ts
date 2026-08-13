@@ -28,7 +28,49 @@ const CONTAINERS = {
 export function generateLikelihood(params: GeneratorParams): GeneratedQuestion {
   const type = (params.type as "mcq" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  function classify(a: number, b: number): "impossible" | "equally_likely" | "more_likely" | "less_likely" {
+    if (a === 0) return "impossible";
+    if (a === b) return "equally_likely";
+    return a > b ? "more_likely" : "less_likely";
+  }
+
+  // ---- challenge (TP6 / non-routine): WITHOUT REPLACEMENT — a marble is
+  // already picked and NOT put back, THEN ask about the likelihood of
+  // picking that same colour again. Genuine second hop past the base
+  // skill and errorSpotting (both only ever classify from a STATIC,
+  // unchanging count): (1) update the count after the first pick is
+  // removed, THEN (2) classify the likelihood using the NEW counts, not
+  // the original ones.
+  if (challenge) {
+    const colorA = pick(COLORS);
+    const colorB = pick(COLORS.filter((c) => c.en !== colorA.en));
+    const countA = randInt(3, 8);
+    const countB = randInt(3, 8);
+    const newCountA = countA - 1;
+    const correctAnswer = classify(newCountA, countB);
+    const beforeAnswer = classify(countA, countB);
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah beg mengandungi ${countA} biji guli ${colorA.ms} dan ${countB} biji guli ${colorB.ms}. ${name} mengeluarkan SATU guli ${colorA.ms} dan TIDAK memasukkannya semula. Apakah kemungkinan untuk mengeluarkan guli ${colorA.ms} SEKALI LAGI sekarang?`,
+        en: `A bag contains ${countA} ${colorA.en} marbles and ${countB} ${colorB.en} marbles. ${name} takes out ONE ${colorA.en} marble and does NOT put it back. What is the likelihood of picking a ${colorA.en} marble AGAIN now?`,
+      },
+      type: "word_problem",
+      correctAnswer,
+      context: { countA, countB, newCountA, correctAnswer, beforeAnswer },
+      generatorKey: "likelihood",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: uses the ORIGINAL counts, forgetting
+    // that the first marble taken out changes the count.
+    const allCategories = ["impossible", "equally_likely", "more_likely", "less_likely"] as const;
+    const distractors = Array.from(new Set([beforeAnswer, ...allCategories])).filter((d) => d !== correctAnswer);
+    question.options = shuffleOptions(correctAnswer, distractors.slice(0, 2));
+    return question;
+  }
 
   // ---- errorSpotting: shown the classic "assumed equally likely without
   // checking the counts" mistake, must give the correct answer.

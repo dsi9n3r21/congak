@@ -14,7 +14,43 @@ export function generateCircumference(params: GeneratorParams): GeneratedQuestio
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): the circumference feeds into a
+  // real cost calculation — find the fencing length around a circular
+  // pond (this topic's own skill), then multiply by a cost-per-metre
+  // rate. Natural distractor: stops at the circumference itself,
+  // forgetting to price it.
+  if (challenge) {
+    const radiusC = randInt(min, max);
+    const circumferenceC = Math.round(2 * radiusC * PI * 100) / 100;
+    const ratePerMetreC = randInt(3, 15);
+    const totalCostC = Math.round(circumferenceC * ratePerMetreC * 100) / 100;
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah kolam berbentuk bulat mempunyai jejari ${radiusC} m. ${name} ingin memagar sekeliling kolam itu. Kos pagar ialah RM${ratePerMetreC} setiap meter. (Guna π = 3.142) Berapakah jumlah kos pagar itu?`,
+        en: `A circular pond has a radius of ${radiusC} m. ${name} wants to fence all the way around it. Fencing costs RM${ratePerMetreC} per metre. (Use π = 3.142) What is the total cost of the fencing?`,
+      },
+      type: "word_problem",
+      correctAnswer: `RM${totalCostC.toFixed(2)}`,
+      context: { radius: radiusC, circumference: circumferenceC, ratePerMetre: ratePerMetreC, totalCost: totalCostC },
+      generatorKey: "circumference",
+      difficulty: 3,
+      diagram: { kind: "circle", radius: radiusC },
+    };
+    // Classic non-routine mistake: stops after finding the circumference,
+    // forgetting to multiply by the cost rate.
+    const stoppedAtCircumference = `RM${circumferenceC.toFixed(2)}`;
+    const distractors = [stoppedAtCircumference].filter((d) => d !== `RM${totalCostC.toFixed(2)}`);
+    question.options = shuffleOptions(`RM${totalCostC.toFixed(2)}`, distractors);
+    while (question.options.length < 3) {
+      const candidate = `RM${Math.max(1, totalCostC + randInt(1, 20) * (Math.random() > 0.5 ? 1 : -1)).toFixed(2)}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the circumference, find the radius —
   // dividing back through 2πr. Built from a known integer radius so the

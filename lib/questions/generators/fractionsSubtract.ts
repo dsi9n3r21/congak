@@ -14,6 +14,7 @@ export function generateFractionsSubtractSameDenominator(params: GeneratorParams
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
 
   const denom = pick(denominators);
   // numA is the larger fraction we start from; numB is what's taken away —
@@ -23,6 +24,41 @@ export function generateFractionsSubtractSameDenominator(params: GeneratorParams
   const correctNum = numA - numB;
   const correctAnswer = `${correctNum}/${denom}`;
   const context = { numA, numB, denom, correctNum };
+
+  // ---- challenge (TP6 / non-routine): same "three portions, don't stop
+  // after two" shape as fractions_same_denominator (002), ported to
+  // subtraction — a SECOND slice is eaten after the first, asking what's
+  // left after BOTH.
+  if (challenge) {
+    if (correctNum >= 1) {
+      const numC = randInt(1, correctNum);
+      const finalNum = correctNum - numC;
+      const name = pick(SUBTRACT_NAMES);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} mempunyai ${numA}/${denom} bahagian pizza. Dia makan ${numB}/${denom} bahagian pada waktu tengah hari, kemudian makan ${numC}/${denom} bahagian lagi pada waktu petang. Berapakah baki pizza yang ada selepas itu?`,
+          en: `${name} has ${numA}/${denom} of a pizza. They eat ${numB}/${denom} at lunch, then eat another ${numC}/${denom} in the evening. How much pizza is left after that?`,
+        },
+        type: "word_problem",
+        correctAnswer: `${finalNum}/${denom}`,
+        context: { numA, numB, numC, denom, correctNum, finalNum },
+        generatorKey: "fractions_subtract_same_denominator",
+        difficulty: 2,
+      };
+      // Classic non-routine mistake: stops after the first (lunch)
+      // subtraction, forgetting the evening portion.
+      const stoppedAtFirst = `${correctNum}/${denom}`;
+      const distractors = [stoppedAtFirst].filter((d) => d !== `${finalNum}/${denom}`);
+      question.options = shuffleOptions(`${finalNum}/${denom}`, distractors);
+      while (question.options.length < 3) {
+        const candidate = `${Math.max(0, finalNum + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1))}/${denom}`;
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare draw where there's nothing
+    // left after the first bite for a second one to be taken from.
+  }
 
   // ---- reverseProblem: given what's left and what was eaten, find the
   // starting amount (addition, the inverse of subtraction).

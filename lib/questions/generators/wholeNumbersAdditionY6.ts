@@ -14,12 +14,44 @@ export function generateWholeNumbersAdditionY6(params: GeneratorParams): Generat
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
 
   const a = randInt(min, max);
   const b = randInt(min, max);
   const c = randInt(min, max);
   const correct = a + b + c;
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): a FOURTH figure arrives after the
+  // three-month subtotal — genuinely tests whether the student keeps going
+  // past the taught three-number shape, not just the three-number skill
+  // itself. Natural distractor: stops at the three-month subtotal.
+  if (challenge) {
+    const d = randInt(min, max);
+    const grandTotal = correct + d;
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah kedai buku menjual ${a.toLocaleString("en-US")} buku pada Januari, ${b.toLocaleString("en-US")} buku pada Februari, dan ${c.toLocaleString("en-US")} buku pada Mac. Selepas ${name} menjumlahkan ketiga-tiga bulan itu, catatan bulan April yang tertinggal ditemui: ${d.toLocaleString("en-US")} buku. Berapakah jumlah buku dijual dalam kesemua EMPAT bulan itu?`,
+        en: `A bookstore sold ${a.toLocaleString("en-US")} books in January, ${b.toLocaleString("en-US")} in February, and ${c.toLocaleString("en-US")} in March. After ${name} adds up those three months, a missing April record turns up: ${d.toLocaleString("en-US")} books. How many books were sold across all FOUR months in total?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(grandTotal),
+      context: { a, b, c, d, correct, grandTotal },
+      generatorKey: "whole_numbers_addition_y6",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops at the three-month subtotal,
+    // forgetting the newly-found fourth figure.
+    const stoppedAtThreeMonths = String(correct);
+    const distractors = [stoppedAtThreeMonths].filter((d2) => d2 !== String(grandTotal));
+    question.options = shuffleOptions(String(grandTotal), distractors);
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(0, grandTotal + randInt(100, 999) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the total and two of three addends, find
   // the missing one (subtraction).
@@ -54,7 +86,7 @@ export function generateWholeNumbersAdditionY6(params: GeneratorParams): Generat
   if (errorSpotting) {
     const name = pick(names);
     const wrongTotal = a + b; // forgot to add c
-    return {
+    const question: GeneratedQuestion = {
       prompt: {
         ms: `${name} menambah ${a.toLocaleString("en-US")}, ${b.toLocaleString("en-US")}, dan ${c.toLocaleString("en-US")}, tetapi mendapat jawapan ${wrongTotal.toLocaleString("en-US")}. Apakah jawapan yang betul?`,
         en: `${name} adds ${a.toLocaleString("en-US")}, ${b.toLocaleString("en-US")}, and ${c.toLocaleString("en-US")}, but got ${wrongTotal.toLocaleString("en-US")}. What is the correct answer?`,
@@ -64,8 +96,13 @@ export function generateWholeNumbersAdditionY6(params: GeneratorParams): Generat
       context: { a, b, c, correct, wrongTotal },
       generatorKey: "whole_numbers_addition_y6",
       difficulty: 3,
-      options: shuffleOptions(String(correct), [String(wrongTotal)]),
+      options: shuffleOptions(String(correct), [String(wrongTotal)].filter((d) => d !== String(correct))),
     };
+    while (question.options!.length < 3) {
+      const candidate = String(correct + randInt(1, 999) * (Math.random() > 0.5 ? 1 : -1));
+      if (!question.options!.includes(candidate) && Number(candidate) >= 0) question.options!.push(candidate);
+    }
+    return question;
   }
 
   // ---- word_problem: a real Malaysian scenario, not a bare equation.

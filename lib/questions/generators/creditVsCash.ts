@@ -18,6 +18,7 @@ export function generateCreditVsCash(params: GeneratorParams): GeneratedQuestion
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const items = ["peti sejuk", "televisyen", "basikal", "mesin basuh"] as const;
   const itemsEn: Record<(typeof items)[number], string> = {
@@ -26,6 +27,54 @@ export function generateCreditVsCash(params: GeneratorParams): GeneratedQuestion
     basikal: "bicycle",
     "mesin basuh": "washing machine",
   };
+
+  // ---- challenge (TP6 / non-routine): TWO different stores' instalment
+  // plans for the SAME item — find how much CHEAPER the better plan is.
+  // Genuine second hop past the base skill and reverseProblem (both only
+  // ever compare ONE instalment plan against cash): (1) find store A's
+  // instalment total, THEN (2) find store B's instalment total, THEN (3)
+  // find the difference between the two plans.
+  if (challenge) {
+    const depositA = randInt(5, 20) * 10;
+    const monthsA = randInt(6, 18);
+    const monthlyA = randInt(20, 100);
+    const totalA = depositA + monthlyA * monthsA;
+
+    const depositB = randInt(5, 20) * 10;
+    const monthsB = randInt(6, 18);
+    const monthlyB = randInt(20, 100);
+    const totalB = depositB + monthlyB * monthsB;
+
+    const diff = Math.abs(totalA - totalB);
+    const item = pick(items);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah ${item} boleh dibeli secara ansuran daripada dua kedai. Kedai A: bayaran pendahuluan RM${depositA}, diikuti ${monthsA} bulan pada RM${monthlyA} sebulan. Kedai B: bayaran pendahuluan RM${depositB}, diikuti ${monthsB} bulan pada RM${monthlyB} sebulan. Berapakah beza harga antara kedua-dua pelan ansuran itu?`,
+        en: `A ${itemsEn[item]} can be bought on instalment from two stores. Store A: deposit RM${depositA}, followed by ${monthsA} months at RM${monthlyA} per month. Store B: deposit RM${depositB}, followed by ${monthsB} months at RM${monthlyB} per month. What is the price difference between the two instalment plans?`,
+      },
+      type: "word_problem",
+      correctAnswer: formatRM(diff * 100),
+      context: { depositA, monthsA, monthlyA, totalA, depositB, monthsB, monthlyB, totalB, diff },
+      generatorKey: "credit_vs_cash",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: gives one store's total instead of the
+    // difference between the two plans.
+    const gaveOneTotal = formatRM(totalA * 100);
+    // Classic non-routine mistake: adds both totals together instead of
+    // finding the difference.
+    const addedBothTotals = formatRM((totalA + totalB) * 100);
+    const distractors = Array.from(
+      new Set([gaveOneTotal, addedBothTotals].filter((d) => d !== formatRM(diff * 100)))
+    );
+    question.options = shuffleOptions(formatRM(diff * 100), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidateRM = Math.max(1, diff + randInt(5, 40) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatRM(candidateRM * 100);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the cash price, deposit, term, and the
   // known extra cost of buying on instalment, find the monthly payment.

@@ -16,6 +16,7 @@ export function generateTimeDuration(params: GeneratorParams): GeneratedQuestion
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
 
   const startHour = randInt(1, 12);
@@ -26,6 +27,43 @@ export function generateTimeDuration(params: GeneratorParams): GeneratedQuestion
   const endHour = Math.floor(totalMinutes / 60) % 12 || 12;
   const endMinute = totalMinutes % 60;
   const correct = formatTime(endHour, endMinute);
+
+  // ---- challenge (TP6 / non-routine): a SECOND activity starts right
+  // after the first ends — the same "keep going" family as the addition
+  // chains, but framed as a schedule (this topic's own daily-life shape)
+  // rather than adding a third number.
+  if (challenge) {
+    const name = pick(names);
+    const duration2Minutes = pick([15, 30, 45, 60, 75, 90]);
+    const finalTotalMinutes = totalMinutes + duration2Minutes;
+    const finalHour = Math.floor(finalTotalMinutes / 60) % 12 || 12;
+    const finalMinute = finalTotalMinutes % 60;
+    const finalTime = formatTime(finalHour, finalMinute);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Kelas tuisyen ${name} bermula pada pukul ${formatTime(startHour, startMinute)} dan berlangsung ${durationMinutes} minit. Selepas kelas itu tamat, ${name} terus menghadiri kelas kedua yang berlangsung ${duration2Minutes} minit lagi. Pukul berapakah kelas kedua itu tamat?`,
+        en: `${name}'s tuition class starts at ${formatTime(startHour, startMinute)} and lasts ${durationMinutes} minutes. Right after that class ends, ${name} goes straight into a second class lasting ${duration2Minutes} more minutes. What time does the second class end?`,
+      },
+      type: "word_problem",
+      correctAnswer: finalTime,
+      context: { startHour, startMinute, durationMinutes, duration2Minutes, correct, finalTime },
+      generatorKey: "time_duration",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first class, giving
+    // that end time as the final answer.
+    const stoppedAtFirst = correct;
+    const distractors = [stoppedAtFirst].filter((d) => d !== finalTime);
+    question.options = shuffleOptions(finalTime, distractors);
+    while (question.options.length < 3) {
+      const candidateTotal = Math.max(0, finalTotalMinutes + randInt(5, 45) * (Math.random() > 0.5 ? 1 : -1));
+      const candidateHour = Math.floor(candidateTotal / 60) % 12 || 12;
+      const candidateMinute = candidateTotal % 60;
+      const candidate = formatTime(candidateHour, candidateMinute);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the end time and duration, find the start
   // time (subtracting the duration back off the end time).
@@ -76,7 +114,7 @@ export function generateTimeDuration(params: GeneratorParams): GeneratedQuestion
     const esEndMinute = esTotalMinutes % 60;
     const esCorrect = formatTime(esEndHour, esEndMinute);
     const wrongAnswer = formatTime(startHour, (startMinute + esDuration) % 60);
-    return {
+    const question: GeneratedQuestion = {
       prompt: {
         ms: `${name} mengira kelas yang bermula pada ${formatTime(startHour, startMinute)} dan berlangsung ${esDuration} minit, lalu mendapat jawapan ${wrongAnswer}. Apakah jawapan yang betul?`,
         en: `${name} calculated a class starting at ${formatTime(startHour, startMinute)} lasting ${esDuration} minutes, and got the answer ${wrongAnswer}. What is the correct answer?`,
@@ -88,6 +126,14 @@ export function generateTimeDuration(params: GeneratorParams): GeneratedQuestion
       difficulty: 3,
       options: shuffleOptions(esCorrect, [wrongAnswer].filter((d) => d !== esCorrect)),
     };
+    while (question.options!.length < 3) {
+      const candidateTotal = Math.max(0, esTotalMinutes + randInt(5, 45) * (Math.random() > 0.5 ? 1 : -1));
+      const candidateHour = Math.floor(candidateTotal / 60) % 12 || 12;
+      const candidateMinute = candidateTotal % 60;
+      const candidate = formatTime(candidateHour, candidateMinute);
+      if (!question.options!.includes(candidate)) question.options!.push(candidate);
+    }
+    return question;
   }
 
   // ---- word_problem: real Malaysian classroom/community scenarios.
@@ -180,7 +226,7 @@ export function generateTimeDuration(params: GeneratorParams): GeneratedQuestion
 // formatTime, which is also language-neutral) rather than spelled-out
 // "jam"/"hours" words, so an English-preference student doesn't see Malay
 // text in their answer choices.
-function formatDurationNeutral(totalMinutes: number): string {
+export function formatDurationNeutral(totalMinutes: number): string {
   const h = Math.floor(totalMinutes / 60);
   const m = totalMinutes % 60;
   if (h === 0) return `${m}m`;
@@ -211,6 +257,7 @@ export function generateTimeAddSubtract(params: GeneratorParams): GeneratedQuest
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const subjects = ["Matematik", "Sains", "Bahasa Melayu", "Bahasa Inggeris"] as const;
   const subjectsEn: Record<(typeof subjects)[number], string> = {
@@ -227,6 +274,41 @@ export function generateTimeAddSubtract(params: GeneratorParams): GeneratedQuest
 
   const correctMinutes = op === "add" ? aMinutes + bMinutes : aMinutes - bMinutes;
   const symbol = op === "add" ? "+" : "−";
+
+  // ---- challenge (TP6 / non-routine): same "third subject, keep going"
+  // shape as whole_numbers_addition (001), ported to time — a THIRD
+  // subject is studied after the first two, matching the topic's own
+  // explanation text almost exactly.
+  if (challenge) {
+    const name = pick(names);
+    const subjectA = pick(subjects);
+    const subjectB = pick(subjects.filter((s) => s !== subjectA));
+    const subjectC = pick(subjects.filter((s) => s !== subjectA && s !== subjectB));
+    const cMinutes = randInt(1, maxHours) * 60 + pick([0, 15, 30, 45]);
+    const subtotal = aMinutes + bMinutes;
+    const finalTotal = subtotal + cMinutes;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} belajar ${subjectA} selama ${formatDurationWords(aMinutes, "ms")}, kemudian belajar ${subjectB} selama ${formatDurationWords(bMinutes, "ms")}. Selepas itu, ${name} belajar ${subjectC} pula selama ${formatDurationWords(cMinutes, "ms")}. Berapakah jumlah masa belajar ${name} kesemuanya?`,
+        en: `${name} studies ${subjectsEn[subjectA]} for ${formatDurationWords(aMinutes, "en")}, then studies ${subjectsEn[subjectB]} for ${formatDurationWords(bMinutes, "en")}. After that, ${name} studies ${subjectsEn[subjectC]} for ${formatDurationWords(cMinutes, "en")}. What is ${name}'s total study time?`,
+      },
+      type: "word_problem",
+      correctAnswer: formatDurationNeutral(finalTotal),
+      context: { aMinutes, bMinutes, cMinutes, subtotal, finalTotal },
+      generatorKey: "time_add_subtract",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first two subjects.
+    const stoppedAtTwo = formatDurationNeutral(subtotal);
+    const distractors = [stoppedAtTwo].filter((d) => d !== formatDurationNeutral(finalTotal));
+    question.options = shuffleOptions(formatDurationNeutral(finalTotal), distractors);
+    while (question.options.length < 3) {
+      const candidateMinutes = Math.max(0, finalTotal + randInt(5, 40) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = formatDurationNeutral(candidateMinutes);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the total study time and one subject's time,
   // find the other subject's time (subtraction).
@@ -411,6 +493,7 @@ export function generateTimeUnitAddSubtract(params: GeneratorParams): GeneratedQ
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
 
   const fmtFor = (factor: number, big: string, small: string) => (totalSmall: number) => {
@@ -420,6 +503,53 @@ export function generateTimeUnitAddSubtract(params: GeneratorParams): GeneratedQ
     if (smallVal === 0) return `${bigVal}${big}`;
     return `${bigVal}${big} ${smallVal}${small}`;
   };
+
+  // ---- challenge (TP6 / non-routine): THREE durations added in
+  // sequence (building age, then TWO separate additions) instead of
+  // two. Genuine second hop past the base skill and reverseProblem
+  // (both only ever combine two durations): (1) add the first two,
+  // regrouping if needed, THEN (2) add the third on top, regrouping
+  // again if needed.
+  if (challenge) {
+    const { big, small, factor } = pick(pairs);
+    const fmt = fmtFor(factor, big, small);
+    const aSmall = randInt(1, maxBig) * factor + randInt(0, factor - 1);
+    const bSmall = randInt(1, maxBig) * factor + randInt(0, factor - 1);
+    const cSmall = randInt(1, maxBig) * factor + randInt(0, factor - 1);
+    const afterFirstTwo = aSmall + bSmall;
+    const totalSmall = afterFirstTwo + cSmall;
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah bangunan berumur ${fmt(aSmall)}. Ia ditambah baik buat kali pertama ${fmt(bSmall)} kemudian, dan ditambah baik sekali lagi ${fmt(cSmall)} selepas itu. Berapakah umur bangunan itu sekarang?`,
+        en: `A building is ${fmt(aSmall)} old. It was renovated for the first time ${fmt(bSmall)} later, then renovated again ${fmt(cSmall)} after that. How old is the building now?`,
+      },
+      type: "word_problem",
+      correctAnswer: fmt(totalSmall),
+      context: { big, small, factor, aSmall, bSmall, cSmall, afterFirstTwo, totalSmall },
+      generatorKey: "time_unit_add_subtract",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after adding the first two
+    // durations, forgets the third addition entirely.
+    const stoppedAfterFirstTwo = fmt(afterFirstTwo);
+    // Classic mistake: adds the big and small units of all three
+    // separately without regrouping the small-unit overflow.
+    const aBig = Math.floor(aSmall / factor), aRem = aSmall % factor;
+    const bBig = Math.floor(bSmall / factor), bRem = bSmall % factor;
+    const cBig = Math.floor(cSmall / factor), cRem = cSmall % factor;
+    const noCarryLabel = `${aBig + bBig + cBig}${big} ${aRem + bRem + cRem}${small}`;
+    const distractors = Array.from(
+      new Set([stoppedAfterFirstTwo, noCarryLabel].filter((d) => d !== fmt(totalSmall)))
+    );
+    question.options = shuffleOptions(fmt(totalSmall), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidateSmall = Math.max(0, totalSmall + randInt(1, factor - 1) * (Math.random() > 0.5 ? 1 : -1));
+      const candidate = fmt(candidateSmall);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the total age and one duration, find the
   // other duration (subtraction) — same shape as time_add_subtract's
@@ -615,7 +745,7 @@ function to12Parts(hour24: number): { hour12: number; isPM: boolean } {
   return { hour12, isPM };
 }
 
-function to12String(hour24: number, minute: number): string {
+export function to12String(hour24: number, minute: number): string {
   const { hour12, isPM } = to12Parts(hour24);
   return `${hour12}:${pad2(minute)} ${isPM ? "p.m." : "a.m."}`;
 }
@@ -651,10 +781,62 @@ export function generateTimeFormatConvert(params: GeneratorParams): GeneratedQue
   const extraInfoChance = Number(params.extraInfoChance ?? 0);
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
 
   const hour24 = randomHour24(includeNoonMidnight, excludeNoonMidnight);
   const minute = pick([0, 15, 30, 45]);
   const { hour12, isPM } = to12Parts(hour24);
+
+  // ---- challenge (TP6 / non-routine): a two-leg bus journey with a
+  // TRANSFER — ride to a transfer station, wait through a layover, then
+  // ride again to the final destination. Genuine second hop past
+  // reverseProblem (which only ever adds ONE duration): (1) add the
+  // first leg's duration, (2) add the layover wait, THEN (3) add the
+  // second leg's duration — skipping any one step gives a distinct
+  // classic wrong answer.
+  if (challenge) {
+    const duration1 = pick([30, 45, 60, 90]);
+    const layoverMinutes = pick([15, 30, 45]);
+    const duration2 = pick([30, 45, 60, 90]);
+    const departTotal = hour24 * 60 + minute;
+    const transferTotal = departTotal + duration1;
+    const totalMinutes = transferTotal + layoverMinutes + duration2;
+    const arrivalHour24 = Math.floor(totalMinutes / 60) % 24;
+    const arrivalMinute = totalMinutes % 60;
+    const correct = to12String(arrivalHour24, arrivalMinute);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Bas bertolak dari stesen pada ${to24String(hour24, minute)} (format 24 jam) dan mengambil masa ${duration1} minit untuk sampai ke stesen pertukaran. Selepas menunggu ${layoverMinutes} minit di sana, penumpang menaiki bas kedua yang mengambil masa ${duration2} minit lagi untuk sampai ke destinasi akhir. Pukul berapakah bas itu tiba di destinasi akhir, dalam format 12 jam?`,
+        en: `A bus departs the station at ${to24String(hour24, minute)} (24-hour format) and takes ${duration1} minutes to reach a transfer station. After waiting ${layoverMinutes} minutes there, the passenger boards a second bus which takes another ${duration2} minutes to reach the final destination. What time does it arrive at the final destination, in 12-hour format?`,
+      },
+      type: "word_problem",
+      correctAnswer: correct,
+      context: { departTotal, transferTotal, layoverMinutes, duration2, totalMinutes, arrivalHour24, arrivalMinute },
+      generatorKey: "time_format_convert",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops at the transfer station, forgets
+    // the layover and second leg entirely.
+    const stoppedAtTransferHour = Math.floor(transferTotal / 60) % 24;
+    const stoppedAtTransferMinute = transferTotal % 60;
+    const stoppedAtTransfer = to12String(stoppedAtTransferHour, stoppedAtTransferMinute);
+    // Classic mistake: adds both ride durations but forgets the layover
+    // wait entirely.
+    const forgotLayoverTotal = departTotal + duration1 + duration2;
+    const forgotLayoverHour = Math.floor(forgotLayoverTotal / 60) % 24;
+    const forgotLayoverMinute = forgotLayoverTotal % 60;
+    const forgotLayover = to12String(forgotLayoverHour, forgotLayoverMinute);
+    const distractors = Array.from(new Set([stoppedAtTransfer, forgotLayover].filter((d) => d !== correct)));
+    question.options = shuffleOptions(correct, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const bumpMinutes = totalMinutes + randInt(5, 40) * (Math.random() > 0.5 ? 1 : -1);
+      const bumpHour = Math.floor(((bumpMinutes % 1440) + 1440) / 60) % 24;
+      const bumpMin = ((bumpMinutes % 60) + 60) % 60;
+      const candidate = to12String(bumpHour, bumpMin);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: chains with the existing duration-addition skill.
   // Given a 24-hour departure time and a duration, find the 12-hour
@@ -798,6 +980,7 @@ export function generateTimeZones(params: GeneratorParams): GeneratedQuestion {
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
 
   const [cityA, cityB] = [...TIME_ZONE_CITIES].sort(() => Math.random() - 0.5).slice(0, 2);
   const startHour = randInt(0, 23);
@@ -805,6 +988,46 @@ export function generateTimeZones(params: GeneratorParams): GeneratedQuestion {
   const correctHour = startHour + diff;
   const correct = formatHour24(correctHour);
   const context = { cityAOffset: cityA.offset, cityBOffset: cityB.offset, startHour, correctHour: ((correctHour % 24) + 24) % 24 };
+
+  // ---- challenge (TP6 / non-routine): a flight departs city A at a
+  // given LOCAL time and takes several hours — find the LOCAL arrival
+  // time in city B. Genuine second hop past the base skill and both
+  // existing branches (which only ever apply the GMT offset to a
+  // stationary time): (1) add the flight duration to the departure time,
+  // THEN (2) adjust for the GMT offset difference between the two
+  // cities.
+  if (challenge) {
+    const flightHours = randInt(2, 10);
+    const arrivalHour = startHour + flightHours + diff;
+    const arrivalCorrect = formatHour24(arrivalHour);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${cityA.name} ialah GMT+${cityA.offset} dan ${cityB.name} ialah GMT+${cityB.offset}. Sebuah penerbangan berlepas dari ${cityA.name} pada pukul ${formatHour24(startHour)} (waktu tempatan) dan mengambil masa ${flightHours} jam untuk sampai ke ${cityB.name}. Pukul berapakah waktu tempatan semasa pesawat itu MENDARAT di ${cityB.name}?`,
+        en: `${cityA.name} is GMT+${cityA.offset} and ${cityB.name} is GMT+${cityB.offset}. A flight departs ${cityA.name} at ${formatHour24(startHour)} (local time) and takes ${flightHours} hours to reach ${cityB.name}. What is the local time when the flight LANDS in ${cityB.name}?`,
+      },
+      type: "word_problem",
+      correctAnswer: arrivalCorrect,
+      context: { cityAOffset: cityA.offset, cityBOffset: cityB.offset, startHour, flightHours, arrivalHour: ((arrivalHour % 24) + 24) % 24 },
+      generatorKey: "time_zones",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: adds the flight duration but forgets
+    // to adjust for the timezone difference.
+    const forgotTimezoneShift = formatHour24(startHour + flightHours);
+    // Classic non-routine mistake: applies the timezone shift but forgets
+    // to add the flight duration.
+    const forgotFlightDuration = formatHour24(startHour + diff);
+    const distractors = Array.from(
+      new Set([forgotTimezoneShift, forgotFlightDuration].filter((d) => d !== arrivalCorrect))
+    );
+    question.options = shuffleOptions(arrivalCorrect, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const bump = randInt(1, 4) * (Math.random() > 0.5 ? 1 : -1);
+      const candidate = formatHour24(arrivalHour + bump);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given both cities' current times, find one
   // city's GMT offset (the other is given) — solving for the unknown

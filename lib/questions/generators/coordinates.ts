@@ -16,7 +16,52 @@ export function generateCoordinates(params: GeneratorParams): GeneratedQuestion 
   const gridSize = Number(params.gridSize ?? 10);
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): find the MIDPOINT between two
+  // named points, given as coordinates in the question text (no diagram
+  // needed — same as coordinate_distance's text-based approach). Genuine
+  // second hop past the base skill and errorSpotting (both only ever
+  // read ONE point straight off a grid): (1) add the two points' x-values
+  // and divide by 2, THEN (2) do the same for the y-values.
+  if (challenge) {
+    const maxDelta = Math.max(1, Math.floor((gridSize - 2) / 2));
+    const dx = randInt(1, maxDelta);
+    const dy = randInt(1, maxDelta);
+    const x1 = randInt(1, Math.max(1, gridSize - 1 - 2 * dx));
+    const y1 = randInt(1, Math.max(1, gridSize - 1 - 2 * dy));
+    const x2 = x1 + 2 * dx;
+    const y2 = y1 + 2 * dy;
+    const midX = (x1 + x2) / 2;
+    const midY = (y1 + y2) / 2;
+    const correct = `(${midX}, ${midY})`;
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Pada peta sebuah taman, pintu masuk berada pada koordinat A(${x1}, ${y1}) dan telaga berada pada koordinat B(${x2}, ${y2}). ${name} ingin meletakkan sebuah air pancut TEPAT DI TENGAH-TENGAH antara A dan B. Apakah koordinat air pancut itu?`,
+        en: `On a park map, the entrance is at coordinates A(${x1}, ${y1}) and a well is at coordinates B(${x2}, ${y2}). ${name} wants to place a fountain EXACTLY HALFWAY between A and B. What are the fountain's coordinates?`,
+      },
+      type: "word_problem",
+      correctAnswer: correct,
+      context: { x1, y1, x2, y2, midX, midY, correct },
+      generatorKey: "coordinates",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: adds the coordinates but forgets to
+    // divide by 2 (halve the sum).
+    const forgotToHalve = `(${x1 + x2}, ${y1 + y2})`;
+    // Classic non-routine mistake: uses only the first point, ignoring
+    // the second point entirely.
+    const usedOnlyFirstPoint = `(${x1}, ${y1})`;
+    const distractors = Array.from(new Set([forgotToHalve, usedOnlyFirstPoint])).filter((d) => d !== correct);
+    question.options = shuffleOptions(correct, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = `(${Math.max(1, midX + randInt(-2, 2))}, ${Math.max(1, midY + randInt(-2, 2))})`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // Keep the point off the axes themselves (0 on either axis reads
   // ambiguously for a first exposure to the concept).

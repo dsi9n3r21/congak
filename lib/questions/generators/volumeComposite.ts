@@ -15,6 +15,7 @@ export function generateVolumeComposite(params: GeneratorParams): GeneratedQuest
   const max = Number(params.max ?? 8);
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
 
   const l1 = randInt(min, max);
   const w1 = randInt(min, max);
@@ -27,6 +28,51 @@ export function generateVolumeComposite(params: GeneratorParams): GeneratedQuest
   const volume2 = l2 * w2 * h2;
   const correct = volume1 + volume2;
   const context = { l1, w1, h1, l2, w2, h2, volume1, volume2, correct };
+
+  // ---- challenge (TP6 / non-routine): a genuinely different composite
+  // shape from every other branch here — SUBTRACTION instead of
+  // addition, ported from `area_composite`'s batch-15 precedent to 3D. A
+  // rectangular storage compartment (empty space) is cut out of a solid
+  // cuboid block; find the volume of solid material remaining. Every
+  // other branch here teaches "split into cuboids and ADD" — this is
+  // the "cut a cuboid OUT and SUBTRACT" variant.
+  if (challenge) {
+    const bigL = randInt(min + 4, max + 6);
+    const bigW = randInt(min + 4, max + 6);
+    const bigH = randInt(min + 3, max + 5);
+    const cutL = randInt(min, Math.max(min, bigL - 2));
+    const cutW = randInt(min, Math.max(min, bigW - 2));
+    const cutH = randInt(min, Math.max(min, bigH - 2));
+    const bigVolume = bigL * bigW * bigH;
+    const cutVolume = cutL * cutW * cutH;
+    const chCorrect = bigVolume - cutVolume;
+    const name = pick(VOLUME_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} mempunyai sebuah blok kayu pepejal berbentuk kuboid berukuran ${bigL} cm × ${bigW} cm × ${bigH} cm. Sebuah petak simpanan kosong berukuran ${cutL} cm × ${cutW} cm × ${cutH} cm dipotong daripada bahagian dalamnya. Berapakah isi padu kayu pepejal yang tinggal?`,
+        en: `${name} has a solid wooden block shaped like a cuboid measuring ${bigL} cm × ${bigW} cm × ${bigH} cm. An empty storage compartment measuring ${cutL} cm × ${cutW} cm × ${cutH} cm is cut out from inside it. What is the volume of solid wood remaining?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(chCorrect),
+      context: { bigL, bigW, bigH, cutL, cutW, cutH, bigVolume, cutVolume, chCorrect },
+      generatorKey: "volume_composite",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: forgets to subtract the cut-out,
+    // gives the whole block's volume.
+    const forgotSubtract = bigVolume;
+    // Classic mistake: adds the cut-out's volume instead of subtracting it.
+    const addedInstead = bigVolume + cutVolume;
+    const distractors = Array.from(
+      new Set([forgotSubtract, addedInstead].map(String).filter((d) => d !== String(chCorrect)))
+    );
+    question.options = shuffleOptions(String(chCorrect), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, chCorrect + randInt(5, 40) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the total volume and every dimension
   // except one side of the second cuboid, find that missing side.

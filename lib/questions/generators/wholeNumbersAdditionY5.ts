@@ -27,6 +27,7 @@ export function generateWholeNumbersAdditionY5(params: GeneratorParams): Generat
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const items = ["tin makanan", "botol air mineral", "beg beras"] as const;
   const itemsEn: Record<(typeof items)[number], string> = {
@@ -34,6 +35,39 @@ export function generateWholeNumbersAdditionY5(params: GeneratorParams): Generat
     "botol air mineral": "bottles of mineral water",
     "beg beras": "bags of rice",
   };
+
+  // ---- challenge (TP6 / non-routine): same "second delivery arrives, keep
+  // going" shape as whole_numbers_addition (001), ported up to Y5's
+  // 6-digit range.
+  if (challenge) {
+    const a = randInt(min, max);
+    const b = randInt(min, max);
+    const b2 = randInt(min, max);
+    const correct = a + b;
+    const finalTotal = a + b + b2;
+    const name = pick(names);
+    const item = pick(items);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Gudang ${name} ada ${a.toLocaleString("en-US")} ${item}. Pembekal pertama menghantar ${b.toLocaleString("en-US")} ${item} tambahan, dan pembekal kedua menghantar ${b2.toLocaleString("en-US")} ${item} tambahan lagi. Berapa ${item} kesemuanya sekarang?`,
+        en: `${name}'s warehouse has ${a.toLocaleString("en-US")} ${itemsEn[item]}. The first supplier delivers ${b.toLocaleString("en-US")} additional ${itemsEn[item]}, and a second supplier delivers ${b2.toLocaleString("en-US")} more. How many ${itemsEn[item]} are there now in total?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(finalTotal),
+      context: { a, b, b2, correct, finalTotal },
+      generatorKey: "whole_numbers_addition_y5",
+      difficulty: 2,
+    };
+    // Classic non-routine mistake: stops after the first delivery.
+    const stoppedAfterFirst = String(correct);
+    const distractors = [stoppedAfterFirst].filter((d) => d !== String(finalTotal));
+    question.options = shuffleOptions(String(finalTotal), distractors);
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(0, finalTotal + randInt(100, 9999) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the total and one addend, find the other
   // addend — subtracting back through the sum.

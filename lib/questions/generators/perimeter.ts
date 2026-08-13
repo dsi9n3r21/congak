@@ -14,7 +14,46 @@ export function generatePerimeter(params: GeneratorParams): GeneratedQuestion {
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): the perimeter feeds into a real
+  // cost calculation — find the fencing length (this topic's own skill),
+  // then multiply by a cost-per-metre rate. Natural distractor: stops at
+  // the perimeter itself, forgetting to price it.
+  if (challenge) {
+    const isSquareC = Math.random() > 0.6;
+    const lengthC = randInt(min, max);
+    const widthC = isSquareC ? lengthC : randInt(min, max);
+    const perimeterC = 2 * (lengthC + widthC);
+    const ratePerMetre = randInt(3, 15);
+    const totalCost = perimeterC * ratePerMetre;
+    const name = pick(names);
+    const shapeLabelC = isSquareC
+      ? { ms: `sebuah segi empat sama dengan sisi ${lengthC} m`, en: `a square with side ${lengthC} m` }
+      : { ms: `sebuah segi empat tepat ${lengthC} m × ${widthC} m`, en: `a rectangle ${lengthC} m × ${widthC} m` };
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} ingin memagar sebidang tanah berbentuk ${shapeLabelC.ms}. Kos pagar ialah RM${ratePerMetre} setiap meter. Berapakah jumlah kos pagar itu?`,
+        en: `${name} wants to fence a plot of land shaped like ${shapeLabelC.en}. Fencing costs RM${ratePerMetre} per metre. What is the total cost of the fencing?`,
+      },
+      type: "word_problem",
+      correctAnswer: `RM${totalCost}`,
+      context: { length: lengthC, width: widthC, perimeter: perimeterC, ratePerMetre, totalCost },
+      generatorKey: "perimeter",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after finding the perimeter,
+    // forgetting to multiply by the cost rate.
+    const stoppedAtPerimeter = `RM${perimeterC}`;
+    const distractors = [stoppedAtPerimeter].filter((d) => d !== `RM${totalCost}`);
+    question.options = shuffleOptions(`RM${totalCost}`, distractors);
+    while (question.options.length < 3) {
+      const candidate = `RM${Math.max(1, totalCost + randInt(1, 20) * (Math.random() > 0.5 ? 1 : -1))}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the perimeter and one side of a rectangle,
   // find the other side — dividing back through the perimeter formula.

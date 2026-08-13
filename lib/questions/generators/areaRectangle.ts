@@ -13,7 +13,46 @@ export function generateAreaRectangle(params: GeneratorParams): GeneratedQuestio
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): the area feeds into a real cost
+  // calculation — find the grass-planting area (this topic's own skill),
+  // then multiply by a cost-per-square-metre rate. Natural distractor:
+  // stops at the area itself, forgetting to price it.
+  if (challenge) {
+    const isSquareC = Math.random() > 0.6;
+    const lengthC = randInt(min, max);
+    const widthC = isSquareC ? lengthC : randInt(min, max);
+    const areaC = lengthC * widthC;
+    const ratePerSqm = randInt(2, 10);
+    const totalCost = areaC * ratePerSqm;
+    const name = pick(names);
+    const shapeLabelC = isSquareC
+      ? { ms: `sebuah segi empat sama dengan sisi ${lengthC} m`, en: `a square with side ${lengthC} m` }
+      : { ms: `sebuah segi empat tepat ${lengthC} m × ${widthC} m`, en: `a rectangle ${lengthC} m × ${widthC} m` };
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} ingin menanam rumput pada sebidang tanah berbentuk ${shapeLabelC.ms}. Kos rumput ialah RM${ratePerSqm} setiap meter persegi. Berapakah jumlah kos rumput itu?`,
+        en: `${name} wants to plant grass on a plot of land shaped like ${shapeLabelC.en}. Grass costs RM${ratePerSqm} per square metre. What is the total cost of the grass?`,
+      },
+      type: "word_problem",
+      correctAnswer: `RM${totalCost}`,
+      context: { length: lengthC, width: widthC, area: areaC, ratePerSqm, totalCost },
+      generatorKey: "area_rectangle",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after finding the area,
+    // forgetting to multiply by the cost rate.
+    const stoppedAtArea = `RM${areaC}`;
+    const distractors = [stoppedAtArea].filter((d) => d !== `RM${totalCost}`);
+    question.options = shuffleOptions(`RM${totalCost}`, distractors);
+    while (question.options.length < 3) {
+      const candidate = `RM${Math.max(1, totalCost + randInt(1, 20) * (Math.random() > 0.5 ? 1 : -1))}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the area and one side of a rectangle, find
   // the other side — dividing back through the area formula.

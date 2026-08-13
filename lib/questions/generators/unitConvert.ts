@@ -33,6 +33,34 @@ const measurePhrase: Record<"length" | "mass" | "volume" | "duration", { ms: str
   duration: { ms: "berlangsung selama", en: "lasts" },
 };
 
+// Which measurement kind each "big_small" pair belongs to — covers every
+// pair used across the unit-conversion topics (length, mass, volume,
+// duration), so the compound-measurement challenge below always picks
+// phrasing that matches the unit (never describes a mass in terms of a
+// "piece of wood" or similar mismatch).
+const unitKind: Record<string, "length" | "mass" | "volume" | "duration"> = {
+  cm_mm: "length",
+  m_cm: "length",
+  km_m: "length",
+  kg_g: "mass",
+  l_ml: "volume",
+  day_hr: "duration",
+  wk_day: "duration",
+  hr_min: "duration",
+  yr_mth: "duration",
+  dec_yr: "duration",
+  c_dec: "duration",
+};
+
+// Generic subject noun per kind for the compound-measurement challenge
+// sentence (paired with `measurePhrase` above for the verb).
+const compoundSubject: Record<"length" | "mass" | "volume" | "duration", { ms: string; en: string }> = {
+  length: { ms: "Sebatang kayu", en: "A piece of wood" },
+  mass: { ms: "Sebuah guni beras", en: "A sack of rice" },
+  volume: { ms: "Sebuah tangki air", en: "A water tank" },
+  duration: { ms: "Sebuah acara", en: "An event" },
+};
+
 /**
  * One generic "convert between two units" generator, reused across many
  * KSSR topics that are all structurally identical — Length (mm/cm/m/km),
@@ -56,6 +84,49 @@ export function generateUnitConvert(params: GeneratorParams): GeneratedQuestion 
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
+
+  // ---- challenge (TP6 / non-routine): a COMPOUND measurement — e.g.
+  // "3 m 45 cm" — converted entirely into the small unit. A genuine
+  // second hop past the base skill (which only ever converts a single
+  // clean quantity): (1) convert the big-unit part to small units, THEN
+  // (2) add on the small-unit remainder — skipping either hop gives a
+  // classic wrong answer. Uses the same kind-aware subject/verb phrasing
+  // as the word_problem branch below so mass/volume/duration pairs don't
+  // get a nonsensical "length of a piece of wood" sentence.
+  if (challenge) {
+    const { big, small, factor } = pick(pairs);
+    const bigVal = randInt(1, Math.max(1, maxBig - 1));
+    const smallRemainder = randInt(1, factor - 1);
+    const correct = bigVal * factor + smallRemainder;
+    const kind = unitKind[`${big}_${small}`] ?? "length";
+    const subject = compoundSubject[kind];
+    const verb = measurePhrase[kind];
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${subject.ms} ${verb.ms} ${bigVal} ${big} ${smallRemainder} ${small}. Berapakah itu dalam ${small} sahaja?`,
+        en: `${subject.en} ${verb.en} ${bigVal} ${big} ${smallRemainder} ${small}. What is that in ${small} only?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(correct),
+      context: { big, small, factor, bigVal, smallRemainder, correct },
+      generatorKey: "unit_convert",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: converts the big-unit part but forgets
+    // to add the small-unit remainder.
+    const forgotRemainder = String(bigVal * factor);
+    // Classic non-routine mistake: forgets to convert at all, just adds
+    // the two raw numbers together.
+    const forgotConvert = String(bigVal + smallRemainder);
+    const distractors = Array.from(new Set([forgotRemainder, forgotConvert])).filter((d) => d !== String(correct));
+    question.options = shuffleOptions(String(correct), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, correct + randInt(1, Math.max(2, Math.round(correct * 0.2)))));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given a worked example, find the conversion
   // factor itself (rather than a converted value).

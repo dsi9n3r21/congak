@@ -17,7 +17,46 @@ export function generateAnglesTriangleSum(params: GeneratorParams): GeneratedQue
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): an isosceles triangle — given only
+  // the apex angle, find EACH of the two equal base angles. A genuine
+  // second hop past reverseProblem: (1) subtract the apex from 180° to
+  // get the combined base-angle total, THEN (2) divide that total by 2
+  // since the base angles are equal — reverseProblem only ever needed
+  // step (1) alone.
+  if (challenge) {
+    const baseAngle = randInt(10, 79);
+    const apex = 180 - 2 * baseAngle;
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah segi tiga sama kaki mempunyai sudut puncak ${apex}°. Kedua-dua sudut tapaknya adalah sama besar. ${name} ingin tahu saiz SETIAP sudut tapak. Berapakah saiz setiap satu?`,
+        en: `An isosceles triangle has an apex angle of ${apex}°. Its two base angles are equal in size. ${name} wants to know the size of EACH base angle. What is the size of each one?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(baseAngle),
+      context: { apex, baseAngle, combinedBase: 180 - apex },
+      generatorKey: "angles_triangle_sum",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first hop and gives
+    // the combined base-angle total instead of dividing it by 2.
+    const stoppedAtCombined = String(180 - apex);
+    // Classic mistake: confuses the triangle sum with angles at a point
+    // (360°) before halving.
+    const confusedWith360 = String(Math.round((360 - apex) / 2));
+    const distractors = Array.from(new Set([stoppedAtCombined, confusedWith360])).filter(
+      (d) => d !== String(baseAngle)
+    );
+    question.options = shuffleOptions(String(baseAngle), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, baseAngle + randInt(1, 9) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the third angle and one of the other two,
   // find the missing angle — same computation, different unknown.

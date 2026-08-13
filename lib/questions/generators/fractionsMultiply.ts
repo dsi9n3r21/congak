@@ -14,6 +14,7 @@ export function generateFractionsMultiply(params: GeneratorParams): GeneratedQue
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
 
   const denom = pick(denominators);
   const num = randInt(1, denom - 1);
@@ -25,6 +26,47 @@ export function generateFractionsMultiply(params: GeneratorParams): GeneratedQue
   const correctDenom = denom / g;
   const correctAnswer = `${correctNum}/${correctDenom}`;
   const context = { num, denom, whole, correctNum, correctDenom };
+
+  // ---- challenge (TP6 / non-routine): same "rate, then project to a
+  // DIFFERENT quantity" shape as whole_numbers_multiplication/money_
+  // multiply_divide/decimal_multiply — the per-loaf flour amount is
+  // known, but the question asks about a DIFFERENT number of loaves
+  // than the one first mentioned.
+  if (challenge) {
+    const name = pick(MULTIPLY_NAMES);
+    let whole2 = randInt(2, 6);
+    while (whole2 === whole) whole2 = randInt(2, 6);
+    const rawNum1 = num * whole;
+    const g1 = gcd(rawNum1, denom);
+    const firstTotal = `${rawNum1 / g1}/${denom / g1}`;
+    const rawNum2 = num * whole2;
+    const g2 = gcd(rawNum2, denom);
+    const finalNum = rawNum2 / g2;
+    const finalDenom = denom / g2;
+    const finalTotal = `${finalNum}/${finalDenom}`;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${whole} paun kek memerlukan ${firstTotal} cawan tepung kesemuanya (setiap paun memerlukan jumlah yang sama). Jika ${name} hendak membuat ${whole2} paun kek pula (mengikut resipi yang sama), berapa cawan tepung diperlukan kesemuanya?`,
+        en: `${whole} cake loaves need ${firstTotal} cups of flour in total (each loaf needs the same amount). If ${name} wants to bake ${whole2} loaves instead (using the same recipe), how many cups of flour are needed in total?`,
+      },
+      type: "word_problem",
+      correctAnswer: finalTotal,
+      context: { num, denom, whole, whole2, firstTotal, finalNum, finalDenom, finalTotal },
+      generatorKey: "fractions_multiply",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after finding the per-loaf
+    // amount, or reuses the ORIGINAL total instead of recalculating.
+    const stoppedAtPerLoaf = `${num}/${denom}`;
+    const reusedOriginalTotal = firstTotal;
+    const distractors = Array.from(new Set([stoppedAtPerLoaf, reusedOriginalTotal].filter((d) => d !== finalTotal)));
+    question.options = shuffleOptions(finalTotal, distractors);
+    while (question.options.length < 3) {
+      const candidate = `${Math.max(1, finalNum + randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1))}/${finalDenom}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the total used and the number of batches,
   // find the per-batch fraction — dividing back through the product.

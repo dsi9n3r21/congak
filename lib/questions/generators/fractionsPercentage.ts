@@ -15,6 +15,7 @@ export function generateFractionsPercentageConvert(params: GeneratorParams): Gen
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
   const items = ["kuih", "biskut", "epal", "pensel"] as const;
   const itemsEn: Record<(typeof items)[number], string> = {
@@ -23,6 +24,53 @@ export function generateFractionsPercentageConvert(params: GeneratorParams): Gen
     epal: "apples",
     pensel: "pencils",
   };
+
+  function gcdOf(a: number, b: number): number {
+    return b === 0 ? a : gcdOf(b, a % b);
+  }
+
+  // ---- challenge (TP6 / non-routine): the fraction is given UNSIMPLIFIED
+  // (e.g. 6/24 instead of 1/4), with a denominator that does NOT divide
+  // evenly into 100 — so the taught "scale the denominator to 100" method
+  // can't be applied directly. Genuine second hop past the base skill:
+  // (1) simplify the fraction to lowest terms first, THEN (2) apply the
+  // usual scale-to-100 method on the simplified fraction.
+  if (challenge) {
+    const d = pick(denominators);
+    let n = randInt(1, d - 1);
+    while (gcdOf(n, d) !== 1) n = randInt(1, d - 1);
+    const k = pick([2, 3]);
+    const bigNum = n * k;
+    const bigDenom = d * k;
+    const pct = (n / d) * 100;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Tukar ${bigNum}/${bigDenom} kepada peratus. (Petua: permudahkan pecahan itu dahulu.)`,
+        en: `Convert ${bigNum}/${bigDenom} to a percentage. (Hint: simplify the fraction first.)`,
+      },
+      type: "word_problem",
+      correctAnswer: String(pct),
+      context: { bigNum, bigDenom, n, denom: d, pct, k },
+      generatorKey: "fractions_percentage_convert",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: doesn't simplify first, tries to scale
+    // the unsimplified denominator to 100 using a rounded (wrong) factor.
+    const roundedScale = Math.round(100 / bigDenom) || 1;
+    const wrongScaleUnsimplified = bigNum * roundedScale;
+    // Classic mistake: uses the unsimplified numerator directly as the
+    // percentage, ignoring the denominator entirely.
+    const usedNumeratorDirectly = bigNum;
+    const distractors = Array.from(
+      new Set([wrongScaleUnsimplified, usedNumeratorDirectly].map(String).filter((dd) => dd !== String(pct) && Number(dd) >= 0))
+    );
+    question.options = shuffleOptions(String(pct), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(0, pct + randInt(1, 10) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   const denom = pick(denominators);
   const num = randInt(1, denom - 1);

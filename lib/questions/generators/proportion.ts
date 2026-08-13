@@ -23,7 +23,58 @@ export function generateProportion(params: GeneratorParams): GeneratedQuestion {
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): a THREE-way ratio (cats:dogs:
+  // rabbits), given only the TOTAL number of animals — find one specific
+  // animal's count. Genuine second hop past the base skill and
+  // reverseProblem (both only ever work with a TWO-part ratio and a
+  // directly-known part): (1) add all three ratio numbers to get the
+  // total ratio units, THEN (2) divide the total by that to get the
+  // scale factor, THEN (3) multiply the target's ratio number by it.
+  if (challenge) {
+    const cA = randInt(1, 4);
+    const cB = randInt(1, 4);
+    const cC = randInt(1, 4);
+    const scale = randInt(2, maxScale);
+    const totalRatio = cA + cB + cC;
+    const total = totalRatio * scale;
+    const animals = [
+      { ms: "kucing", en: "cats", ratio: cA },
+      { ms: "anjing", en: "dogs", ratio: cB },
+      { ms: "arnab", en: "rabbits", ratio: cC },
+    ];
+    const targetIdx = randInt(0, 2);
+    const target = animals[targetIdx];
+    const correct = target.ratio * scale;
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Nisbah kucing, anjing, dan arnab di sebuah kedai haiwan ialah ${cA}:${cB}:${cC}. Terdapat ${total} ekor haiwan kesemuanya. Berapa ekor ${target.ms}?`,
+        en: `The ratio of cats, dogs, and rabbits in a pet shop is ${cA}:${cB}:${cC}. There are ${total} animals in total. How many ${target.en} are there?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(correct),
+      context: { cA, cB, cC, scale, total, totalRatio, targetRatio: target.ratio, correct },
+      generatorKey: "proportion",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: divides the total evenly across the 3
+    // species, ignoring the ratio entirely.
+    const dividedEvenly = Math.round(total / 3);
+    // Classic non-routine mistake: gives the whole total as the answer,
+    // forgetting to scale down to just the target animal.
+    const gaveTotal = total;
+    const distractors = Array.from(
+      new Set([dividedEvenly, gaveTotal].map(String).filter((d) => d !== String(correct)))
+    );
+    question.options = shuffleOptions(String(correct), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, correct + randInt(1, 5) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given a worked ratio example, find the scale
   // factor itself.

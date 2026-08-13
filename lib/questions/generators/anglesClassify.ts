@@ -36,6 +36,13 @@ const REAL_OBJECTS: Partial<Record<AngleType, { ms: string; en: string }[]>> = {
   ],
 };
 
+function classifyDegrees(d: number): AngleType {
+  if (d === 90) return "right";
+  if (d < 90) return "acute";
+  if (d < 180) return "obtuse";
+  return "reflex";
+}
+
 // Year 4 KSSR "Types of Angles" — classify a diagrammed angle as acute,
 // right, obtuse, or reflex. Retrofitted per the Round 19 content standard:
 // added a real-object word_problem framing (same diagram, Malaysian-
@@ -47,12 +54,48 @@ const REAL_OBJECTS: Partial<Record<AngleType, { ms: string; en: string }[]>> = {
 export function generateAnglesClassify(params: GeneratorParams): GeneratedQuestion {
   const type = (params.type as "mcq" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
+  const challenge = Boolean(params.challenge);
+  const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): two angles lie on a straight
+  // line — given the FIRST angle's exact degree, classify the TYPE of
+  // the SECOND angle. Text-based, no diagram needed (same approach as
+  // coordinate_distance/coordinates). Genuine second hop past the base
+  // skill and errorSpotting (both only ever classify a directly-shown
+  // angle): (1) subtract the given angle from 180° to find the second
+  // angle's degree, THEN (2) classify THAT result's type.
+  if (challenge) {
+    const angleA = randInt(10, 170);
+    const angleB = 180 - angleA;
+    const correctType = classifyDegrees(angleB);
+    const typeOfA = classifyDegrees(angleA);
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Dua sudut berada pada satu garis lurus. Sudut pertama ialah ${angleA}°. ${name} ingin tahu APAKAH JENIS sudut kedua itu (bukan saiznya). Apakah jenis sudut kedua?`,
+        en: `Two angles lie on a straight line. The first angle is ${angleA}°. ${name} wants to know the TYPE of the second angle (not its size). What type is the second angle?`,
+      },
+      type: "word_problem",
+      correctAnswer: correctType,
+      context: { angleA, angleB, correctType, typeOfA },
+      generatorKey: "angles_classify",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: classifies the FIRST angle (the one
+    // given) instead of subtracting first to find the second angle.
+    const distractors = Array.from(new Set([typeOfA, ...TYPES.filter((t) => t !== "reflex")])).filter(
+      (d) => d !== correctType
+    );
+    question.options = shuffleOptions(correctType, distractors.slice(0, 2));
+    return question;
+  }
 
   // ---- errorSpotting: an obtuse angle close to 90° is shown alongside a
   // claim that it's a right angle — the single most common angle-
   // classification mistake — must give the correct type.
   if (errorSpotting) {
     const degrees = randInt(95, 110);
+    const otherTypes = TYPES.filter((t) => t !== "obtuse" && t !== "right");
     return {
       prompt: {
         ms: `Ali berkata rajah ini menunjukkan sudut tegak. Apakah jenis sudut yang betul?`,
@@ -64,7 +107,7 @@ export function generateAnglesClassify(params: GeneratorParams): GeneratedQuesti
       generatorKey: "angles_classify",
       difficulty: 3,
       diagram: { kind: "angle", degrees },
-      options: shuffleOptions("obtuse", ["right"]),
+      options: shuffleOptions("obtuse", ["right", pick(otherTypes)]),
     };
   }
 

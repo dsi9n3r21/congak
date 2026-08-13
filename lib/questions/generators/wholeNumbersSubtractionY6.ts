@@ -39,11 +39,50 @@ export function generateWholeNumbersSubtractionY6(params: GeneratorParams): Gene
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
 
   const a = randInt(2, 9) * 100000; // round number with 5 trailing zeros, e.g. 200000-900000
   const b = randInt(min, max);
   const correct = a - b;
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): TWO production phases against the
+  // SAME round-number target. Phase 1 exercises the cascading-zero-borrow
+  // skill this topic is about (a − b1); phase 2 is an ordinary follow-up
+  // subtraction on that intermediate remainder. Distractor: stops after
+  // phase 1 and reports that intermediate remainder as the final answer.
+  if (challenge) {
+    const b1 = randInt(min, max);
+    const remaining1 = a - b1;
+    if (remaining1 >= 2) {
+      const b2 = randInt(1, remaining1 - 1);
+      const finalRemaining = remaining1 - b2;
+      const name = pick(names);
+      const question: GeneratedQuestion = {
+        prompt: {
+          ms: `${name} bekerja di sebuah kilang yang mensasarkan pengeluaran ${a.toLocaleString("en-US")} unit. Dalam fasa pertama, ${b1.toLocaleString("en-US")} unit dikeluarkan. Dalam fasa kedua, ${b2.toLocaleString("en-US")} unit lagi dikeluarkan. Berapa unit YANG MASIH belum dikeluarkan sekarang?`,
+          en: `${name} works at a factory targeting ${a.toLocaleString("en-US")} units. In phase one, ${b1.toLocaleString("en-US")} units are produced. In phase two, ${b2.toLocaleString("en-US")} more units are produced. How many units are STILL not yet produced now?`,
+        },
+        type: "word_problem",
+        correctAnswer: String(finalRemaining),
+        context: { a, b1, b2, remaining1, finalRemaining },
+        generatorKey: "whole_numbers_subtraction_y6",
+        difficulty: 3,
+      };
+      // Classic non-routine mistake: stops after phase one and gives that
+      // intermediate remainder as the final answer, ignoring phase two.
+      const stoppedAtPhaseOne = String(remaining1);
+      const distractors = [stoppedAtPhaseOne].filter((d) => d !== String(finalRemaining));
+      question.options = shuffleOptions(String(finalRemaining), distractors);
+      while (question.options.length < 3) {
+        const candidate = String(Math.max(0, finalRemaining + randInt(100, 999) * (Math.random() > 0.5 ? 1 : -1)));
+        if (!question.options.includes(candidate)) question.options.push(candidate);
+      }
+      return question;
+    }
+    // Fall through to the base case on the rare draw where phase one
+    // already leaves nothing meaningful to deduct a second time.
+  }
 
   // ---- reverseProblem: given the round-number target and the produced
   // amount, find how many units are still remaining (i.e. solve for b
@@ -77,7 +116,7 @@ export function generateWholeNumbersSubtractionY6(params: GeneratorParams): Gene
   if (errorSpotting) {
     const name = pick(names);
     const wrongAnswer = noBorrowSubtract(a, b);
-    return {
+    const question: GeneratedQuestion = {
       prompt: {
         ms: `${name} mengira ${a.toLocaleString("en-US")} − ${b.toLocaleString("en-US")} dan mendapat ${wrongAnswer.toLocaleString("en-US")}. Apakah jawapan yang betul?`,
         en: `${name} calculated ${a.toLocaleString("en-US")} − ${b.toLocaleString("en-US")} and got ${wrongAnswer.toLocaleString("en-US")}. What is the correct answer?`,
@@ -89,6 +128,11 @@ export function generateWholeNumbersSubtractionY6(params: GeneratorParams): Gene
       difficulty: 3,
       options: shuffleOptions(String(correct), [String(wrongAnswer)].filter((d) => d !== String(correct))),
     };
+    while (question.options!.length < 3) {
+      const candidate = String(correct + randInt(1, 999) * (Math.random() > 0.5 ? 1 : -1));
+      if (!question.options!.includes(candidate) && Number(candidate) >= 0) question.options!.push(candidate);
+    }
+    return question;
   }
 
   // ---- word_problem: a real factory/target-production scenario, not a

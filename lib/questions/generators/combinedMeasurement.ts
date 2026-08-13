@@ -34,7 +34,55 @@ export function generateCombinedLengthMass(params: GeneratorParams): GeneratedQu
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): TWO ropes, each with its own
+  // length and mass, are COMBINED and then cut into equal pieces.
+  // Genuine second hop past the base skill and reverseProblem (both only
+  // ever involve ONE rope): (1) add the two ropes' lengths (or masses)
+  // together, THEN (2) divide the combined total by the number of
+  // pieces.
+  if (challenge) {
+    const pieces = randInt(2, maxPieces);
+    const lengthPerPieceCm = randInt(20, 100);
+    const massPerPieceG = randInt(50, 400);
+    const combinedLengthCm = lengthPerPieceCm * pieces;
+    const combinedMassG = massPerPieceG * pieces;
+    const lengthACm = randInt(10, combinedLengthCm - 10);
+    const lengthBCm = combinedLengthCm - lengthACm;
+    const massAG = randInt(10, combinedMassG - 10);
+    const massBG = combinedMassG - massAG;
+    const askLength = Math.random() > 0.5;
+    const correctAnswer = askLength ? formatLength(lengthPerPieceCm) : formatMass(massPerPieceG);
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Tali A panjangnya ${formatLength(lengthACm)} dan beratnya ${formatMass(massAG)}. Tali B panjangnya ${formatLength(lengthBCm)} dan beratnya ${formatMass(massBG)}. ${name} menggabungkan KEDUA-DUA tali itu, kemudian memotongnya kepada ${pieces} bahagian yang sama. Berapakah ${askLength ? "panjang" : "berat"} setiap bahagian?`,
+        en: `Rope A is ${formatLength(lengthACm)} long and weighs ${formatMass(massAG)}. Rope B is ${formatLength(lengthBCm)} long and weighs ${formatMass(massBG)}. ${name} joins BOTH ropes together, then cuts them into ${pieces} equal pieces. What is the ${askLength ? "length" : "weight"} of each piece?`,
+      },
+      type: "word_problem",
+      correctAnswer,
+      context: { lengthACm, lengthBCm, massAG, massBG, combinedLengthCm, combinedMassG, pieces, lengthPerPieceCm, massPerPieceG, askLength: askLength ? "yes" : "no" },
+      generatorKey: "combined_length_mass",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: uses only Rope A's value, forgetting
+    // to combine it with Rope B first.
+    const usedOnlyRopeA = askLength
+      ? formatLength(Math.round(lengthACm / pieces))
+      : formatMass(Math.round(massAG / pieces));
+    // Classic mistake: answers with the OTHER quantity's per-piece value.
+    const mixedUpQuantity = askLength ? formatMass(massPerPieceG) : formatLength(lengthPerPieceCm);
+    const distractors = Array.from(new Set([usedOnlyRopeA, mixedUpQuantity].filter((d) => d !== correctAnswer)));
+    question.options = shuffleOptions(correctAnswer, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const bump = randInt(5, 30);
+      const candidate = askLength ? formatLength(lengthPerPieceCm + bump) : formatMass(massPerPieceG + bump);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the per-piece length and weight, find the
   // TOTAL before cutting — multiplying back, the reverse of the base
@@ -154,7 +202,55 @@ export function generateCombinedLengthVolume(params: GeneratorParams): Generated
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): TWO garden hoses and TWO bottles
+  // of fertiliser (from two different gardens) are COMBINED and then
+  // divided among sections. Genuine second hop past the base skill and
+  // reverseProblem (both only ever involve ONE hose/bottle pair): (1)
+  // add the two hoses' lengths (or bottles' volumes) together, THEN (2)
+  // divide the combined total by the number of sections.
+  if (challenge) {
+    const sections = randInt(2, maxSections);
+    const lengthPerSectionCm = randInt(20, 150);
+    const volumePerSectionMl = randInt(1, 8) * 100;
+    const combinedLengthCm = lengthPerSectionCm * sections;
+    const combinedVolumeMl = volumePerSectionMl * sections;
+    const lengthACm = randInt(10, combinedLengthCm - 10);
+    const lengthBCm = combinedLengthCm - lengthACm;
+    const volumeAMl = randInt(50, combinedVolumeMl - 50);
+    const volumeBMl = combinedVolumeMl - volumeAMl;
+    const askLength = Math.random() > 0.5;
+    const correctAnswer = askLength ? formatLength(lengthPerSectionCm) : formatVolume(volumePerSectionMl);
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Hos Taman A panjangnya ${formatLength(lengthACm)} dan baja cecairnya berisi ${formatVolume(volumeAMl)}. Hos Taman B panjangnya ${formatLength(lengthBCm)} dan baja cecairnya berisi ${formatVolume(volumeBMl)}. ${name} menggabungkan KEDUA-DUA hos dan baja itu, kemudian membahagikannya sama rata kepada ${sections} bahagian taman. Berapakah ${askLength ? "panjang" : "isipadu"} bagi setiap bahagian?`,
+        en: `Garden A's hose is ${formatLength(lengthACm)} long and its fertiliser bottle holds ${formatVolume(volumeAMl)}. Garden B's hose is ${formatLength(lengthBCm)} long and its fertiliser bottle holds ${formatVolume(volumeBMl)}. ${name} combines BOTH hoses and BOTH bottles, then divides them equally among ${sections} garden sections. What is the ${askLength ? "length" : "volume"} for each section?`,
+      },
+      type: "word_problem",
+      correctAnswer,
+      context: { lengthACm, lengthBCm, volumeAMl, volumeBMl, combinedLengthCm, combinedVolumeMl, sections, lengthPerSectionCm, volumePerSectionMl, askLength: askLength ? "yes" : "no" },
+      generatorKey: "combined_length_volume",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: uses only Garden A's value, forgetting
+    // to combine it with Garden B first.
+    const usedOnlyGardenA = askLength
+      ? formatLength(Math.round(lengthACm / sections))
+      : formatVolume(Math.round(volumeAMl / sections));
+    // Classic mistake: answers with the OTHER quantity's per-section value.
+    const mixedUpQuantity = askLength ? formatVolume(volumePerSectionMl) : formatLength(lengthPerSectionCm);
+    const distractors = Array.from(new Set([usedOnlyGardenA, mixedUpQuantity].filter((d) => d !== correctAnswer)));
+    question.options = shuffleOptions(correctAnswer, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const bump = randInt(5, 30);
+      const candidate = askLength ? formatLength(lengthPerSectionCm + bump) : formatVolume(volumePerSectionMl + bump);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the per-section length and volume, find the
   // TOTAL before dividing — multiplying back, the reverse of the base
@@ -273,7 +369,55 @@ export function generateCombinedMassVolume(params: GeneratorParams): GeneratedQu
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): TWO separate batters (each with
+  // its own flour and milk amount) are COMBINED and then divided into
+  // equal batches. Genuine second hop past the base skill and
+  // reverseProblem (both only ever involve ONE batter): (1) add the two
+  // batters' flour (or milk) together, THEN (2) divide the combined
+  // total by the number of batches.
+  if (challenge) {
+    const batches = randInt(2, maxBatches);
+    const massPerBatchG = randInt(50, 400);
+    const volumePerBatchMl = randInt(1, 8) * 100;
+    const combinedMassG = massPerBatchG * batches;
+    const combinedVolumeMl = volumePerBatchMl * batches;
+    const massAG = randInt(20, combinedMassG - 20);
+    const massBG = combinedMassG - massAG;
+    const volumeAMl = randInt(50, combinedVolumeMl - 50);
+    const volumeBMl = combinedVolumeMl - volumeAMl;
+    const askMass = Math.random() > 0.5;
+    const correctAnswer = askMass ? formatMass(massPerBatchG) : formatVolume(volumePerBatchMl);
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Adunan A menggunakan ${formatMass(massAG)} tepung dan ${formatVolume(volumeAMl)} susu. Adunan B menggunakan ${formatMass(massBG)} tepung dan ${formatVolume(volumeBMl)} susu. ${name} menggabungkan KEDUA-DUA adunan itu, kemudian membahagikannya sama banyak kepada ${batches} bahagian. Berapakah ${askMass ? "berat tepung" : "isipadu susu"} bagi setiap bahagian?`,
+        en: `Batter A uses ${formatMass(massAG)} of flour and ${formatVolume(volumeAMl)} of milk. Batter B uses ${formatMass(massBG)} of flour and ${formatVolume(volumeBMl)} of milk. ${name} combines BOTH batters, then divides the mixture into ${batches} equal batches. What is the ${askMass ? "mass of flour" : "volume of milk"} for each batch?`,
+      },
+      type: "word_problem",
+      correctAnswer,
+      context: { massAG, massBG, volumeAMl, volumeBMl, combinedMassG, combinedVolumeMl, batches, massPerBatchG, volumePerBatchMl, askMass: askMass ? "yes" : "no" },
+      generatorKey: "combined_mass_volume",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: uses only Batter A's value, forgetting
+    // to combine it with Batter B first.
+    const usedOnlyBatterA = askMass
+      ? formatMass(Math.round(massAG / batches))
+      : formatVolume(Math.round(volumeAMl / batches));
+    // Classic mistake: answers with the OTHER quantity's per-batch value.
+    const mixedUpQuantity = askMass ? formatVolume(volumePerBatchMl) : formatMass(massPerBatchG);
+    const distractors = Array.from(new Set([usedOnlyBatterA, mixedUpQuantity].filter((d) => d !== correctAnswer)));
+    question.options = shuffleOptions(correctAnswer, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const bump = randInt(5, 30);
+      const candidate = askMass ? formatMass(massPerBatchG + bump) : formatVolume(volumePerBatchMl + bump);
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the per-batch mass and volume, find the
   // TOTAL recipe amount before splitting — multiplying back, the reverse

@@ -14,7 +14,48 @@ export function generateAnglesAtPoint(params: GeneratorParams): GeneratedQuestio
   const type = (params.type as "mcq" | "fill" | "word_problem") ?? "mcq";
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const names = ["Ahmad", "Siti", "Vijay", "Mei Ling", "Hakim", "Aminah", "Faisal"];
+
+  // ---- challenge (TP6 / non-routine): a genuine second hop past
+  // reverseProblem — the base skill (and reverseProblem) always give TWO
+  // of the three angles directly. Here only ONE angle is given directly;
+  // the other two share a "times as many" ratio, so the student must
+  // (1) subtract the given angle from 360° to get the combined
+  // remainder, THEN (2) split that remainder by the ratio to isolate the
+  // smallest angle — same two-hop shape as the straight-line challenge,
+  // ported to the 360° point-total case.
+  if (challenge) {
+    const multiple = randInt(2, 3);
+    const smallest = randInt(20, 60);
+    const middle = multiple * smallest;
+    const angleA = 360 - middle - smallest;
+    const name = pick(names);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Tiga sudut bertemu pada satu titik. Sudut pertama ialah ${angleA}°. Sudut kedua ialah ${multiple} kali ganda sudut ketiga. ${name} ingin cari sudut ketiga (yang paling kecil). Berapakah sudut itu?`,
+        en: `Three angles meet at a point. The first angle is ${angleA}°. The second angle is ${multiple} times the third angle. ${name} wants to find the third (smallest) angle. What is that angle?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(smallest),
+      context: { angleA, multiple, smallest, middle, remaining: middle + smallest },
+      generatorKey: "angles_at_point",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: stops after the first hop and gives
+    // the combined remaining total instead of splitting it by the ratio.
+    const stoppedAtRemaining = String(middle + smallest);
+    // Classic non-routine mistake: splits the remaining total evenly,
+    // ignoring the "times as many" relationship.
+    const splitEvenly = String(Math.round((middle + smallest) / 2));
+    const distractors = Array.from(new Set([stoppedAtRemaining, splitEvenly])).filter((d) => d !== String(smallest));
+    question.options = shuffleOptions(String(smallest), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, smallest + randInt(1, 9)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   function threeAngles(): [number, number, number] {
     let angleA: number, angleB: number, correct: number;

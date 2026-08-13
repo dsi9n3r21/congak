@@ -21,6 +21,7 @@ export function generatePerimeterComposite(params: GeneratorParams): GeneratedQu
   const max = Number(params.max ?? 20);
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
 
   const overallLength = randInt(min, max);
   const overallWidth = randInt(min, max);
@@ -30,6 +31,48 @@ export function generatePerimeterComposite(params: GeneratorParams): GeneratedQu
 
   const correct = 2 * (overallLength + overallWidth);
   const context = { overallLength, overallWidth, notchLength, notchWidth, correct };
+
+  // ---- challenge (TP6 / non-routine): a rectangular NOTCH cut into the
+  // MIDDLE of one side (not a corner) — genuinely DIFFERENT from the
+  // base skill's corner-notch case. A corner notch never changes the
+  // perimeter, but a middle-of-side notch ADDS 2× its depth (the two new
+  // "walls" of the gap). Genuine second hop past the base insight: (1)
+  // find the bounding rectangle's perimeter as usual, THEN (2) add on
+  // 2× the notch depth — you can't just apply the "notch doesn't matter"
+  // rule here, because this notch isn't at a corner.
+  if (challenge) {
+    const smallerSide = Math.min(overallLength, overallWidth);
+    const notchDepth = randInt(1, Math.max(1, Math.floor(smallerSide / 2) - 1));
+    const gapWidth = randInt(1, Math.max(1, smallerSide - 2));
+    const chCorrect = correct + 2 * notchDepth;
+    const name = pick(PERIMETER_NAMES);
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `Sebuah taman berbentuk segi empat tepat (${overallLength} m × ${overallWidth} m) mempunyai sebuah lorong masuk dipotong ke dalam TENGAH satu sisi — sedalam ${notchDepth} m dan selebar ${gapWidth} m. ${name} ingin mengira perimeter keseluruhan pagar taman itu (termasuk dinding lorong masuk). Berapakah perimeternya?`,
+        en: `A rectangular garden (${overallLength} m × ${overallWidth} m) has a walkway gap cut into the MIDDLE of one side — going ${notchDepth} m deep and ${gapWidth} m wide. ${name} wants to find the total perimeter of the garden's fence (including the walkway's walls). What is the perimeter?`,
+      },
+      type: "word_problem",
+      correctAnswer: String(chCorrect),
+      context: { overallLength, overallWidth, notchDepth, gapWidth, correct, chCorrect },
+      generatorKey: "perimeter_composite",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: over-applies the "corner notch doesn't
+    // change the perimeter" rule to this middle-of-side case, where it
+    // doesn't hold.
+    const assumedNoChange = correct;
+    // Classic mistake: adds the notch's WIDTH instead of its DEPTH.
+    const addedWidthInstead = correct + 2 * gapWidth;
+    const distractors = Array.from(
+      new Set([assumedNoChange, addedWidthInstead].map(String).filter((d) => d !== String(chCorrect)))
+    );
+    question.options = shuffleOptions(String(chCorrect), distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = String(Math.max(1, chCorrect + randInt(1, 5) * (Math.random() > 0.5 ? 1 : -1)));
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the perimeter and one bounding-rectangle
   // dimension (plus the notch, as a red herring), find the other

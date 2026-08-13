@@ -40,7 +40,63 @@ export function generateAssetLiability(params: GeneratorParams): GeneratedQuesti
   const extraInfoChance = Number(params.extraInfoChance ?? 0);
   const errorSpotting = Boolean(params.errorSpotting);
   const reverseProblem = Boolean(params.reverseProblem);
+  const challenge = Boolean(params.challenge);
   const name = pick(NAMES);
+
+  // ---- challenge (TP6 / non-routine): a short list of items, each with
+  // a RM value — find the NET WORTH (assets minus liabilities). Genuine
+  // second hop past the base skill, reverseProblem, and word_problem
+  // (all three only ever COUNT items, never use a value): (1) classify
+  // each item AND sum the asset values, (2) sum the liability values,
+  // THEN (3) subtract to find net worth.
+  if (challenge) {
+    let assets: (typeof ITEMS)[number][] = [];
+    let liabilities: (typeof ITEMS)[number][] = [];
+    let assetValues: number[] = [];
+    let liabilityValues: number[] = [];
+    let assetTotal = 0;
+    let liabilityTotal = 0;
+    let attempts = 0;
+    do {
+      assets = [...ITEMS.filter((i) => i.answer === "asset")].sort(() => Math.random() - 0.5).slice(0, 2);
+      liabilities = [...ITEMS.filter((i) => i.answer === "liability")].sort(() => Math.random() - 0.5).slice(0, 2);
+      assetValues = assets.map(() => randInt(10, 80) * 100);
+      liabilityValues = liabilities.map(() => randInt(5, 40) * 100);
+      assetTotal = assetValues.reduce((a, b) => a + b, 0);
+      liabilityTotal = liabilityValues.reduce((a, b) => a + b, 0);
+      attempts++;
+    } while (assetTotal <= liabilityTotal && attempts < 10);
+    const netWorth = assetTotal - liabilityTotal;
+    const items = [...assets.map((a, i) => ({ item: a, value: assetValues[i] })), ...liabilities.map((l, i) => ({ item: l, value: liabilityValues[i] }))].sort(() => Math.random() - 0.5);
+    const listMs = items.map((x) => `${x.item.ms} (RM${x.value})`).join("; ");
+    const listEn = items.map((x) => `${x.item.en} (RM${x.value})`).join("; ");
+    const question: GeneratedQuestion = {
+      prompt: {
+        ms: `${name} menyenaraikan hartanya: ${listMs}. Berapakah JUMLAH BERSIH KEKAYAAN (net worth) ${name}, iaitu aset tolak liabiliti?`,
+        en: `${name} lists these items: ${listEn}. What is ${name}'s NET WORTH — total assets minus total liabilities?`,
+      },
+      type: "word_problem",
+      correctAnswer: `RM${netWorth}`,
+      context: { assetTotal, liabilityTotal, netWorth },
+      generatorKey: "asset_liability",
+      difficulty: 3,
+    };
+    // Classic non-routine mistake: adds everything together instead of
+    // subtracting the liabilities.
+    const addedEverything = `RM${assetTotal + liabilityTotal}`;
+    // Classic non-routine mistake: gives the asset total alone, forgetting
+    // to subtract the liabilities at all.
+    const gaveAssetTotalOnly = `RM${assetTotal}`;
+    const distractors = Array.from(
+      new Set([addedEverything, gaveAssetTotalOnly].filter((d) => d !== `RM${netWorth}`))
+    );
+    question.options = shuffleOptions(`RM${netWorth}`, distractors.slice(0, 2));
+    while (question.options.length < 3) {
+      const candidate = `RM${Math.max(0, netWorth + randInt(1, 10) * 100 * (Math.random() > 0.5 ? 1 : -1))}`;
+      if (!question.options.includes(candidate)) question.options.push(candidate);
+    }
+    return question;
+  }
 
   // ---- reverseProblem: given the total item count and how many are
   // assets, find how many are liabilities (or vice versa) — subtraction,
