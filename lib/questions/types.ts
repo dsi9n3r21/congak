@@ -2,6 +2,17 @@ import type { Bilingual } from "../i18n/dictionary";
 
 export type QuestionType = "mcq" | "fill" | "drag" | "match" | "word_problem";
 
+export type DiagramSpec =
+  | { kind: "angle"; degrees: number }
+  | { kind: "triangle"; base: number; height: number }
+  | { kind: "point3"; angleA: number; angleB: number }
+  | { kind: "circle"; radius: number }
+  | { kind: "bar_chart"; labels: string[]; values: number[] }
+  | { kind: "pie_chart"; segments: { label: string; numerator: number; denominator: number }[] }
+  | { kind: "pictograph"; segments: { label: string; iconCount: number }[]; unitsPerIcon: number }
+  | { kind: "line_pair"; relationship: "parallel" | "perpendicular" | "neither"; angleDeg: number }
+  | { kind: "coordinate_grid"; x: number; y: number; gridSize: number };
+
 export interface GeneratedQuestion {
   /** Frozen snapshot — this exact object gets stored in attempts.question_snapshot_json */
   prompt: Bilingual;
@@ -14,18 +25,9 @@ export interface GeneratedQuestion {
   generatorKey: string;
   difficulty: number;
   /** Optional visual to render above the prompt. Add new "kind" variants
-   * here as more diagram types are needed — keep each renderer in its own
-   * component under components/student/diagrams/. */
-  diagram?:
-    | { kind: "angle"; degrees: number }
-    | { kind: "triangle"; base: number; height: number }
-    | { kind: "point3"; angleA: number; angleB: number }
-    | { kind: "circle"; radius: number }
-    | { kind: "bar_chart"; labels: string[]; values: number[] }
-    | { kind: "pie_chart"; segments: { label: string; numerator: number; denominator: number }[] }
-    | { kind: "pictograph"; segments: { label: string; iconCount: number }[]; unitsPerIcon: number }
-    | { kind: "line_pair"; relationship: "parallel" | "perpendicular" | "neither"; angleDeg: number }
-    | { kind: "coordinate_grid"; x: number; y: number; gridSize: number };
+   * to DiagramSpec above as more diagram types are needed — keep each
+   * renderer in its own component under components/student/diagrams/. */
+  diagram?: DiagramSpec;
 }
 
 export interface GeneratorParams {

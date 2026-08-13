@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { TOPICS } from "@/lib/content/topics";
 import { Bi } from "@/lib/i18n/Bi";
 import { UI } from "@/lib/i18n/dictionary";
+import { OptionLabel, optionFontClass } from "@/components/student/OptionLabel";
 
 const lang = "both" as const; // parents see both languages by default — see dashboard page for rationale
 
@@ -168,9 +169,15 @@ export default async function ChildDetailPage({ params }: { params: { studentId:
                         <div key={j} className="rounded-lg bg-saga-light/30 p-2.5 text-xs">
                           <p className="font-semibold text-ink"><Bi text={q.prompt} lang={lang} /></p>
                           <p className="mt-1 text-ink/70">
-                            <Bi text={UI.yourAnswer} lang={lang} />: <span className="font-num text-saga-dark">{q.studentAnswer || "—"}</span>
+                            <Bi text={UI.yourAnswer} lang={lang} />:{" "}
+                            <span className={`${optionFontClass(q.studentAnswer)} text-saga-dark`}>
+                              {q.studentAnswer ? <OptionLabel value={q.studentAnswer} lang={lang} /> : "—"}
+                            </span>
                             {" · "}
-                            <Bi text={UI.correctAnswerLabel} lang={lang} />: <span className="font-num text-pandan-dark">{q.correctAnswer}</span>
+                            <Bi text={UI.correctAnswerLabel} lang={lang} />:{" "}
+                            <span className={`${optionFontClass(q.correctAnswer)} text-pandan-dark`}>
+                              <OptionLabel value={q.correctAnswer} lang={lang} />
+                            </span>
                           </p>
                           {q.hint && <p className="mt-1 text-ink/60"><Bi text={q.hint} lang={lang} /></p>}
                         </div>

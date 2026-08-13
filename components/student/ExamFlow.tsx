@@ -9,7 +9,8 @@ import type { GeneratedQuestion } from "@/lib/questions/types";
 import type { Lang } from "@/lib/i18n/dictionary";
 import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
-import { renderMathText } from "@/lib/ui/mathText";
+import { OptionLabel, optionFontClass } from "@/components/student/OptionLabel";
+import { QuestionDiagram } from "@/components/student/diagrams/QuestionDiagram";
 import { MathSymbolBar } from "@/components/student/MathSymbolBar";
 
 // 90 minutes mirrors a real Malaysian primary school exam paper length
@@ -195,17 +196,19 @@ export function ExamFlow({ lang }: { lang: Lang }) {
             <Bi text={q.question.prompt} lang={lang} />
           </p>
 
+          {q.question.diagram && <QuestionDiagram diagram={q.question.diagram} />}
+
           {q.question.type === "mcq" && q.question.options ? (
             <div className="mt-5 grid grid-cols-1 gap-2.5">
               {q.question.options.map((opt) => (
                 <button
                   key={opt}
                   onClick={() => setCurrentValue(opt)}
-                  className={`rounded-kite border-2 px-4 py-3 text-left font-num text-base min-h-[44px] ${
+                  className={`rounded-kite border-2 px-4 py-3 text-left text-base min-h-[44px] ${optionFontClass(opt)} ${
                     currentValue === opt ? "border-ungu bg-ungu-light" : "border-ink/10"
                   }`}
                 >
-                  {renderMathText(opt)}
+                  <OptionLabel value={opt} lang={lang} />
                 </button>
               ))}
             </div>

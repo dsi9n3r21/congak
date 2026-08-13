@@ -3,14 +3,25 @@
 import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { generateQuestion } from "@/lib/questions";
+import { formatAnswerForDisplay } from "@/lib/questions/grading";
 import { submitQuiz, type QuizResult } from "@/lib/actions/quiz";
 import type { GeneratedQuestion } from "@/lib/questions/types";
 import type { TopicContent } from "@/lib/content/topics";
 import type { Lang } from "@/lib/i18n/dictionary";
 import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
+import { OPTION_LABELS } from "@/lib/questions/optionLabels";
 import { renderMathText } from "@/lib/ui/mathText";
 import { MathSymbolBar } from "@/components/student/MathSymbolBar";
+import { AngleDiagram } from "@/components/student/diagrams/AngleDiagram";
+import { TriangleDiagram } from "@/components/student/diagrams/TriangleDiagram";
+import { AnglesAtPointDiagram } from "@/components/student/diagrams/AnglesAtPointDiagram";
+import { CircleDiagram } from "@/components/student/diagrams/CircleDiagram";
+import { BarChartDiagram } from "@/components/student/diagrams/BarChartDiagram";
+import { PieChartDiagram } from "@/components/student/diagrams/PieChartDiagram";
+import { PictographDiagram } from "@/components/student/diagrams/PictographDiagram";
+import { LinePairDiagram } from "@/components/student/diagrams/LinePairDiagram";
+import { CoordinateGridDiagram } from "@/components/student/diagrams/CoordinateGridDiagram";
 
 const QUIZ_LENGTH = 5;
 
@@ -79,17 +90,63 @@ export function QuizPlayer({ topic, lang }: { topic: TopicContent; lang: Lang })
           <Bi text={question.prompt} lang={lang} />
         </p>
 
+        {question.diagram?.kind === "angle" && (
+          <div className="mt-4">
+            <AngleDiagram degrees={question.diagram.degrees} />
+          </div>
+        )}
+        {question.diagram?.kind === "triangle" && (
+          <div className="mt-4">
+            <TriangleDiagram base={question.diagram.base} height={question.diagram.height} />
+          </div>
+        )}
+        {question.diagram?.kind === "point3" && (
+          <div className="mt-4">
+            <AnglesAtPointDiagram angleA={question.diagram.angleA} angleB={question.diagram.angleB} />
+          </div>
+        )}
+        {question.diagram?.kind === "circle" && (
+          <div className="mt-4">
+            <CircleDiagram radius={question.diagram.radius} />
+          </div>
+        )}
+        {question.diagram?.kind === "bar_chart" && (
+          <div className="mt-4">
+            <BarChartDiagram labels={question.diagram.labels} values={question.diagram.values} />
+          </div>
+        )}
+        {question.diagram?.kind === "pie_chart" && (
+          <div className="mt-4">
+            <PieChartDiagram segments={question.diagram.segments} />
+          </div>
+        )}
+        {question.diagram?.kind === "pictograph" && (
+          <div className="mt-4">
+            <PictographDiagram segments={question.diagram.segments} unitsPerIcon={question.diagram.unitsPerIcon} />
+          </div>
+        )}
+        {question.diagram?.kind === "line_pair" && (
+          <div className="mt-4">
+            <LinePairDiagram relationship={question.diagram.relationship} angleDeg={question.diagram.angleDeg} />
+          </div>
+        )}
+        {question.diagram?.kind === "coordinate_grid" && (
+          <div className="mt-4">
+            <CoordinateGridDiagram x={question.diagram.x} y={question.diagram.y} gridSize={question.diagram.gridSize} />
+          </div>
+        )}
+
         {question.type === "mcq" && question.options ? (
           <div className="mt-5 grid grid-cols-1 gap-2.5">
             {question.options.map((opt) => (
               <button
                 key={opt}
                 onClick={() => setCurrentValue(opt)}
-                className={`rounded-kite border-2 px-4 py-3 text-left font-num text-base min-h-[44px] ${
-                  currentValue === opt ? "border-ungu bg-ungu-light" : "border-ink/10"
-                }`}
+                className={`rounded-kite border-2 px-4 py-3 text-left text-base min-h-[44px] ${
+                  OPTION_LABELS[opt] ? "font-body" : "font-num"
+                } ${currentValue === opt ? "border-ungu bg-ungu-light" : "border-ink/10"}`}
               >
-                {renderMathText(opt)}
+                <OptionLabel value={opt} lang={lang} />
               </button>
             ))}
           </div>
@@ -190,4 +247,10 @@ function QuizResults({ topic, result, lang }: { topic: TopicContent; result: Qui
       </div>
     </div>
   );
+}
+
+function OptionLabel({ value, lang }: { value: string; lang: Lang }) {
+  const entry = OPTION_LABELS[value];
+  if (!entry) return <>{renderMathText(formatAnswerForDisplay(value))}</>;
+  return <Bi text={entry} lang={lang} />;
 }

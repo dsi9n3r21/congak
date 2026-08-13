@@ -3366,3 +3366,75 @@ Two follow-ups after the batch 28 wrap-up:
    because Google Fonts is unreachable — unrelated to this change,
    confirmed by checking the failure is 100% font-fetch errors in
    `app/layout.tsx`, nothing from the touched file.)
+
+### Bug fix: diagrams and categorical-answer labels missing from Quiz, Exam, and the Learn tab
+User-reported: the "Reading Coordinates" quiz and Learn tab showed no
+grid image at all — just the question text. Investigating turned up a
+much bigger, systemic issue than just this one topic.
+
+**Root cause**: three separate components each independently
+re-implement the "show a generated question" UI —
+`QuestionPlayer.tsx` (`/practice`), `QuizPlayer.tsx` (`/quiz`), and
+`ExamFlow.tsx` (`/exam`). Only `QuestionPlayer` ever got diagram
+rendering added; the other two never got it ported over, and both
+also independently missed rendering categorical MCQ answers (e.g.
+`"equally_likely"`, `"perpendicular"`, `"asset"`) through their
+bilingual display labels — showing the raw internal key instead. A
+fourth spot, the parent-facing wrong-answer review
+(`app/parent/child/[studentId]/page.tsx`), had the same raw-key label
+bug too.
+
+**Blast radius (confirmed via script, not guessed)**: 10 topics can
+show a diagram — Types of Angles, Area of a Triangle, Angles at a
+Point, Circumference of a Circle, Area of a Circle, Reading Bar
+Graphs, Reading Coordinates, Reading Pie Charts, Reading Pictographs,
+Parallel/Perpendicular Lines — and every one of them was silently
+missing its diagram in Quiz and Exam mode. Roughly 7 more topics
+(everything with a categorical MCQ answer) were showing raw storage
+keys instead of translated labels in the same two modes, plus on the
+parent review page.
+
+**Fix — eliminated the whole bug class, not just patched the symptom**:
+- Added `components/student/diagrams/QuestionDiagram.tsx`: single
+  source of truth for "which component renders which `diagram.kind`".
+  All three players now import this instead of keeping their own copy
+  of the switch, so a new diagram kind (or a fix to an existing one)
+  only ever needs to be added once.
+- Added `components/student/OptionLabel.tsx`: same idea for MCQ option
+  display — `OptionLabel` (bilingual label lookup) and
+  `optionFontClass` (font-body for categorical, font-num for
+  numeric/fraction), shared by all three players AND the parent
+  review page.
+- Refactored `QuestionPlayer.tsx` to use both shared pieces too (it
+  had its own inline copies before — now there's exactly one copy of
+  each, not four).
+- Fixed `QuizPlayer.tsx`, `ExamFlow.tsx`, and
+  `app/parent/child/[studentId]/page.tsx` to use them.
+- Extracted the `diagram` union out of `GeneratedQuestion` into its own
+  exported `DiagramSpec` type in `lib/questions/types.ts` so it can be
+  reused outside the question-generation path.
+
+**Learn tab now shows diagrams too**: extended `TopicContent`'s
+`workedExample` (and `moreExamples`) shape with an optional `diagram`
+field, and added one to all 11 topic entries that can show a diagram
+(includes both `...024` and `...082`, the two "Reading Coordinates"
+topics for Y5/Y4) — matching the exact numbers already in each
+example's own problem/steps text, never a different illustrative
+example. `LessonCard.tsx`'s Example tab renders it via the same shared
+`QuestionDiagram` component.
+
+**Verification**: `tsc --noEmit` clean throughout. A scripted check
+confirmed: all 509 question templates across all 85 topics still
+generate cleanly (no regression from the type change), all 11
+worked-example diagrams carry the right data, and every diagram kind
+any generator can actually produce is handled by `QuestionDiagram`
+(zero unhandled kinds).
+
+**Noted but not fixed (separate, smaller issue, flagged for later)**:
+topic `...015`'s (Types of Angles) worked-example step text reads
+"the angle crosses but has no square marker (□)" — that phrasing
+belongs to the line-pair topic's diagram (two crossing lines), not a
+single angle wedge, and looks like a copy-paste artifact from an
+earlier round. Doesn't affect correctness (the numbers/answer are
+right) but the step reads oddly next to the actual angle diagram now
+shown. Worth a follow-up content fix.

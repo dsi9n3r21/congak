@@ -10,6 +10,20 @@
 // once content moves fully into the database.
 
 import type { Bilingual } from "@/lib/i18n/dictionary";
+import type { DiagramSpec } from "@/lib/questions/types";
+
+/** One worked example's shape — reused for the primary `workedExample`
+ * and every entry in `moreExamples`. `diagram` is optional: only the
+ * topics whose question generators show a diagram (angles, triangles,
+ * circles, bar/pie charts, pictographs, line pairs, coordinate grids)
+ * carry one, and its numbers always match the example's own `problem`/
+ * `steps`/`answer` text — never a different illustrative example. */
+interface WorkedExampleContent {
+  problem: Bilingual;
+  steps: Bilingual[];
+  answer: string | number;
+  diagram?: DiagramSpec;
+}
 
 export interface TopicContent {
   id: string;
@@ -26,11 +40,11 @@ export interface TopicContent {
   /** General, number-free method steps ("how to solve this type of question") —
    * distinct from workedExample, which walks one specific set of numbers. */
   howTo: Bilingual[];
-  workedExample: { problem: Bilingual; steps: Bilingual[]; answer: string | number };
+  workedExample: WorkedExampleContent;
   /** Optional additional worked examples beyond the first, shown as
    * "Example 2", "Example 3" etc. in the same tab. Optional so existing
    * topics keep working untouched while content gets filled in gradually. */
-  moreExamples?: { problem: Bilingual; steps: Bilingual[]; answer: string | number }[];
+  moreExamples?: WorkedExampleContent[];
   commonMistakes: {
     mistakeType: string;
     description: Bilingual;
@@ -905,6 +919,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Semak: 130° berada antara 90° dan 180° — konsisten dengan Cakah ✓", en: "Check: 130° falls between 90° and 180° — consistent with Obtuse ✓" },
       ],
       answer: "Sudut Cakah (Obtuse)",
+      diagram: { kind: "angle", degrees: 130 },
     },
     commonMistakes: [
       { mistakeType: "special_case_error", description: { ms: "Murid memilih 'Sudut Tegak' walaupun sudut itu bukan tepat 90°, kerana ia kelihatan hampir sama.", en: "Student picks 'Right Angle' even though the angle isn't exactly 90°, because it looks close." } },
@@ -963,6 +978,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "= 20 cm²", en: "= 20 cm²" },
       ],
       answer: "20 cm²",
+      diagram: { kind: "triangle", base: 8, height: 5 },
     },
     commonMistakes: [
       { mistakeType: "forgot_to_halve", description: { ms: "Murid mengira tapak × tinggi tanpa membahagikan dengan 2.", en: "The student calculates base × height without dividing by 2." } },
@@ -1017,6 +1033,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "360° − 205° = 155°", en: "360° − 205° = 155°" },
       ],
       answer: "155°",
+      diagram: { kind: "point3", angleA: 110, angleB: 95 },
     },
     commonMistakes: [
       { mistakeType: "confused_with_180", description: { ms: "Murid tolak daripada 180° (garis lurus/segi tiga) berbanding 360°.", en: "The student subtracts from 180° (straight line/triangle) instead of 360°." } },
@@ -1075,6 +1092,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "= 43.99 cm", en: "= 43.99 cm" },
       ],
       answer: "43.99 cm",
+      diagram: { kind: "circle", radius: 7 },
     },
     commonMistakes: [
       { mistakeType: "forgot_to_double_radius", description: { ms: "Murid mendarab jejari dengan π sahaja, lupa gandakan dengan 2 dahulu.", en: "The student multiplies the radius by π alone, forgetting to double it first." } },
@@ -1134,6 +1152,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "= 78.55 cm²", en: "= 78.55 cm²" },
       ],
       answer: "78.55 cm²",
+      diagram: { kind: "circle", radius: 5 },
     },
     commonMistakes: [
       { mistakeType: "confused_with_circumference_formula", description: { ms: "Murid menggunakan formula lilitan (2 × π × jejari) berbanding formula luas.", en: "The student uses the circumference formula (2 × π × radius) instead of the area formula." } },
@@ -1369,6 +1388,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "= 54", en: "= 54" },
       ],
       answer: 54,
+      diagram: { kind: "bar_chart", labels: ["A", "B", "C", "D"], values: [12, 18, 9, 15] },
     },
     commonMistakes: [
       { mistakeType: "forgot_one_bar", description: { ms: "Murid tertinggal satu kumpulan semasa menambah jumlah keseluruhan.", en: "The student misses one group while adding up the total." } },
@@ -1423,6 +1443,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Koordinat = (4, 6)", en: "Coordinates = (4, 6)" },
       ],
       answer: "(4, 6)",
+      diagram: { kind: "coordinate_grid", x: 4, y: 6, gridSize: 10 },
     },
     commonMistakes: [
       { mistakeType: "swapped_x_and_y", description: { ms: "Murid menulis nilai y dahulu, kemudian x — tersalah susunan.", en: "The student writes the y-value first, then x — the order is reversed." } },
@@ -3888,6 +3909,15 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "24 × 1/4 = 6", en: "24 × 1/4 = 6" },
       ],
       answer: 6,
+      diagram: {
+        kind: "pie_chart",
+        segments: [
+          { label: "A", numerator: 1, denominator: 4 },
+          { label: "B", numerator: 1, denominator: 4 },
+          { label: "C", numerator: 1, denominator: 4 },
+          { label: "D", numerator: 1, denominator: 4 },
+        ],
+      },
     },
     commonMistakes: [
       { mistakeType: "treated_as_unit_fraction", description: { ms: "Murid anggap setiap petak carta pai bersamaan 1 bahagian sahaja (cth. mengira jumlah ÷ penyebut) tanpa mengambil kira pengangka sebenar.", en: "The student assumes every pie slice is worth a single 1-part fraction (e.g. total ÷ denominator) without accounting for the actual numerator." } },
@@ -4117,6 +4147,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "4 × 5 = 20", en: "4 × 5 = 20" },
       ],
       answer: 20,
+      diagram: { kind: "pictograph", segments: [{ label: "A", iconCount: 4 }], unitsPerIcon: 5 },
     },
     commonMistakes: [
       { mistakeType: "forgot_pictograph_key", description: { ms: "Murid berikan bilangan ikon sahaja tanpa mendarabkan dengan kunci.", en: "The student gives the icon count alone without multiplying by the key." } },
@@ -4165,6 +4196,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Semak: garis ini bersilang (bukan selari) DAN bertanda 90° tepat — konsisten dengan serenjang ✓", en: "Check: these lines cross (not parallel) AND are marked exactly 90° — consistent with perpendicular ✓" },
       ],
       answer: "perpendicular",
+      diagram: { kind: "line_pair", relationship: "perpendicular", angleDeg: 90 },
     },
     commonMistakes: [
       { mistakeType: "special_case_error", description: { ms: "Murid menganggap sebarang dua garis yang bersilang adalah serenjang, walaupun sudutnya condong (bukan 90°).", en: "Student assumes any two crossing lines are perpendicular, even when the angle is slanted (not 90°)." } },
@@ -4351,6 +4383,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Ke atas 2 petak → y = 2", en: "2 squares up → y = 2" },
       ],
       answer: "(3, 2)",
+      diagram: { kind: "coordinate_grid", x: 3, y: 2, gridSize: 6 },
     },
     commonMistakes: [
       { mistakeType: "swapped_x_and_y", description: { ms: "Murid baca NAIK (y) dahulu, kemudian ATAS PANJANG (x), menyebabkan koordinat tertukar.", en: "The student reads UP (y) first, then ACROSS (x), swapping the coordinates." } },

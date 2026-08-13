@@ -7,6 +7,8 @@ import type { Lang, Bilingual } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
 import { UI } from "@/lib/i18n/dictionary";
 import { renderMathText } from "@/lib/ui/mathText";
+import { QuestionDiagram } from "@/components/student/diagrams/QuestionDiagram";
+import type { DiagramSpec } from "@/lib/questions/types";
 
 const TAB_KEYS = ["learnTabLearn", "learnTabHowTo", "learnTabTips", "learnTabExample", "learnTabMistakes"] as const;
 type TabKey = (typeof TAB_KEYS)[number];
@@ -148,7 +150,7 @@ function ExampleCard({
   lang,
 }: {
   label?: string;
-  example: { problem: Bilingual; steps: Bilingual[]; answer: string | number };
+  example: { problem: Bilingual; steps: Bilingual[]; answer: string | number; diagram?: DiagramSpec };
   lang: Lang;
 }) {
   return (
@@ -158,6 +160,11 @@ function ExampleCard({
         <p className="font-num text-xl font-bold tracking-wide text-biru-dark sm:text-2xl">
           <Bi text={example.problem} lang={lang} />
         </p>
+        {example.diagram && (
+          <div className="flex justify-center">
+            <QuestionDiagram diagram={example.diagram} />
+          </div>
+        )}
       </div>
       <ol className="mt-4 space-y-3">
         {example.steps.map((step, i) => (
