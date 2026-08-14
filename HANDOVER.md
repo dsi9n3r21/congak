@@ -3438,3 +3438,67 @@ single angle wedge, and looks like a copy-paste artifact from an
 earlier round. Doesn't affect correctness (the numbers/answer are
 right) but the step reads oddly next to the actual angle diagram now
 shown. Worth a follow-up content fix.
+
+### New: public marketing homepage at "/"
+`app/page.tsx` used to be a 3-line unconditional redirect to
+`/dashboard` — there was no page a parent or student could land on
+before logging in. Built out per the homepage redesign brief (v2):
+positions Congak as "AI Math Coach for Malaysian Primary Students"
+rather than a worksheet site, for both the student and parent audience
+the brief calls out.
+
+**New files**:
+- `lib/content/homepageCopy.ts` — all bilingual marketing copy, kept
+  separate from `lib/i18n/dictionary.ts` (UI) since none of it is
+  reused elsewhere, same reasoning UI's own file header already gives
+  for content-specific text.
+- `components/home/Homepage.tsx` — the actual page: nav, hero (mascot +
+  floating streak/XP chips instead of a worksheet image), trust
+  checklist, 3 value-prop cards, Meet Pintar AI (with a small mocked
+  chat exchange), gamification cards, a parent-dashboard preview built
+  from the same visual language as the real one (mastery bars, weak-
+  topic chip), a How It Works stepper using the `.benang-trail` kite-
+  string motif from `globals.css` (defined a while back, never actually
+  used anywhere until now), a "By the Numbers" stat strip, and a final
+  CTA.
+- `app/page.tsx` now checks auth server-side: no session → render the
+  new homepage; a `students` row for this user → `/dashboard`; a
+  `parent_links` row → `/parent/dashboard`; logged in but neither
+  (mid-signup) → `/profile/setup`. Same two lookups the real dashboard
+  pages already use to tell student vs. parent apart, so this can't
+  drift out of sync with how auth actually works elsewhere.
+
+**Two intentional departures from the brief's copy, both for
+honesty, documented in `homepageCopy.ts`'s header comment**:
+- "Thousands of questions" → "Unlimited practice questions". True and
+  stronger: every question is randomly generated fresh from a
+  generator, not drawn from a fixed bank.
+- The brief's placeholder stats ("10,000+ Questions Completed", "95%
+  Student Satisfaction") were fabricated numbers with nothing behind
+  them. Swapped for real, verifiable facts instead: 85 KSSR-aligned
+  topics, unlimited questions, Years 4/5/6 covered. Swap in real
+  usage/satisfaction numbers once they exist — flagged in the code
+  comment so this isn't forgotten.
+
+Also softened two Parent Dashboard feature descriptions to match what
+the app actually does today rather than the brief's exact wording:
+"Study Recommendations" → described as the tips/common-mistake
+breakdowns that already exist per weak topic (real), and "Exam
+Readiness" → described as exam history/scores over time (real) rather
+than implying a computed readiness verdict (doesn't exist yet).
+
+**Not yet live, included per the brief anyway (flagged, not hidden)**:
+the Gamification section's "Unlock Badges" card describes a feature
+that isn't real yet — `/quests` is still a "coming soon" placeholder
+(noted in this file previously). Streaks, XP, and Level Up are all
+genuinely live already (`students.xp/level/streak_count`,
+`updateStreak()`). Worth deciding whether to build Misi before this
+section goes live publicly, or soften that one card's wording, once
+ready to actually launch this page.
+
+**Verification**: `tsc --noEmit` clean. `npm run build` gets through
+webpack compilation of every file (including all three new ones) and
+only fails at the font-fetch step in `app/layout.tsx` — this sandbox
+has no network access to fonts.googleapis.com, confirmed identical to
+the exact same failure point on unrelated earlier builds. Not a code
+issue.
