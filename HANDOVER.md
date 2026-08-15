@@ -3613,3 +3613,128 @@ separately at 2000x per pattern). Also ran the real `questionTemplates`
 array from topics.ts through the generator at 300x per template (29
 templates) — 0 failures. `audit-content-gaps.ts` still runs clean, no
 regression to topic 027's score.
+
+## Diagram QC pass — Lynda caught worked examples with no visual (Round 2)
+
+Lynda pushed back hard on the previous round: the order-of-operations fix
+was real but narrow, and missed what she'd actually noticed testing the
+app — multiplication worked examples still show as one inline line
+instead of the column method, and several geometry/measurement worked
+examples describe a shape ("Rectangle A: 6cm×3cm, Rectangle B: 4cm×2cm",
+"one angle is 65° on a straight line") with zero visual to go with it.
+She asked for a full QC pass across every topic, "as if from the Ministry
+of Education."
+
+**Audit method** — scripted check across all 85 topics: does
+`workedExample.problem`/`explanation` reference shape/angle/diagram-ish
+keywords AND have no `workedExample.diagram`? Found **10** topics: 004
+(Perimeter of Simple Shapes), 011 (Area of Rectangles & Squares), 012
+(Angles on a Straight Line), 013 (Area of Composite Shapes), 014 (Sum of
+Angles in a Triangle), 065 (Distance Between Two Coordinates), 075
+(Interior Angles of Regular Polygons), 079 (Volume of a Cuboid), 080
+(Volume of Composite Shapes), 081 (Perimeter of Composite Shapes).
+
+**Fixed this round** (4 of the 10, plus the multiplication visual):
+- New `StraightLineAnglesDiagram` — two angles on a line, one labeled,
+  one "?" → wired to topic 012.
+- New `TriangleAnglesDiagram` — triangle with two angles labeled, third
+  "?" → topic 014.
+- New `TwoRectanglesDiagram` — two independently-sized rectangles drawn
+  side by side (NOT fused into one L-polygon, since `areaComposite.ts`
+  draws the two rectangles' dimensions independently via separate
+  `randInt` calls — they won't reliably interlock into a valid L, so
+  forcing a fused polygon would sometimes draw something that doesn't
+  match the numbers) → topic 013.
+- New `NotchedRectangleDiagram` — a REAL L-polygon (big rectangle minus a
+  corner notch), unlike the above, because `perimeterComposite.ts`'s
+  whole pedagogical point is "the notch doesn't change the perimeter" —
+  the student needs to see one connected L-shape with the missing corner,
+  not two separate boxes → topic 081.
+- New `LongMultiplicationDiagram` — the actual "stack and multiply column
+  by column" written method, structurally different from
+  `VerticalArithmetic` (+/− only): handles a 1-digit multiplier as a
+  single row (no partial products needed), and a 2-digit multiplier as
+  two shifted partial-product rows summed underneath (the tens-digit
+  row's rightmost digit lands one column left of the ones column, via a
+  `trailingBlanks` padding parameter, not by literally writing a trailing
+  zero — matches how it's drawn on paper). Wired to all four whole-number
+  multiplication worked examples: topic 021 (245×23), topic 026
+  (3450×34), topic 028 (1245×4), and topic 040 (money ×, using the
+  sen-converted whole numbers 450×3 the worked example's own steps
+  already convert to — decimal operands aren't supported by this
+  component, same scoping decision as `VerticalArithmetic`).
+
+All four new SVG diagram kinds added to `GeneratedQuestion["diagram"]` in
+`lib/questions/types.ts` and wired into `QuestionDiagram.tsx`'s
+dispatcher (the shared switch every surface — practice/quiz/exam — reads
+from, so no risk of the quiz/exam desync bug from earlier rounds).
+
+**Still open — NOT fixed yet, flagged for the next round**: topics 004 +
+011 need a plain labeled-rectangle diagram (straightforward, lowest
+priority since a rectangle is easy to picture without one); 065 needs a
+coordinate-grid variant that plots TWO points and the distance between
+them (current `CoordinateGridDiagram` only plots one point); 075 needs a
+regular-polygon (pentagon/hexagon/etc.) diagram; 079 and 080 need a 3D
+cuboid diagram (and a composite-cuboid variant) — meaningfully more
+involved than the 2D shapes since it needs an isometric-style projection.
+None of these are built yet.
+
+Verified: `tsc --noEmit` clean. `npm run build` — webpack compiles clean
+through every touched file; the only failure is the pre-existing
+Google-Fonts network fetch in `app/layout.tsx` (unrelated, same
+sandbox-has-no-internet issue as every previous round). Hand-verified the
+long-multiplication row/shift math against all four worked examples with
+a standalone script (partial products sum to the exact worked-example
+result, shift lands in the correct column) — all four OK.
+
+## Diagram QC pass, part 2 — the remaining 6 topics
+
+Finished the punch list from the previous round. All 6 remaining topics
+(004, 011, 065, 075, 079, 080) now have diagrams, closing out the full
+audit — the scripted check that found 10 gaps now finds 0.
+
+**New components:**
+- `RectangleDiagram` — plain labeled rectangle → topics 004 (perimeter,
+  8×5) and 011 (area, 7×4).
+- `TwoPointGridDiagram` — coordinate grid with TWO plotted points and the
+  distance between them highlighted (existing `CoordinateGridDiagram`
+  only ever plotted one point, since it was built for the Y4 "reading
+  coordinates" topic) → topic 065. Worth noting: `coordinateDistance.ts`
+  has a code comment saying this topic deliberately doesn't need a
+  diagram since it's "pure arithmetic." Built one anyway — Lynda's QC
+  request was about visual scaffolding for the shape/scenario being
+  described, not just whether the arithmetic itself needs a picture, and
+  a two-point grid genuinely helps a student see which axis matches
+  before subtracting.
+- `RegularPolygonDiagram` — any n-sided regular polygon (vertices evenly
+  spaced on a circle, so it isn't hardcoded to hexagons), with one
+  interior angle arc-marked and labeled → topic 075 (hexagon, 120° each).
+- `CuboidDiagram` — isometric-style 3D box (front/top/right faces as
+  three polygons sharing edges, fixed skew rather than true isometric
+  projection to keep labels simple) with length/width/height labeled →
+  topic 079 (5×3×2).
+- `TwoCuboidsDiagram` — two `CuboidDiagram`s side by side with a "+",
+  same reasoning as `TwoRectanglesDiagram` from part 1: `volumeComposite.ts`
+  draws its two cuboids' dimensions from independent `randInt` calls, so
+  they won't reliably fuse into one valid composite solid → topic 080
+  (4×3×2 + 3×2×2).
+
+All five wired into `GeneratedQuestion["diagram"]` and
+`QuestionDiagram.tsx`'s shared dispatcher, same pattern as part 1.
+
+Verified: `tsc --noEmit` clean. Re-ran the same audit script from part 1
+— **0 topics remaining** with visual content and no diagram (was 10,
+then 6, now 0). Independently checked the trickier geometry by hand: regular
+polygon side lengths are equal for n=3,4,5,6,8 (max deviation 0.0000px —
+floating-point exact, not just visually close), and the cuboid's
+top/front/right face polygons share their edges exactly (computed the
+shared corner points directly rather than trusting the visual). Full
+`npm run build` — webpack compiles every touched file with zero errors;
+only the pre-existing Google Fonts network failure remains (same
+sandbox-has-no-internet issue noted in every prior round, unrelated to
+any of this work).
+
+This closes out the diagram-QC arc across both rounds. Nothing currently
+flagged as missing a diagram; next content gaps (if any) would need a
+fresh audit pass, since this one only checked "worked example references
+a shape/angle with no diagram" — it wouldn't catch other kinds of gaps.

@@ -9,6 +9,16 @@ import { PictographDiagram } from "@/components/student/diagrams/PictographDiagr
 import { LinePairDiagram } from "@/components/student/diagrams/LinePairDiagram";
 import { CoordinateGridDiagram } from "@/components/student/diagrams/CoordinateGridDiagram";
 import { VerticalArithmetic } from "@/components/student/diagrams/VerticalArithmetic";
+import { LongMultiplicationDiagram } from "@/components/student/diagrams/LongMultiplicationDiagram";
+import { StraightLineAnglesDiagram } from "@/components/student/diagrams/StraightLineAnglesDiagram";
+import { TriangleAnglesDiagram } from "@/components/student/diagrams/TriangleAnglesDiagram";
+import { TwoRectanglesDiagram } from "@/components/student/diagrams/TwoRectanglesDiagram";
+import { NotchedRectangleDiagram } from "@/components/student/diagrams/NotchedRectangleDiagram";
+import { RectangleDiagram } from "@/components/student/diagrams/RectangleDiagram";
+import { TwoPointGridDiagram } from "@/components/student/diagrams/TwoPointGridDiagram";
+import { RegularPolygonDiagram } from "@/components/student/diagrams/RegularPolygonDiagram";
+import { CuboidDiagram } from "@/components/student/diagrams/CuboidDiagram";
+import { TwoCuboidsDiagram } from "@/components/student/diagrams/TwoCuboidsDiagram";
 
 /**
  * Single source of truth for "which diagram component renders which
@@ -83,6 +93,71 @@ export function QuestionDiagram({ diagram }: { diagram: GeneratedQuestion["diagr
       return (
         <div className="mt-4 flex justify-center">
           <VerticalArithmetic operands={diagram.operands} operator={diagram.operator} result={diagram.result} prefix={diagram.prefix} />
+        </div>
+      );
+    case "long_multiplication":
+      return (
+        <div className="mt-4 flex justify-center">
+          <LongMultiplicationDiagram multiplicand={diagram.multiplicand} multiplier={diagram.multiplier} result={diagram.result} />
+        </div>
+      );
+    case "straight_line_angles":
+      return (
+        <div className="mt-4">
+          <StraightLineAnglesDiagram angleA={diagram.angleA} />
+        </div>
+      );
+    case "triangle_angles":
+      return (
+        <div className="mt-4">
+          <TriangleAnglesDiagram angleA={diagram.angleA} angleB={diagram.angleB} />
+        </div>
+      );
+    case "two_rectangles":
+      return (
+        <div className="mt-4">
+          <TwoRectanglesDiagram a={diagram.a} b={diagram.b} />
+        </div>
+      );
+    case "notched_rectangle":
+      return (
+        <div className="mt-4">
+          <NotchedRectangleDiagram
+            outerWidth={diagram.outerWidth}
+            outerHeight={diagram.outerHeight}
+            notchWidth={diagram.notchWidth}
+            notchHeight={diagram.notchHeight}
+          />
+        </div>
+      );
+    case "rectangle":
+      return (
+        <div className="mt-4">
+          <RectangleDiagram width={diagram.width} height={diagram.height} unit={diagram.unit} />
+        </div>
+      );
+    case "two_point_grid":
+      return (
+        <div className="mt-4">
+          <TwoPointGridDiagram x1={diagram.x1} y1={diagram.y1} x2={diagram.x2} y2={diagram.y2} gridSize={diagram.gridSize} />
+        </div>
+      );
+    case "regular_polygon":
+      return (
+        <div className="mt-4">
+          <RegularPolygonDiagram sides={diagram.sides} eachAngle={diagram.eachAngle} />
+        </div>
+      );
+    case "cuboid":
+      return (
+        <div className="mt-4">
+          <CuboidDiagram length={diagram.length} width={diagram.width} height={diagram.height} unit={diagram.unit} />
+        </div>
+      );
+    case "two_cuboids":
+      return (
+        <div className="mt-4">
+          <TwoCuboidsDiagram a={diagram.a} b={diagram.b} />
         </div>
       );
     default:

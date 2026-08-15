@@ -12,7 +12,25 @@ export type DiagramSpec =
   | { kind: "pictograph"; segments: { label: string; iconCount: number }[]; unitsPerIcon: number }
   | { kind: "line_pair"; relationship: "parallel" | "perpendicular" | "neither"; angleDeg: number }
   | { kind: "coordinate_grid"; x: number; y: number; gridSize: number }
-  | { kind: "vertical_arithmetic"; operands: string[]; operator: "+" | "\u2212"; result: string; prefix?: string };
+  | { kind: "vertical_arithmetic"; operands: string[]; operator: "+" | "\u2212"; result: string; prefix?: string }
+  | { kind: "long_multiplication"; multiplicand: string; multiplier: string; result: string }
+  | { kind: "straight_line_angles"; angleA: number }
+  | { kind: "triangle_angles"; angleA: number; angleB: number }
+  | {
+      kind: "two_rectangles";
+      a: { width: number; height: number; label: string };
+      b: { width: number; height: number; label: string };
+    }
+  | { kind: "notched_rectangle"; outerWidth: number; outerHeight: number; notchWidth: number; notchHeight: number }
+  | { kind: "rectangle"; width: number; height: number; unit?: string }
+  | { kind: "two_point_grid"; x1: number; y1: number; x2: number; y2: number; gridSize: number }
+  | { kind: "regular_polygon"; sides: number; eachAngle: number }
+  | { kind: "cuboid"; length: number; width: number; height: number; unit?: string }
+  | {
+      kind: "two_cuboids";
+      a: { length: number; width: number; height: number; label: string };
+      b: { length: number; width: number; height: number; label: string };
+    };
 
 export interface GeneratedQuestion {
   /** Frozen snapshot — this exact object gets stored in attempts.question_snapshot_json */

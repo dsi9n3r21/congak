@@ -325,6 +325,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "= 2 × 13 = 26 cm", en: "= 2 × 13 = 26 cm" },
       ],
       answer: "26 cm",
+      diagram: { kind: "rectangle", width: 8, height: 5 },
     },
     commonMistakes: [
       { mistakeType: "perimeter_area_confusion", description: { ms: "Murid mengira luas (panjang × lebar) berbanding perimeter.", en: "The student calculates area (length × width) instead of perimeter." } },
@@ -713,6 +714,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "= 28 cm²", en: "= 28 cm²" },
       ],
       answer: "28 cm²",
+      diagram: { kind: "rectangle", width: 7, height: 4 },
     },
     commonMistakes: [
       { mistakeType: "area_perimeter_confusion", description: { ms: "Murid mengira perimeter (2×(panjang+lebar)) berbanding luas.", en: "The student calculates perimeter (2×(length+width)) instead of area." } },
@@ -767,6 +769,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "180° − 65° = 115°", en: "180° − 65° = 115°" },
       ],
       answer: "115°",
+      diagram: { kind: "straight_line_angles", angleA: 65 },
     },
     commonMistakes: [
       { mistakeType: "confused_with_complementary", description: { ms: "Murid tolak daripada 90° (sudut bersandar) berbanding 180°.", en: "The student subtracts from 90° (complementary angles) instead of 180°." } },
@@ -821,6 +824,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Jumlah = 18 + 8 = 26 cm²", en: "Total = 18 + 8 = 26 cm²" },
       ],
       answer: "26 cm²",
+      diagram: { kind: "two_rectangles", a: { width: 6, height: 3, label: "A" }, b: { width: 4, height: 2, label: "B" } },
     },
     commonMistakes: [
       { mistakeType: "forgot_second_rectangle", description: { ms: "Murid hanya mengira luas satu segi empat tepat sahaja.", en: "The student only calculates the area of one rectangle." } },
@@ -874,6 +878,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "180° − 110° = 70°", en: "180° − 110° = 70°" },
       ],
       answer: "70°",
+      diagram: { kind: "triangle_angles", angleA: 50, angleB: 60 },
     },
     commonMistakes: [
       { mistakeType: "confused_angle_sum_360", description: { ms: "Murid tolak daripada 360° (sudut pada satu titik) berbanding 180°.", en: "The student subtracts from 360° (angles at a point) instead of 180°." } },
@@ -1277,6 +1282,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "735 + 4900 = 5635", en: "735 + 4900 = 5635" },
       ],
       answer: 5635,
+      diagram: { kind: "long_multiplication", multiplicand: "245", multiplier: "23", result: "5635" },
     },
     commonMistakes: [
       { mistakeType: "forgot_shift", description: { ms: "Murid darab dengan digit puluh tetapi lupa anjak hasilnya (lupa tambah 0).", en: "The student multiplies by the tens digit but forgets to shift the result (forgets the trailing 0)." } },
@@ -1565,6 +1571,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "13,800 + 103,500 = 117,300", en: "13,800 + 103,500 = 117,300" },
       ],
       answer: 117300,
+      diagram: { kind: "long_multiplication", multiplicand: "3450", multiplier: "34", result: "117300" },
     },
     commonMistakes: [
       { mistakeType: "forgot_shift", description: { ms: "Murid darab dengan digit puluh tetapi lupa anjak hasilnya (lupa tambah 0).", en: "The student multiplies by the tens digit but forgets to shift the result (forgets the trailing 0)." } },
@@ -1708,6 +1715,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Jawapan: 4980", en: "Answer: 4980" },
       ],
       answer: 4980,
+      diagram: { kind: "long_multiplication", multiplicand: "1245", multiplier: "4", result: "4980" },
     },
     commonMistakes: [
       { mistakeType: "forgot_carry", description: { ms: "Murid darab setiap digit secara berasingan tanpa \"simpan\" lebihan ke lajur seterusnya.", en: "The student multiplies each digit separately without carrying the overflow into the next column." } },
@@ -2392,6 +2400,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Semak: RM13.50 ÷ 3 = RM4.50 ✓", en: "Check: RM13.50 ÷ 3 = RM4.50 ✓" },
       ],
       answer: "RM13.50",
+      diagram: { kind: "long_multiplication", multiplicand: "450", multiplier: "3", result: "1350" },
     },
     commonMistakes: [
       { mistakeType: "place_value_error", description: { ms: "Murid tidak tukar kepada sen sebelum mengira, menyebabkan titik perpuluhan diletakkan pada kedudukan yang salah dalam jawapan.", en: "Student doesn't convert to sen before calculating, causing the decimal point to end up in the wrong position in the answer." } },
@@ -3613,6 +3622,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Jarak sebenar = 6 \u00d7 150 m = 900 m", en: "Real distance = 6 \u00d7 150 m = 900 m" },
       ],
       answer: "900 m",
+      diagram: { kind: "two_point_grid", x1: 2, y1: 3, x2: 2, y2: 9, gridSize: 10 },
     },
     commonMistakes: [
       { mistakeType: "forgot_to_apply_scale", description: { ms: "Murid berikan jarak grid (dalam unit) sebagai jawapan akhir, terlupa darab dengan skala untuk dapat jarak sebenar.", en: "The student gives the grid distance (in units) as the final answer, forgetting to multiply by the scale to get the real distance." } },
@@ -4092,6 +4102,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Setiap sudut = 720° ÷ 6 = 120°", en: "Each angle = 720° ÷ 6 = 120°" },
       ],
       answer: "120",
+      diagram: { kind: "regular_polygon", sides: 6, eachAngle: 120 },
     },
     commonMistakes: [
       { mistakeType: "polygon_angle_formula_error", description: { ms: "Murid lupa tolak 2 daripada bilangan sisi, atau lupa bahagikan jumlah dengan bilangan sisi untuk dapatkan satu sudut.", en: "The student forgets to subtract 2 from the number of sides, or forgets to divide the sum by the number of sides to get one angle." } },
@@ -4281,6 +4292,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "5 × 3 × 2 = 30 cm³", en: "5 × 3 × 2 = 30 cm³" },
       ],
       answer: "30 cm³",
+      diagram: { kind: "cuboid", length: 5, width: 3, height: 2 },
     },
     commonMistakes: [
       { mistakeType: "treated_volume_as_area", description: { ms: "Murid hanya darabkan DUA daripada tiga dimensi, seperti mengira luas.", en: "The student only multiplies TWO of the three dimensions, like calculating area." } },
@@ -4329,6 +4341,11 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Jumlah = 24 + 12 = 36 cm³", en: "Total = 24 + 12 = 36 cm³" },
       ],
       answer: "36 cm³",
+      diagram: {
+        kind: "two_cuboids",
+        a: { length: 4, width: 3, height: 2, label: "A" },
+        b: { length: 3, width: 2, height: 2, label: "B" },
+      },
     },
     commonMistakes: [
       { mistakeType: "forgot_second_cuboid", description: { ms: "Murid hanya mengira isi padu satu kuboid sahaja.", en: "The student only calculates the volume of one cuboid." } },
@@ -4375,6 +4392,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "2 × (10 + 6) = 32 m", en: "2 × (10 + 6) = 32 m" },
       ],
       answer: "32 m",
+      diagram: { kind: "notched_rectangle", outerWidth: 10, outerHeight: 6, notchWidth: 4, notchHeight: 3 },
     },
     commonMistakes: [
       { mistakeType: "notch_assumed_to_reduce_perimeter", description: { ms: "Murid anggap memotong petak itu mengurangkan perimeter, lalu menolak perimeter petak kecil itu.", en: "The student assumes cutting the notch reduces the perimeter, and subtracts the notch's perimeter." } },
