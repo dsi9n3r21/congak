@@ -114,6 +114,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "3+1+1(simpan)=5 (puluh ribu)", en: "3+1+1(carried)=5 (ten thousands)" },
       ],
       answer: 51050,
+      diagram: { kind: "vertical_arithmetic", operands: ["32450", "18600"], operator: "+", result: "51050" },
     },
     moreExamples: [
       {
@@ -264,6 +265,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Tukar balik: RM3.70", en: "Convert back: RM3.70" },
       ],
       answer: "RM3.70",
+      diagram: { kind: "vertical_arithmetic", operands: ["10.00", "6.30"], operator: "\u2212", result: "3.70", prefix: "RM" },
     },
     commonMistakes: [
       { mistakeType: "ringgit_sen_conversion_error", description: { ms: "Murid tersilap semasa menukar antara ringgit dan sen.", en: "The student makes an error converting between ringgit and sen." } },
@@ -374,6 +376,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Semak: 15.70 − 3.20 = 12.50 ✓", en: "Check: 15.70 − 3.20 = 12.50 ✓" },
       ],
       answer: "15.70",
+      diagram: { kind: "vertical_arithmetic", operands: ["12.50", "3.20"], operator: "+", result: "15.70" },
     },
     commonMistakes: [
       { mistakeType: "place_value_error", description: { ms: "Murid tidak menyusun titik perpuluhan segaris, menyebabkan nilai tempat tersalah dan digit dikira pada lajur yang salah.", en: "Student doesn't line up the decimal points, causing place values to be mismatched and digits added in the wrong column." } },
@@ -1214,6 +1217,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "7(baki)−1(pinjam)=6, 6 − 3 = 3 (puluh ribu)", en: "7(remaining)−1(borrowed)=6, 6 − 3 = 3 (ten thousands)" },
       ],
       answer: 46700,
+      diagram: { kind: "vertical_arithmetic", operands: ["84500", "37800"], operator: "\u2212", result: "46700" },
     },
     commonMistakes: [
       { mistakeType: "forgot_borrow", description: { ms: "Murid tolak digit lebih kecil daripada digit lebih besar mengikut susunan terbalik (bukan pinjam).", en: "The student subtracts the smaller digit from the larger one regardless of position, instead of borrowing." } },
@@ -1797,6 +1801,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Jawapan: 564,350", en: "Answer: 564,350" },
       ],
       answer: 564350,
+      diagram: { kind: "vertical_arithmetic", operands: ["245600", "318750"], operator: "+", result: "564350" },
     },
     commonMistakes: [
       { mistakeType: "forgot_carry", description: { ms: "Murid tambah setiap lajur secara berasingan tanpa \"simpan\" apabila jumlah lebih 9.", en: "The student adds each column separately without carrying when the total is more than 9." } },
@@ -1860,6 +1865,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Jawapan: 752,550", en: "Answer: 752,550" },
       ],
       answer: 752550,
+      diagram: { kind: "vertical_arithmetic", operands: ["876400", "123850"], operator: "\u2212", result: "752550" },
     },
     commonMistakes: [
       { mistakeType: "forgot_borrow", description: { ms: "Murid tolak digit lebih kecil daripada digit lebih besar mengikut susunan terbalik (bukan pinjam).", en: "The student subtracts the smaller digit from the larger one regardless of position, instead of borrowing." } },
@@ -1910,6 +1916,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Semak: 37,920 − 9,670 = 28,250, dan 28,250 − 15,800 = 12,450 ✓", en: "Check: 37,920 − 9,670 = 28,250, and 28,250 − 15,800 = 12,450 ✓" },
       ],
       answer: 37920,
+      diagram: { kind: "vertical_arithmetic", operands: ["12450", "15800", "9670"], operator: "+", result: "37920" },
     },
     commonMistakes: [
       { mistakeType: "wrong_operation", description: { ms: "Murid hanya tambah dua daripada tiga nombor, tertinggal satu — biasanya nombor ketiga yang berada paling jauh daripada tanda '+' pertama.", en: "Student only adds two of the three numbers, missing one — usually the third number, furthest from the first '+' sign." } },
@@ -1965,6 +1972,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Semak: 312,350 + 187,650 = 500,000 ✓", en: "Check: 312,350 + 187,650 = 500,000 ✓" },
       ],
       answer: 312350,
+      diagram: { kind: "vertical_arithmetic", operands: ["500000", "187650"], operator: "\u2212", result: "312350" },
     },
     commonMistakes: [
       { mistakeType: "wrong_operation", description: { ms: "Murid tidak tahu cara pinjam merentasi beberapa lajur 0, dan tolak digit lebih kecil daripada digit lebih besar mengikut susunan terbalik.", en: "Student doesn't know how to borrow across several zero columns, and subtracts the smaller digit from the larger regardless of position." } },
@@ -2074,6 +2082,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Semak: 3.7 − 1.3 = 2.4 ✓", en: "Check: 3.7 − 1.3 = 2.4 ✓" },
       ],
       answer: "3.7",
+      diagram: { kind: "vertical_arithmetic", operands: ["2.4", "1.3"], operator: "+", result: "3.7" },
     },
     commonMistakes: [
       { mistakeType: "unit_confusion", description: { ms: "Murid mengabaikan persepuluhan sepenuhnya dan hanya mengira bahagian nombor bulat (contohnya 2.4+1.3 dikira sebagai 2+1=3).", en: "Student ignores the tenths entirely and only calculates the whole-number part (e.g. 2.4+1.3 treated as 2+1=3)." } },
@@ -2303,6 +2312,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Semak: RM20.80 − RM12.30 = RM8.50 ✓", en: "Check: RM20.80 − RM12.30 = RM8.50 ✓" },
       ],
       answer: "RM20.80",
+      diagram: { kind: "vertical_arithmetic", operands: ["8.50", "12.30"], operator: "+", result: "20.80", prefix: "RM" },
     },
     commonMistakes: [
       { mistakeType: "special_case_error", description: { ms: "Murid tidak \"simpan\"/\"pinjam\" dengan betul apabila jumlah sen mencecah atau melebihi 100, meninggalkan sen sebagai nombor 3 digit dalam jawapan (contohnya RM8.124 bukan RM9.24).", en: "Student doesn't carry/borrow correctly when the sen total reaches or exceeds 100, leaving the sen as a 3-digit number in the answer (e.g. RM8.124 instead of RM9.24)." } },

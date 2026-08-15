@@ -11,7 +11,8 @@ export type DiagramSpec =
   | { kind: "pie_chart"; segments: { label: string; numerator: number; denominator: number }[] }
   | { kind: "pictograph"; segments: { label: string; iconCount: number }[]; unitsPerIcon: number }
   | { kind: "line_pair"; relationship: "parallel" | "perpendicular" | "neither"; angleDeg: number }
-  | { kind: "coordinate_grid"; x: number; y: number; gridSize: number };
+  | { kind: "coordinate_grid"; x: number; y: number; gridSize: number }
+  | { kind: "vertical_arithmetic"; operands: string[]; operator: "+" | "\u2212"; result: string; prefix?: string };
 
 export interface GeneratedQuestion {
   /** Frozen snapshot — this exact object gets stored in attempts.question_snapshot_json */

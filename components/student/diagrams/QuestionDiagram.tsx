@@ -8,6 +8,7 @@ import { PieChartDiagram } from "@/components/student/diagrams/PieChartDiagram";
 import { PictographDiagram } from "@/components/student/diagrams/PictographDiagram";
 import { LinePairDiagram } from "@/components/student/diagrams/LinePairDiagram";
 import { CoordinateGridDiagram } from "@/components/student/diagrams/CoordinateGridDiagram";
+import { VerticalArithmetic } from "@/components/student/diagrams/VerticalArithmetic";
 
 /**
  * Single source of truth for "which diagram component renders which
@@ -76,6 +77,12 @@ export function QuestionDiagram({ diagram }: { diagram: GeneratedQuestion["diagr
       return (
         <div className="mt-4">
           <CoordinateGridDiagram x={diagram.x} y={diagram.y} gridSize={diagram.gridSize} />
+        </div>
+      );
+    case "vertical_arithmetic":
+      return (
+        <div className="mt-4 flex justify-center">
+          <VerticalArithmetic operands={diagram.operands} operator={diagram.operator} result={diagram.result} prefix={diagram.prefix} />
         </div>
       );
     default:

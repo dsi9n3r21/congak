@@ -3502,3 +3502,63 @@ only fails at the font-fetch step in `app/layout.tsx` — this sandbox
 has no network access to fonts.googleapis.com, confirmed identical to
 the exact same failure point on unrelated earlier builds. Not a code
 issue.
+
+### New: standard vertical/column written method for addition & subtraction
+User request: the Learn tab's worked examples only ever showed the
+inline text form ("12.50 + 3.20 = 15.70" plus prose steps) — no
+stacked column layout with digits and decimal points lined up, which
+is the standard method every Malaysian primary maths textbook actually
+teaches (see the user-supplied reference: line up decimal points,
+subtract like whole numbers, pad missing decimal places with a zero).
+
+**New**: `components/student/diagrams/VerticalArithmetic.tsx` — renders
+2-3 operands stacked with digits/decimal points aligned in a CSS grid
+(one grid column per character, monospace `font-num`), the operator on
+the last operand's row, a rule above the answer, and an optional
+`prefix` (e.g. "RM" for money topics) shown before every row. Missing
+integer digits pad with a blank (no false leading zeros); missing
+decimal digits pad with an explicit "0" — matching the correct
+convention from the reference image (8.8 becomes 8.800 to line up with
+6.156), not just visual filler.
+
+Extended `DiagramSpec` (in `lib/questions/types.ts`) with a new
+`vertical_arithmetic` kind and wired it into the shared
+`QuestionDiagram` switch from the earlier diagram-fix work, so it's
+available everywhere a diagram can show (Learn tab today; practice/
+quiz/exam for free if a generator ever wants to attach one).
+
+**Content**: added a `diagram` to the worked example of all 10
+addition/subtraction topics under Numbers and Operations — Addition
+Within 100,000 (`...001`), Calculating Change (`...003`), Adding &
+Subtracting Decimals both versions (`...005`, `...035`), Subtracting
+Whole Numbers both ranges (`...020`, `...031`), Adding Whole Numbers up
+to 1,000,000 (`...030`), Adding Three Whole Numbers (`...032`, the one
+3-operand case), Subtracting from a Round Number (`...033`), and Adding
+& Subtracting Money (`...039`, uses the `prefix: "RM"` option) — every
+one using the exact operand/result numbers already in that topic's own
+`problem`/`steps`/`answer` text, never a different illustrative
+example.
+
+**Deliberately out of scope this pass**: multiplication and division.
+Long multiplication (partial products with column shifting) and long
+division (the bracket/"bus-stop" method) use structurally different
+vertical layouts from addition/subtraction — worth their own dedicated
+component if wanted, not shoehorned into this one. Topics `...021`,
+`...026`, `...028` (multiplication) and `...022`, `...025`, `...029`,
+`...037` (division) are the candidates for a follow-up.
+
+**Verification**: `tsc --noEmit` clean. Verified the alignment logic
+directly against all 10 real data sets (every operand row and the
+result row come out to identical rendered width, confirming the
+columns genuinely line up — including the 3-operand case). A full
+`npm run build` confirms webpack/SWC compiles `VerticalArithmetic.tsx`
+and every touched file with zero errors; the only failure is the same
+pre-existing Google-Fonts-unreachable issue in `app/layout.tsx` that
+every build in this sandbox hits, unrelated to this change. (Note for
+future sessions: testing a `.tsx` diagram component directly through
+the `tsx` CLI needs `React.createElement` or an explicit `import React`
+in the test script — `tsx`'s own JSX transform differs from Next's
+SWC pipeline and doesn't auto-detect the automatic runtime the same
+way; this is a test-harness quirk, not something to fix in the
+component itself, since every other diagram component has the same
+shape and compiles fine in the real build.)
