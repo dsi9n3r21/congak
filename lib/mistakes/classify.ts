@@ -1605,19 +1605,23 @@ export function classifyMistake(question: GeneratedQuestion, studentAnswer: stri
           },
         };
       }
-      const { a, b, c, correct } = ctxMO as { a: number; b: number; c: number; correct: number };
-      if (Number(answer) === (a + b) * c) {
+      // Base/errorSpotting/word_problem/reverseProblem questions (all six
+      // patterns) carry a pre-computed `wrong` value — the classic
+      // wrong-order-of-operations answer for whichever pattern produced
+      // the question — so this check is generic across all of them.
+      const ctxWrong = question.context as { a: number; b: number; c: number; correct: number; wrong?: number };
+      if (ctxWrong.wrong !== undefined && Number(answer) === ctxWrong.wrong) {
         return {
           mistakeType: "ignored_order_of_operations",
           hint: {
-            ms: "Buat pendaraban dahulu, kemudian penambahan — bukan dari kiri ke kanan.",
-            en: "Do the multiplication first, then the addition — not strictly left to right.",
+            ms: "Ingat susunan operasi yang betul — pendaraban/pembahagian dahulu (atau ikut turutan kiri ke kanan jika operasi setara), bukan kumpulkan sewenang-wenangnya.",
+            en: "Remember the correct order of operations — multiplication/division first (or strict left to right when both operations have equal precedence), not grouped arbitrarily.",
           },
         };
       }
       return {
         mistakeType: "calculation_error",
-        hint: { ms: "Cuba kira semula: darab dahulu, kemudian tambah.", en: "Try calculating again: multiply first, then add." },
+        hint: { ms: "Cuba kira semula mengikut susunan operasi yang betul.", en: "Try calculating again following the correct order of operations." },
       };
     }
 

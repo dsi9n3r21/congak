@@ -1589,21 +1589,21 @@ export const TOPICS: Record<string, TopicContent> = {
     title: { ms: "Operasi Bergabung Tanpa Kurungan", en: "Combined Operations Without Brackets" },
     yearLevel: 6,
     explanation: {
-      ms: "Apabila satu soalan ada campuran tambah dan darab tanpa kurungan, kita MESTI buat pendaraban dahulu, kemudian penambahan — bukan dikira dari kiri ke kanan.\n\nContoh harian: Ali ada RM15, kemudian ibunya beri dia 4 keping not RM10. Berapakah jumlah wang Ali sekarang? (15 + 4 × 10)",
-      en: "When a question mixes addition and multiplication with no brackets, we MUST do the multiplication first, then the addition — not simply left to right.\n\nEveryday example: Ali has RM15, then his mother gives him 4 pieces of RM10 notes. How much money does Ali have now? (15 + 4 × 10)",
+      ms: "Apabila satu soalan ada campuran operasi tanpa kurungan, kita MESTI buat pendaraban/pembahagian dahulu, kemudian penambahan/penolakan — bukan dikira dari kiri ke kanan. Jika soalan hanya ada tambah & tolak, ATAU hanya ada darab & bahagi (tiada gabungan dengan yang lain), kedua-dua operasi itu setaraf, jadi kira dari kiri ke kanan.\n\nContoh harian: Ali ada RM15, kemudian ibunya beri dia 4 keping not RM10. Berapakah jumlah wang Ali sekarang? (15 + 4 × 10)",
+      en: "When a question mixes operations with no brackets, we MUST do the multiplication/division first, then the addition/subtraction — not simply left to right. If a question only has addition & subtraction, OR only has multiplication & division (no mix with the other pair), both operations are equal rank, so calculate strictly left to right.\n\nEveryday example: Ali has RM15, then his mother gives him 4 pieces of RM10 notes. How much money does Ali have now? (15 + 4 × 10)",
     },
     tips: [
       {
-        ms: "Ingat: \"Darab dan Bahagi dahulu, Tambah dan Tolak kemudian\" — ini dipanggil susunan operasi.",
-        en: "Remember: \"Multiply and Divide first, Add and Subtract after\" — this is called order of operations.",
+        ms: "Ingat: \"Darab dan Bahagi dahulu, Tambah dan Tolak kemudian\" — ini dipanggil susunan operasi. Tetapi jika soalan HANYA ada tambah & tolak, atau HANYA darab & bahagi, kira dari kiri ke kanan sahaja.",
+        en: "Remember: \"Multiply and Divide first, Add and Subtract after\" — this is called order of operations. But if a question ONLY has addition & subtraction, or ONLY multiplication & division, just calculate strictly left to right.",
       },
       {
         ms: "Bulatkan atau garisi bahagi darab dalam soalan itu dahulu supaya anda tidak terlepas pandang untuk buat itu dahulu.",
-        en: "Circle or underline the multiplication part of the question first so you don't accidentally skip doing it first.",
+        en: "Circle or underline the multiplication or division part of the question first so you don't accidentally skip doing it first.",
       },
       {
-        ms: "JANGAN buat ini: 15 + 4 × 10 dikira sebagai (15 + 4) × 10 = 190. SALAH — kiri-ke-kanan bukan susunan yang betul. Darab dahulu: 4 × 10 = 40, baru tambah 15 + 40 = 55.",
-        en: "DON'T do this: 15 + 4 × 10 calculated as (15 + 4) × 10 = 190. WRONG — left-to-right isn't the correct order. Multiply first: 4 × 10 = 40, then add 15 + 40 = 55.",
+        ms: "JANGAN buat ini: 15 + 4 × 10 dikira sebagai (15 + 4) × 10 = 190. SALAH — kiri-ke-kanan bukan susunan yang betul apabila ada campuran operasi. Darab dahulu: 4 × 10 = 40, baru tambah 15 + 40 = 55.",
+        en: "DON'T do this: 15 + 4 × 10 calculated as (15 + 4) × 10 = 190. WRONG — left-to-right isn't correct when operations are mixed. Multiply first: 4 × 10 = 40, then add 15 + 40 = 55.",
       },
     ],
     howTo: [
@@ -1627,12 +1627,41 @@ export const TOPICS: Record<string, TopicContent> = {
       { mistakeType: "misidentified_operation", description: { ms: "Murid keliru nombor mana patut didarab, cth. darab nombor pertama dan kedua berbanding nombor kedua dan ketiga.", en: "The student confuses which numbers to multiply, e.g. multiplies the first and second numbers instead of the second and third." } },
     ],
     questionTemplates: [
-      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80 } },
-      { type: "fill", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80 } },
-      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50 } },
-      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, errorSpotting: true } },
-      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, reverseProblem: true } },
-      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 8, max: 30, challenge: true } },
+      // Tambah & Darab (add × multiply) — original pattern
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "add_multiply" } },
+      { type: "fill", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "add_multiply" } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, pattern: "add_multiply" } },
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "add_multiply", errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, pattern: "add_multiply", reverseProblem: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 8, max: 30, pattern: "add_multiply", challenge: true } },
+      // Tolak & Darab (subtract × multiply)
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "subtract_multiply" } },
+      { type: "fill", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "subtract_multiply" } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, pattern: "subtract_multiply" } },
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "subtract_multiply", errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, pattern: "subtract_multiply", reverseProblem: true } },
+      // Tambah & Bahagi (add × divide)
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "add_divide" } },
+      { type: "fill", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "add_divide" } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, pattern: "add_divide" } },
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "add_divide", errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, pattern: "add_divide", reverseProblem: true } },
+      // Tolak & Bahagi (subtract × divide)
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "subtract_divide" } },
+      { type: "fill", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "subtract_divide" } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, pattern: "subtract_divide" } },
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "subtract_divide", errorSpotting: true } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, pattern: "subtract_divide", reverseProblem: true } },
+      // Tambah & Tolak (equal precedence — strict left to right)
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "add_subtract" } },
+      { type: "fill", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "add_subtract" } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, pattern: "add_subtract" } },
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "add_subtract", errorSpotting: true } },
+      // Darab & Bahagi (equal precedence — strict left to right)
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "multiply_divide" } },
+      { type: "fill", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "multiply_divide" } },
+      { type: "word_problem", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 50, pattern: "multiply_divide" } },
+      { type: "mcq", difficulty: 3, generatorKey: "mixed_operations", config: { min: 10, max: 80, pattern: "multiply_divide", errorSpotting: true } },
     ],
   },
   "a1000000-0000-0000-0000-000000000028": {

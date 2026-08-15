@@ -3562,3 +3562,54 @@ SWC pipeline and doesn't auto-detect the automatic runtime the same
 way; this is a test-harness quirk, not something to fix in the
 component itself, since every other diagram component has the same
 shape and compiles fine in the real build.)
+
+## Combined Operations (topic 027) — fixed to cover all six KSSR pairs
+
+Topic 027 "Operasi Bergabung Tanpa Kurungan" previously only tested one
+operand pair (add & multiply, `a + b × c`) even though the real KSSR Y6
+textbook chapter covers six: Tambah & Tolak, Darab & Bahagi, Tambah &
+Darab, Tolak & Darab, Tambah & Bahagi, Tolak & Bahagi. Lynda flagged this
+after testing — noticed several combined-operation questions didn't match
+the KSSR order-of-operations rules — and pointed at the textbook chapter
+via three anyflip mirrors (blocked from direct fetch as usual; identified
+the chapter's exact sub-skill breakdown via search snippets from other
+mirrors of the same official Y6 textbook instead).
+
+**What changed** — `lib/questions/generators/mixedOperations.ts` rewritten
+around a `pattern` config (`add_subtract`, `multiply_divide`,
+`add_multiply` [default, unchanged from before], `subtract_multiply`,
+`add_divide`, `subtract_divide`). Each pattern computes both the correct
+KSSR-rule answer and the classic wrong answer in `context.correct` /
+`context.wrong`:
+- the four mixed-precedence patterns (×/÷ paired with +/−): wrong = naive
+  left-to-right instead of doing ×/÷ first
+- the two equal-precedence patterns (+/− together, ×/÷ together): wrong =
+  incorrectly grouping the last two operands as if one operator had higher
+  precedence — the mirror-image misconception (over-applying "×÷ first"
+  where it doesn't apply)
+
+`lib/mistakes/classify.ts`'s `mixed_operations` case generalized to check
+`context.wrong` directly instead of re-deriving the old `(a+b)*c`-specific
+formula — now pattern-agnostic for base/errorSpotting/word_problem/
+reverseProblem, while the existing two-multiplication `challenge` branch
+(needs `context.d`) is untouched.
+
+`reverseProblem` and `challenge` are only offered for the four
+mixed-precedence patterns (`add_multiply`, `subtract_multiply`,
+`add_divide`, `subtract_divide`) — solving for the starting amount `a` is
+a clean single algebraic step there. The two equal-precedence patterns
+don't have a natural reverse/challenge shape without a bigger redesign, so
+topics.ts only gives them mcq/fill/word_problem/errorSpotting templates.
+Topic's `questionTemplates` grew from 6 to 29 entries to cover all six
+patterns. Explanation/tips text broadened to state the equal-precedence
+left-to-right rule alongside the existing ×÷-first rule.
+
+Verified: `tsc --noEmit` clean. Smoke-tested every pattern × every
+question type at 1000x (mcq/fill/word_problem/errorSpotting) and
+reverseProblem/challenge at 1000x where offered — 0 bad draws across all
+of it (no negative/non-finite answers, no <3-option MCQs, no missing
+correct-answer-in-options, no wrong===correct collisions checked
+separately at 2000x per pattern). Also ran the real `questionTemplates`
+array from topics.ts through the generator at 300x per template (29
+templates) — 0 failures. `audit-content-gaps.ts` still runs clean, no
+regression to topic 027's score.
