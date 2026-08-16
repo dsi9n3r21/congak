@@ -3738,3 +3738,69 @@ This closes out the diagram-QC arc across both rounds. Nothing currently
 flagged as missing a diagram; next content gaps (if any) would need a
 fresh audit pass, since this one only checked "worked example references
 a shape/angle with no diagram" — it wouldn't catch other kinds of gaps.
+
+## Division + mobile font-size fix
+
+Lynda flagged two things: division was never touched (only multiplication
+got the vertical-method treatment last round), and the number labels
+inside diagrams — she called out Volume of Composite Shapes specifically
+— are too small to read on a phone. She also attached a reference image
+(the classic "bus stop" long division staircase: quotient on the roof,
+subtraction + bring-down rows underneath) as a sample in case the anyflip
+links didn't load, which they hadn't (same bot-detection block as every
+previous round).
+
+**Division** — new `LongDivisionDiagram`, matching the reference image
+exactly: divisor + bracket, quotient digits on the roofline, and a full
+subtraction/bring-down staircase underneath (not just a bare quotient —
+Lynda's sample specifically showed the working, not just the answer).
+Works for any 1- or 2-digit divisor and an optional single decimal point
+in the dividend (quotient's decimal point lands in the same column as
+the dividend's, same convention as the other written-method components).
+The whole staircase is computed from the raw dividend + divisor inside
+the component — not hand-fed — via the standard algorithm: accumulate
+leading digits until they exceed the divisor, divide, subtract, bring
+down the next digit, repeat. Verified this against 5 cases with a
+standalone script before wiring it in: the reference image's own example
+(13032 ÷ 24 = 543) plus the actual 4 division worked examples this round
+uses. All 5 matched exactly, including the exact subtraction/bring-down
+values and column positions shown in Lynda's image. Wired to all 4
+whole-number/decimal division worked examples: topic 022 (1288÷23, the
+2-digit-divisor topic — its own worked-example text uses an "estimate
+and multiply-check" method rather than a staircase, but Lynda's reference
+image itself uses a 2-digit divisor with the full staircase, so this
+topic gets the same staircase diagram as the others rather than a
+different treatment), topic 025 (738÷6), topic 029 (84÷4), and the
+decimal division topic (7.2÷3).
+
+**Mobile font-size fix** — every diagram component (both the ones built
+across this whole diagram-QC arc AND the pre-existing ones from earlier
+rounds — AngleDiagram, TriangleDiagram, CircleDiagram, CoordinateGridDiagram,
+BarChart/PieChart/Pictograph, LinePairDiagram) had SVG label `fontSize`
+values in the 9–14px range. Since these are SVG user-units scaled by the
+`viewBox`-to-rendered-width ratio, and every diagram is capped at a
+fairly narrow `max-w`, actual rendered size on a phone (where the
+container is often narrower than that cap, or — worse — split by a flex
+layout) could shrink well below the nominal value. Bumped every fontSize
+up (roughly 9→12, 11→14, 12→15, 13→16, 14→17) across every diagram file,
+and increased padding/max-width modestly on the ones with labels close to
+the shape's edge so bigger text doesn't clip.
+
+The specific bug behind Lynda's Volume of Composite Shapes example:
+`TwoCuboidsDiagram` placed two full SVGs side by side in a plain
+`flex` row with no responsive handling — on a phone-width container,
+flexbox squeezes both SVGs to roughly half width each, which (per the
+viewBox-scaling issue above) shrinks their internal text far below the
+already-small nominal size. Changed it to stack vertically by default
+(`flex-col`) and only go side by side from the `sm` breakpoint up
+(`sm:flex-row`), so each cuboid gets its full width — and therefore
+full-size labels — on a phone. `TwoRectanglesDiagram` (topic 013) didn't
+have this specific bug since it's one single SVG containing both
+rectangles rather than two flexed SVGs, but got the general font-size
+bump along with everything else.
+
+Verified: `tsc --noEmit` clean. `npm run build` clean (only the
+pre-existing unrelated font-fetch failure). Long-division logic
+hand-verified against 5 cases including Lynda's own reference image
+before wiring into content — exact match on quotient, every subtraction
+row, and every bring-down row.

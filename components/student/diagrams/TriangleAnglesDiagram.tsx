@@ -40,7 +40,7 @@ export function TriangleAnglesDiagram({ angleA, angleB }: { angleA: number; angl
   return (
     <svg
       viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`}
-      className="mx-auto h-auto w-full max-w-[220px]"
+      className="mx-auto h-auto w-full max-w-[240px]"
       role="img"
       aria-label={`Triangle with two known angles ${angleA} degrees and ${angleB} degrees, third angle unknown`}
     >
@@ -53,13 +53,13 @@ export function TriangleAnglesDiagram({ angleA, angleB }: { angleA: number; angl
         strokeLinejoin="round"
       />
 
-      <text x={labelA.x} y={labelA.y} fontSize={14} fill="#2E6F9E" textAnchor="middle" dominantBaseline="middle" fontWeight={700}>
+      <text x={labelA.x} y={labelA.y} fontSize={17} fill="#2E6F9E" textAnchor="middle" dominantBaseline="middle" fontWeight={700}>
         {angleA}°
       </text>
-      <text x={labelB.x} y={labelB.y} fontSize={14} fill="#2E6F9E" textAnchor="middle" dominantBaseline="middle" fontWeight={700}>
+      <text x={labelB.x} y={labelB.y} fontSize={17} fill="#2E6F9E" textAnchor="middle" dominantBaseline="middle" fontWeight={700}>
         {angleB}°
       </text>
-      <text x={labelC.x} y={labelC.y} fontSize={14} fill="#C0392B" textAnchor="middle" dominantBaseline="middle" fontWeight={700}>
+      <text x={labelC.x} y={labelC.y} fontSize={17} fill="#C0392B" textAnchor="middle" dominantBaseline="middle" fontWeight={700}>
         ?
       </text>
     </svg>

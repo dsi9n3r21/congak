@@ -50,10 +50,10 @@ export function PieChartDiagram({
         return (
           <g key={seg.label}>
             <path d={path} fill={COLORS[i % COLORS.length]} stroke="#F5F0E6" strokeWidth={2} />
-            <text x={labelX} y={labelY - 6} fontSize={13} fontWeight={700} fill="#F5F0E6" textAnchor="middle">
+            <text x={labelX} y={labelY - 6} fontSize={16} fontWeight={700} fill="#F5F0E6" textAnchor="middle">
               {seg.label}
             </text>
-            <text x={labelX} y={labelY + 10} fontSize={12} fill="#F5F0E6" textAnchor="middle">
+            <text x={labelX} y={labelY + 10} fontSize={15} fill="#F5F0E6" textAnchor="middle">
               {seg.numerator}/{seg.denominator}
             </text>
           </g>

@@ -34,10 +34,10 @@ export function BarChartDiagram({ labels, values }: { labels: string[]; values: 
         return (
           <g key={label}>
             <rect x={x} y={y} width={BAR_WIDTH} height={barHeight} fill={COLORS[i % COLORS.length]} rx={3} />
-            <text x={x + BAR_WIDTH / 2} y={y - 8} fontSize={13} fontWeight={700} fill="#1C2541" textAnchor="middle">
+            <text x={x + BAR_WIDTH / 2} y={y - 8} fontSize={16} fontWeight={700} fill="#1C2541" textAnchor="middle">
               {values[i]}
             </text>
-            <text x={x + BAR_WIDTH / 2} y={CHART_BOTTOM + 18} fontSize={13} fill="#1C2541" textAnchor="middle">
+            <text x={x + BAR_WIDTH / 2} y={CHART_BOTTOM + 18} fontSize={16} fill="#1C2541" textAnchor="middle">
               {label}
             </text>
           </g>

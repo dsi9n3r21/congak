@@ -44,10 +44,10 @@ export function TriangleDiagram({ base, height }: { base: number; height: number
       />
 
       {/* labels */}
-      <text x={(A.x + B.x) / 2} y={ORIGIN.y + 20} fontSize={13} fill="#1C2541" textAnchor="middle">
+      <text x={(A.x + B.x) / 2} y={ORIGIN.y + 20} fontSize={16} fill="#1C2541" textAnchor="middle">
         {base} cm
       </text>
-      <text x={F.x + 8} y={(C.y + F.y) / 2} fontSize={13} fill="#2E6F9E" textAnchor="start">
+      <text x={F.x + 8} y={(C.y + F.y) / 2} fontSize={16} fill="#2E6F9E" textAnchor="start">
         {height} cm
       </text>
     </svg>

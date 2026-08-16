@@ -26,7 +26,7 @@ export function CoordinateGridDiagram({ x, y, gridSize }: { x: number; y: number
   return (
     <svg
       viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}
-      className="mx-auto h-auto w-full max-w-[240px]"
+      className="mx-auto h-auto w-full max-w-[260px]"
       role="img"
       aria-label={`Coordinate grid with a point at (${x}, ${y})`}
     >
@@ -40,14 +40,14 @@ export function CoordinateGridDiagram({ x, y, gridSize }: { x: number; y: number
       {Array.from({ length: gridSize + 1 }, (_, i) => i)
         .filter((i) => i % 2 === 0)
         .map((i) => (
-          <text key={`xt${i}`} x={originX + i * step} y={originY + 14} fontSize={9} fill="#1C2541" textAnchor="middle">
+          <text key={`xt${i}`} x={originX + i * step} y={originY + 14} fontSize={15} fill="#1C2541" textAnchor="middle">
             {i}
           </text>
         ))}
       {Array.from({ length: gridSize + 1 }, (_, i) => i)
         .filter((i) => i % 2 === 0)
         .map((i) => (
-          <text key={`yt${i}`} x={originX - 10} y={originY - i * step + 3} fontSize={9} fill="#1C2541" textAnchor="middle">
+          <text key={`yt${i}`} x={originX - 10} y={originY - i * step + 3} fontSize={15} fill="#1C2541" textAnchor="middle">
             {i}
           </text>
         ))}

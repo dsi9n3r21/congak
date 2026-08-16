@@ -10,7 +10,7 @@
 
 const GAP_PX = 40;
 const MAX_DIM_PX = 110;
-const PADDING = 30;
+const PADDING = 38;
 
 export interface RectanglePart {
   width: number;
@@ -39,7 +39,7 @@ export function TwoRectanglesDiagram({ a, b }: { a: RectanglePart; b: RectangleP
   return (
     <svg
       viewBox={`0 0 ${viewBoxW} ${viewBoxH}`}
-      className="mx-auto h-auto w-full max-w-[280px]"
+      className="mx-auto h-auto w-full max-w-[300px]"
       role="img"
       aria-label={`${a.label}: ${a.width} by ${a.height}. ${b.label}: ${b.width} by ${b.height}.`}
     >
@@ -50,10 +50,10 @@ export function TwoRectanglesDiagram({ a, b }: { a: RectanglePart; b: RectangleP
         +
       </text>
 
-      <text x={aX + aW / 2} y={baseline + 16} fontSize={12} fill="#2E6F9E" textAnchor="middle" fontWeight={700}>
+      <text x={aX + aW / 2} y={baseline + 16} fontSize={15} fill="#2E6F9E" textAnchor="middle" fontWeight={700}>
         {a.label}: {a.width}×{a.height}
       </text>
-      <text x={bX + bW / 2} y={baseline + 16} fontSize={12} fill="#2E6F9E" textAnchor="middle" fontWeight={700}>
+      <text x={bX + bW / 2} y={baseline + 16} fontSize={15} fill="#2E6F9E" textAnchor="middle" fontWeight={700}>
         {b.label}: {b.width}×{b.height}
       </text>
     </svg>

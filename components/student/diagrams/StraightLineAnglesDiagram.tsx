@@ -36,7 +36,7 @@ export function StraightLineAnglesDiagram({ angleA }: { angleA: number }) {
   return (
     <svg
       viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`}
-      className="mx-auto h-auto w-full max-w-[260px]"
+      className="mx-auto h-auto w-full max-w-[280px]"
       role="img"
       aria-label={`Straight line split into two angles: ${angleA} degrees and an unknown angle`}
     >
@@ -62,7 +62,7 @@ export function StraightLineAnglesDiagram({ angleA }: { angleA: number }) {
       <text
         x={toPoint(angleA / 2, LABEL_RADIUS).x}
         y={toPoint(angleA / 2, LABEL_RADIUS).y}
-        fontSize={14}
+        fontSize={17}
         fill="#2E6F9E"
         textAnchor="middle"
         dominantBaseline="middle"
@@ -73,7 +73,7 @@ export function StraightLineAnglesDiagram({ angleA }: { angleA: number }) {
       <text
         x={toPoint(angleA + angleB / 2, LABEL_RADIUS).x}
         y={toPoint(angleA + angleB / 2, LABEL_RADIUS).y}
-        fontSize={14}
+        fontSize={17}
         fill="#C0392B"
         textAnchor="middle"
         dominantBaseline="middle"

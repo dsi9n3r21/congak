@@ -31,7 +31,7 @@ export function PictographDiagram({
         const y = i * ROW_HEIGHT + 10;
         return (
           <g key={seg.label}>
-            <text x={10} y={y + ICON_SIZE - 3} fontSize={14} fontWeight={700} fill="#1C2541">
+            <text x={10} y={y + ICON_SIZE - 3} fontSize={17} fontWeight={700} fill="#1C2541">
               {seg.label}
             </text>
             {Array.from({ length: seg.iconCount }).map((_, j) => (
@@ -50,7 +50,7 @@ export function PictographDiagram({
       })}
       <g>
         <rect x={10} y={chartHeight - 24} width={14} height={14} rx={2} fill="#1C2541" />
-        <text x={30} y={chartHeight - 13} fontSize={12} fill="#1C2541">
+        <text x={30} y={chartHeight - 13} fontSize={15} fill="#1C2541">
           = {unitsPerIcon} unit{unitsPerIcon === 1 ? "" : "s"}
         </text>
       </g>

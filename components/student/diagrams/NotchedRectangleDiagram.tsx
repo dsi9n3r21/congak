@@ -9,7 +9,7 @@
 
 const MAX_W_PX = 170;
 const MAX_H_PX = 130;
-const PADDING = 30;
+const PADDING = 38;
 
 export function NotchedRectangleDiagram({
   outerWidth,
@@ -51,26 +51,26 @@ export function NotchedRectangleDiagram({
   return (
     <svg
       viewBox={`0 0 ${viewBoxW} ${viewBoxH}`}
-      className="mx-auto h-auto w-full max-w-[280px]"
+      className="mx-auto h-auto w-full max-w-[300px]"
       role="img"
       aria-label={`L-shape: overall ${outerWidth} by ${outerHeight}, with a ${notchWidth} by ${notchHeight} notch cut from one corner`}
     >
       <polygon points={points} fill="#CFE4F2" fillOpacity={0.35} stroke="#1C2541" strokeWidth={3} strokeLinejoin="round" />
 
       {/* overall width, along the bottom */}
-      <text x={(left + right) / 2} y={bottom + 18} fontSize={12} fill="#2E6F9E" textAnchor="middle" fontWeight={700}>
+      <text x={(left + right) / 2} y={bottom + 18} fontSize={15} fill="#2E6F9E" textAnchor="middle" fontWeight={700}>
         {outerWidth}
       </text>
       {/* overall height, along the left side */}
-      <text x={left - 10} y={(top + bottom) / 2} fontSize={12} fill="#2E6F9E" textAnchor="end" dominantBaseline="middle" fontWeight={700}>
+      <text x={left - 10} y={(top + bottom) / 2} fontSize={15} fill="#2E6F9E" textAnchor="end" dominantBaseline="middle" fontWeight={700}>
         {outerHeight}
       </text>
       {/* notch width, dashed marker above the cut */}
-      <text x={right - nw / 2} y={top - 6} fontSize={11} fill="#C0392B" textAnchor="middle" fontWeight={700}>
+      <text x={right - nw / 2} y={top - 6} fontSize={17} fill="#C0392B" textAnchor="middle" fontWeight={700}>
         {notchWidth}
       </text>
       {/* notch height, to the right of the cut */}
-      <text x={right + 8} y={top + nh / 2} fontSize={11} fill="#C0392B" textAnchor="start" dominantBaseline="middle" fontWeight={700}>
+      <text x={right + 8} y={top + nh / 2} fontSize={17} fill="#C0392B" textAnchor="start" dominantBaseline="middle" fontWeight={700}>
         {notchHeight}
       </text>
     </svg>

@@ -41,7 +41,7 @@ export function RegularPolygonDiagram({ sides, eachAngle }: { sides: number; eac
   return (
     <svg
       viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}
-      className="mx-auto h-auto w-full max-w-[220px]"
+      className="mx-auto h-auto w-full max-w-[240px]"
       role="img"
       aria-label={`Regular polygon with ${sides} sides, one interior angle marked ${eachAngle} degrees`}
     >
@@ -53,7 +53,7 @@ export function RegularPolygonDiagram({ sides, eachAngle }: { sides: number; eac
         stroke="#C0392B"
         strokeWidth={2.5}
       />
-      <text x={labelMid.x} y={labelMid.y} fontSize={12} fill="#C0392B" textAnchor="middle" dominantBaseline="middle" fontWeight={700}>
+      <text x={labelMid.x} y={labelMid.y} fontSize={15} fill="#C0392B" textAnchor="middle" dominantBaseline="middle" fontWeight={700}>
         {eachAngle}°
       </text>
     </svg>

@@ -1340,6 +1340,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Cuba 23 × 56 = 1288 ✓", en: "Try 23 × 56 = 1288 ✓" },
       ],
       answer: 56,
+      diagram: { kind: "long_division", dividend: "1288", divisor: 23 },
     },
     commonMistakes: [
       { mistakeType: "subtracted_instead_of_divided", description: { ms: "Murid menolak pembahagi daripada bahagi berbanding membahagikannya.", en: "The student subtracts the divisor from the dividend instead of dividing." } },
@@ -1512,6 +1513,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "738 ÷ 6 = 123", en: "738 ÷ 6 = 123" },
       ],
       answer: 123,
+      diagram: { kind: "long_division", dividend: "738", divisor: 6 },
     },
     commonMistakes: [
       { mistakeType: "subtracted_instead_of_divided", description: { ms: "Murid menolak pembahagi daripada bahagi berbanding membahagikannya.", en: "The student subtracts the divisor from the dividend instead of dividing." } },
@@ -1775,6 +1777,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "84 ÷ 4 = 21", en: "84 ÷ 4 = 21" },
       ],
       answer: 21,
+      diagram: { kind: "long_division", dividend: "84", divisor: 4 },
     },
     commonMistakes: [
       { mistakeType: "subtracted_instead_of_divided", description: { ms: "Murid menolak pembahagi daripada bahagi berbanding membahagikannya.", en: "The student subtracts the divisor from the dividend instead of dividing." } },
@@ -2240,6 +2243,7 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Semak: 2.4 × 3 = 7.2 ✓", en: "Check: 2.4 × 3 = 7.2 ✓" },
       ],
       answer: "2.4",
+      diagram: { kind: "long_division", dividend: "7.2", divisor: 3 },
     },
     commonMistakes: [
       { mistakeType: "ignored_decimal_point", description: { ms: "Murid membahagi dengan betul tetapi lupa letakkan semula titik perpuluhan pada jawapan.", en: "The student divides correctly but forgets to place the decimal point back into the answer." } },

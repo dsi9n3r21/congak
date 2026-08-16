@@ -19,7 +19,7 @@ export function CircleDiagram({ radius }: { radius: number }) {
       <circle cx={CENTER.x} cy={CENTER.y} r={CIRCLE_RADIUS_PX} fill="#CFE4F2" fillOpacity={0.35} stroke="#1C2541" strokeWidth={3} />
       <line x1={CENTER.x} y1={CENTER.y} x2={edge.x} y2={edge.y} stroke="#2E6F9E" strokeWidth={2.5} />
       <circle cx={CENTER.x} cy={CENTER.y} r={3.5} fill="#1C2541" />
-      <text x={CENTER.x + CIRCLE_RADIUS_PX / 2} y={CENTER.y - 8} fontSize={13} fill="#2E6F9E" textAnchor="middle" fontWeight={700}>
+      <text x={CENTER.x + CIRCLE_RADIUS_PX / 2} y={CENTER.y - 8} fontSize={16} fill="#2E6F9E" textAnchor="middle" fontWeight={700}>
         {radius} cm
       </text>
     </svg>

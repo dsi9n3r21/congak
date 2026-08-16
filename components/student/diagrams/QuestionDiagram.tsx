@@ -10,6 +10,7 @@ import { LinePairDiagram } from "@/components/student/diagrams/LinePairDiagram";
 import { CoordinateGridDiagram } from "@/components/student/diagrams/CoordinateGridDiagram";
 import { VerticalArithmetic } from "@/components/student/diagrams/VerticalArithmetic";
 import { LongMultiplicationDiagram } from "@/components/student/diagrams/LongMultiplicationDiagram";
+import { LongDivisionDiagram } from "@/components/student/diagrams/LongDivisionDiagram";
 import { StraightLineAnglesDiagram } from "@/components/student/diagrams/StraightLineAnglesDiagram";
 import { TriangleAnglesDiagram } from "@/components/student/diagrams/TriangleAnglesDiagram";
 import { TwoRectanglesDiagram } from "@/components/student/diagrams/TwoRectanglesDiagram";
@@ -128,6 +129,12 @@ export function QuestionDiagram({ diagram }: { diagram: GeneratedQuestion["diagr
             notchWidth={diagram.notchWidth}
             notchHeight={diagram.notchHeight}
           />
+        </div>
+      );
+    case "long_division":
+      return (
+        <div className="mt-4 flex justify-center">
+          <LongDivisionDiagram dividend={diagram.dividend} divisor={diagram.divisor} />
         </div>
       );
     case "rectangle":

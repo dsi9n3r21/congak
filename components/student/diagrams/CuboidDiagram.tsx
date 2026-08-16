@@ -7,7 +7,7 @@
 const SKEW_X = 26;
 const SKEW_Y = 14;
 const MAX_DIM_PX = 100;
-const PADDING = 34;
+const PADDING = 40;
 
 export function CuboidDiagram({
   length,
@@ -47,7 +47,7 @@ export function CuboidDiagram({
   return (
     <svg
       viewBox={`0 0 ${viewBoxW} ${viewBoxH}`}
-      className="mx-auto h-auto w-full max-w-[240px]"
+      className="mx-auto h-auto w-full max-w-[260px]"
       role="img"
       aria-label={`Cuboid: length ${length}, width ${width}, height ${height} ${unit}`}
     >
@@ -80,13 +80,13 @@ export function CuboidDiagram({
       />
 
       {/* labels */}
-      <text x={(A.x + B.x) / 2} y={A.y + 16} fontSize={11} fill="#2E6F9E" textAnchor="middle" fontWeight={700}>
+      <text x={(A.x + B.x) / 2} y={A.y + 16} fontSize={17} fill="#2E6F9E" textAnchor="middle" fontWeight={700}>
         {length} {unit}
       </text>
-      <text x={A.x - 8} y={(A.y + Dp.y) / 2} fontSize={11} fill="#2E6F9E" textAnchor="end" dominantBaseline="middle" fontWeight={700}>
+      <text x={A.x - 8} y={(A.y + Dp.y) / 2} fontSize={17} fill="#2E6F9E" textAnchor="end" dominantBaseline="middle" fontWeight={700}>
         {height} {unit}
       </text>
-      <text x={(B.x + B2.x) / 2 + 4} y={(B.y + B2.y) / 2 - 4} fontSize={11} fill="#2E6F9E" textAnchor="start" fontWeight={700}>
+      <text x={(B.x + B2.x) / 2 + 4} y={(B.y + B2.y) / 2 - 4} fontSize={17} fill="#2E6F9E" textAnchor="start" fontWeight={700}>
         {width} {unit}
       </text>
     </svg>

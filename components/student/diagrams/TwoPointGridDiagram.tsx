@@ -40,7 +40,7 @@ export function TwoPointGridDiagram({
   return (
     <svg
       viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}
-      className="mx-auto h-auto w-full max-w-[240px]"
+      className="mx-auto h-auto w-full max-w-[260px]"
       role="img"
       aria-label={`Coordinate grid with points A at (${x1}, ${y1}) and B at (${x2}, ${y2})`}
     >
@@ -52,14 +52,14 @@ export function TwoPointGridDiagram({
       {Array.from({ length: gridSize + 1 }, (_, i) => i)
         .filter((i) => i % 2 === 0)
         .map((i) => (
-          <text key={`xt${i}`} x={originX + i * step} y={originY + 14} fontSize={9} fill="#1C2541" textAnchor="middle">
+          <text key={`xt${i}`} x={originX + i * step} y={originY + 14} fontSize={15} fill="#1C2541" textAnchor="middle">
             {i}
           </text>
         ))}
       {Array.from({ length: gridSize + 1 }, (_, i) => i)
         .filter((i) => i % 2 === 0)
         .map((i) => (
-          <text key={`yt${i}`} x={originX - 10} y={originY - i * step + 3} fontSize={9} fill="#1C2541" textAnchor="middle">
+          <text key={`yt${i}`} x={originX - 10} y={originY - i * step + 3} fontSize={15} fill="#1C2541" textAnchor="middle">
             {i}
           </text>
         ))}
@@ -70,10 +70,10 @@ export function TwoPointGridDiagram({
       {/* the two points */}
       <circle cx={pA.x} cy={pA.y} r={5} fill="#2E6F9E" />
       <circle cx={pB.x} cy={pB.y} r={5} fill="#2E6F9E" />
-      <text x={pA.x + 8} y={pA.y - 8} fontSize={12} fill="#1C2541" fontWeight={700}>
+      <text x={pA.x + 8} y={pA.y - 8} fontSize={15} fill="#1C2541" fontWeight={700}>
         A
       </text>
-      <text x={pB.x + 8} y={pB.y - 8} fontSize={12} fill="#1C2541" fontWeight={700}>
+      <text x={pB.x + 8} y={pB.y - 8} fontSize={15} fill="#1C2541" fontWeight={700}>
         B
       </text>
     </svg>

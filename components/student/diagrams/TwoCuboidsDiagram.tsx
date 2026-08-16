@@ -16,17 +16,17 @@ export interface CuboidPart {
 
 export function TwoCuboidsDiagram({ a, b }: { a: CuboidPart; b: CuboidPart }) {
   return (
-    <div className="flex items-center justify-center gap-3">
+    <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3">
       <div className="flex flex-col items-center gap-1">
         <CuboidDiagram length={a.length} width={a.width} height={a.height} />
-        <span className="text-xs font-bold text-biru">
+        <span className="text-sm font-bold text-biru">
           {a.label}: {a.length}×{a.width}×{a.height}
         </span>
       </div>
       <span className="text-xl font-bold text-ink">+</span>
       <div className="flex flex-col items-center gap-1">
         <CuboidDiagram length={b.length} width={b.width} height={b.height} />
-        <span className="text-xs font-bold text-biru">
+        <span className="text-sm font-bold text-biru">
           {b.label}: {b.length}×{b.width}×{b.height}
         </span>
       </div>

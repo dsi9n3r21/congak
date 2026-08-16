@@ -14,6 +14,7 @@ export type DiagramSpec =
   | { kind: "coordinate_grid"; x: number; y: number; gridSize: number }
   | { kind: "vertical_arithmetic"; operands: string[]; operator: "+" | "\u2212"; result: string; prefix?: string }
   | { kind: "long_multiplication"; multiplicand: string; multiplier: string; result: string }
+  | { kind: "long_division"; dividend: string; divisor: number }
   | { kind: "straight_line_angles"; angleA: number }
   | { kind: "triangle_angles"; angleA: number; angleB: number }
   | {

@@ -30,7 +30,7 @@ function midLabel(fromDeg: number, toDeg: number, radius: number, text: string, 
   const mid = (fromDeg + toDeg) / 2;
   const p = toPoint(mid, radius);
   return (
-    <text x={p.x} y={p.y} fontSize={14} fill={color} textAnchor="middle" dominantBaseline="middle" fontWeight={700}>
+    <text x={p.x} y={p.y} fontSize={17} fill={color} textAnchor="middle" dominantBaseline="middle" fontWeight={700}>
       {text}
     </text>
   );
