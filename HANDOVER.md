@@ -3804,3 +3804,48 @@ pre-existing unrelated font-fetch failure). Long-division logic
 hand-verified against 5 cases including Lynda's own reference image
 before wiring into content — exact match on quotient, every subtraction
 row, and every bring-down row.
+
+## Discount + Service Tax — missing the TP5/TP6 combined-expression method
+
+Lynda asked if it was intentional that Y6 Discount still shows the
+step-by-step "linear" method rather than an order-of-operations
+combined expression, drawing the comparison to the topic-027 fix. It
+wasn't intentional — checked the official KSSR PBD module answer keys
+(Modul Lengkap PBD 2024 Matematik Tahun 6, via anyflip) and confirmed
+real TP3-level answers use the two-step method (find the discount/tax
+amount, then add or subtract it) while TP5-level answers collapse it
+into ONE expression: `(100 − discount%)% × original price` for
+discount, and the mirror-image `(100 + tax%)% × invoice amount` for
+service tax. Our content only ever showed the TP3-style two-step
+version, at every difficulty tier.
+
+Checked every other Y6/Y5 money-percentage topic for the same pattern
+before scoping the fix: Profit & Loss (042) doesn't apply — it's a
+plain difference, no percentage combine involved. Simple Interest (041)
+already presents P×R×T÷100 as one combined expression, no gap. Interest
+& Dividend (060) is a single multiplication, no gap. Compound Interest
+(076) genuinely can't collapse into one expression — the whole point is
+recalculating from a new total each year — so the sequential steps are
+correct there, not a gap. Discount (050) and Service Tax (059) were the
+only two with the gap, since they're structurally identical (percentage
+of a price, then combined with the original by + or −).
+
+**Fix**: for both topics, added the TP5/TP6-style combined expression as
+an explicit "fast way" alongside the existing step-by-step method —
+explanation now introduces it right after the two-step version, framed
+in the same order-of-operations language as topic 027 ("brackets first,
+then × or ÷"); the worked example gets an extra step showing the
+combined expression evaluating to the identical answer; and a new tip on
+each topic spells out the order-of-operations mechanics and explicitly
+names the "Combined Operations" topic as the same underlying skill. The
+existing two-step method, questionTemplates, and the `discount`/
+`service_tax` generators in money.ts were untouched — this is a content
+depth addition (showing the shortcut a TP5/TP6 student would use), not a
+change to how questions are generated or graded, since both methods
+produce the identical numeric answer.
+
+Verified: `tsc --noEmit` clean, `npm run build` clean (only the
+pre-existing unrelated font-fetch failure). Hand-checked both combined
+expressions arithmetically match the existing worked-example answers:
+(100−25)%×RM80 = 75%×80 = RM60 ✓ (discount), (100+6)%×RM50 = 106%×50 =
+RM53 ✓ (service tax).

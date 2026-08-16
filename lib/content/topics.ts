@@ -2882,14 +2882,15 @@ export const TOPICS: Record<string, TopicContent> = {
     title: { ms: "Diskaun", en: "Discount" },
     yearLevel: 6,
     explanation: {
-      ms: "Diskaun ialah potongan harga yang diberikan, biasanya dalam peratus (%). Harga selepas diskaun = Harga asal − Jumlah diskaun.\n\nContoh harian: Sepasang kasut berharga RM80 didiskaun 25%. Berapakah harga selepas diskaun?",
-      en: "A discount is a price reduction, usually given as a percentage (%). Price after discount = Original price − Discount amount.\n\nEveryday example: A pair of shoes costs RM80 with a 25% discount. What is the price after the discount?",
+      ms: "Diskaun ialah potongan harga yang diberikan, biasanya dalam peratus (%). Harga selepas diskaun = Harga asal − Jumlah diskaun.\n\nSelepas anda mahir dengan cara berperingkat itu, ada cara pantas yang gabungkan kedua-dua langkah dalam SATU pengiraan, menggunakan susunan operasi (kurungan dahulu, kemudian × atau ÷): Harga selepas diskaun = (100 − peratus diskaun)% × Harga asal.\n\nContoh harian: Sepasang kasut berharga RM80 didiskaun 25%. Berapakah harga selepas diskaun?",
+      en: "A discount is a price reduction, usually given as a percentage (%). Price after discount = Original price − Discount amount.\n\nOnce you're comfortable with that step-by-step way, there's a faster way that combines both steps into ONE calculation, using order of operations (brackets first, then × or ÷): Price after discount = (100 − discount percent)% × Original price.\n\nEveryday example: A pair of shoes costs RM80 with a 25% discount. What is the price after the discount?",
     },
     tips: [
       { ms: "Diskaun dahulu, tolak kemudian — cari jumlah potongan sebelum tolak daripada harga asal!", en: "Discount first, subtract later — find the reduction amount before taking it off the original price!" },
       { ms: "JANGAN buat ini: baju RM80 dengan diskaun 25% dijawab terus sebagai RM20 (jumlah diskaun sahaja). SALAH — RM20 hanyalah JUMLAH DISKAUN, bukan harga akhir. Harga selepas diskaun ialah RM80 − RM20 = RM60.", en: "DON'T do this: a RM80 shirt with a 25% discount answered as just RM20 (only the discount amount). WRONG — RM20 is only the DISCOUNT AMOUNT, not the final price. The price after discount is RM80 − RM20 = RM60." },
       { ms: "Petua pantas: diskaun 50% bermakna anda bayar TEPAT separuh — jumlah diskaun dan harga akhir akan menjadi nombor yang SAMA.", en: "Quick trick: a 50% discount means you pay EXACTLY half — the discount amount and the final price will be the SAME number." },
       { ms: "Cabaran: jika ada diskaun TAMBAHAN selepas diskaun pertama, kira diskaun kedua daripada harga yang TELAH didiskaun — JANGAN tambahkan kedua-dua peratus itu terus.", en: "Challenge: if there's an ADDITIONAL discount after the first, calculate the second discount on the price AFTER the first discount — DON'T just add the two percentages together." },
+      { ms: "Cara pantas (100 − peratus)% × harga asal guna susunan operasi: kira kurungan dahulu (100 − peratus), TUKAR kepada peratus, baru darab dengan harga asal — sama seperti kemahiran 'Operasi Bergabung'.", en: "The fast way (100 − percent)% × original price uses order of operations: work out the brackets first (100 − percent), turn that into a percentage, THEN multiply by the original price — the same order-of-operations skill as the 'Combined Operations' topic." },
     ],
     howTo: [
       { ms: "Kenal pasti harga asal dan peratus diskaun.", en: "Identify the original price and the discount percentage." },
@@ -2904,6 +2905,10 @@ export const TOPICS: Record<string, TopicContent> = {
         { ms: "Kenal pasti: harga asal RM80, diskaun 25%.", en: "Identify: original price RM80, discount 25%." },
         { ms: "Jumlah diskaun: 80 × 25 ÷ 100 = RM20", en: "Discount amount: 80 × 25 ÷ 100 = RM20" },
         { ms: "Harga selepas diskaun: 80 − 20 = RM60", en: "Price after discount: 80 − 20 = RM60" },
+        {
+          ms: "Cara pantas (satu pengiraan): (100 − 25)% × RM80 = 75% × RM80 = RM60 — jawapan yang SAMA!",
+          en: "Fast way (one calculation): (100 − 25)% × RM80 = 75% × RM80 = RM60 — the SAME answer!",
+        },
         { ms: "Jawapan: RM60.00", en: "Answer: RM60.00" },
         { ms: "Semak: RM60.00 + RM20.00 = RM80.00 ✓", en: "Check: RM60.00 + RM20.00 = RM80.00 ✓" },
       ],
@@ -3312,8 +3317,8 @@ export const TOPICS: Record<string, TopicContent> = {
     title: { ms: "Invois, Resit, dan Cukai Perkhidmatan", en: "Invoice, Receipt, and Service Tax" },
     yearLevel: 6,
     explanation: {
-      ms: "Cukai perkhidmatan (SST) ialah peratus tambahan yang dikenakan atas jumlah invois. Jumlah perlu dibayar = jumlah invois + jumlah cukai.\n\nContoh harian: Sebuah invois berjumlah RM50. Cukai perkhidmatan 6% dikenakan. Berapakah jumlah perlu dibayar?",
-      en: "Service tax (SST) is an extra percentage charged on top of an invoice amount. Total payable = invoice amount + tax amount.\n\nEveryday example: An invoice totals RM50. A 6% service tax is charged. What is the total amount payable?",
+      ms: "Cukai perkhidmatan (SST) ialah peratus tambahan yang dikenakan atas jumlah invois. Jumlah perlu dibayar = jumlah invois + jumlah cukai.\n\nSelepas anda mahir dengan cara berperingkat itu, ada cara pantas yang gabungkan kedua-dua langkah dalam SATU pengiraan, menggunakan susunan operasi (kurungan dahulu, kemudian × atau ÷): Jumlah perlu dibayar = (100 + peratus cukai)% × jumlah invois.\n\nContoh harian: Sebuah invois berjumlah RM50. Cukai perkhidmatan 6% dikenakan. Berapakah jumlah perlu dibayar?",
+      en: "Service tax (SST) is an extra percentage charged on top of an invoice amount. Total payable = invoice amount + tax amount.\n\nOnce you're comfortable with that step-by-step way, there's a faster way that combines both steps into ONE calculation, using order of operations (brackets first, then × or ÷): Total payable = (100 + tax percent)% × invoice amount.\n\nEveryday example: An invoice totals RM50. A 6% service tax is charged. What is the total amount payable?",
     },
     tips: [
       { ms: "Cari jumlah cukai dahulu (jumlah invois × peratus cukai ÷ 100), kemudian TAMBAH pada jumlah invois.", en: "Find the tax amount first (invoice amount × tax percent ÷ 100), then ADD it to the invoice amount." },
@@ -3322,6 +3327,7 @@ export const TOPICS: Record<string, TopicContent> = {
         ms: "JANGAN buat ini: invois RM50 dengan cukai 6%, jawab RM3 (jumlah cukai sahaja). SALAH — RM3 itu cukai TAMBAHAN, bukan jumlah perlu dibayar. Jawapan yang betul ialah RM50 + RM3 = RM53.",
         en: "DON'T do this: invoice RM50 with 6% tax, answered RM3 (the tax amount alone). WRONG — RM3 is the ADDITIONAL tax, not the total payable. The correct answer is RM50 + RM3 = RM53.",
       },
+      { ms: "Cara pantas (100 + peratus)% × jumlah invois guna susunan operasi: kira kurungan dahulu (100 + peratus), TUKAR kepada peratus, baru darab dengan jumlah invois — sama seperti kemahiran 'Operasi Bergabung'.", en: "The fast way (100 + percent)% × invoice amount uses order of operations: work out the brackets first (100 + percent), turn that into a percentage, THEN multiply by the invoice amount — the same order-of-operations skill as the 'Combined Operations' topic." },
     ],
     howTo: [
       { ms: "Kira jumlah cukai: jumlah invois × peratus cukai ÷ 100.", en: "Calculate the tax amount: invoice amount × tax percent ÷ 100." },
@@ -3333,6 +3339,10 @@ export const TOPICS: Record<string, TopicContent> = {
       steps: [
         { ms: "Jumlah cukai: 50 × 6 ÷ 100 = RM3", en: "Tax amount: 50 × 6 ÷ 100 = RM3" },
         { ms: "Jumlah perlu dibayar: 50 + 3 = RM53", en: "Total payable: 50 + 3 = RM53" },
+        {
+          ms: "Cara pantas (satu pengiraan): (100 + 6)% × RM50 = 106% × RM50 = RM53 — jawapan yang SAMA!",
+          en: "Fast way (one calculation): (100 + 6)% × RM50 = 106% × RM50 = RM53 — the SAME answer!",
+        },
       ],
       answer: "RM53.00",
     },
