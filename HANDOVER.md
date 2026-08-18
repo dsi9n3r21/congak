@@ -3849,3 +3849,114 @@ pre-existing unrelated font-fetch failure). Hand-checked both combined
 expressions arithmetically match the existing worked-example answers:
 (100−25)%×RM80 = 75%×80 = RM60 ✓ (discount), (100+6)%×RM50 = 106%×50 =
 RM53 ✓ (service tax).
+
+## Mission Engine — Adventure Mode (v1, real vertical slice)
+
+Lynda brought a full "Math Adventure Mission Engine" brief: math embedded
+in stories (rescue/exploration/mystery/builder/financial-literacy/time
+missions across 9 categories, dynamically generated so the same skill
+gets a different story each time), with Pintar as narrator, and a 7-stage
+flow (story → challenge → math problem → decision → outcome → reward →
+reflection). Confirmed we'd continue in this session rather than
+starting fresh.
+
+**Architecture call**: checked the codebase first — every existing
+migration keeps inserting rows into a `topics`/`question_templates` DB
+table, but nothing in the live app actually SELECTs from either; all real
+lesson content lives in `lib/content/topics.ts` (code), and the DB tables
+only exist as FK anchors for `attempts`/`practice_sessions`. Missions
+follow the same split: story/theme content in code
+(`lib/missions/missions.ts`), new DB tables only for genuinely new
+student STATE (badge progress, mission completions) — no `missions`
+content table, matching why there's no such table for topics either.
+
+**"Dynamic generation" without a live AI call**: the brief's example —
+"today 5 kittens sharing milk, tomorrow 4 puppies sharing food, same
+concept, different story" — is satisfied two ways that combine on every
+play: (1) each `MissionTemplate` has 3 `MissionVariant`s (different
+character/setting/theme text), one picked at random; (2) each variant's
+`generateMath()` redraws fresh numbers every time. A `fillTemplate()`
+helper substitutes `{tokens}` (from the story) and `{values}` (from the
+math draw) into the same bilingual strings, so the story and the actual
+question always agree on the numbers — no separate AI narration call
+needed for core gameplay, keeping it as fast/offline-safe as every other
+part of the app.
+
+**Why mission math isn't the existing 85-topic REGISTRY generators**:
+tried this first, but those are tuned for curriculum drilling at their
+own ranges (e.g. Y5 division dividends run 100-999) — "1 litre of milk
+for 5 kittens = 0.2L" needs small, story-appropriate numbers instead.
+Built 3 small dedicated generators in `lib/missions/missionMath.ts`
+instead — `generateEqualShare` (exact-to-1-decimal-place division, built
+backwards from a clean tenths-place answer so it's always exact, not
+rounded), `generateFractionSubtract` (same-denominator, simplified via
+gcd), `generateBudgetSubtract` (budget minus 3-4 randomly chosen
+items, guaranteed non-negative remainder) — each still testing a real
+KSSR skill, just at mission-appropriate scale. Smoke-tested 2000 draws
+each (0 failures) plus 100 draws × every variant × every mission (900
+total) confirming no `{token}` is ever left unresolved.
+
+**What shipped** (first vertical slice — the 3 example missions from the
+brief, fully playable end to end):
+- `lib/missions/types.ts` — `MissionTemplate`/`MissionVariant`/
+  `MissionMathDraw` types + `fillTemplate()`
+- `lib/missions/missionMath.ts` — the 3 dedicated generators
+- `lib/missions/missions.ts` — Lost Kittens (number/rescue, Y4), Bridge to
+  Fraction Valley (fraction/builder, Y5), Grocery Challenge
+  (money/financial_literacy, Y4) — 3 story variants each
+- `lib/missions/badges.ts` — Kindness (5 rescue missions), Bridge Builder
+  (3 builder missions), Money Hero (5 financial-literacy missions)
+- `lib/missions/categoryStyle.ts` — icon/gradient per category, same
+  convention as `lib/content/strandStyle.ts`
+- `supabase/migrations/0041_missions.sql` — `student_badges` +
+  `mission_completions`, RLS matching the existing per-student/
+  linked-parent policy pattern, plus an atomic `record_badge_progress`
+  SQL function (upsert-and-increment, same race-avoidance reasoning as
+  `record_mistake_pattern` in migration 0004)
+- `lib/actions/missions.ts` — `completeMission()`: logs the completion,
+  awards XP on the SAME level curve as practice sessions (`level*125`;
+  deliberately its own small copy of that curve rather than
+  importing/exporting practice.ts's private helper, to keep the mission
+  feature self-contained from the existing practice code path), and
+  progresses the tied badge with "just earned" detection for a one-time
+  celebration
+- `components/student/MissionPlayer.tsx` — the 7-stage flow as a client
+  component: intro → challenge+question (combined into one screen with
+  the challenge text as a lead-in, rather than a separate tap, for
+  pacing) → outcome → reward → reflection. Wrong answers don't reveal the
+  answer and move on (unlike QuestionPlayer) — they show an encouraging
+  retry message and let the student try again, with a hint appearing
+  after the 2nd miss; this is deliberately different from
+  QuestionPlayer's practice-mode behavior since a mission should feel
+  like "help the kittens," not "get graded." Reuses Pintar's existing
+  mascot expression images (`/pintar/*.png`) per stage.
+- Real Adventure Mode UI replacing the old placeholder: `/quests` (category
+  grid, only showing the 3 categories that currently have missions — the
+  other 6 are named in a "coming soon" note, not hidden entirely),
+  `/quests/category/[category]` (mission list), `/quests/[missionId]`
+  (the player)
+
+**Explicitly deferred, not started** — flagging clearly since the brief
+is large: the other 6 categories (measurement, geometry, data, time,
+kbat, real_life) and more missions per category — pure content work from
+here, zero engine changes needed, just more `MissionTemplate` entries.
+Coins, Scholar Cards, Companion Items, and Tree Growth Points from the
+brief's reward list — only XP + Badges shipped this round; the other
+three would each need their own data model decision (is a "Scholar Card"
+a collectible with rarity tiers? are Companion Items cosmetic?) better
+made with Lynda's input than guessed. Adventure map visualization
+(spec mentions "unlock regions") — not built; missions are flat category
+lists for now. Pintar giving LIVE narrated encouragement via the real
+Pintar engine (vs. this round's pre-written story text) — the story
+text IS static content matching how the rest of the app works, but a
+future version could pipe mission context to the actual Pintar engine
+for live narration, which would need coordinating with the husband's
+Basrim-side engine.
+
+Verified: `tsc --noEmit` clean. `npm run build` clean (only the
+pre-existing unrelated font-fetch failure). All 3 math generators
+smoke-tested at 2000 draws each; all 3 missions × 3 variants smoke-tested
+at 100 draws each confirming full template resolution; XP level-curve
+and badge "just-earned" detection logic hand-verified against edge cases
+(multi-level XP jumps, exact badge-target crossing, repeat completions
+after a badge is already earned) with standalone scripts before shipping.

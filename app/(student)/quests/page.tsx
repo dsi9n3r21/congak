@@ -1,26 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { Bi } from "@/lib/i18n/Bi";
-import type { Bilingual } from "@/lib/i18n/dictionary";
+import { MISSIONS } from "@/lib/missions/missions";
+import { MISSION_CATEGORY_STYLES } from "@/lib/missions/categoryStyle";
+import type { MissionCategory } from "@/lib/missions/types";
+import Link from "next/link";
 import Image from "next/image";
-
-// Still a "coming soon" placeholder — Misi (daily missions/badges) is a
-// real feature build (its own migration + daily-reset logic + a design
-// decision on what missions actually are), deliberately not started yet.
-// This round only restyled the placeholder to match the dashboard's
-// visual language, so the app doesn't look broken/unfinished on this tab
-// while real Misi is designed. The preview list below is illustrative
-// text only — no data backing it, nothing to wire up later beyond
-// swapping this whole page for the real thing.
-const PREVIEW_ITEMS: { emoji: string; label: Bilingual }[] = [
-  { emoji: "🎯", label: { ms: "Misi harian", en: "Daily missions" } },
-  { emoji: "🏅", label: { ms: "Lencana pencapaian", en: "Achievement badges" } },
-  { emoji: "🗺️", label: { ms: "Peta pengembaraan", en: "Adventure map" } },
-  { emoji: "🔥", label: { ms: "Cabaran mingguan", en: "Weekly challenges" } },
-];
 
 export default async function QuestsPage() {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const { data: student } = await supabase
     .from("students")
     .select("language_pref")
@@ -28,47 +18,55 @@ export default async function QuestsPage() {
     .single();
   const lang = student?.language_pref ?? "both";
 
+  const categoriesWithMissions = Array.from(new Set(MISSIONS.map((m) => m.category))) as MissionCategory[];
+
   return (
     <main className="min-h-screen pb-24 md:pb-8">
       <header className="relative overflow-hidden px-5 pt-6 pb-4">
         <div className="decorative absolute right-3 -top-2 h-28 w-28 rounded-full bg-kuning-light/60" />
-        <div className="relative z-10 max-w-[70%]">
+        <div className="relative z-10 max-w-[80%]">
           <h1 className="font-display text-xl font-bold text-ink">
             {lang === "en" ? "Adventure Mode" : "Mod Pengembaraan"}
           </h1>
           <p className="mt-1 text-xs text-ink/50">
-            {lang === "en" ? "Coming soon" : "Akan tiba tidak lama lagi"}
+            {lang === "en" ? "Use math to help others on real missions" : "Guna matematik untuk bantu orang lain dalam misi sebenar"}
           </p>
         </div>
       </header>
 
-      <section className="relative mx-5 overflow-hidden rounded-kite bg-gradient-to-b from-pandan to-pandan-dark px-5 py-6 text-center text-paper shadow-hero">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent" />
-        <div className="relative mx-auto h-32 w-32">
-          <Image src="/pintar/reward.png" alt="" fill className="object-contain" />
-        </div>
-        <h2 className="relative mt-3 font-display text-lg font-bold">
-          {lang === "en" ? "Adventure Mode is on its way!" : "Mod Pengembaraan sedang dibina!"}
-        </h2>
-        <p className="relative mt-1.5 text-sm opacity-90">
-          {lang === "en"
-            ? "Daily missions, badges, and weekly challenges — built from your own real progress."
-            : "Misi harian, lencana, dan cabaran mingguan — dibina daripada kemajuan sebenar anda."}
-        </p>
+      <section className="mx-5 grid grid-cols-2 gap-2.5">
+        {categoriesWithMissions.map((cat) => {
+          const style = MISSION_CATEGORY_STYLES[cat];
+          const count = MISSIONS.filter((m) => m.category === cat).length;
+          return (
+            <Link
+              key={cat}
+              href={`/quests/category/${cat}`}
+              className={`flex flex-col items-start gap-2 rounded-kite ${style.bg} p-4 shadow-card`}
+            >
+              <style.Icon className={style.fg} size={26} strokeWidth={2.25} />
+              <p className={`font-display text-sm font-bold leading-snug ${style.fg}`}>
+                <Bi text={style.label} lang={lang} />
+              </p>
+              <p className={`text-xs ${style.fg} opacity-80`}>
+                {count} {lang === "en" ? "mission" + (count === 1 ? "" : "s") : "misi"}
+              </p>
+            </Link>
+          );
+        })}
       </section>
 
-      <section className="mx-5 mt-4 grid grid-cols-2 gap-2.5">
-        {PREVIEW_ITEMS.map((item) => (
-          <div
-            key={item.emoji}
-            className="flex flex-col items-center gap-1.5 rounded-kite bg-white px-3 py-4 text-center shadow-card opacity-60"
-          >
-            <span className="text-2xl">{item.emoji}</span>
-            <p className="text-xs font-semibold text-ink/60">
-              <Bi text={item.label} lang={lang} />
-            </p>
+      <section className="mx-5 mt-5 rounded-kite bg-white p-4 shadow-card">
+        <div className="flex items-center gap-3">
+          <div className="relative h-12 w-12 shrink-0">
+            <Image src="/pintar/idle.png" alt="Pintar" fill className="object-contain" />
           </div>
-        ))}
+          <p className="text-xs text-ink/60">
+            {lang === "en"
+              ? "More adventures — measurement, geometry, data, time, KBAT, and real-life missions — are on the way!"
+              : "Lebih banyak pengembaraan — misi ukuran, geometri, data, masa, KBAT, dan kehidupan sebenar — akan tiba tidak lama lagi!"}
+          </p>
+        </div>
       </section>
     </main>
   );
