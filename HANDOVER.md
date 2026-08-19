@@ -4153,3 +4153,54 @@ Still waiting on Lynda's side: deploy the latest code, then real-device
 test. Everything else from prior entries (more measurement missions,
 Scholar Cards/Companion Items/Tree Growth Points, adventure map, live
 Pintar narration) still stands.
+
+## FIXED: production crash on every mission page
+
+Lynda deployed and hit `Application error: a server-side exception has
+occurred` on every single mission — confirmed the pattern (all mission
+topics, same generic error) pointed straight at one root cause without
+needing the actual Vercel logs, though I gave her instructions to pull
+them in case this diagnosis was wrong.
+
+**Root cause**: `app/(student)/quests/[missionId]/page.tsx` (a Server
+Component) was passing the entire `mission` object as a prop into
+`<MissionPlayer mission={mission} />` (a Client Component). Next.js
+serializes props across that server→client boundary, and functions
+aren't serializable — every `MissionVariant.generateMath` is a function,
+so this crashed on literally every mission, every time, matching exactly
+what Lynda saw.
+
+This is exactly the failure mode `lib/content/topics.ts` was already
+designed to avoid: topic content references its generator by a plain
+STRING key (`generatorKey`) resolved through a separate REGISTRY lookup,
+never embedding an actual function in the content object itself —
+`practice/[topicId]/page.tsx` can safely pass a whole `topic` object
+across the boundary because of that. `MissionTemplate` didn't follow that
+pattern (each variant's math logic was a literal function reference), so
+it broke where topics never could.
+
+**Fix**: `MissionPlayer` now takes `missionId` (a plain string) instead
+of the full `mission` object, and re-resolves it itself via
+`getMissionById()` — same static content, just resolved with a
+non-null-assertion-guarded lookup on the client side instead of crossing
+the boundary as a prop. Safe because `page.tsx` already calls
+`notFound()` server-side if the id doesn't resolve, so `MissionPlayer`
+is never mounted with a ba id in practice. `page.tsx` itself is
+unchanged otherwise — it still resolves the mission server-side to
+render the header (title/emoji/category), which is all plain
+serializable data and was never the problem.
+
+Worth noting for next time: this class of bug is invisible to both
+`tsc --noEmit` and `npm run build` in Next 14 — it's a pure runtime
+serialization failure, not a type or compile error, which is exactly why
+it slipped through every verification pass in this repo until an actual
+deploy hit it. No amount of additional static checking in this sandbox
+would have caught it; it needed either very deliberate reasoning about
+RSC serialization rules specifically, or a real runtime test — this round
+was the former, prompted by Lynda's real deploy surfacing it.
+
+Verified: `tsc --noEmit` clean, `npm run build` clean (only the
+pre-existing unrelated font-fetch failure — same as always, and
+consistent with the bug being invisible to build-time checks as
+explained above). Cannot verify the runtime fix itself from this
+sandbox — that needs Lynda's next deploy + a real click-through.

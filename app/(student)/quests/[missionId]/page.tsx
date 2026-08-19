@@ -37,7 +37,7 @@ export default async function MissionPage({ params }: { params: { missionId: str
         </div>
       </header>
 
-      <MissionPlayer mission={mission} lang={lang} />
+      <MissionPlayer missionId={mission.id} lang={lang} />
     </main>
   );
 }

@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Bi } from "@/lib/i18n/Bi";
 import type { Bilingual, Lang } from "@/lib/i18n/dictionary";
-import type { MissionTemplate } from "@/lib/missions/types";
 import { fillTemplate } from "@/lib/missions/types";
+import { getMissionById } from "@/lib/missions/missions";
 import { BADGES } from "@/lib/missions/badges";
 import { completeMission } from "@/lib/actions/missions";
 import { isAnswerCorrect } from "@/lib/questions/grading";
@@ -23,8 +23,20 @@ const PINTAR = {
   reflection: "/pintar/idle.png",
 };
 
-export function MissionPlayer({ mission, lang }: { mission: MissionTemplate; lang: Lang }) {
+/**
+ * Takes `missionId` (a plain string), not the full MissionTemplate — a
+ * mission's variants carry a `generateMath` function each, and functions
+ * can't cross the server→client component boundary. The page.tsx server
+ * component looks the mission up once just to validate it exists /
+ * render the header; this component re-resolves the same id itself so
+ * the (non-serializable) function values never have to be passed as a
+ * prop.
+ */
+export function MissionPlayer({ missionId, lang }: { missionId: string; lang: Lang }) {
   const router = useRouter();
+  // Safe: page.tsx already calls notFound() server-side if this id
+  // doesn't resolve, so MissionPlayer is never mounted with a bad id.
+  const mission = useMemo(() => getMissionById(missionId)!, [missionId]);
 
   // One variant (story skin) picked for this whole playthrough, and one
   // math draw from it — both fixed with useState's lazy initializer so
