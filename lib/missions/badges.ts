@@ -31,4 +31,25 @@ export const BADGES: Record<string, BadgeDef> = {
     target: 5,
     description: { ms: "Selesaikan 5 misi literasi kewangan.", en: "Complete 5 financial literacy missions." },
   },
+  fixer: {
+    id: "fixer",
+    name: { ms: "Lencana Pembaik", en: "Fixer Badge" },
+    emoji: "🔧",
+    target: 4,
+    description: { ms: "Selesaikan 4 misi ukuran atau pembinaan.", en: "Complete 4 measurement or builder missions." },
+  },
+  detective: {
+    id: "detective",
+    name: { ms: "Lencana Detektif", en: "Detective Badge" },
+    emoji: "🔍",
+    target: 4,
+    description: { ms: "Selesaikan 4 misi misteri atau KBAT.", en: "Complete 4 mystery or KBAT missions." },
+  },
+  time_traveler: {
+    id: "time_traveler",
+    name: { ms: "Lencana Pengembara Masa", en: "Time Traveler Badge" },
+    emoji: "⏰",
+    target: 4,
+    description: { ms: "Selesaikan 4 misi berkaitan masa.", en: "Complete 4 time-related missions." },
+  },
 };

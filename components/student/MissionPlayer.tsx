@@ -34,7 +34,9 @@ export function MissionPlayer({ mission, lang }: { mission: MissionTemplate; lan
   const [answer, setAnswer] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const [reward, setReward] = useState<{ badgeJustEarned: boolean; leveledUp: boolean } | null>(null);
+  const [reward, setReward] = useState<{ badgeJustEarned: boolean; leveledUp: boolean; coinsEarned: number } | null>(
+    null
+  );
 
   const merged = useMemo(() => ({ ...variant.tokens, ...draw.values }), [variant, draw]);
   const t = useCallback((field: Bilingual) => fillTemplate(field, merged), [merged]);
@@ -58,7 +60,7 @@ export function MissionPlayer({ mission, lang }: { mission: MissionTemplate; lan
       xpEarned: mission.rewardXp,
       badgeId: mission.badgeId,
     }).catch(() => null);
-    setReward({ badgeJustEarned: !!result?.badgeJustEarned, leveledUp: !!result?.leveledUp });
+    setReward({ badgeJustEarned: !!result?.badgeJustEarned, leveledUp: !!result?.leveledUp, coinsEarned: result?.coinsEarned ?? 0 });
   }, [mission]);
 
   const restart = useCallback(() => {
@@ -167,6 +169,9 @@ export function MissionPlayer({ mission, lang }: { mission: MissionTemplate; lan
             <Image src={PINTAR.reward} alt="Pintar" fill className="object-contain" />
           </div>
           <p className="relative mt-3 font-display text-xl font-bold">+{mission.rewardXp} XP</p>
+          {reward && reward.coinsEarned > 0 && (
+            <p className="relative mt-0.5 font-display text-base font-bold">🪙 +{reward.coinsEarned}</p>
+          )}
           {reward?.leveledUp && (
             <p className="relative mt-1 text-sm font-semibold opacity-95">
               {lang === "en" ? "Level up! 🎉" : "Naik tahap! 🎉"}

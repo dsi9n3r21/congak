@@ -15,6 +15,7 @@ export interface CompleteMissionResult {
   xp?: number;
   level?: number;
   leveledUp?: boolean;
+  coinsEarned?: number;
   badgeJustEarned?: boolean;
 }
 
@@ -27,16 +28,22 @@ export async function completeMission(input: CompleteMissionInput): Promise<Comp
 
   const { data: student } = await supabase
     .from("students")
-    .select("id, xp, level")
+    .select("id, xp, level, coins")
     .eq("user_id", user.id)
     .single();
   if (!student) return { ok: false };
+
+  // Coins are a flat bonus alongside XP — half the XP amount, rounded,
+  // so bigger/harder missions still pay out more coins without needing
+  // a second per-mission config value to keep in sync with rewardXp.
+  const coinsEarned = Math.round(input.xpEarned / 2);
 
   await supabase.from("mission_completions").insert({
     student_id: student.id,
     mission_id: input.missionId,
     category: input.category,
     xp_earned: input.xpEarned,
+    coins_earned: coinsEarned,
   });
 
   // Same level curve as awardXp in lib/actions/practice.ts (level*125) —
@@ -51,7 +58,7 @@ export async function completeMission(input: CompleteMissionInput): Promise<Comp
     xp -= level * 125;
     level += 1;
   }
-  await supabase.from("students").update({ xp, level }).eq("id", student.id);
+  await supabase.from("students").update({ xp, level, coins: student.coins + coinsEarned }).eq("id", student.id);
 
   let badgeJustEarned = false;
   if (input.badgeId && BADGES[input.badgeId]) {
@@ -75,5 +82,5 @@ export async function completeMission(input: CompleteMissionInput): Promise<Comp
     badgeJustEarned = progressBefore < badge.target && progressBefore + 1 >= badge.target;
   }
 
-  return { ok: true, xp, level, leveledUp: level > startingLevel, badgeJustEarned };
+  return { ok: true, xp, level, leveledUp: level > startingLevel, coinsEarned, badgeJustEarned };
 }

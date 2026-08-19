@@ -42,6 +42,7 @@ create table mission_completions (
   mission_id text not null,
   category text not null,
   xp_earned int not null,
+  coins_earned int not null default 0,
   completed_at timestamptz not null default now()
 );
 

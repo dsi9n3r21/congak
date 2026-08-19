@@ -3960,3 +3960,134 @@ at 100 draws each confirming full template resolution; XP level-curve
 and badge "just-earned" detection logic hand-verified against edge cases
 (multi-level XP jumps, exact badge-target crossing, repeat completions
 after a badge is already earned) with standalone scripts before shipping.
+
+## Mission Engine — all 9 categories now live
+
+Continued straight from the v1 vertical slice: added one mission per
+remaining category, so all 9 from the brief now have at least one
+playable mission.
+
+**5 new mission-math generators** in `lib/missions/missionMath.ts`,
+each smoke-tested at 2000 draws (0 failures):
+- `generateUnitConvert` — bigUnit decimal (1 d.p.) → smallUnit, built so
+  the conversion is always exact (e.g. "2.5 L → 2500 mL"), parameterized
+  by unit pair so the same function covers L→mL and kg→g
+- `generateMissingAngle` — two angles summing to 90°/180°/360°, find the
+  missing one
+- `generateDataTotal` — sum of 3 randomly-counted categories from a
+  themed pool (pictograph/tally style)
+- `generateTimeDuration` — elapsed minutes between a start and end
+  24-hour time, built backwards from a chosen duration so it's always
+  exact (no clock-arithmetic to double-check)
+- `generatePatternMissing` — next term in a 5-term arithmetic sequence
+
+**6 new missions**, one per remaining category: The Leaky Water Tank
+(measurement/builder, unit conversion), The Mysterious Angle Door
+(geometry/mystery, angle sums), The Village Data Puzzle (data/mystery,
+totaling), The Great Train Schedule (time/time_travel, elapsed time),
+Pattern Detective (kbat/mystery, sequences), School Trip Planning
+(real_life/financial_literacy, reuses `generateBudgetSubtract` with a
+new camping-gear item pool rather than a new generator, since it's the
+same underlying skill as Grocery Challenge just themed differently —
+proves the math generators are reusable across missions, not
+one-generator-per-mission).
+
+**3 new badges**: Fixer (measurement/builder missions, target 4),
+Detective (mystery/KBAT missions, target 4), Time Traveler (time
+missions, target 4) — alongside the existing Kindness/Bridge
+Builder/Money Hero from v1.
+
+Updated the `/quests` landing page's footer note now that all 9
+categories are live (was "more coming soon", now a plain encouragement
+line) — the category grid itself needed no code change, it already
+derives its list from whatever's in `MISSIONS`.
+
+Verified: `tsc --noEmit` clean. `npm run build` clean (only the
+pre-existing unrelated font-fetch failure). All 9 missions × every
+variant smoke-tested at 200 draws each (3,400 total draws across the
+whole mission set) confirming zero unresolved `{tokens}` and zero empty
+answers — on top of each new generator's own 2000-draw correctness check
+before it was wired into any mission content.
+
+Still deferred from the original brief, unchanged from v1: more missions
+per category (each category has 1-3 now, brief implies a much larger
+pool over time — pure content work, zero engine changes needed), Coins/
+Scholar Cards/Companion Items/Tree Growth Points rewards, adventure map
+visualization, live Pintar-engine narration.
+
+## Mission Engine — Coins reward + Exploration mission type + dashboard
+
+Lynda agreed to work concurrently: she applies migration 0041 and tests
+on a real device while this round kept building on the code side (no DB
+access needed for any of it).
+
+- **Coins**: 2nd reward currency alongside XP, since the brief lists it
+  and it's simple enough (a flat running total, no level curve) to build
+  without needing a design conversation first — unlike Scholar Cards/
+  Companion Items, which do. `students.coins` (migration 0042 — kept
+  separate from 0041 since that adds new tables and this alters an
+  existing one). Awarded as half the mission's XP, rounded
+  (`Math.round(xpEarned / 2)`) — no separate per-mission config to keep
+  in sync with `rewardXp`. `mission_completions.coins_earned` added
+  directly into migration 0041 (safe to edit in place since Lynda
+  confirmed she hadn't applied it yet) rather than as a 3rd migration.
+  `completeMission()` now returns `coinsEarned`; `MissionPlayer`'s reward
+  screen shows it; the dashboard's existing streak footer strip (which
+  already had the icon+number+label pattern for the streak count) got a
+  coin count added the same way — the natural, lowest-risk place for it
+  since it's the same footer, not a new card.
+- **Treasure Cave** (number/exploration, Y4): new mission using a new
+  `generateMultiply` generator (a×b, factors 2-12) — the "exploration"
+  mission kind from the brief hadn't been used by any mission yet; now
+  all 6 kinds (rescue/exploration/mystery/builder/financial_literacy/
+  time_travel) have at least one mission.
+
+10 missions total now, all 9 categories and all 6 kinds covered.
+
+Verified: `tsc --noEmit` clean, full `npm run build` clean (only the
+pre-existing unrelated font-fetch failure). `generateMultiply`
+smoke-tested at 2000 draws (0 failures); all 10 missions × every variant
+re-verified at 150 draws each after this round's additions, confirming
+no `{token}` regressions from the new imports/content.
+
+Still waiting on Lynda's side: apply migration 0041 (now includes the
+`coins_earned` column) AND migration 0042 to the real Supabase project,
+then real-device testing. Everything else from the last handover entry
+(more missions per category, Scholar Cards/Companion Items/Tree Growth
+Points, adventure map, live Pintar narration) still stands as deferred.
+
+## Mission Engine — content breadth pass (17 missions)
+
+Kept going on content while Lynda applies the migrations on her side.
+Added a 2nd mission to 7 of the 8 categories that only had one
+(measurement is the one still at 1 — no natural 2nd theme picked yet,
+easy to add later).
+
+**3 new generators**, smoke-tested at 2000 draws each (0 failures):
+`generateFractionAdd` (mirror of the existing subtract one), `generatePerimeter`
+(rectangle, `2×(l+w)`, width capped at length so it never draws backwards),
+`generateMissingFactor` (`? × known = product`, find the missing factor).
+
+**7 new missions**: Potion Ingredients (fraction/mystery), Market Bargain
+(money/rescue, new toy-market item pool), Fence the Garden
+(geometry/builder), Weather Watcher (data/exploration, new weather
+category pool), Festival Countdown (time/time_travel), Number Riddle
+(kbat/mystery), Family Budget Planner (real_life/financial_literacy, new
+household-bills item pool with larger budget options since bills run
+higher than grocery items).
+
+17 missions total now, spanning all 9 categories × all 6 kinds. Full
+smoke test re-run across every mission × every variant (150 draws each,
+2,700+ draws) plus new checks: badge-id references all resolve to a real
+`BADGES` entry, and mission IDs are confirmed unique across the whole set
+(both would silently break at runtime otherwise — worth checking now
+that the content list has grown past a size where a duplicate/typo is
+easy to eyeball-miss).
+
+Verified: `tsc --noEmit` clean, full `npm run build` clean (only the
+pre-existing unrelated font-fetch failure).
+
+Unchanged from previous entries: still waiting on Lynda to apply
+migrations 0041+0042 and real-device test; Scholar Cards/Companion
+Items/Tree Growth Points, adventure map, and live Pintar narration still
+not started.

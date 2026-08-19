@@ -96,3 +96,220 @@ export function generateBudgetSubtract(pool: BudgetItem[], budgetOptions: number
     values: { budget: `RM${budget}`, itemsTotal: `RM${itemsTotal}`, correct: `RM${remaining}`, itemList: listEn },
   };
 }
+
+export interface UnitPair {
+  bigUnit: string;
+  smallUnit: string;
+  factor: number; // smallUnit per bigUnit, e.g. 1000 for L->mL
+  maxBig: number; // upper bound on the bigUnit value (1 decimal place)
+}
+
+/** Convert a bigUnit decimal value (1 d.p.) to smallUnit — always exact,
+ * since the value is built from tenths and the factor is a power of ten,
+ * e.g. "2.5 L -> 2500 mL". */
+export function generateUnitConvert(pair: UnitPair): MissionMathDraw {
+  const tenths = randInt(1, pair.maxBig * 10);
+  const value = tenths / 10;
+  const valueStr = value % 1 === 0 ? String(value) : value.toFixed(1);
+  const result = Math.round(value * pair.factor);
+
+  return {
+    questionText: {
+      ms: `${valueStr} ${pair.bigUnit} bersamaan dengan berapa ${pair.smallUnit}?`,
+      en: `${valueStr} ${pair.bigUnit} is equal to how many ${pair.smallUnit}?`,
+    },
+    correctAnswer: String(result),
+    workingHint: {
+      ms: `${valueStr} ${pair.bigUnit} × ${pair.factor} = ${result} ${pair.smallUnit}`,
+      en: `${valueStr} ${pair.bigUnit} × ${pair.factor} = ${result} ${pair.smallUnit}`,
+    },
+    values: { value: valueStr, bigUnit: pair.bigUnit, smallUnit: pair.smallUnit, correct: result },
+  };
+}
+
+/** Missing angle in a sum (straight line 180°, right angle 90°, or full
+ * turn 360°) — e.g. "one angle is 65° on a straight line, what's the other?" */
+export function generateMissingAngle(totalOptions: number[] = [90, 180, 360]): MissionMathDraw {
+  const total = pick(totalOptions);
+  const known = randInt(10, total - 10);
+  const missing = total - known;
+
+  return {
+    questionText: {
+      ms: `Dua sudut berjumlah ${total}°. Satu sudut ialah ${known}°. Berapakah sudut yang satu lagi?`,
+      en: `Two angles add up to ${total}°. One angle is ${known}°. What is the other angle?`,
+    },
+    correctAnswer: `${missing}°`,
+    workingHint: {
+      ms: `${total}° − ${known}° = ${missing}°`,
+      en: `${total}° − ${known}° = ${missing}°`,
+    },
+    values: { total, known, correct: `${missing}°` },
+  };
+}
+
+export interface DataCategory {
+  name: Bilingual;
+}
+
+/** Sum of 3 randomly-counted categories, pictograph/tally-style — e.g.
+ * "5 apples, 8 mangoes, 6 bananas were counted, how many fruits in total?" */
+export function generateDataTotal(categories: DataCategory[]): MissionMathDraw {
+  const shuffled = [...categories].sort(() => Math.random() - 0.5).slice(0, 3);
+  const counts = shuffled.map(() => randInt(3, 20));
+  const total = counts.reduce((sum, c) => sum + c, 0);
+
+  const listMs = shuffled.map((c, i) => `${c.name.ms}: ${counts[i]}`).join(", ");
+  const listEn = shuffled.map((c, i) => `${c.name.en}: ${counts[i]}`).join(", ");
+
+  return {
+    questionText: {
+      ms: `Data yang dikumpul: ${listMs}. Berapakah jumlah kesemuanya?`,
+      en: `Data collected: ${listEn}. What is the total?`,
+    },
+    correctAnswer: String(total),
+    workingHint: {
+      ms: `${counts.join(" + ")} = ${total}`,
+      en: `${counts.join(" + ")} = ${total}`,
+    },
+    values: { list: listEn, correct: total },
+  };
+}
+
+/** Elapsed time in minutes between a start and end 24-hour clock time —
+ * built from a random start plus a chosen duration, so the duration is
+ * always exact (no clock-arithmetic rounding to fix up). */
+export function generateTimeDuration(durationOptions: number[] = [15, 30, 45, 60, 90]): MissionMathDraw {
+  const startHour = randInt(6, 18);
+  const startMinute = pick([0, 15, 30, 45]);
+  const duration = pick(durationOptions);
+
+  const startTotal = startHour * 60 + startMinute;
+  const endTotal = startTotal + duration;
+  const endHour = Math.floor(endTotal / 60) % 24;
+  const endMinute = endTotal % 60;
+
+  const fmt = (h: number, m: number) => `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  const startStr = fmt(startHour, startMinute);
+  const endStr = fmt(endHour, endMinute);
+
+  return {
+    questionText: {
+      ms: `Perjalanan bermula pada ${startStr} dan tamat pada ${endStr}. Berapa minit perjalanan itu mengambil masa?`,
+      en: `A journey starts at ${startStr} and ends at ${endStr}. How many minutes did it take?`,
+    },
+    correctAnswer: String(duration),
+    workingHint: {
+      ms: `${endStr} − ${startStr} = ${duration} minit`,
+      en: `${endStr} − ${startStr} = ${duration} minutes`,
+    },
+    values: { start: startStr, end: endStr, correct: String(duration) },
+  };
+}
+
+/** Next term in a simple arithmetic sequence — e.g. "3, 7, 11, 15, 19, ?" */
+export function generatePatternMissing(): MissionMathDraw {
+  const start = randInt(2, 20);
+  const step = randInt(2, 9);
+  const length = 5;
+  const terms = Array.from({ length }, (_, i) => start + step * i);
+  const next = start + step * length;
+
+  return {
+    questionText: {
+      ms: `Apakah nombor seterusnya dalam corak ini? ${terms.join(", ")}, ?`,
+      en: `What is the next number in this pattern? ${terms.join(", ")}, ?`,
+    },
+    correctAnswer: String(next),
+    workingHint: {
+      ms: `Setiap nombor bertambah ${step}: ${terms[terms.length - 1]} + ${step} = ${next}`,
+      en: `Each number increases by ${step}: ${terms[terms.length - 1]} + ${step} = ${next}`,
+    },
+    values: { sequence: terms.join(", "), step, correct: next },
+  };
+}
+
+/** a × b, kid-friendly ranges (2-12 each factor) — e.g. "6 rows of 4 gems each". */
+export function generateMultiply(maxFactor = 12): MissionMathDraw {
+  const a = randInt(2, maxFactor);
+  const b = randInt(2, maxFactor);
+  const correct = a * b;
+
+  return {
+    questionText: {
+      ms: `Terdapat ${a} kumpulan, setiap satu ada ${b}. Berapakah jumlah kesemuanya?`,
+      en: `There are ${a} groups, each with ${b}. What is the total?`,
+    },
+    correctAnswer: String(correct),
+    workingHint: {
+      ms: `${a} × ${b} = ${correct}`,
+      en: `${a} × ${b} = ${correct}`,
+    },
+    values: { a, b, correct },
+  };
+}
+
+/** Same-denominator fraction addition, simplified — e.g. "1/6 + 2/6 = 1/2". */
+export function generateFractionAdd(denominatorOptions: number[] = [4, 5, 6, 8, 10, 12]): MissionMathDraw {
+  const d = pick(denominatorOptions);
+  const a = randInt(1, d - 2);
+  const b = randInt(1, d - a - 1);
+  const sumNum = a + b;
+  const g = gcd(sumNum, d);
+  const simpNum = sumNum / g;
+  const simpDen = d / g;
+  const correct = simpDen === 1 ? String(simpNum) : `${simpNum}/${simpDen}`;
+
+  return {
+    questionText: {
+      ms: `Berapakah ${a}/${d} tambah ${b}/${d}?`,
+      en: `What is ${a}/${d} plus ${b}/${d}?`,
+    },
+    correctAnswer: correct,
+    workingHint: {
+      ms: `${a}/${d} + ${b}/${d} = ${sumNum}/${d}${g > 1 ? ` = ${correct} (dipermudahkan)` : ""}`,
+      en: `${a}/${d} + ${b}/${d} = ${sumNum}/${d}${g > 1 ? ` = ${correct} (simplified)` : ""}`,
+    },
+    values: { a, b, d, correct },
+  };
+}
+
+/** Perimeter of a rectangle — e.g. "8 m long, 5 m wide, how much fencing?" */
+export function generatePerimeter(maxSide = 20): MissionMathDraw {
+  const length = randInt(3, maxSide);
+  const width = randInt(2, length);
+  const perimeter = 2 * (length + width);
+
+  return {
+    questionText: {
+      ms: `Panjang ${length} m dan lebar ${width} m. Berapakah jumlah perimeter?`,
+      en: `Length ${length} m and width ${width} m. What is the total perimeter?`,
+    },
+    correctAnswer: String(perimeter),
+    workingHint: {
+      ms: `2 × (${length} + ${width}) = ${perimeter}`,
+      en: `2 × (${length} + ${width}) = ${perimeter}`,
+    },
+    values: { length, width, correct: perimeter },
+  };
+}
+
+/** Missing factor in a multiplication — e.g. "? × 6 = 42" -> 7. */
+export function generateMissingFactor(maxFactor = 12): MissionMathDraw {
+  const known = randInt(2, maxFactor);
+  const missing = randInt(2, maxFactor);
+  const product = known * missing;
+
+  return {
+    questionText: {
+      ms: `Sebuah nombor didarab dengan ${known} menghasilkan ${product}. Apakah nombor itu?`,
+      en: `A number multiplied by ${known} gives ${product}. What is the number?`,
+    },
+    correctAnswer: String(missing),
+    workingHint: {
+      ms: `${product} ÷ ${known} = ${missing}`,
+      en: `${product} ÷ ${known} = ${missing}`,
+    },
+    values: { known, product, correct: missing },
+  };
+}

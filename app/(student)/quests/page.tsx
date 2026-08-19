@@ -63,8 +63,8 @@ export default async function QuestsPage() {
           </div>
           <p className="text-xs text-ink/60">
             {lang === "en"
-              ? "More adventures — measurement, geometry, data, time, KBAT, and real-life missions — are on the way!"
-              : "Lebih banyak pengembaraan — misi ukuran, geometri, data, masa, KBAT, dan kehidupan sebenar — akan tiba tidak lama lagi!"}
+              ? "Pick an adventure — every mission uses real math to help someone!"
+              : "Pilih satu pengembaraan — setiap misi guna matematik sebenar untuk membantu seseorang!"}
           </p>
         </div>
       </section>

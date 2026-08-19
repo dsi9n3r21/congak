@@ -25,7 +25,7 @@ export default async function DashboardPage() {
 
   const { data: student } = await supabase
     .from("students")
-    .select("id, display_name, xp, level, streak_count, link_code, language_pref")
+    .select("id, display_name, xp, level, streak_count, coins, link_code, language_pref")
     .eq("user_id", user?.id ?? "")
     .single();
 
@@ -46,6 +46,7 @@ export default async function DashboardPage() {
   const xpToNext = level * 125;
   const xpPct = Math.min(100, Math.round((xp / xpToNext) * 100));
   const streak = student?.streak_count ?? 0;
+  const coins = student?.coins ?? 0;
 
   // UI.dashboardGreeting has a "{name}" placeholder — Bi renders text
   // as-is, so the substitution happens here before handing it to <Bi>.
@@ -113,6 +114,10 @@ export default async function DashboardPage() {
           <span className="font-num font-semibold">{streak}</span>
           <span>
             <Bi text={UI.streakDaysLabel} lang={lang} />
+          </span>
+          <span className="ml-3 flex items-center gap-1.5">
+            <span aria-hidden>🪙</span>
+            <span className="font-num font-semibold">{coins}</span>
           </span>
         </div>
       </section>
