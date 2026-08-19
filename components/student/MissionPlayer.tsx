@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Bi } from "@/lib/i18n/Bi";
@@ -10,6 +10,7 @@ import { fillTemplate } from "@/lib/missions/types";
 import { BADGES } from "@/lib/missions/badges";
 import { completeMission } from "@/lib/actions/missions";
 import { isAnswerCorrect } from "@/lib/questions/grading";
+import { MathSymbolBar } from "@/components/student/MathSymbolBar";
 
 type Stage = "intro" | "question" | "success" | "reward" | "reflection";
 
@@ -37,6 +38,8 @@ export function MissionPlayer({ mission, lang }: { mission: MissionTemplate; lan
   const [reward, setReward] = useState<{ badgeJustEarned: boolean; leveledUp: boolean; coinsEarned: number } | null>(
     null
   );
+  const [rewardError, setRewardError] = useState(false);
+  const answerInputRef = useRef<HTMLInputElement>(null);
 
   const merged = useMemo(() => ({ ...variant.tokens, ...draw.values }), [variant, draw]);
   const t = useCallback((field: Bilingual) => fillTemplate(field, merged), [merged]);
@@ -54,13 +57,18 @@ export function MissionPlayer({ mission, lang }: { mission: MissionTemplate; lan
 
   const claimReward = useCallback(async () => {
     setStage("reward");
+    setRewardError(false);
     const result = await completeMission({
       missionId: mission.id,
       category: mission.category,
       xpEarned: mission.rewardXp,
       badgeId: mission.badgeId,
     }).catch(() => null);
-    setReward({ badgeJustEarned: !!result?.badgeJustEarned, leveledUp: !!result?.leveledUp, coinsEarned: result?.coinsEarned ?? 0 });
+    if (!result?.ok) {
+      setRewardError(true);
+      return;
+    }
+    setReward({ badgeJustEarned: !!result.badgeJustEarned, leveledUp: !!result.leveledUp, coinsEarned: result.coinsEarned ?? 0 });
   }, [mission]);
 
   const restart = useCallback(() => {
@@ -70,6 +78,7 @@ export function MissionPlayer({ mission, lang }: { mission: MissionTemplate; lan
     setAttempts(0);
     setShowHint(false);
     setReward(null);
+    setRewardError(false);
     setStage("intro");
     router.refresh();
   }, [mission, router]);
@@ -126,12 +135,19 @@ export function MissionPlayer({ mission, lang }: { mission: MissionTemplate; lan
           </p>
 
           <input
+            ref={answerInputRef}
             type="text"
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") submit();
+            }}
             placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
             className="mt-4 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-ungu focus:outline-none"
           />
+          <div className="mt-2.5">
+            <MathSymbolBar inputRef={answerInputRef} value={answer} onChange={setAnswer} />
+          </div>
 
           <button
             onClick={submit}
@@ -162,7 +178,33 @@ export function MissionPlayer({ mission, lang }: { mission: MissionTemplate; lan
       )}
 
       {/* ---- Reward ---- */}
-      {stage === "reward" && (
+      {stage === "reward" && rewardError && (
+        <div className="rounded-kite bg-white p-5 text-center shadow-card">
+          <div className="relative mx-auto h-24 w-24">
+            <Image src={PINTAR.retry} alt="Pintar" fill className="object-contain" />
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-ink/80">
+            {lang === "en"
+              ? "Couldn't save your reward — check your connection and try again."
+              : "Ganjaran tidak dapat disimpan — semak sambungan anda dan cuba lagi."}
+          </p>
+          <button
+            onClick={claimReward}
+            className="mt-5 w-full min-h-[44px] rounded-kite bg-kuning py-3 font-display font-bold text-white"
+          >
+            {lang === "en" ? "Try again" : "Cuba lagi"}
+          </button>
+        </div>
+      )}
+      {stage === "reward" && !rewardError && !reward && (
+        <div className="rounded-kite bg-gradient-to-b from-pandan to-pandan-dark p-6 text-center text-paper shadow-hero">
+          <div className="relative mx-auto h-28 w-28 animate-pulse">
+            <Image src={PINTAR.reward} alt="Pintar" fill className="object-contain" />
+          </div>
+          <p className="mt-3 text-sm opacity-90">{lang === "en" ? "Saving your reward..." : "Menyimpan ganjaran anda..."}</p>
+        </div>
+      )}
+      {stage === "reward" && !rewardError && reward && (
         <div className="relative overflow-hidden rounded-kite bg-gradient-to-b from-pandan to-pandan-dark p-6 text-center text-paper shadow-hero">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent" />
           <div className="relative mx-auto h-28 w-28">

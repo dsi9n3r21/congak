@@ -4091,3 +4091,65 @@ Unchanged from previous entries: still waiting on Lynda to apply
 migrations 0041+0042 and real-device test; Scholar Cards/Companion
 Items/Tree Growth Points, adventure map, and live Pintar narration still
 not started.
+
+## Mission Engine — pre-launch bug hunt (found 3 real ones)
+
+Migrations applied to the real Supabase project — mission engine can't
+be played yet (code not deployed), which was expected. Used the wait to
+do something that's been overdue: a rigorous re-review of
+`MissionPlayer.tsx` and the migration↔action mapping, since that flow
+had never been clicked through by a human. First, cross-checked
+`0041_missions.sql`/`0042_mission_coins.sql` against `lib/actions/missions.ts`
+line by line — every table, column, and RPC function name/parameter
+matches exactly, no drift. Then read through the whole client component
+looking for what a real click-through would surface. Found 3 real bugs:
+
+1. **Silent reward failure.** If `completeMission()` returned `{ok:
+   false}` (not thrown — e.g. an auth hiccup) rather than throwing, the
+   old code treated it identically to a genuine zero-reward success: the
+   student saw a normal reward screen with 0 XP/coins and no
+   explanation, and their completion was silently lost with nothing
+   telling them to retry. Now checks `result.ok` explicitly and shows a
+   real retry screen ("Couldn't save your reward — check your connection
+   and try again") instead of a false celebration.
+2. **No way to type °, fractions, or other math symbols.** The question
+   input was a plain `<input>` with no way to enter symbols a phone
+   keyboard doesn't have a dedicated key for. The rest of the app solves
+   this with `MathSymbolBar` (already used in Practice/Quiz/Exam's
+   fill-in inputs) — missed wiring it into `MissionPlayer` originally.
+   Added it, same pattern as `QuestionPlayer.tsx`.
+3. **`generateMissingAngle`'s answer required typing "115°" including the
+   degree symbol** to match — inconsistent with the established
+   curriculum convention (checked `anglesStraightLine.ts` and every other
+   angle generator: they all store a bare `String(correct)` with no unit
+   suffix, since the degree symbol is informational in the question text,
+   not something students should have to reproduce exactly to be marked
+   correct). Fixed to match: `correctAnswer` is now a bare number; the °
+   still shows in the question and hint text, just isn't compared
+   against.
+
+Also added, while in there: Enter-key submits the answer (previously
+only the button worked — a real gap for a math app on mobile, where
+Enter/Go is the expected submit gesture), and a brief "Saving your
+reward..." loading state instead of the reward numbers populating a
+moment after the screen already appeared.
+
+Checked but NOT changed, deliberately: the `RM11` (no space)
+answer-matching format used by every money-related mission — this
+matches the exact convention every money topic in the main curriculum
+already uses (`formatRM()` in `lib/questions/generators/money.ts`), so
+it's a pre-existing, consistent, app-wide behavior rather than something
+specific to missions. Flagging it here rather than unilaterally
+"fixing" only the mission corner of an app-wide pattern.
+
+Verified: `tsc --noEmit` clean, full `npm run build` clean (only the
+pre-existing unrelated font-fetch failure). Re-ran the full 17-mission ×
+every-variant smoke test (150 draws each) after the angle fix to confirm
+no regression; `generateMissingAngle` re-verified at 2000 draws
+specifically checking the degree symbol no longer appears in
+`correctAnswer`.
+
+Still waiting on Lynda's side: deploy the latest code, then real-device
+test. Everything else from prior entries (more measurement missions,
+Scholar Cards/Companion Items/Tree Growth Points, adventure map, live
+Pintar narration) still stands.

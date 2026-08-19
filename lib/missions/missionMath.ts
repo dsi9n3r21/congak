@@ -139,12 +139,12 @@ export function generateMissingAngle(totalOptions: number[] = [90, 180, 360]): M
       ms: `Dua sudut berjumlah ${total}°. Satu sudut ialah ${known}°. Berapakah sudut yang satu lagi?`,
       en: `Two angles add up to ${total}°. One angle is ${known}°. What is the other angle?`,
     },
-    correctAnswer: `${missing}°`,
+    correctAnswer: String(missing),
     workingHint: {
       ms: `${total}° − ${known}° = ${missing}°`,
       en: `${total}° − ${known}° = ${missing}°`,
     },
-    values: { total, known, correct: `${missing}°` },
+    values: { total, known, correct: missing },
   };
 }
 
