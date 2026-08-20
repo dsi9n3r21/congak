@@ -4204,3 +4204,104 @@ pre-existing unrelated font-fetch failure — same as always, and
 consistent with the bug being invisible to build-time checks as
 explained above). Cannot verify the runtime fix itself from this
 sandbox — that needs Lynda's next deploy + a real click-through.
+
+## Mission Engine v1 — CONFIRMED WORKING IN PRODUCTION
+
+Lynda confirmed the crash fix worked and missions are playable end to
+end on the real deployed app. Closing out this build session here.
+
+**Final state of what shipped, all confirmed live:**
+- 17 missions across all 9 categories from the brief (number ×2,
+  fraction ×2, money ×2, measurement ×1, geometry ×2, data ×2, time ×2,
+  kbat ×2, real_life ×2) and all 6 mission kinds (rescue, exploration,
+  mystery, builder, financial_literacy, time_travel)
+- Full 7-stage flow: story intro → challenge+question (combined into one
+  screen) → outcome → reward → reflection, with Pintar narrating via his
+  existing mascot expressions at every stage
+- Dynamic generation on every play: each mission has 1-3 story variants
+  (different characters/settings) picked at random, and each variant's
+  math is freshly randomized — proven across 2,700+ smoke-test draws
+  with zero unresolved template tokens or bad answers
+- Real rewards wired to the database: XP (same level curve as practice
+  sessions), Coins (a 2nd currency, half the XP amount), and 3 badges
+  with progress tracking (Kindness, Bridge Builder, Money Hero, Fixer,
+  Detective, Time Traveler — 6 total)
+- `/quests` → category grid → mission list → player, all real routes
+- Answer input uses the same MathSymbolBar as the rest of the app (for
+  °, fractions, etc.), Enter-to-submit, and a proper retry flow if saving
+  a completion genuinely fails rather than a false celebration
+
+**Bugs found and fixed along the way** (all documented in detail in
+their own sections above): the RSC serialization crash (functions
+crossing the server→client boundary — the one that blocked launch),
+silent reward-save failures, missing math-symbol input support, and an
+angle-answer format inconsistent with the curriculum's own convention.
+
+**Deliberately not built — the honest remaining scope from the original
+brief**, in rough priority order if picked back up later:
+1. A 2nd measurement mission (the one category still at 1) — quick,
+   pure content work
+2. More missions per category generally — the brief implies a much
+   larger library over time; 17 is a solid working set, not the ceiling
+3. Coins, Scholar Cards, Companion Items, Tree Growth Points as a full
+   reward economy — only XP + Coins + Badges exist; Scholar Cards and
+   Companion Items specifically need Lynda's design input (rarity
+   tiers? cosmetic vs functional?) before they're buildable, not
+   something to guess at
+4. Adventure map / "unlock regions" visualization — missions are flat
+   category lists right now
+5. Live Pintar-engine narration replacing the pre-written story text —
+   needs coordination with the husband's Basrim-side engine on what
+   context can be exchanged
+
+This is a good, real stopping point: the core engine is proven correct
+in production, not just in a sandbox. Everything from here is additive
+content/features on a foundation that's now been validated end to end.
+
+## Mission Engine — genuinely multi-step Hard/Y6 missions
+
+Lynda asked whether all 7 stages and all 3 levels (Easy/Medium/Hard =
+Y4/Y5/Y6) were done. Stages: yes. Levels: technically yes but lopsided
+(9/5/3), and — the real finding — the 3 existing Y6 missions were
+correctly *themed* Hard (KBAT/real-life) but weren't actually
+mathematically multi-step; they used the same single-concept generators
+as the Y4 missions, just with bigger numbers. Flagged it, she said to
+fix it.
+
+**3 new generators that genuinely chain two different operations**,
+each returning intermediate values so the workingHint can show every
+step (matching how the curriculum's own challenge-tier questions work),
+smoke-tested at 3000 draws each (0 failures):
+- `generateMultiStepBudgetDiscount` — sum items → apply a % discount to
+  the total → find change from a payment. Chains addition, percentage,
+  subtraction. The discount % is filtered to ones that divide the total
+  cleanly (no fractional sen) rather than just picking any % and
+  rounding, so the intermediate discount amount is always exact.
+- `generateMultiStepFractionScale` — add two same-denominator fractions
+  (a "per unit" amount), then multiply by a whole number of units.
+  Simplifies at both stages independently (the gcd of the per-unit sum
+  is not generally the same as the gcd after scaling).
+- `generateMultiStepUnitSubtract` — convert a bigUnit amount to
+  smallUnit, then subtract an amount used. The "amount used" is derived
+  as a clean fraction of the converted total (rounded to the nearest 10)
+  rather than picked independently, so it can never exceed the total and
+  the remainder is always a tidy number.
+
+**3 new Y6 missions**, each using its own multi-step generator: The
+Merchant's Bargain (money/financial_literacy — discount+change), Recipe
+Scaling (fraction/builder — add+multiply), The Great Leak (measurement/
+mystery — convert+subtract, which also happens to give measurement its
+2nd mission, closing that earlier-flagged gap as a side effect).
+
+20 missions total now. Level distribution: Y4=9, Y5=5, Y6=6 (still
+Y4-heavy, but Y6 at least doubled and — more importantly — now actually
+earns its "Hard" label mathematically, not just narratively).
+
+Verified: `tsc --noEmit` clean, full `npm run build` clean (only the
+pre-existing unrelated font-fetch failure). All 20 missions × every
+variant re-verified at 150 draws each; the 3 new multi-step generators
+each independently verified at 3000 draws checking every intermediate
+value in the chain (not just the final answer) — e.g. for the discount
+mission, confirmed the discount amount is always a whole number of sen,
+the post-discount price matches item-total-minus-discount exactly, the
+payment always exceeds the final price, and change is never negative.

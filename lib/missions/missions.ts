@@ -12,6 +12,9 @@ import {
   generateFractionAdd,
   generatePerimeter,
   generateMissingFactor,
+  generateMultiStepBudgetDiscount,
+  generateMultiStepFractionScale,
+  generateMultiStepUnitSubtract,
 } from "./missionMath";
 import type { BudgetItem, DataCategory } from "./missionMath";
 
@@ -75,6 +78,14 @@ const HOUSEHOLD_BILLS: BudgetItem[] = [
   { name: { ms: "Bil air", en: "Water bill" }, priceRM: 18 },
   { name: { ms: "Bil internet", en: "Internet bill" }, priceRM: 30 },
   { name: { ms: "Bil telefon", en: "Phone bill" }, priceRM: 25 },
+];
+
+const MERCHANT_GOODS: BudgetItem[] = [
+  { name: { ms: "Kain sutera", en: "Silk cloth" }, priceRM: 20 },
+  { name: { ms: "Rempah", en: "Spices" }, priceRM: 12 },
+  { name: { ms: "Guni beras", en: "Rice sack" }, priceRM: 16 },
+  { name: { ms: "Balang madu", en: "Honey jar" }, priceRM: 8 },
+  { name: { ms: "Bakul buah", en: "Fruit basket" }, priceRM: 12 },
 ];
 
 export const MISSIONS: MissionTemplate[] = [
@@ -587,6 +598,72 @@ export const MISSIONS: MissionTemplate[] = [
         outcomeRetry: { ms: "Cuba kira semula jumlah kesemua bil dahulu.", en: "Try adding up the total of all the bills first." },
         reflection: { ms: "Menguruskan belanjawan keluarga bermakna tahu jumlah perbelanjaan SEBELUM ia melebihi pendapatan.", en: "Managing a family budget means knowing total spending BEFORE it exceeds income." },
         generateMath: () => generateBudgetSubtract(HOUSEHOLD_BILLS, [150, 180, 200, 220]),
+      },
+    ],
+  },
+  {
+    id: "merchants-bargain",
+    category: "money",
+    kind: "financial_literacy",
+    yearLevel: 6,
+    title: { ms: "Tawaran Saudagar", en: "The Merchant's Bargain" },
+    skillTag: { ms: "Diskaun, jumlah, dan baki — pelbagai langkah", en: "Discount, total, and change — multi-step" },
+    emoji: "🏺",
+    rewardXp: 35,
+    badgeId: "money_hero",
+    variants: [
+      {
+        tokens: { place: { ms: "Pasar Saudagar", en: "Merchant's Bazaar" } },
+        intro: { ms: "Seorang saudagar di {place} menawarkan diskaun istimewa hari ini, tetapi pengiraannya rumit.", en: "A merchant at the {place} is offering a special discount today, but the calculation is tricky." },
+        challenge: { ms: "Kira jumlah belian, tolak diskaun, kemudian cari baki daripada bayaran. TIGA langkah — jangan tersasar!", en: "Work out the total, subtract the discount, then find the change from the payment. THREE steps — don't lose track!" },
+        outcomeSuccess: { ms: "Saudagar itu kagum — semua langkah dikira dengan tepat!", en: "The merchant is impressed — every step was worked out correctly!" },
+        outcomeRetry: { ms: "Salah satu langkah tersasar — cuba semula dari jumlah belian.", en: "One of the steps went off track — try again from the total." },
+        reflection: { ms: "Soalan pelbagai langkah perlu diselesaikan SATU LANGKAH pada satu masa, secara tersusun.", en: "Multi-step problems need to be solved ONE STEP at a time, in order." },
+        generateMath: () => generateMultiStepBudgetDiscount(MERCHANT_GOODS),
+      },
+    ],
+  },
+  {
+    id: "recipe-scaling",
+    category: "fraction",
+    kind: "builder",
+    yearLevel: 6,
+    title: { ms: "Skala Resipi", en: "Recipe Scaling" },
+    skillTag: { ms: "Tambah dan darab pecahan — pelbagai langkah", en: "Fraction addition and multiplication — multi-step" },
+    emoji: "👨‍🍳",
+    rewardXp: 35,
+    badgeId: "bridge_builder",
+    variants: [
+      {
+        tokens: { place: { ms: "Dapur Besar", en: "Grand Kitchen" }, thing: { ms: "adunan istimewa", en: "special batter" } },
+        intro: { ms: "Seorang tukang masak di {place} perlu menyediakan {thing} untuk ramai tetamu.", en: "A chef at the {place} needs to prepare {thing} for many guests." },
+        challenge: { ms: "Cari jumlah bahan untuk SEUNIT resipi dahulu, kemudian darab untuk jumlah unit yang diperlukan.", en: "Find the amount needed for ONE unit of the recipe first, then multiply for the number of units needed." },
+        outcomeSuccess: { ms: "Resipi berjaya diskalakan dengan tepat — semua tetamu akan kenyang!", en: "The recipe is scaled perfectly — every guest will be well fed!" },
+        outcomeRetry: { ms: "Cuba semula — tambah pecahan dahulu, BARU darab dengan bilangan unit.", en: "Try again — add the fractions first, THEN multiply by the number of units." },
+        reflection: { ms: "Menskalakan resipi ialah kemahiran sebenar tukang masak — tambah dahulu, darab kemudian!", en: "Scaling a recipe is a real chef's skill — add first, then multiply!" },
+        generateMath: () => generateMultiStepFractionScale(),
+      },
+    ],
+  },
+  {
+    id: "the-great-leak",
+    category: "measurement",
+    kind: "mystery",
+    yearLevel: 6,
+    title: { ms: "Kebocoran Besar", en: "The Great Leak" },
+    skillTag: { ms: "Penukaran unit dan tolak — pelbagai langkah", en: "Unit conversion and subtraction — multi-step" },
+    emoji: "🕳️",
+    rewardXp: 35,
+    badgeId: "fixer",
+    variants: [
+      {
+        tokens: { place: { ms: "Loji Air Purba", en: "Ancient Waterworks" }, thing: { ms: "air", en: "water" } },
+        intro: { ms: "Sebuah loji {thing} purba di {place} kehilangan bekalan secara misteri.", en: "An ancient {thing} works at {place} is mysteriously losing supply." },
+        challenge: { ms: "Tukar jumlah asal kepada unit yang lebih kecil dahulu, kemudian tolak jumlah yang telah digunakan untuk cari baki.", en: "Convert the original amount to the smaller unit first, then subtract the amount already used to find what's left." },
+        outcomeSuccess: { ms: "Misteri kebocoran selesai — baki bekalan berjaya dikira dengan tepat!", en: "The leak mystery is solved — the remaining supply was worked out exactly!" },
+        outcomeRetry: { ms: "Cuba semula — tukar unit DAHULU, baru tolak jumlah yang digunakan.", en: "Try again — convert the unit FIRST, then subtract the amount used." },
+        reflection: { ms: "Apabila unit berbeza terlibat, tukar kepada unit yang SAMA dahulu sebelum mengira selanjutnya.", en: "When different units are involved, convert to the SAME unit first before calculating further." },
+        generateMath: () => generateMultiStepUnitSubtract({ bigUnit: "L", smallUnit: "mL", factor: 1000, maxBig: 9 }),
       },
     ],
   },

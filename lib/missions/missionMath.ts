@@ -313,3 +313,117 @@ export function generateMissingFactor(maxFactor = 12): MissionMathDraw {
     values: { known, product, correct: missing },
   };
 }
+
+/**
+ * Genuinely multi-step (Hard/Y6) generators — each chains TWO different
+ * operations, unlike the single-concept generators above. Every one
+ * returns intermediate values in `values` so the mission's workingHint
+ * can show both steps explicitly, matching how the curriculum's own
+ * "challenge" tier questions are worked through.
+ */
+
+/** Sum items, apply a % discount to the total, then find change from a
+ * payment amount — chains addition, percentage, and subtraction. */
+export function generateMultiStepBudgetDiscount(
+  pool: BudgetItem[],
+  discountOptions: number[] = [10, 20, 25, 50],
+  paymentOptions: number[] = [50, 60, 80, 100]
+): MissionMathDraw {
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  const itemCount = randInt(3, Math.min(4, pool.length));
+  const items = shuffled.slice(0, itemCount);
+  const itemsTotal = items.reduce((sum, it) => sum + it.priceRM, 0);
+
+  // Pick a discount % that divides the total cleanly (no fractional sen).
+  const validDiscounts = discountOptions.filter((d) => (itemsTotal * d) % 100 === 0);
+  const discountPct = validDiscounts.length > 0 ? pick(validDiscounts) : 10;
+  const discountAmount = (itemsTotal * discountPct) / 100;
+  const finalPrice = itemsTotal - discountAmount;
+
+  const payment = paymentOptions.find((p) => p > finalPrice) ?? Math.ceil(finalPrice / 10) * 10 + 10;
+  const change = payment - finalPrice;
+
+  const listMs = items.map((it) => `${it.name.ms} = RM${it.priceRM}`).join(", ");
+  const listEn = items.map((it) => `${it.name.en} = RM${it.priceRM}`).join(", ");
+
+  return {
+    questionText: {
+      ms: `Belian: ${listMs}. Diskaun ${discountPct}% dikenakan atas jumlah keseluruhan. Anda bayar dengan RM${payment}. Berapakah baki (bakinya)?`,
+      en: `Items bought: ${listEn}. A ${discountPct}% discount applies to the total. You pay with RM${payment}. How much change do you get?`,
+    },
+    correctAnswer: `RM${change}`,
+    workingHint: {
+      ms: `Jumlah: RM${itemsTotal}. Selepas diskaun ${discountPct}%: RM${itemsTotal} − RM${discountAmount} = RM${finalPrice}. Baki: RM${payment} − RM${finalPrice} = RM${change}`,
+      en: `Total: RM${itemsTotal}. After ${discountPct}% discount: RM${itemsTotal} − RM${discountAmount} = RM${finalPrice}. Change: RM${payment} − RM${finalPrice} = RM${change}`,
+    },
+    values: { itemsTotal: `RM${itemsTotal}`, discountPct, finalPrice: `RM${finalPrice}`, payment: `RM${payment}`, correct: `RM${change}` },
+  };
+}
+
+/** Add two same-denominator fractions, then multiply the sum by a whole
+ * number (a "per batch, how much for N batches" style problem) — chains
+ * fraction addition and multiplication. */
+export function generateMultiStepFractionScale(
+  denominatorOptions: number[] = [4, 6, 8],
+  multiplierOptions: number[] = [2, 3, 4, 5]
+): MissionMathDraw {
+  const d = pick(denominatorOptions);
+  const a = randInt(1, Math.floor(d / 2) - 1 || 1);
+  const b = randInt(1, Math.floor(d / 2) - 1 || 1);
+  const sumNum = a + b;
+  const multiplier = pick(multiplierOptions);
+
+  // scaled = (sumNum/d) * multiplier, simplified
+  const scaledNumRaw = sumNum * multiplier;
+  const g1 = gcd(sumNum, d);
+  const perBatchNum = sumNum / g1;
+  const perBatchDen = d / g1;
+
+  const g2 = gcd(scaledNumRaw, d);
+  const finalNum = scaledNumRaw / g2;
+  const finalDen = d / g2;
+  const whole = Math.floor(finalNum / finalDen);
+  const remNum = finalNum - whole * finalDen;
+  const correct =
+    remNum === 0 ? String(whole) : whole > 0 ? `${whole} ${remNum}/${finalDen}` : `${finalNum}/${finalDen}`;
+
+  return {
+    questionText: {
+      ms: `Setiap seunit memerlukan ${a}/${d} + ${b}/${d} bahan. Berapakah jumlah bahan diperlukan untuk ${multiplier} unit?`,
+      en: `Each unit needs ${a}/${d} + ${b}/${d} of an ingredient. How much is needed for ${multiplier} units?`,
+    },
+    correctAnswer: correct,
+    workingHint: {
+      ms: `Seunit: ${a}/${d} + ${b}/${d} = ${perBatchNum}/${perBatchDen}. Untuk ${multiplier} unit: ${perBatchNum}/${perBatchDen} × ${multiplier} = ${correct}`,
+      en: `Per unit: ${a}/${d} + ${b}/${d} = ${perBatchNum}/${perBatchDen}. For ${multiplier} units: ${perBatchNum}/${perBatchDen} × ${multiplier} = ${correct}`,
+    },
+    values: { a, b, d, perBatch: `${perBatchNum}/${perBatchDen}`, multiplier, correct },
+  };
+}
+
+/** Convert a bigUnit amount to smallUnit, then subtract an amount used —
+ * chains unit conversion and subtraction. */
+export function generateMultiStepUnitSubtract(pair: UnitPair): MissionMathDraw {
+  const tenths = randInt(10, pair.maxBig * 10);
+  const value = tenths / 10;
+  const valueStr = value % 1 === 0 ? String(value) : value.toFixed(1);
+  const totalSmall = Math.round(value * pair.factor);
+
+  // Amount used: a clean fraction of the total so the remainder is a nice number.
+  const usedFraction = pick([0.1, 0.2, 0.25, 0.5]);
+  const used = Math.round((totalSmall * usedFraction) / 10) * 10; // round to nearest 10 for a clean number
+  const remaining = totalSmall - used;
+
+  return {
+    questionText: {
+      ms: `Terdapat ${valueStr} ${pair.bigUnit}. Selepas ditukar kepada ${pair.smallUnit}, ${used} ${pair.smallUnit} telah digunakan. Berapakah baki?`,
+      en: `There are ${valueStr} ${pair.bigUnit}. After converting to ${pair.smallUnit}, ${used} ${pair.smallUnit} was used. How much is left?`,
+    },
+    correctAnswer: String(remaining),
+    workingHint: {
+      ms: `${valueStr} ${pair.bigUnit} = ${totalSmall} ${pair.smallUnit}. ${totalSmall} − ${used} = ${remaining} ${pair.smallUnit}`,
+      en: `${valueStr} ${pair.bigUnit} = ${totalSmall} ${pair.smallUnit}. ${totalSmall} − ${used} = ${remaining} ${pair.smallUnit}`,
+    },
+    values: { value: valueStr, bigUnit: pair.bigUnit, smallUnit: pair.smallUnit, totalSmall, used, correct: remaining },
+  };
+}
