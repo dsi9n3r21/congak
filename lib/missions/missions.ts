@@ -81,11 +81,11 @@ const HOUSEHOLD_BILLS: BudgetItem[] = [
 ];
 
 const MERCHANT_GOODS: BudgetItem[] = [
-  { name: { ms: "Kain sutera", en: "Silk cloth" }, priceRM: 20 },
-  { name: { ms: "Rempah", en: "Spices" }, priceRM: 12 },
-  { name: { ms: "Guni beras", en: "Rice sack" }, priceRM: 16 },
-  { name: { ms: "Balang madu", en: "Honey jar" }, priceRM: 8 },
-  { name: { ms: "Bakul buah", en: "Fruit basket" }, priceRM: 12 },
+  { name: { ms: "Kain sutera", en: "Silk cloth" }, priceRM: 24 },
+  { name: { ms: "Rempah", en: "Spices" }, priceRM: 14 },
+  { name: { ms: "Guni beras", en: "Rice sack" }, priceRM: 18 },
+  { name: { ms: "Balang madu", en: "Honey jar" }, priceRM: 9 },
+  { name: { ms: "Bakul buah", en: "Fruit basket" }, priceRM: 15 },
 ];
 
 export const MISSIONS: MissionTemplate[] = [
@@ -615,9 +615,9 @@ export const MISSIONS: MissionTemplate[] = [
       {
         tokens: { place: { ms: "Pasar Saudagar", en: "Merchant's Bazaar" } },
         intro: { ms: "Seorang saudagar di {place} menawarkan diskaun istimewa hari ini, tetapi pengiraannya rumit.", en: "A merchant at the {place} is offering a special discount today, but the calculation is tricky." },
-        challenge: { ms: "Kira jumlah belian, tolak diskaun, kemudian cari baki daripada bayaran. TIGA langkah — jangan tersasar!", en: "Work out the total, subtract the discount, then find the change from the payment. THREE steps — don't lose track!" },
+        challenge: { ms: "Berapakah baki wang yang akan diterima selepas belian dan bayaran ini?", en: "How much change will be received after this purchase and payment?" },
         outcomeSuccess: { ms: "Saudagar itu kagum — semua langkah dikira dengan tepat!", en: "The merchant is impressed — every step was worked out correctly!" },
-        outcomeRetry: { ms: "Salah satu langkah tersasar — cuba semula dari jumlah belian.", en: "One of the steps went off track — try again from the total." },
+        outcomeRetry: { ms: "Belum tepat — fikirkan apa yang perlu dikira DAHULU sebelum mencari baki.", en: "Not quite — think about what needs to be worked out FIRST before finding the change." },
         reflection: { ms: "Soalan pelbagai langkah perlu diselesaikan SATU LANGKAH pada satu masa, secara tersusun.", en: "Multi-step problems need to be solved ONE STEP at a time, in order." },
         generateMath: () => generateMultiStepBudgetDiscount(MERCHANT_GOODS),
       },
@@ -637,9 +637,9 @@ export const MISSIONS: MissionTemplate[] = [
       {
         tokens: { place: { ms: "Dapur Besar", en: "Grand Kitchen" }, thing: { ms: "adunan istimewa", en: "special batter" } },
         intro: { ms: "Seorang tukang masak di {place} perlu menyediakan {thing} untuk ramai tetamu.", en: "A chef at the {place} needs to prepare {thing} for many guests." },
-        challenge: { ms: "Cari jumlah bahan untuk SEUNIT resipi dahulu, kemudian darab untuk jumlah unit yang diperlukan.", en: "Find the amount needed for ONE unit of the recipe first, then multiply for the number of units needed." },
+        challenge: { ms: "Berapakah jumlah bahan yang diperlukan untuk menyediakan {thing} bagi semua tetamu?", en: "How much of the ingredient is needed to prepare the {thing} for all the guests?" },
         outcomeSuccess: { ms: "Resipi berjaya diskalakan dengan tepat — semua tetamu akan kenyang!", en: "The recipe is scaled perfectly — every guest will be well fed!" },
-        outcomeRetry: { ms: "Cuba semula — tambah pecahan dahulu, BARU darab dengan bilangan unit.", en: "Try again — add the fractions first, THEN multiply by the number of units." },
+        outcomeRetry: { ms: "Belum tepat — fikirkan berapa banyak diperlukan untuk SATU unit dahulu.", en: "Not quite — think about how much is needed for ONE unit first." },
         reflection: { ms: "Menskalakan resipi ialah kemahiran sebenar tukang masak — tambah dahulu, darab kemudian!", en: "Scaling a recipe is a real chef's skill — add first, then multiply!" },
         generateMath: () => generateMultiStepFractionScale(),
       },
@@ -659,11 +659,11 @@ export const MISSIONS: MissionTemplate[] = [
       {
         tokens: { place: { ms: "Loji Air Purba", en: "Ancient Waterworks" }, thing: { ms: "air", en: "water" } },
         intro: { ms: "Sebuah loji {thing} purba di {place} kehilangan bekalan secara misteri.", en: "An ancient {thing} works at {place} is mysteriously losing supply." },
-        challenge: { ms: "Tukar jumlah asal kepada unit yang lebih kecil dahulu, kemudian tolak jumlah yang telah digunakan untuk cari baki.", en: "Convert the original amount to the smaller unit first, then subtract the amount already used to find what's left." },
+        challenge: { ms: "Berapakah baki bekalan {thing} yang tinggal sekarang?", en: "How much {thing} supply is left now?" },
         outcomeSuccess: { ms: "Misteri kebocoran selesai — baki bekalan berjaya dikira dengan tepat!", en: "The leak mystery is solved — the remaining supply was worked out exactly!" },
-        outcomeRetry: { ms: "Cuba semula — tukar unit DAHULU, baru tolak jumlah yang digunakan.", en: "Try again — convert the unit FIRST, then subtract the amount used." },
+        outcomeRetry: { ms: "Belum tepat — pastikan kedua-dua jumlah menggunakan unit yang SAMA sebelum ditolak.", en: "Not quite — make sure both amounts use the SAME unit before subtracting." },
         reflection: { ms: "Apabila unit berbeza terlibat, tukar kepada unit yang SAMA dahulu sebelum mengira selanjutnya.", en: "When different units are involved, convert to the SAME unit first before calculating further." },
-        generateMath: () => generateMultiStepUnitSubtract({ bigUnit: "L", smallUnit: "mL", factor: 1000, maxBig: 9 }),
+        generateMath: () => generateMultiStepUnitSubtract({ bigUnit: "L", smallUnit: "mL", factor: 1000, maxBig: 18 }),
       },
     ],
   },

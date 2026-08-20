@@ -326,22 +326,30 @@ export function generateMissingFactor(maxFactor = 12): MissionMathDraw {
  * payment amount — chains addition, percentage, and subtraction. */
 export function generateMultiStepBudgetDiscount(
   pool: BudgetItem[],
-  discountOptions: number[] = [10, 20, 25, 50],
-  paymentOptions: number[] = [50, 60, 80, 100]
+  discountOptions: number[] = [5, 10, 15, 20, 25, 30, 40, 50, 60, 75],
+  paymentOptions: number[] = [50, 60, 80, 100, 120]
 ): MissionMathDraw {
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  const itemCount = randInt(3, Math.min(4, pool.length));
+  const itemCount = randInt(3, Math.min(5, pool.length));
   const items = shuffled.slice(0, itemCount);
   const itemsTotal = items.reduce((sum, it) => sum + it.priceRM, 0);
 
-  // Pick a discount % that divides the total cleanly (no fractional sen).
-  const validDiscounts = discountOptions.filter((d) => (itemsTotal * d) % 100 === 0);
-  const discountPct = validDiscounts.length > 0 ? pick(validDiscounts) : 10;
-  const discountAmount = (itemsTotal * discountPct) / 100;
-  const finalPrice = itemsTotal - discountAmount;
+  // Work entirely in sen (integer cents) to avoid floating-point drift
+  // (e.g. 0.1 + 0.2 !== 0.3) — same reasoning as the curriculum's own
+  // formatRM()-based money generators. No divisibility filtering needed:
+  // any discount % now produces an exact sen amount via rounding.
+  const discountPct = pick(discountOptions);
+  const itemsTotalSen = itemsTotal * 100;
+  const discountSen = Math.round((itemsTotalSen * discountPct) / 100);
+  const finalSen = itemsTotalSen - discountSen;
+  const paymentSen = (paymentOptions.find((p) => p * 100 > finalSen) ?? Math.ceil(finalSen / 1000) * 10 + 10) * 100;
+  const changeSen = paymentSen - finalSen;
 
-  const payment = paymentOptions.find((p) => p > finalPrice) ?? Math.ceil(finalPrice / 10) * 10 + 10;
-  const change = payment - finalPrice;
+  const fmt = (sen: number) => (sen / 100).toFixed(2);
+  const discountAmount = fmt(discountSen);
+  const finalPrice = fmt(finalSen);
+  const payment = fmt(paymentSen);
+  const change = fmt(changeSen);
 
   const listMs = items.map((it) => `${it.name.ms} = RM${it.priceRM}`).join(", ");
   const listEn = items.map((it) => `${it.name.en} = RM${it.priceRM}`).join(", ");
@@ -353,8 +361,8 @@ export function generateMultiStepBudgetDiscount(
     },
     correctAnswer: `RM${change}`,
     workingHint: {
-      ms: `Jumlah: RM${itemsTotal}. Selepas diskaun ${discountPct}%: RM${itemsTotal} − RM${discountAmount} = RM${finalPrice}. Baki: RM${payment} − RM${finalPrice} = RM${change}`,
-      en: `Total: RM${itemsTotal}. After ${discountPct}% discount: RM${itemsTotal} − RM${discountAmount} = RM${finalPrice}. Change: RM${payment} − RM${finalPrice} = RM${change}`,
+      ms: `Jumlah: RM${itemsTotal}.00. Selepas diskaun ${discountPct}%: RM${itemsTotal}.00 − RM${discountAmount} = RM${finalPrice}. Baki: RM${payment} − RM${finalPrice} = RM${change}`,
+      en: `Total: RM${itemsTotal}.00. After ${discountPct}% discount: RM${itemsTotal}.00 − RM${discountAmount} = RM${finalPrice}. Change: RM${payment} − RM${finalPrice} = RM${change}`,
     },
     values: { itemsTotal: `RM${itemsTotal}`, discountPct, finalPrice: `RM${finalPrice}`, payment: `RM${payment}`, correct: `RM${change}` },
   };
@@ -364,8 +372,8 @@ export function generateMultiStepBudgetDiscount(
  * number (a "per batch, how much for N batches" style problem) — chains
  * fraction addition and multiplication. */
 export function generateMultiStepFractionScale(
-  denominatorOptions: number[] = [4, 6, 8],
-  multiplierOptions: number[] = [2, 3, 4, 5]
+  denominatorOptions: number[] = [4, 6, 8, 10, 12],
+  multiplierOptions: number[] = [3, 4, 5, 6, 7]
 ): MissionMathDraw {
   const d = pick(denominatorOptions);
   const a = randInt(1, Math.floor(d / 2) - 1 || 1);

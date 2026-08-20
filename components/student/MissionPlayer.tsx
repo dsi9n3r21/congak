@@ -279,7 +279,7 @@ export function MissionPlayer({ missionId, lang }: { missionId: string; lang: La
               {lang === "en" ? "Play again" : "Main lagi"}
             </button>
             <button
-              onClick={() => router.push("/quests")}
+              onClick={() => router.push(`/quests/category/${mission.category}`)}
               className="flex-1 min-h-[44px] rounded-kite bg-ungu py-3 font-display text-sm font-bold text-white"
             >
               {lang === "en" ? "More missions" : "Lebih misi"} →

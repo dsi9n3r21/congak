@@ -4305,3 +4305,51 @@ value in the chain (not just the final answer) — e.g. for the discount
 mission, confirmed the discount amount is always a whole number of sen,
 the post-discount price matches item-total-minus-discount exactly, the
 payment always exceeds the final price, and change is never negative.
+
+## Hard actually hard now + navigation fix + a self-caught bug
+
+Lynda tested the new Hard missions herself: "Hard is not really hard."
+Right diagnosis on inspection: the challenge text was literally spelling
+out the algorithm ("total, subtract discount, then find change... THREE
+steps") — turning a multi-step reasoning problem into a checklist.
+Real KBAT difficulty requires the student to figure out what operations
+are needed, not be handed the sequence.
+
+**Fix**: rewrote all 3 Hard missions' challenge text to describe the
+situation and ask for the end result, without prescribing the method —
+"How much change will be received after this purchase and payment?"
+instead of "work out the total, subtract the discount, then find
+change." The workingHint (shown only after getting it wrong) still walks
+through the full solution — scaffolding after a genuine attempt, not
+before one. Also widened the numeric ranges: discount % pool went from
+4 round options (10/20/25/50) to 10 more varied ones, item prices went
+up, fraction denominators/multipliers widened, unit-convert range nearly
+doubled.
+
+**Widening the numbers surfaced a real bug the smoke test caught
+immediately**: the discount generator picked a random discount % and
+then filtered for ones that divided the (now much less round, often odd)
+item total with zero fractional sen — and its fallback for "no discount
+% divides cleanly" was a hardcoded 10%, which itself often didn't divide
+cleanly either. 704 failures out of 3000 draws on the first re-run.
+Root cause was the "require an exactly whole-RM discount" constraint
+itself — unnecessary, since sen amounts are completely normal in real
+money math (the rest of the app already handles them via `formatRM()`).
+Rewrote the whole function to work in integer sen throughout (matching
+how the curriculum's own money generators avoid floating-point drift),
+removing the fragile divisibility filter and its broken fallback
+entirely. Re-verified clean at 5000 draws.
+
+**Also fixed a navigation annoyance** Lynda flagged: finishing a mission
+and tapping "More missions" went to the top-level category grid, forcing
+an extra tap to re-pick the same category to see its other mission. Now
+returns to that mission's own category listing instead — the top-level
+grid is still one tap away via the "← All categories" link already on
+that page if the student wants to switch subjects.
+
+Verified: `tsc --noEmit` clean, full `npm run build` clean (only the
+pre-existing unrelated font-fetch failure). All 20 missions × every
+variant re-verified at 300 draws each (6000 total) with a check
+specifically added this round for floating-point-artifact answers (e.g.
+"RM16.099999999999998") on top of the usual token-resolution checks —
+0 failures across the board after the fix.
