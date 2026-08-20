@@ -2,12 +2,20 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { BADGES } from "@/lib/missions/badges";
+import { MISSION_CATEGORY_STYLES } from "@/lib/missions/categoryStyle";
+import type { MissionMode } from "@/lib/missions/types";
+
+const TOTAL_ADVENTURE_CATEGORIES = Object.keys(MISSION_CATEGORY_STYLES).length;
 
 export interface CompleteMissionInput {
   missionId: string;
   category: string;
   xpEarned: number;
   badgeId?: string;
+  /** Which mode this playthrough used — drives Adventure Map obstacle
+   * clearing. Optional so any older/direct caller (e.g. a mission opened
+   * outside the map flow) still works, just without map progress. */
+  mode?: MissionMode;
 }
 
 export interface CompleteMissionResult {
@@ -17,6 +25,10 @@ export interface CompleteMissionResult {
   leveledUp?: boolean;
   coinsEarned?: number;
   badgeJustEarned?: boolean;
+  /** True the moment this completion clears the LAST obstacle on the
+   * Adventure Map for `mode` — MissionPlayer uses this to show the mega
+   * reward screen instead of (or alongside) the normal reward screen. */
+  adventureCompleted?: boolean;
 }
 
 export async function completeMission(input: CompleteMissionInput): Promise<CompleteMissionResult> {
@@ -82,5 +94,50 @@ export async function completeMission(input: CompleteMissionInput): Promise<Comp
     badgeJustEarned = progressBefore < badge.target && progressBefore + 1 >= badge.target;
   }
 
-  return { ok: true, xp, level, leveledUp: level > startingLevel, coinsEarned, badgeJustEarned };
+  let adventureCompleted = false;
+  if (input.mode) {
+    const { data: mapDone } = await supabase.rpc("clear_adventure_obstacle", {
+      p_student_id: student.id,
+      p_mode: input.mode,
+      p_category: input.category,
+      p_total_categories: TOTAL_ADVENTURE_CATEGORIES,
+    });
+    adventureCompleted = !!mapDone;
+
+    if (adventureCompleted) {
+      const champion = BADGES.adventure_champion;
+      const { data: beforeChampion } = await supabase
+        .from("student_badges")
+        .select("progress")
+        .eq("student_id", student.id)
+        .eq("badge_id", "adventure_champion")
+        .single();
+      const championProgressBefore = beforeChampion?.progress ?? 0;
+      // Raise target by 1 each clear so a student who replays the map on
+      // another mode (or replays the same one again) keeps progressing
+      // the badge past 1, instead of record_badge_progress's cap making
+      // every clear after the first a no-op.
+      const championTarget = Math.max(champion.target, championProgressBefore + 1);
+      await supabase.rpc("record_badge_progress", {
+        p_student_id: student.id,
+        p_badge_id: "adventure_champion",
+        p_increment: 1,
+        p_target: championTarget,
+      });
+    }
+  }
+
+  return { ok: true, xp, level, leveledUp: level > startingLevel, coinsEarned, badgeJustEarned, adventureCompleted };
+}
+
+export async function restartAdventure(mode: MissionMode): Promise<{ ok: boolean }> {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false };
+  const { data: student } = await supabase.from("students").select("id").eq("user_id", user.id).single();
+  if (!student) return { ok: false };
+  await supabase.rpc("restart_adventure_run", { p_student_id: student.id, p_mode: mode });
+  return { ok: true };
 }

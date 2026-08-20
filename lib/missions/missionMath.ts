@@ -10,16 +10,66 @@
  */
 import { randInt, pick, gcd } from "@/lib/questions/utils";
 import type { Bilingual } from "@/lib/i18n/dictionary";
-import type { MissionMathDraw } from "./types";
+import type { MissionMathDraw, MissionMode } from "./types";
+import { scaleMax, biasOptions } from "./difficulty";
+
+/**
+ * FUSION generators — deliberately different from every generator above:
+ * those test ONE KSSR skill (optionally chained with a second, same-
+ * family step, e.g. the multi-step budget/discount trio). A fusion
+ * generator instead routes the answer through THREE DIFFERENT
+ * disciplines in sequence — e.g. number -> geometry -> angle — so a
+ * student can't finish it from one skill alone; a wrong intermediate hop
+ * (e.g. dividing instead of the area formula) produces a wrong final
+ * answer, same "stopped after the first hop" distractor logic the
+ * curriculum's own Challenge tier uses. Reserved for Hard mode: this is
+ * genuinely harder, not just bigger numbers.
+ *
+ * This is a first real example (Number -> Geometry -> Angle) proving the
+ * pattern for lib/missions/missions.ts's "fusion" mission kind. Next
+ * round: more fusion generators covering the other discipline
+ * combinations named in the brief (e.g. money+time+measurement).
+ */
+export function generateFusionAreaAngle(mode: MissionMode = "medium"): MissionMathDraw {
+  // Hop 1 (Number + Geometry): a rectangle's area and one side are given;
+  // the OTHER side must be found by division — this is the real
+  // "area = length x width" formula run backwards, not just a bare
+  // division fact.
+  const length = randInt(3, scaleMax(9, mode, 4));
+  const width = randInt(2, scaleMax(8, mode, 3));
+  const area = length * width;
+
+  // Hop 2 (Angle): the found width becomes one of three angles that
+  // together complete a straight line (180 degrees) alongside a second,
+  // GIVEN angle -- the student must find the third.
+  const givenAngle = randInt(20, 130 - width);
+  const finalAngle = 180 - width - givenAngle;
+
+  return {
+    questionText: {
+      ms: `Sebuah tingkap segi empat tepat mempunyai luas ${area} cm² dan panjang ${length} cm. Lebar tingkap itu (dalam cm) menjadi sudut engsel kedua pada rel lurus, bersama satu sudut lagi ${givenAngle}°. Berapakah sudut ketiga yang tinggal?`,
+      en: `A rectangular hinge panel has an area of ${area} cm² and a length of ${length} cm. Its width (in cm) becomes the second angle on a straight track, alongside another angle of ${givenAngle}°. What is the third, remaining angle?`,
+    },
+    correctAnswer: String(finalAngle),
+    workingHint: {
+      ms: `Langkah 1 (luas): ${area} ÷ ${length} = ${width} cm (lebar). Langkah 2 (sudut): 180° − ${width}° − ${givenAngle}° = ${finalAngle}°`,
+      en: `Step 1 (area): ${area} ÷ ${length} = ${width} cm (width). Step 2 (angle): 180° − ${width}° − ${givenAngle}° = ${finalAngle}°`,
+    },
+    values: { area, length, width, givenAngle, correct: finalAngle },
+  };
+}
 
 /** amount ÷ count, exact to 1 decimal place — e.g. "1 litre shared among
  * 5 kittens = 0.2 litre each". Built backwards from a clean tenths-place
  * share so the division is always exact (no repeating decimals to round
  * awkwardly), matching how this is actually taught before long division
  * of decimals is introduced. */
-export function generateEqualShare(countOptions: number[] = [2, 4, 5, 8, 10]): MissionMathDraw {
-  const count = pick(countOptions);
-  const shareTenths = randInt(1, 9); // the answer, in tenths: e.g. 2 -> 0.2
+export function generateEqualShare(
+  countOptions: number[] = [2, 4, 5, 8, 10],
+  mode: MissionMode = "medium"
+): MissionMathDraw {
+  const count = pick(biasOptions(countOptions, mode));
+  const shareTenths = randInt(1, scaleMax(9, mode, 4)); // the answer, in tenths: e.g. 2 -> 0.2
   const amount = (shareTenths * count) / 10;
   const correct = (shareTenths / 10).toFixed(1);
   const amountStr = amount % 1 === 0 ? String(amount) : amount.toFixed(1);
@@ -39,8 +89,11 @@ export function generateEqualShare(countOptions: number[] = [2, 4, 5, 8, 10]): M
 }
 
 /** Same-denominator fraction subtraction, simplified — e.g. "3/4 - 1/4 = 1/2". */
-export function generateFractionSubtract(denominatorOptions: number[] = [4, 5, 6, 8, 10, 12]): MissionMathDraw {
-  const d = pick(denominatorOptions);
+export function generateFractionSubtract(
+  denominatorOptions: number[] = [4, 5, 6, 8, 10, 12],
+  mode: MissionMode = "medium"
+): MissionMathDraw {
+  const d = pick(biasOptions(denominatorOptions, mode));
   const a = randInt(2, d - 1);
   const b = randInt(1, a - 1);
   const diffNum = a - b;
@@ -72,12 +125,19 @@ export interface BudgetItem {
  * buys bread/milk/rice/eggs, how much is left?". Guarantees the items
  * chosen never exceed the budget (re-picks the budget up if needed) so
  * the answer is always a sensible non-negative remainder. */
-export function generateBudgetSubtract(pool: BudgetItem[], budgetOptions: number[] = [30, 40, 50, 60]): MissionMathDraw {
+export function generateBudgetSubtract(
+  pool: BudgetItem[],
+  budgetOptions: number[] = [30, 40, 50, 60],
+  mode: MissionMode = "medium"
+): MissionMathDraw {
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  const itemCount = randInt(3, Math.min(4, pool.length));
+  const minItems = mode === "easy" ? 2 : 3;
+  const maxItems = mode === "hard" ? Math.min(5, pool.length) : Math.min(4, pool.length);
+  const itemCount = randInt(minItems, Math.max(minItems, maxItems));
   const items = shuffled.slice(0, itemCount);
   const itemsTotal = items.reduce((sum, it) => sum + it.priceRM, 0);
-  const budget = budgetOptions.find((b) => b > itemsTotal) ?? Math.ceil(itemsTotal / 10) * 10 + 10;
+  const scaledBudgets = mode === "hard" ? budgetOptions.map((b) => b + 20) : budgetOptions;
+  const budget = scaledBudgets.find((b) => b > itemsTotal) ?? Math.ceil(itemsTotal / 10) * 10 + 10;
   const remaining = budget - itemsTotal;
 
   const listMs = items.map((it) => `${it.name.ms} = RM${it.priceRM}`).join(", ");
@@ -107,8 +167,8 @@ export interface UnitPair {
 /** Convert a bigUnit decimal value (1 d.p.) to smallUnit — always exact,
  * since the value is built from tenths and the factor is a power of ten,
  * e.g. "2.5 L -> 2500 mL". */
-export function generateUnitConvert(pair: UnitPair): MissionMathDraw {
-  const tenths = randInt(1, pair.maxBig * 10);
+export function generateUnitConvert(pair: UnitPair, mode: MissionMode = "medium"): MissionMathDraw {
+  const tenths = randInt(1, scaleMax(pair.maxBig, mode, 2) * 10);
   const value = tenths / 10;
   const valueStr = value % 1 === 0 ? String(value) : value.toFixed(1);
   const result = Math.round(value * pair.factor);
@@ -129,9 +189,16 @@ export function generateUnitConvert(pair: UnitPair): MissionMathDraw {
 
 /** Missing angle in a sum (straight line 180°, right angle 90°, or full
  * turn 360°) — e.g. "one angle is 65° on a straight line, what's the other?" */
-export function generateMissingAngle(totalOptions: number[] = [90, 180, 360]): MissionMathDraw {
+export function generateMissingAngle(
+  totalOptions: number[] = [90, 180, 360],
+  mode: MissionMode = "medium"
+): MissionMathDraw {
   const total = pick(totalOptions);
-  const known = randInt(10, total - 10);
+  // Easy keeps the known angle away from the edges (a friendlier split);
+  // Hard allows a lopsided split, which is genuinely a bit trickier to
+  // eyeball / sanity-check the answer against.
+  const margin = mode === "easy" ? Math.round(total * 0.3) : mode === "hard" ? 5 : 10;
+  const known = randInt(margin, total - margin);
   const missing = total - known;
 
   return {
@@ -154,9 +221,9 @@ export interface DataCategory {
 
 /** Sum of 3 randomly-counted categories, pictograph/tally-style — e.g.
  * "5 apples, 8 mangoes, 6 bananas were counted, how many fruits in total?" */
-export function generateDataTotal(categories: DataCategory[]): MissionMathDraw {
+export function generateDataTotal(categories: DataCategory[], mode: MissionMode = "medium"): MissionMathDraw {
   const shuffled = [...categories].sort(() => Math.random() - 0.5).slice(0, 3);
-  const counts = shuffled.map(() => randInt(3, 20));
+  const counts = shuffled.map(() => randInt(3, scaleMax(20, mode, 8)));
   const total = counts.reduce((sum, c) => sum + c, 0);
 
   const listMs = shuffled.map((c, i) => `${c.name.ms}: ${counts[i]}`).join(", ");
@@ -179,10 +246,13 @@ export function generateDataTotal(categories: DataCategory[]): MissionMathDraw {
 /** Elapsed time in minutes between a start and end 24-hour clock time —
  * built from a random start plus a chosen duration, so the duration is
  * always exact (no clock-arithmetic rounding to fix up). */
-export function generateTimeDuration(durationOptions: number[] = [15, 30, 45, 60, 90]): MissionMathDraw {
+export function generateTimeDuration(
+  durationOptions: number[] = [15, 30, 45, 60, 90],
+  mode: MissionMode = "medium"
+): MissionMathDraw {
   const startHour = randInt(6, 18);
   const startMinute = pick([0, 15, 30, 45]);
-  const duration = pick(durationOptions);
+  const duration = pick(biasOptions(durationOptions, mode));
 
   const startTotal = startHour * 60 + startMinute;
   const endTotal = startTotal + duration;
@@ -208,9 +278,9 @@ export function generateTimeDuration(durationOptions: number[] = [15, 30, 45, 60
 }
 
 /** Next term in a simple arithmetic sequence — e.g. "3, 7, 11, 15, 19, ?" */
-export function generatePatternMissing(): MissionMathDraw {
-  const start = randInt(2, 20);
-  const step = randInt(2, 9);
+export function generatePatternMissing(mode: MissionMode = "medium"): MissionMathDraw {
+  const start = randInt(2, scaleMax(20, mode, 6));
+  const step = randInt(2, scaleMax(9, mode, 3));
   const length = 5;
   const terms = Array.from({ length }, (_, i) => start + step * i);
   const next = start + step * length;
@@ -230,9 +300,9 @@ export function generatePatternMissing(): MissionMathDraw {
 }
 
 /** a × b, kid-friendly ranges (2-12 each factor) — e.g. "6 rows of 4 gems each". */
-export function generateMultiply(maxFactor = 12): MissionMathDraw {
-  const a = randInt(2, maxFactor);
-  const b = randInt(2, maxFactor);
+export function generateMultiply(maxFactor = 12, mode: MissionMode = "medium"): MissionMathDraw {
+  const a = randInt(2, scaleMax(maxFactor, mode, 5));
+  const b = randInt(2, scaleMax(maxFactor, mode, 5));
   const correct = a * b;
 
   return {
@@ -250,8 +320,11 @@ export function generateMultiply(maxFactor = 12): MissionMathDraw {
 }
 
 /** Same-denominator fraction addition, simplified — e.g. "1/6 + 2/6 = 1/2". */
-export function generateFractionAdd(denominatorOptions: number[] = [4, 5, 6, 8, 10, 12]): MissionMathDraw {
-  const d = pick(denominatorOptions);
+export function generateFractionAdd(
+  denominatorOptions: number[] = [4, 5, 6, 8, 10, 12],
+  mode: MissionMode = "medium"
+): MissionMathDraw {
+  const d = pick(biasOptions(denominatorOptions, mode));
   const a = randInt(1, d - 2);
   const b = randInt(1, d - a - 1);
   const sumNum = a + b;
@@ -275,8 +348,8 @@ export function generateFractionAdd(denominatorOptions: number[] = [4, 5, 6, 8, 
 }
 
 /** Perimeter of a rectangle — e.g. "8 m long, 5 m wide, how much fencing?" */
-export function generatePerimeter(maxSide = 20): MissionMathDraw {
-  const length = randInt(3, maxSide);
+export function generatePerimeter(maxSide = 20, mode: MissionMode = "medium"): MissionMathDraw {
+  const length = randInt(3, scaleMax(maxSide, mode, 6));
   const width = randInt(2, length);
   const perimeter = 2 * (length + width);
 
@@ -295,9 +368,10 @@ export function generatePerimeter(maxSide = 20): MissionMathDraw {
 }
 
 /** Missing factor in a multiplication — e.g. "? × 6 = 42" -> 7. */
-export function generateMissingFactor(maxFactor = 12): MissionMathDraw {
-  const known = randInt(2, maxFactor);
-  const missing = randInt(2, maxFactor);
+export function generateMissingFactor(maxFactor = 12, mode: MissionMode = "medium"): MissionMathDraw {
+  const scaled = scaleMax(maxFactor, mode, 5);
+  const known = randInt(2, scaled);
+  const missing = randInt(2, scaled);
   const product = known * missing;
 
   return {

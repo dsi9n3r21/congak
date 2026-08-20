@@ -5,10 +5,22 @@ import { Bi } from "@/lib/i18n/Bi";
 import { getMissionById } from "@/lib/missions/missions";
 import { MISSION_CATEGORY_STYLES } from "@/lib/missions/categoryStyle";
 import { MissionPlayer } from "@/components/student/MissionPlayer";
+import type { MissionMode } from "@/lib/missions/types";
 
-export default async function MissionPage({ params }: { params: { missionId: string } }) {
+const VALID_MODES: MissionMode[] = ["easy", "medium", "hard"];
+
+export default async function MissionPage({
+  params,
+  searchParams,
+}: {
+  params: { missionId: string };
+  searchParams: { mode?: string };
+}) {
   const mission = getMissionById(params.missionId);
   if (!mission) notFound();
+  const mode: MissionMode = VALID_MODES.includes(searchParams.mode as MissionMode)
+    ? (searchParams.mode as MissionMode)
+    : "medium";
 
   const style = MISSION_CATEGORY_STYLES[mission.category];
 
@@ -26,7 +38,7 @@ export default async function MissionPage({ params }: { params: { missionId: str
   return (
     <main className="min-h-screen pb-24 md:pb-8">
       <header className="px-5 pt-6 pb-2">
-        <Link href={`/quests/category/${mission.category}`} className="text-xs font-semibold text-ink/50">
+        <Link href={`/quests/category/${mission.category}?mode=${mode}`} className="text-xs font-semibold text-ink/50">
           ← {lang === "en" ? "Back" : "Kembali"}
         </Link>
         <div className="mt-2 flex items-center gap-2">
@@ -37,7 +49,7 @@ export default async function MissionPage({ params }: { params: { missionId: str
         </div>
       </header>
 
-      <MissionPlayer missionId={mission.id} lang={lang} />
+      <MissionPlayer missionId={mission.id} lang={lang} mode={mode} />
     </main>
   );
 }

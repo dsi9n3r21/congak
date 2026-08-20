@@ -14,6 +14,15 @@ export type MissionCategory =
 export type MissionKind = "rescue" | "exploration" | "mystery" | "builder" | "financial_literacy" | "time_travel";
 
 /**
+ * Difficulty mode, chosen once per adventure run — independent of
+ * `yearLevel` (which is the KSSR grade the mission's content belongs to).
+ * A Y4 student picks Easy/Medium/Hard the same way an adult picks a game
+ * difficulty; it scales the NUMBERS and how much the challenge text gives
+ * away, not the grade the skill comes from. See lib/missions/difficulty.ts.
+ */
+export type MissionMode = "easy" | "medium" | "hard";
+
+/**
  * One playable draw of a mission's math: the actual numbers for this
  * attempt, already substituted into the question text. `values` holds
  * every named number/word this draw used (e.g. { count: 5, amount: 1,
@@ -45,7 +54,10 @@ export interface MissionVariant {
   outcomeSuccess: Bilingual;
   outcomeRetry: Bilingual;
   reflection: Bilingual;
-  generateMath: () => MissionMathDraw;
+  /** `mode` defaults to "medium" inside each generator so every existing
+   * call site (and every mission that hasn't opted into scaling yet)
+   * keeps working unchanged. */
+  generateMath: (mode?: MissionMode) => MissionMathDraw;
 }
 
 export interface MissionTemplate {

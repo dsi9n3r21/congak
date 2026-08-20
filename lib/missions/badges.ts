@@ -52,4 +52,19 @@ export const BADGES: Record<string, BadgeDef> = {
     target: 4,
     description: { ms: "Selesaikan 4 misi berkaitan masa.", en: "Complete 4 time-related missions." },
   },
+  adventure_champion: {
+    id: "adventure_champion",
+    name: { ms: "Lencana Juara Pengembaraan", en: "Adventure Champion Badge" },
+    emoji: "🏆",
+    // One "unit" per full adventure clear (all obstacles on the map, any
+    // one mode) — target 1 so it's earned the moment the map is first
+    // completed, then can climb past 1 if a student clears it again on a
+    // harder mode (record_badge_progress already caps at target but we
+    // bump target here per clear via completeAdventureRun, see actions).
+    target: 1,
+    description: {
+      ms: "Selesaikan semua 9 halangan di Peta Pengembaraan dalam satu mod.",
+      en: "Clear all 9 obstacles on the Adventure Map in one mode.",
+    },
+  },
 };

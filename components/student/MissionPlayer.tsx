@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Bi } from "@/lib/i18n/Bi";
 import type { Bilingual, Lang } from "@/lib/i18n/dictionary";
+import Link from "next/link";
 import { fillTemplate } from "@/lib/missions/types";
+import type { MissionMode } from "@/lib/missions/types";
 import { getMissionById } from "@/lib/missions/missions";
 import { BADGES } from "@/lib/missions/badges";
 import { completeMission } from "@/lib/actions/missions";
@@ -32,24 +34,30 @@ const PINTAR = {
  * the (non-serializable) function values never have to be passed as a
  * prop.
  */
-export function MissionPlayer({ missionId, lang }: { missionId: string; lang: Lang }) {
+export function MissionPlayer({ missionId, lang, mode = "medium" }: { missionId: string; lang: Lang; mode?: MissionMode }) {
   const router = useRouter();
   // Safe: page.tsx already calls notFound() server-side if this id
   // doesn't resolve, so MissionPlayer is never mounted with a bad id.
   const mission = useMemo(() => getMissionById(missionId)!, [missionId]);
 
   // One variant (story skin) picked for this whole playthrough, and one
-  // math draw from it — both fixed with useState's lazy initializer so
-  // they don't reroll on every render, only when the student restarts.
-  const [variant] = useState(() => mission.variants[Math.floor(Math.random() * mission.variants.length)]);
-  const [draw, setDraw] = useState(() => variant.generateMath());
+  // math draw from it. Both start with useState's lazy initializer and
+  // both get rerolled together on restart() — previously only the math
+  // draw rerolled while the story stayed pinned to the first variant,
+  // so "Play again" repeated the same story with new numbers instead of
+  // a genuinely fresh combination.
+  const [variant, setVariant] = useState(() => mission.variants[Math.floor(Math.random() * mission.variants.length)]);
+  const [draw, setDraw] = useState(() => variant.generateMath(mode));
   const [stage, setStage] = useState<Stage>("intro");
   const [answer, setAnswer] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const [reward, setReward] = useState<{ badgeJustEarned: boolean; leveledUp: boolean; coinsEarned: number } | null>(
-    null
-  );
+  const [reward, setReward] = useState<{
+    badgeJustEarned: boolean;
+    leveledUp: boolean;
+    coinsEarned: number;
+    adventureCompleted: boolean;
+  } | null>(null);
   const [rewardError, setRewardError] = useState(false);
   const answerInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,17 +83,30 @@ export function MissionPlayer({ missionId, lang }: { missionId: string; lang: La
       category: mission.category,
       xpEarned: mission.rewardXp,
       badgeId: mission.badgeId,
+      mode,
     }).catch(() => null);
     if (!result?.ok) {
       setRewardError(true);
       return;
     }
-    setReward({ badgeJustEarned: !!result.badgeJustEarned, leveledUp: !!result.leveledUp, coinsEarned: result.coinsEarned ?? 0 });
-  }, [mission]);
+    setReward({
+      badgeJustEarned: !!result.badgeJustEarned,
+      leveledUp: !!result.leveledUp,
+      coinsEarned: result.coinsEarned ?? 0,
+      adventureCompleted: !!result.adventureCompleted,
+    });
+  }, [mission, mode]);
 
   const restart = useCallback(() => {
-    const nextVariant = mission.variants[Math.floor(Math.random() * mission.variants.length)];
-    setDraw(nextVariant.generateMath());
+    // Prefer a different variant than the one just played (when there is
+    // more than one) so back-to-back plays of the same mission don't
+    // show the identical story twice in a row — the math draw is always
+    // fresh regardless (every generator re-rolls its own randInt/pick
+    // calls), so this is what makes a replay feel like a new mission.
+    const others = mission.variants.filter((v) => v !== variant);
+    const nextVariant = others.length > 0 ? others[Math.floor(Math.random() * others.length)] : variant;
+    setVariant(nextVariant);
+    setDraw(nextVariant.generateMath(mode));
     setAnswer("");
     setAttempts(0);
     setShowHint(false);
@@ -93,7 +114,7 @@ export function MissionPlayer({ missionId, lang }: { missionId: string; lang: La
     setRewardError(false);
     setStage("intro");
     router.refresh();
-  }, [mission, router]);
+  }, [mission, variant, mode, router]);
 
   const badge = mission.badgeId ? BADGES[mission.badgeId] : null;
 
@@ -138,6 +159,16 @@ export function MissionPlayer({ missionId, lang }: { missionId: string; lang: La
                 <p className="mt-1.5 font-num text-sm font-semibold text-ink">
                   💡 <Bi text={fillTemplate(draw.workingHint, merged)} lang={lang} />
                 </p>
+              )}
+              {attempts >= 2 && (
+                <div className="mt-2.5 flex gap-2 border-t border-saga-light/60 pt-2.5 text-xs font-semibold">
+                  <Link href="/pintar" className="flex-1 text-center text-ungu-dark underline">
+                    {lang === "en" ? "Ask Pintar" : "Tanya Pintar"}
+                  </Link>
+                  <Link href="/learn" className="flex-1 text-center text-ungu-dark underline">
+                    {lang === "en" ? "Review this topic" : "Ulang kaji topik ini"}
+                  </Link>
+                </div>
               )}
             </div>
           )}
@@ -216,7 +247,7 @@ export function MissionPlayer({ missionId, lang }: { missionId: string; lang: La
           <p className="mt-3 text-sm opacity-90">{lang === "en" ? "Saving your reward..." : "Menyimpan ganjaran anda..."}</p>
         </div>
       )}
-      {stage === "reward" && !rewardError && reward && (
+      {stage === "reward" && !rewardError && reward && !reward.adventureCompleted && (
         <div className="relative overflow-hidden rounded-kite bg-gradient-to-b from-pandan to-pandan-dark p-6 text-center text-paper shadow-hero">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent" />
           <div className="relative mx-auto h-28 w-28">
@@ -259,6 +290,33 @@ export function MissionPlayer({ missionId, lang }: { missionId: string; lang: La
         </div>
       )}
 
+      {/* ---- Mega reward: last obstacle on the Adventure Map cleared ---- */}
+      {stage === "reward" && !rewardError && reward && reward.adventureCompleted && (
+        <div className="relative overflow-hidden rounded-kite bg-gradient-to-b from-kuning via-kuning-dark to-ungu-dark p-6 text-center text-paper shadow-hero">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent" />
+          <div className="relative mx-auto h-32 w-32 animate-bounce">
+            <Image src={PINTAR.reward} alt="Pintar" fill className="object-contain" />
+          </div>
+          <p className="relative mt-2 text-4xl">🏆</p>
+          <p className="relative mt-1 font-display text-xl font-bold">
+            {lang === "en" ? "Adventure Champion!" : "Juara Pengembaraan!"}
+          </p>
+          <p className="relative mt-1 text-sm opacity-90">
+            {lang === "en"
+              ? "You crossed every obstacle on the map and reached the end."
+              : "Anda telah melalui semua halangan di peta dan sampai ke penghujungnya."}
+          </p>
+          <p className="relative mt-3 font-display text-lg font-bold">+{mission.rewardXp} XP</p>
+          {reward.coinsEarned > 0 && <p className="relative mt-0.5 font-display text-base font-bold">🪙 +{reward.coinsEarned}</p>}
+          <button
+            onClick={() => setStage("reflection")}
+            className="relative mt-5 w-full min-h-[44px] rounded-kite bg-white py-3 font-display font-bold text-ungu-dark"
+          >
+            {lang === "en" ? "Continue" : "Teruskan"} →
+          </button>
+        </div>
+      )}
+
       {/* ---- Reflection ---- */}
       {stage === "reflection" && (
         <div className="rounded-kite bg-white p-5 text-center shadow-card">
@@ -279,10 +337,17 @@ export function MissionPlayer({ missionId, lang }: { missionId: string; lang: La
               {lang === "en" ? "Play again" : "Main lagi"}
             </button>
             <button
-              onClick={() => router.push(`/quests/category/${mission.category}`)}
+              onClick={() => router.push(reward?.adventureCompleted ? "/quests" : `/quests/category/${mission.category}`)}
               className="flex-1 min-h-[44px] rounded-kite bg-ungu py-3 font-display text-sm font-bold text-white"
             >
-              {lang === "en" ? "More missions" : "Lebih misi"} →
+              {reward?.adventureCompleted
+                ? lang === "en"
+                  ? "Back to map"
+                  : "Kembali ke peta"
+                : lang === "en"
+                  ? "More missions"
+                  : "Lebih misi"}{" "}
+              →
             </button>
           </div>
         </div>

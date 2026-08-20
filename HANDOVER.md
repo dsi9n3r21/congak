@@ -4353,3 +4353,128 @@ variant re-verified at 300 draws each (6000 total) with a check
 specifically added this round for floating-point-artifact answers (e.g.
 "RM16.099999999999998") on top of the usual token-resolution checks —
 0 failures across the board after the fix.
+
+## Round: Adventure Map overhaul (mode selection, obstacle-course reframe, mega badge, fusion questions)
+
+Lynda's brief: missions felt capped at "2 games per topic"; wanted the
+Quests homepage turned into a visual A-to-B map where each category is an
+obstacle Pintar must clear, a mega reward at the end, an Easy/Medium/Hard
+mode picker, "Play again" available even after 100%-ing everything,
+genuinely randomised/unique questions, and harder questions that combine
+multiple disciplines (e.g. number + angle + geometry in one problem) —
+framed so a kid could learn just from playing missions, without ever
+touching Latihan/Peperiksaan.
+
+**Key reframe: the "only 2 games" ceiling was a perception problem, not
+a content-size problem.** Every mission already re-rolls its own numbers
+via Math.random on each play (that was the whole point of the original
+Mission Engine design) — what was missing was (a) the category page
+literally listing "N missions" like a fixed menu, inviting the "only 2"
+read, and (b) `restart()` silently pinning the SAME story variant across
+replays (a real bug — only the math re-rolled, not the visible story).
+Fixed both instead of trying to author hundreds more missions: category
+pages now open on ONE big "Start Challenge" card (a mission picked at
+random from the category, server-side, fresh every visit) with the
+mission list demoted to "or try a different story" underneath; restart()
+now also rerolls to a different variant than just played. Between random
+variant × random math draw × (now) mode-scaled ranges, replaying the
+same obstacle repeatedly no longer looks identical.
+
+**MissionMode (easy/medium/hard)** — NEW, independent of `yearLevel`
+(the KSSR grade a mission's content belongs to; unchanged, no longer
+mislabeled as difficulty on the category page, which previously showed
+Y4/5/6 as literal "Mudah/Sederhana/Sukar" — confusing, since a Y4 student
+on "Hard" would have jumped to Y6 content). Mode is carried as a
+`?mode=` query param through map -> category -> mission (no new student
+column needed for v1). `lib/missions/difficulty.ts` holds one shared
+scale factor per mode (0.6x/1x/1.6x) plus `biasOptions()` for
+options-array generators (discount %, duration presets) — applied inside
+each generator's own random ranges rather than a generic wrapper, since
+the "sane floor" per generator differs (e.g. angle margins vs multiply
+factors). Threaded through 11 of the ~15 mission generators this round
+(equal-share, fraction ±, budget-subtract, unit-convert, missing-angle,
+data-total, time-duration, pattern, multiply, perimeter, missing-factor)
+— NOT yet threaded through the 3 existing multi-step generators
+(budget-discount, fraction-scale, unit-subtract), which are reserved as
+part of Hard mode's "prefer chained missions" strategy instead. Smoke-
+tested the touched generators at 5000 draws/mode via a throwaway script
+(not committed) — 0 bad draws (checked: integer/positive answers where
+expected, angle sums stay in 0-180 range, budget remainders never
+negative).
+
+**Fusion questions (multi-discipline)** — new category of generator,
+deliberately distinct from the existing multi-step ones: those chain two
+steps of the SAME family (e.g. discount then change, both money); fusion
+chains DIFFERENT disciplines end-to-end into one final answer. Shipped
+one real example, `generateFusionAreaAngle` (Number -> Geometry -> Angle:
+divide to find a rectangle's missing side from its area, then that side
+becomes one of three angles summing to a straight line — find the
+third). 15,000-draw smoke test, 0 bad draws. This is a template, not
+full coverage — extending to more discipline combinations (the brief
+specifically asked for number+angle+geometry, which this covers; other
+combos like money+time+measurement are natural next candidates) is
+scoped as future work, same as how the original multi-step trio started
+with 3 examples before any retrofit pass.
+
+**Adventure Map homepage** (`app/(student)/quests/page.tsx`, fully
+rewritten) — SVG winding path (hand-placed points, not computed) from A
+to B with one node per category (9 total), green checkmark on cleared
+nodes, Pintar's marker positioned at the furthest-cleared node, a locked
+chest at B that becomes 🏆 once every category is cleared for the
+selected mode. Mode-selector pills at the top double as the page's own
+`?mode=` navigation. The tappable category grid is kept BELOW the map
+(with a ✅ badge on cleared ones) as the actual navigation — the SVG is
+the illustration, the grid is what's actually reliable to tap on mobile.
+Known v1 limitation: the Pintar marker's percentage-based positioning
+assumes the SVG fills its container edge-to-edge; the section's `p-3`
+padding means the marker sits very slightly off from the literal node —
+close enough to read correctly, worth a proper coordinate fix if it
+looks off on a real device.
+
+**Mega badge + run tracking** — new `adventure_champion` badge
+(badges.ts) and new migration `0043_adventure_map.sql`: `adventure_runs`
+table (one row per student+mode, `categories_cleared text[]`) plus two
+Postgres functions, `clear_adventure_obstacle` (atomic append-and-check,
+same race-safety pattern as the existing `record_badge_progress`) and
+`restart_adventure_run` (resets `categories_cleared` for "Play again"
+after a full clear, without touching the badge already earned).
+`completeMission` (lib/actions/missions.ts) now accepts an optional
+`mode` and calls `clear_adventure_obstacle` when present, returning a
+new `adventureCompleted` flag; MissionPlayer shows a distinct gold/purple
+mega-reward screen (🏆 Adventure Champion) instead of the normal reward
+screen when that flag comes back true, and its "More missions" button
+becomes "Back to map" in that case. New `restartAdventure` action +
+`ReplayAdventureButton` client component wire up "Play Adventure Again",
+shown on the map once every category is cleared for the current mode —
+satisfies "let them replay even after finishing everything" without
+touching the badge they already earned (target climbs by 1 each clear
+instead of capping at 1, so replaying keeps progressing it rather than
+becoming a no-op).
+
+**Stuck-help link** — after a 2nd wrong attempt in MissionPlayer, added
+"Ask Pintar" (-> /pintar) and "Review this topic" (-> /learn, not a
+specific topic — missions aren't currently mapped 1:1 to a curriculum
+topic id, so this points at the Belajar tab in general rather than
+guessing) alongside the existing worked-hint text.
+
+**NOT done yet, flagged for a future round** (parity with how big
+features have always been staged here): migrations 0041/0042/0043 all
+need to be applied to the real Supabase project + real-device test
+before any of this is live (same "code deployed but not yet playable
+until migration applied" gap as every prior mission-engine round);
+difficulty-mode scaling not yet threaded through the 3 existing
+multi-step generators; only 1 fusion generator exists as a proof of
+concept, not a full retrofit; Pintar map marker's exact pixel alignment
+worth revisiting on a real phone.
+
+Verified: `tsc --noEmit` clean across the whole project (baseline-only
+pre-existing errors — missing lucide-react/react-markdown/remark-gfm
+type declarations in this sandbox's partial `node_modules`, and one
+`globals.css` import — all present before this round's changes, none
+introduced by it). `next build` in this sandbox fails only on the same
+pre-existing Google Fonts network-fetch error noted in earlier rounds
+(no internet access to fonts.googleapis.com here) plus the same missing
+`react-markdown` package — both environment limitations, not code
+issues; every touched generator additionally smoke-tested standalone via
+a throwaway tsx script (not committed) across all 3 modes with 0 bad
+draws.
