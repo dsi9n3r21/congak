@@ -4654,3 +4654,97 @@ option if Lynda wants the fuller version later; worth prototyping as its
 own round given the layout refactor involved. Multi-discipline (fusion)
 question set is still just the 1 example from 2 rounds ago — Lynda's
 asked to keep building these out, next natural round.
+
+## Round: Scrollable per-world adventure paths (Candy Crush / Duolingo-style redesign)
+
+Lynda reported level 1-3 nodes on the top map were partially hidden
+behind the bottom nav and the Pintar avatar, and that the map felt like
+a static poster rather than a journey — with a detailed spec asking for
+a scrollable, camera-following, parallax multi-level map per category
+("world"), matching Candy Crush / Duolingo / Royal Match / Monopoly Go
+world-map conventions.
+
+**Root cause of the hiding bug, found before any redesign work**: the
+top map's `VIEW_H` constant was declared as 1752 but the actual
+`<svg viewBox>` and container `aspectRatio` both hardcoded `1400`
+instead of referencing it — so `PATH_POINTS` for levels 1 and 2 (y=1620,
+y=1480) sat OUTSIDE the visible viewBox entirely and were clipped at the
+container edge, right where the fixed bottom nav sits. This is
+superseded by the full redesign below rather than patched in place.
+
+**Architecture change: categories are now actual multi-level "worlds",
+not single 1-question obstacles.** Each of the 9 categories (matching
+Lynda's requested names exactly — Number Forest, Fraction Valley, Money
+Market, Measurement Village, Geometry Temple, Data Town, Time Station,
+KBAT Library, Real Life City, see `lib/missions/worldConfig.ts`) now has
+its own `LEVELS_PER_WORLD = 8` scrollable path at `/quests/world/
+[category]`. A level isn't a specific authored mission — same
+"unlimited via randomization" approach as before, just now expressed as
+8 numbered stops instead of 1. New migration `0044_world_levels.sql`
+adds a `world_levels` table (student+mode+category → cleared_count) and
+`clear_world_level`/`restart_world` functions, layered UNDER the
+existing `adventure_runs` (0043): `completeMission` now calls
+`clear_world_level` first, and only calls the existing
+`clear_adventure_obstacle` (marking the whole category "cleared" on the
+top map) once a world's 8th level clears — so the mega
+`adventure_champion` badge now requires walking all 9 worlds fully
+(9×8 = 72 completions for a full clear), not 9. The old
+`/quests/category/[category]` obstacle-briefing page is deleted
+(fully superseded, not just demoted this time).
+
+**New `AdventurePath` component** (`components/student/AdventurePath.tsx`)
+is the actual game-map: an `overflow-y-auto` scroll container (not a
+fixed-size static SVG) tall enough for all 8 levels plus safe-area
+padding, path drawn bottom-up (level 1 lowest) with alternating
+left/right zig-zag. Requirement-by-requirement: (1) scrollable — yes,
+native touch/drag scroll on its own container; (2) auto-focus — a
+`useEffect` calls `scrollIntoView({ block: "center" })` on the current
+node's ref on mount; (3) node size +20% (72px, up from ~60px) with
+spacing that keeps every node clear of the next; (4) parallax — two
+decorative layers (clouds, leaves) translate at 0.15x/0.35x of
+`scrollTop`, updated via an rAF-throttled scroll handler; (5) completed
+path segments render solid gold with a `drop-shadow` glow, the current
+node pulses (`animate-pulse` + an `animate-ping` ring), locked nodes sit
+at 50% opacity and aren't links; (6) — see architecture note above;
+(7) camera — same as (2); (8) safe area — level 1 sits with **268px**
+of clearance above the container's bottom edge (verified numerically,
+see below), well over the requested 120px minimum, and the component
+never positions a node outside its own scrollable bounds (unlike the
+old bug).
+
+**Wiring**: the world page picks a random mission from the category
+(same pattern as the old obstacle page) and only the CURRENT node is a
+real link (`/quests/[missionId]?...&category=X&level=N`); cleared/locked
+nodes are inert in this v1 — replaying a specific old level isn't
+supported yet, only replaying the whole world via the new
+`ReplayWorldButton` once it's fully cleared (mirrors the existing
+`ReplayAdventureButton` pattern for the whole map). The mission page and
+`MissionPlayer` now speak in "Level N of 8" / world-name terms instead
+of the old "Mission N of 9" node language; the `PintarWalkStrip` from
+the previous round is repointed at level-within-world progress
+(genuinely more fitting now that there ARE multiple levels to walk
+between) and a distinct small "🏆 World complete!" banner replaces it
+once level 8 clears. The top-level `/quests` page is now a "choose your
+world" list (9 world cards, sequential lock same as before, progress
+shown as X/8) rather than attempting a second complex scrollable view —
+kept simpler by design, since the interesting map experience now lives
+one level down, per world.
+
+**Verified**: node placement math checked numerically outside the
+browser (level 1: top=956, bottom edge=1028, clearance to container
+bottom=268px, well past the 120px ask; level 8 sits at top=32, both
+within the container's own height, nothing clipped). `tsc --noEmit`
+clean project-wide (one stale `.next/types` reference to the deleted
+category route, cleared by removing `.next/types` — not a real error).
+Mission generator smoke test re-run post-refactor: 1305 draws, 0
+failures — confirms the world/level plumbing didn't disturb the
+generator-wiring fix from the previous round.
+
+**Not done this round, flagged**: replaying a specific already-cleared
+level (only whole-world replay exists); the parallax decoration set is
+simple (clouds + leaves) rather than being per-world (Number Forest vs
+Money Market currently share the same decorative sprites, just a
+different backdrop photo) — theming the parallax elements per world is
+a natural next polish pass; migrations 0043 AND 0044 both need applying
+to the real Supabase project before any of this is live, same standing
+gap as every round since the map work started.

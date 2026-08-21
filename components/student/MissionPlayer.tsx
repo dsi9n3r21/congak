@@ -7,7 +7,7 @@ import { Bi } from "@/lib/i18n/Bi";
 import type { Bilingual, Lang } from "@/lib/i18n/dictionary";
 import Link from "next/link";
 import { fillTemplate } from "@/lib/missions/types";
-import type { MissionMode } from "@/lib/missions/types";
+import type { MissionMode, MissionCategory } from "@/lib/missions/types";
 import { getMissionById } from "@/lib/missions/missions";
 import { BADGES } from "@/lib/missions/badges";
 import { completeMission } from "@/lib/actions/missions";
@@ -94,25 +94,24 @@ export function MissionPlayer({
   missionId,
   lang,
   mode = "medium",
-  nextCategoryLabel,
   nodeNumber,
   totalNodes,
+  category,
 }: {
   missionId: string;
   lang: Lang;
   mode?: MissionMode;
-  /** Shown on the reward screen as "Next stop: {label}" — the next node
-   * in the fixed 1-9 map sequence, so finishing a mission feels like
-   * Pintar pointing forward rather than a dead end back to a menu.
-   * Undefined when this mission is the last node (nothing to point to). */
-  nextCategoryLabel?: Bilingual;
-  /** This mission's 1-indexed position in the map sequence, and the
-   * total node count — together these drive the small animated "Pintar
-   * walks to the next stop" strip on the reward screen (see
-   * PintarWalkStrip below). Both optional so MissionPlayer still works
-   * if a mission is ever opened outside the map flow. */
+  /** This mission's level number within its world (1..LEVELS_PER_WORLD),
+   * and the world's total level count — together drive the small
+   * animated "Pintar walks to the next stop" strip on the reward screen
+   * (see PintarWalkStrip below). Both optional so MissionPlayer still
+   * works if a mission is ever opened outside the world-map flow. */
   nodeNumber?: number;
   totalNodes?: number;
+  /** Which world (category) this level belongs to — needed so
+   * completeMission can progress the right world's level count, and so
+   * "Back to map"/"Continue" knows which world page to return to. */
+  category?: MissionCategory;
 }) {
   const router = useRouter();
   // Safe: page.tsx already calls notFound() server-side if this id
@@ -136,6 +135,7 @@ export function MissionPlayer({
     leveledUp: boolean;
     coinsEarned: number;
     adventureCompleted: boolean;
+    worldCompleted: boolean;
   } | null>(null);
   const [rewardError, setRewardError] = useState(false);
   const answerInputRef = useRef<HTMLInputElement>(null);
@@ -159,7 +159,7 @@ export function MissionPlayer({
     setRewardError(false);
     const result = await completeMission({
       missionId: mission.id,
-      category: mission.category,
+      category: category ?? mission.category,
       xpEarned: mission.rewardXp,
       badgeId: mission.badgeId,
       mode,
@@ -173,8 +173,9 @@ export function MissionPlayer({
       leveledUp: !!result.leveledUp,
       coinsEarned: result.coinsEarned ?? 0,
       adventureCompleted: !!result.adventureCompleted,
+      worldCompleted: !!result.worldCompleted,
     });
-  }, [mission, mode]);
+  }, [mission, mode, category]);
 
   const restart = useCallback(() => {
     // Prefer a different variant than the one just played (when there is
@@ -349,20 +350,17 @@ export function MissionPlayer({
               {lang === "en" ? "Level up! 🎉" : "Naik tahap! 🎉"}
             </p>
           )}
-          {nodeNumber && totalNodes ? (
-            totalNodes > 1 && <PintarWalkStrip fromNode={nodeNumber} totalNodes={totalNodes} lang={lang} />
-          ) : (
-            nextCategoryLabel && (
-              <p className="relative mt-2 text-sm opacity-90">
-                <Bi
-                  text={{
-                    ms: `Seterusnya: ${nextCategoryLabel.ms}`,
-                    en: `Next stop: ${nextCategoryLabel.en}`,
-                  }}
-                  lang={lang}
-                />
+          {reward.worldCompleted ? (
+            <div className="relative mt-4 rounded-kite bg-white/15 px-4 py-4 text-center">
+              <p className="text-2xl">🏆</p>
+              <p className="mt-1 text-sm font-bold">
+                <Bi text={{ ms: "Dunia ini selesai!", en: "World complete!" }} lang={lang} />
               </p>
-            )
+            </div>
+          ) : (
+            nodeNumber &&
+            totalNodes &&
+            totalNodes > 1 && <PintarWalkStrip fromNode={nodeNumber} totalNodes={totalNodes} lang={lang} />
           )}
           {badge && (
             <p className="relative mt-2 text-sm opacity-90">
@@ -439,7 +437,13 @@ export function MissionPlayer({
               {lang === "en" ? "Play again" : "Main lagi"}
             </button>
             <button
-              onClick={() => router.push(`/quests?mode=${mode}`)}
+              onClick={() =>
+                router.push(
+                  reward?.adventureCompleted
+                    ? `/quests?mode=${mode}`
+                    : `/quests/world/${category ?? mission.category}?mode=${mode}`
+                )
+              }
               className="flex-1 min-h-[44px] rounded-kite bg-ungu py-3 font-display text-sm font-bold text-white"
             >
               {reward?.adventureCompleted

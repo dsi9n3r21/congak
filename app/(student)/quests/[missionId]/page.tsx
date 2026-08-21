@@ -2,8 +2,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Bi } from "@/lib/i18n/Bi";
-import { getMissionById, MISSIONS } from "@/lib/missions/missions";
+import { getMissionById } from "@/lib/missions/missions";
 import { MISSION_CATEGORY_STYLES } from "@/lib/missions/categoryStyle";
+import { LEVELS_PER_WORLD, WORLD_NAME } from "@/lib/missions/worldConfig";
 import { MissionPlayer } from "@/components/student/MissionPlayer";
 import type { MissionCategory, MissionMode } from "@/lib/missions/types";
 
@@ -14,21 +15,19 @@ export default async function MissionPage({
   searchParams,
 }: {
   params: { missionId: string };
-  searchParams: { mode?: string };
+  searchParams: { mode?: string; category?: string; level?: string };
 }) {
   const mission = getMissionById(params.missionId);
   if (!mission) notFound();
   const mode: MissionMode = VALID_MODES.includes(searchParams.mode as MissionMode)
     ? (searchParams.mode as MissionMode)
     : "medium";
-
-  const style = MISSION_CATEGORY_STYLES[mission.category];
-  const nodeOrder = (Object.keys(MISSION_CATEGORY_STYLES) as MissionCategory[]).filter((cat) =>
-    MISSIONS.some((m) => m.category === cat)
-  );
-  const nodeNumber = nodeOrder.indexOf(mission.category) + 1;
-  const nextCategory = nodeOrder[nodeNumber]; // nodeNumber is 1-indexed, so this is the NEXT one
-  const nextLabel = nextCategory ? MISSION_CATEGORY_STYLES[nextCategory].label : undefined;
+  // Falls back to the mission's own category if a caller ever opens
+  // this page without the world-page's ?category param — keeps the
+  // page from working correctly rather than crashing, just loses the
+  // "which world" framing.
+  const category = (searchParams.category as MissionCategory) ?? mission.category;
+  const levelNumber = Math.min(Math.max(parseInt(searchParams.level ?? "1", 10) || 1, 1), LEVELS_PER_WORLD);
 
   const supabase = createClient();
   const {
@@ -44,11 +43,11 @@ export default async function MissionPage({
   return (
     <main className="min-h-screen pb-24 md:pb-8">
       <header className="px-5 pt-6 pb-2">
-        <Link href={`/quests?mode=${mode}`} className="text-xs font-semibold text-ink/50">
-          ← <Bi text={{ ms: "Peta Pengembaraan", en: "Adventure Map" }} lang={lang} />
+        <Link href={`/quests/world/${category}?mode=${mode}`} className="text-xs font-semibold text-ink/50">
+          ← <Bi text={WORLD_NAME[category]} lang={lang} />
         </Link>
         <p className="mt-2 text-[11px] font-bold uppercase tracking-wide text-ungu-dark">
-          <Bi text={{ ms: `Misi ${nodeNumber}`, en: `Mission ${nodeNumber}` }} lang={lang} />
+          <Bi text={{ ms: `Aras ${levelNumber}`, en: `Level ${levelNumber}` }} lang={lang} />
         </p>
         <div className="mt-0.5 flex items-center gap-2">
           <span className="text-2xl">{mission.emoji}</span>
@@ -63,9 +62,9 @@ export default async function MissionPage({
         missionId={mission.id}
         lang={lang}
         mode={mode}
-        nextCategoryLabel={nextLabel}
-        nodeNumber={nodeNumber}
-        totalNodes={nodeOrder.length}
+        nodeNumber={levelNumber}
+        totalNodes={LEVELS_PER_WORLD}
+        category={category}
       />
     </main>
   );
