@@ -135,7 +135,22 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
         setMessages((m) => [...m, { role: "pintar", text: data.reply }]);
         setAvatarState(data.avatarState);
         setQuickReplies(data.quickReplies ?? []);
-        historyRef.current = [...requestHistory, { role: "pintar", text: data.reply }];
+        // Bug fix: this used to be `[...requestHistory, pintarReply]` —
+        // appending ONLY the assistant's own reply and never the user's
+        // message that prompted it. Since the engine is stateless and
+        // relies entirely on this array to know what was said, every
+        // turn's `history` silently grew with Pintar's own past replies
+        // but NEVER contained what the student actually asked — the
+        // engine was, in effect, seeing a transcript of itself talking
+        // to itself, then a lone dangling "ok" with no visible question
+        // to be "ok" about. The greeting trigger ("__greeting__",
+        // showUserBubble: false) is deliberately excluded from history
+        // as a user turn — it isn't something the student said, and the
+        // engine already turns it into a real greeting reply that DOES
+        // get recorded.
+        historyRef.current = showUserBubble
+          ? [...requestHistory, { role: "user", text: message }, { role: "pintar", text: data.reply }]
+          : [...requestHistory, { role: "pintar", text: data.reply }];
       } catch {
         setAvatarState("confuse");
         setMessages((m) => [...m, { role: "pintar", text: lang === "en" ? UI.pintarError.en : UI.pintarError.ms }]);

@@ -4748,3 +4748,55 @@ different backdrop photo) — theming the parallax elements per world is
 a natural next polish pass; migrations 0043 AND 0044 both need applying
 to the real Supabase project before any of this is live, same standing
 gap as every round since the map work started.
+
+## Round: Real bug found — PintarChat never included the student's own messages in history
+
+Lynda relayed a bug report (from her husband's side, diagnosing via a
+pasted transcript) that Pintar loses all context after a short reply
+like "ok", even defaulting to an unrelated exercise, and even when
+directly asked "can you help me answer my question". Correctly
+identified as a `history`-construction bug on the Congak side, since
+Pintar's engine is intentionally stateless and depends entirely on
+Congak resending the full conversation every request.
+
+**Root cause, confirmed exactly**: `PintarChat.tsx`'s `callEngine`
+function updated `historyRef.current` after every response with:
+```
+historyRef.current = [...requestHistory, { role: "pintar", text: data.reply }];
+```
+This appends ONLY the assistant's own reply — the student's message
+that PROMPTED that reply (`message`, sent as its own top-level request
+field) was never added to the `history` array at any point, for any
+turn. So `history` silently accumulated exclusively Pintar's own past
+replies. By the third turn in the reported transcript (student says
+"ok" after asking a multiplication/division question), the `history`
+sent to the engine was just two consecutive `role: "pintar"` entries —
+the actual question was nowhere in it. Simulated both the buggy and
+fixed logic against the exact reported transcript to confirm: under the
+old code, the student's "3567 multiply with 25...divide by 15?" message
+never appears in any `history` payload sent to the engine, at any
+point — not "gets lost after a few turns", literally never recorded
+once.
+
+**Fix**: same location, now conditionally includes the student's own
+message in the appended slice, keyed off the existing `showUserBubble`
+flag so the internal `__greeting__` trigger (not something the student
+said) doesn't get recorded as a fake user turn:
+```
+historyRef.current = showUserBubble
+  ? [...requestHistory, { role: "user", text: message }, { role: "pintar", text: data.reply }]
+  : [...requestHistory, { role: "pintar", text: data.reply }];
+```
+
+Verified: `tsc --noEmit` shows no new errors in `PintarChat.tsx` beyond
+the pre-existing sandbox baseline (missing `react-markdown`/
+`remark-gfm`/`lucide-react` type declarations, and the known
+`children`-implicit-any lines). Re-ran the exact transcript through both
+the old and new logic in a standalone simulation — confirms the fix
+correctly preserves the student's question in `history` from that point
+on, where the old code never did.
+
+Server-side engine now has a "which question were you asking about?"
+fallback per Lynda's husband's note — that's damage control on his end
+and should stay regardless of this fix (a real product safety net for
+any future context gaps, not a substitute for sending correct history).
