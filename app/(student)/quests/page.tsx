@@ -14,21 +14,33 @@ const MODE_LABEL: Record<MissionMode, { ms: string; en: string }> = {
   medium: { ms: "Sederhana", en: "Medium" },
   hard: { ms: "Sukar", en: "Hard" },
 };
+// One themed backdrop per mode, per the 3 world concepts (Fun Park /
+// Cityscape / Volcano-mountain) — swapping the backdrop is what makes
+// the SAME 1-9 node progression read as three different adventures
+// rather than a re-skinned color change.
+const MODE_WORLD: Record<MissionMode, { image: string; label: { ms: string; en: string } }> = {
+  easy: { image: "/quests/world-easy.webp", label: { ms: "Taman Ceria", en: "Fun Park" } },
+  medium: { image: "/quests/world-medium.webp", label: { ms: "Bandar Raya", en: "Cityscape" } },
+  hard: { image: "/quests/world-hard.webp", label: { ms: "Pengembaraan Ekstrem", en: "Extreme Adventure" } },
+};
 
-// Fixed winding-path coordinates for up to 9 nodes, hand-placed (not
-// computed) so the path reads as a natural trail rather than a straight
-// grid line — same viewBox convention as the app's other SVG diagrams.
+// Fixed winding-path node coordinates (in the artwork's own ~898x1752
+// portrait space, matched loosely to a path already readable across all
+// 3 backdrops) — hand-placed, not computed, so the trail reads naturally
+// rather than as a straight grid line.
 const PATH_POINTS = [
-  { x: 40, y: 460 },
-  { x: 110, y: 380 },
-  { x: 70, y: 300 },
-  { x: 150, y: 240 },
-  { x: 230, y: 280 },
-  { x: 270, y: 200 },
-  { x: 210, y: 130 },
-  { x: 280, y: 70 },
-  { x: 350, y: 40 },
+  { x: 210, y: 1620 },
+  { x: 340, y: 1480 },
+  { x: 230, y: 1330 },
+  { x: 420, y: 1220 },
+  { x: 300, y: 1060 },
+  { x: 480, y: 930 },
+  { x: 360, y: 760 },
+  { x: 520, y: 560 },
+  { x: 640, y: 340 },
 ];
+const VIEW_W = 898;
+const VIEW_H = 1752;
 
 export default async function QuestsPage({ searchParams }: { searchParams: { mode?: string } }) {
   const supabase = createClient();
@@ -45,11 +57,17 @@ export default async function QuestsPage({ searchParams }: { searchParams: { mod
   const mode: MissionMode = VALID_MODES.includes(searchParams.mode as MissionMode)
     ? (searchParams.mode as MissionMode)
     : "medium";
+  const world = MODE_WORLD[mode];
 
-  const categories = Object.keys(MISSION_CATEGORY_STYLES) as MissionCategory[];
-  const categoriesWithMissions = categories.filter((cat) => MISSIONS.some((m) => m.category === cat));
+  // Fixed 1-9 node order = the category order — this IS the progression
+  // sequence now (previously any category was reachable in any order;
+  // per the UX brief the map itself is the navigation, so obstacles now
+  // unlock strictly in sequence).
+  const nodeOrder = (Object.keys(MISSION_CATEGORY_STYLES) as MissionCategory[]).filter((cat) =>
+    MISSIONS.some((m) => m.category === cat)
+  );
 
-  let clearedSet = new Set<string>();
+  let clearedList: string[] = [];
   if (student) {
     const { data: run } = await supabase
       .from("adventure_runs")
@@ -57,35 +75,41 @@ export default async function QuestsPage({ searchParams }: { searchParams: { mod
       .eq("student_id", student.id)
       .eq("mode", mode)
       .single();
-    clearedSet = new Set(run?.categories_cleared ?? []);
+    clearedList = run?.categories_cleared ?? [];
   }
-  const clearedCount = categoriesWithMissions.filter((c) => clearedSet.has(c)).length;
-  const allCleared = clearedCount === categoriesWithMissions.length;
-  const points = PATH_POINTS.slice(0, categoriesWithMissions.length);
-  // Pintar stands just past the last cleared node — at the start (point
-  // A) if nothing's cleared yet, or at the final chest if everything is.
-  const pintarAt = allCleared ? points[points.length - 1] : points[Math.max(0, clearedCount - 1)];
+  const clearedSet = new Set(clearedList);
+  // Sequential progress: how many nodes from the START are cleared,
+  // regardless of insertion order in the DB array — a node further along
+  // never counts as "reached" if an earlier one is still open, since the
+  // map no longer allows skipping ahead.
+  let clearedCount = 0;
+  while (clearedCount < nodeOrder.length && clearedSet.has(nodeOrder[clearedCount])) clearedCount++;
+  const allCleared = clearedCount === nodeOrder.length;
+  const currentCategory = allCleared ? null : nodeOrder[clearedCount];
+
+  // The system (not the student) decides which mission within the
+  // current-node category comes next — picked fresh server-side on every
+  // page load, so replaying a node later offers a different mission.
+  const pickMission = (category: MissionCategory) => {
+    const pool = MISSIONS.filter((m) => m.category === category);
+    return pool[Math.floor(Math.random() * pool.length)];
+  };
+  const nextMission = currentCategory ? pickMission(currentCategory) : null;
+  const points = PATH_POINTS.slice(0, nodeOrder.length);
   const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
   const champion = BADGES.adventure_champion;
+
+  const journeyHref = nextMission ? `/quests/${nextMission.id}?mode=${mode}&category=${currentCategory}` : null;
 
   return (
     <main className="min-h-screen pb-24 md:pb-8">
       <header className="relative overflow-hidden px-5 pt-6 pb-3">
-        <div className="decorative absolute right-3 -top-2 h-28 w-28 rounded-full bg-kuning-light/60" />
-        <div className="relative z-10">
-          <h1 className="font-display text-xl font-bold text-ink">
-            <Bi text={{ ms: "Peta Pengembaraan", en: "Adventure Map" }} lang={lang} />
-          </h1>
-          <p className="mt-1 text-xs text-ink/50">
-            <Bi
-              text={{
-                ms: "Bantu Pintar merentasi setiap halangan dari A ke B",
-                en: "Help Pintar cross every obstacle from A to B",
-              }}
-              lang={lang}
-            />
-          </p>
-        </div>
+        <h1 className="font-display text-xl font-bold text-ink">
+          <Bi text={{ ms: "Misi Pengembaraan", en: "Adventure Mission" }} lang={lang} />
+        </h1>
+        <p className="mt-1 text-xs text-ink/50">
+          <Bi text={{ ms: "Bantu Pintar sampai ke B!", en: "Help Pintar reach B!" }} lang={lang} />
+        </p>
       </header>
 
       {/* ---- Mode selector ---- */}
@@ -103,63 +127,122 @@ export default async function QuestsPage({ searchParams }: { searchParams: { mod
         ))}
       </section>
 
-      {/* ---- The map ---- */}
-      <section className="relative mx-5 mt-4 overflow-hidden rounded-kite bg-gradient-to-b from-pandan-light to-biru-light p-3 shadow-card">
-        <svg viewBox="0 0 400 500" className="h-[420px] w-full">
-          <path d={pathD} fill="none" stroke="white" strokeWidth={6} strokeLinecap="round" strokeDasharray="2 14" opacity={0.8} />
+      {/* ---- Primary CTA, sitting just above the map ---- */}
+      <section className="mx-5 mt-4">
+        {journeyHref ? (
+          <Link
+            href={journeyHref}
+            className="block w-full min-h-[52px] rounded-kite bg-gradient-to-r from-kuning to-kuning-dark py-4 text-center font-display text-base font-bold text-white shadow-hero"
+          >
+            <Bi text={{ ms: "MULA PENGEMBARAAN", en: "START YOUR JOURNEY" }} lang={lang} /> →
+          </Link>
+        ) : (
+          <div className="rounded-kite bg-gradient-to-r from-kuning to-ungu-dark py-4 text-center font-display text-base font-bold text-white shadow-hero">
+            🏆 <Bi text={{ ms: "Peta selesai!", en: "Map complete!" }} lang={lang} />
+          </div>
+        )}
+        <p className="mt-1.5 text-center text-[11px] font-semibold text-ink/40">
+          {allCleared ? (
+            <Bi text={{ ms: "Semua 9 halangan selesai", en: "All 9 obstacles cleared" }} lang={lang} />
+          ) : (
+            <Bi
+              text={{ ms: `Halangan ${clearedCount + 1} daripada ${nodeOrder.length}`, en: `Obstacle ${clearedCount + 1} of ${nodeOrder.length}` }}
+              lang={lang}
+            />
+          )}
+        </p>
+      </section>
+
+      {/* ---- The map: themed world backdrop + numbered node path ---- */}
+      <section className="relative mx-5 mt-3 overflow-hidden rounded-kite shadow-card" style={{ aspectRatio: "898 / 1400" }}>
+        <Image src={world.image} alt={world.label.en} fill className="object-cover" priority />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10" />
+
+        <svg viewBox={`0 0 ${VIEW_W} 1400`} className="absolute inset-0 h-full w-full">
+          {points.map((p, i) => {
+            if (i === 0) return null;
+            const prev = points[i - 1];
+            const segmentDone = i <= clearedCount;
+            return (
+              <line
+                key={i}
+                x1={prev.x}
+                y1={prev.y}
+                x2={p.x}
+                y2={p.y}
+                stroke={segmentDone ? "#ffd94a" : "white"}
+                strokeWidth={segmentDone ? 7 : 5}
+                strokeLinecap="round"
+                strokeDasharray={segmentDone ? undefined : "3 12"}
+                opacity={segmentDone ? 0.95 : 0.55}
+              />
+            );
+          })}
 
           {points.map((p, i) => {
-            const cat = categoriesWithMissions[i];
-            const style = MISSION_CATEGORY_STYLES[cat];
-            const cleared = clearedSet.has(cat);
+            const cat = nodeOrder[i];
+            const cleared = i < clearedCount;
+            const isCurrent = i === clearedCount;
+            const locked = i > clearedCount;
+            const fill = cleared ? "#22c55e" : isCurrent ? "#ffd94a" : "#94a3b8";
             return (
-              <g key={cat}>
-                <circle cx={p.x} cy={p.y} r={22} fill={cleared ? "#22c55e" : "white"} stroke="#00000022" strokeWidth={2} />
-                <text x={p.x} y={p.y + 6} textAnchor="middle" fontSize={18}>
+              <g key={cat} opacity={locked ? 0.55 : 1}>
+                {isCurrent && <circle cx={p.x} cy={p.y} r={30} fill="#ffd94a" opacity={0.35} className="animate-ping" />}
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={24}
+                  fill={fill}
+                  stroke="white"
+                  strokeWidth={3}
+                  className={isCurrent ? "animate-pulse" : undefined}
+                />
+                <text x={p.x} y={p.y + 7} textAnchor="middle" fontSize={20} fontWeight={800} fill={locked ? "#1e293b" : "white"}>
                   {cleared ? "✓" : i + 1}
                 </text>
               </g>
             );
           })}
 
-          {/* Point A / point B labels */}
-          <text x={points[0].x} y={points[0].y + 45} textAnchor="middle" fontSize={13} fontWeight={700} fill="#334155">A</text>
-          <text x={points[points.length - 1].x} y={points[points.length - 1].y - 30} textAnchor="middle" fontSize={13} fontWeight={700} fill="#334155">B</text>
-
-          {/* Final chest at B — unlocked once every obstacle is cleared */}
-          <text x={points[points.length - 1].x + 34} y={points[points.length - 1].y + 6} fontSize={26}>
-            {allCleared ? "🏆" : "🔒"}
-          </text>
+          <text x={points[0].x} y={points[0].y + 48} textAnchor="middle" fontSize={16} fontWeight={800} fill="white">A</text>
+          <text x={points[points.length - 1].x} y={points[points.length - 1].y - 34} textAnchor="middle" fontSize={16} fontWeight={800} fill="white">B</text>
+          <text x={points[points.length - 1].x + 36} y={points[points.length - 1].y + 8} fontSize={30}>{allCleared ? "🏆" : "🔒"}</text>
         </svg>
 
-        {/* Pintar marker, positioned via the same coordinate space */}
+        {/* Pintar marker at the furthest-cleared node (or point A if none) */}
         <div
-          className="pointer-events-none absolute h-12 w-12 -translate-x-1/2 -translate-y-1/2 transition-all"
-          style={{ left: `${(pintarAt.x / 400) * 100}%`, top: `${(pintarAt.y / 500) * 100}%` }}
+          className="pointer-events-none absolute h-14 w-14 -translate-x-1/2 -translate-y-1/2 drop-shadow-lg transition-all"
+          style={{
+            left: `${(points[allCleared ? points.length - 1 : Math.max(0, clearedCount - 1)].x / VIEW_W) * 100}%`,
+            top: `${(points[allCleared ? points.length - 1 : Math.max(0, clearedCount - 1)].y / 1400) * 100}%`,
+          }}
         >
-          <Image src="/pintar/idle.png" alt="Pintar" fill className="object-contain drop-shadow" />
+          <Image src="/pintar/idle.png" alt="Pintar" fill className="object-contain" />
         </div>
       </section>
 
-      {/* ---- Node list (tappable — the SVG map is the illustration, this is the real nav) ---- */}
-      <section className="mx-5 mt-4 grid grid-cols-2 gap-2.5">
-        {categoriesWithMissions.map((cat) => {
-          const style = MISSION_CATEGORY_STYLES[cat];
-          const cleared = clearedSet.has(cat);
-          return (
-            <Link
-              key={cat}
-              href={`/quests/category/${cat}?mode=${mode}`}
-              className={`relative flex flex-col items-start gap-2 rounded-kite ${style.bg} p-4 shadow-card`}
-            >
-              {cleared && <span className="absolute right-3 top-3 text-lg">✅</span>}
-              <style.Icon className={style.fg} size={26} strokeWidth={2.25} />
-              <p className={`font-display text-sm font-bold leading-snug ${style.fg}`}>
+      {/* ---- Today's Focus: read-only labels, not navigation ---- */}
+      <section className="mx-5 mt-4">
+        <p className="px-1 text-xs font-semibold text-ink/40">
+          <Bi text={{ ms: "Fokus Hari Ini", en: "Today's Focus" }} lang={lang} />
+        </p>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {nodeOrder.map((cat, i) => {
+            const style = MISSION_CATEGORY_STYLES[cat];
+            const cleared = i < clearedCount;
+            const isCurrent = i === clearedCount;
+            return (
+              <span
+                key={cat}
+                className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${
+                  cleared ? "bg-pandan-light text-pandan-dark" : isCurrent ? "bg-kuning text-white" : "bg-ink/5 text-ink/35"
+                }`}
+              >
                 <Bi text={style.label} lang={lang} />
-              </p>
-            </Link>
-          );
-        })}
+              </span>
+            );
+          })}
+        </div>
       </section>
 
       {allCleared && (
@@ -189,8 +272,8 @@ export default async function QuestsPage({ searchParams }: { searchParams: { mod
           <p className="text-xs text-ink/60">
             <Bi
               text={{
-                ms: "Setiap halangan guna matematik sebenar — sesat? Tanya Pintar bila-bila masa.",
-                en: "Every obstacle uses real math — stuck? Ask Pintar any time.",
+                ms: "Sesat? Tanya Pintar bila-bila masa semasa cabaran.",
+                en: "Stuck? Ask Pintar any time during a challenge.",
               }}
               lang={lang}
             />

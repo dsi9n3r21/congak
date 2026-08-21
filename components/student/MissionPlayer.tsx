@@ -34,7 +34,21 @@ const PINTAR = {
  * the (non-serializable) function values never have to be passed as a
  * prop.
  */
-export function MissionPlayer({ missionId, lang, mode = "medium" }: { missionId: string; lang: Lang; mode?: MissionMode }) {
+export function MissionPlayer({
+  missionId,
+  lang,
+  mode = "medium",
+  nextCategoryLabel,
+}: {
+  missionId: string;
+  lang: Lang;
+  mode?: MissionMode;
+  /** Shown on the reward screen as "Next stop: {label}" — the next node
+   * in the fixed 1-9 map sequence, so finishing a mission feels like
+   * Pintar pointing forward rather than a dead end back to a menu.
+   * Undefined when this mission is the last node (nothing to point to). */
+  nextCategoryLabel?: Bilingual;
+}) {
   const router = useRouter();
   // Safe: page.tsx already calls notFound() server-side if this id
   // doesn't resolve, so MissionPlayer is never mounted with a bad id.
@@ -262,6 +276,17 @@ export function MissionPlayer({ missionId, lang, mode = "medium" }: { missionId:
               {lang === "en" ? "Level up! 🎉" : "Naik tahap! 🎉"}
             </p>
           )}
+          {nextCategoryLabel && (
+            <p className="relative mt-2 text-sm opacity-90">
+              <Bi
+                text={{
+                  ms: `Seterusnya: ${nextCategoryLabel.ms}`,
+                  en: `Next stop: ${nextCategoryLabel.en}`,
+                }}
+                lang={lang}
+              />
+            </p>
+          )}
           {badge && (
             <p className="relative mt-2 text-sm opacity-90">
               {badge.emoji}{" "}
@@ -337,7 +362,7 @@ export function MissionPlayer({ missionId, lang, mode = "medium" }: { missionId:
               {lang === "en" ? "Play again" : "Main lagi"}
             </button>
             <button
-              onClick={() => router.push(reward?.adventureCompleted ? "/quests" : `/quests/category/${mission.category}`)}
+              onClick={() => router.push(`/quests?mode=${mode}`)}
               className="flex-1 min-h-[44px] rounded-kite bg-ungu py-3 font-display text-sm font-bold text-white"
             >
               {reward?.adventureCompleted
@@ -345,8 +370,8 @@ export function MissionPlayer({ missionId, lang, mode = "medium" }: { missionId:
                   ? "Back to map"
                   : "Kembali ke peta"
                 : lang === "en"
-                  ? "More missions"
-                  : "Lebih misi"}{" "}
+                  ? "Next stop"
+                  : "Seterusnya"}{" "}
               →
             </button>
           </div>

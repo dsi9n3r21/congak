@@ -4478,3 +4478,90 @@ pre-existing Google Fonts network-fetch error noted in earlier rounds
 issues; every touched generator additionally smoke-tested standalone via
 a throwaway tsx script (not committed) across all 3 modes with 0 bad
 draws.
+
+## Round: Adventure Map UX fix — map IS the navigation (per Lynda's written spec + 3 world reference images)
+
+Follow-up to the previous round: Lynda sent a written UX spec plus 3
+reference images (Fun Park / Cityscape / Volcano-mountain) after seeing
+the first map version, flagging that the previous build still made
+students pick a topic manually — the spec's core line: *"I have a
+mission to complete, let's start!" not "which topic do I want to
+click?"*. This round changes the actual interaction logic, not just
+adds a button on top of the old flow (which the spec explicitly called
+out not to do).
+
+**Sequential node progression, not free-pick.** Previously all 9
+category tiles were independently tappable in any order. Now the 9
+categories ARE the numbered 1-9 nodes on the map, unlocked strictly in
+sequence — node N only opens once node N-1 is cleared. `clearedCount` is
+now derived as the longest cleared PREFIX of the fixed category order
+(`lib/missions/categoryStyle.ts`'s key order), not just `clearedSet.size`
+— so a student can't appear "ahead" from an out-of-order clear.
+
+**"START YOUR JOURNEY" / "MULA PENGEMBARAAN"** — new hero CTA sitting
+directly above the map. It (and tapping the current/pulsing node) both
+skip straight to a mission page: `/quests/page.tsx` now picks the next
+uncleared category's mission itself (server-side, same random-pick logic
+that used to live on the category page) and links directly to
+`/quests/[missionId]`. The category-listing page
+(`app/(student)/quests/category/[category]/page.tsx`) still exists
+(kept, not deleted — the Today's Focus chips and mission's own back-link
+don't currently deep-link to it, but nothing else in the codebase should
+break by its continued existence) but is no longer part of the primary
+flow per the spec's "topics should not dominate" instruction.
+
+**Topics demoted to metadata.** The old grid-of-9-category-cards under
+the map is replaced with a "Today's Focus" row of small read-only pill
+labels (cleared = green, current = gold, locked = muted grey text) —
+informational, not tappable. The mission page header now leads with
+"Mission N" (the node number) before the topic name, matching the
+spec's "MISSION 1 / Multiplication ⭐ 10 XP" example.
+
+**Map feels alive** — per the spec's list: cleared nodes show ✓ on a
+green circle; the current node pulses (`animate-pulse` + a translucent
+`animate-ping` ring) in gold; locked nodes render at reduced opacity in
+grey and are plain (non-interactive) SVG, not links; path segments
+before the current node render as a solid brighter gold line, segments
+after as a dashed faded white line — so "how far I've come" reads at a
+glance. Pintar's marker sits at the furthest-cleared node (point A if
+nothing cleared yet). The reward screen (non-mega) now also names the
+NEXT node's category ("Next stop: Fractions") computed server-side from
+the fixed sequence — a step toward the "Pintar as coach" framing without
+building a real adaptive recommender (see below).
+
+**Three difficulty worlds** — the 3 reference images Lynda provided
+(Fun Park for Easy, Cityscape for Medium, Volcano/mountain for Hard) are
+now the actual map backdrops, saved as `public/quests/world-{easy,
+medium,hard}.webp`. Converted from the uploaded PNGs (~2.6MB each) to
+WEBP at quality 72 (~210-230KB each) — an ~92% size cut, since these load
+on every visit to the Quests homepage and the originals would have been
+a real mobile-data/LCP cost. The same 1-9 node path coordinates overlay
+all three backdrops (hand-placed to roughly track a visible trail in
+each image); swapping `mode` swaps both the backdrop image and which
+world it visually is, while the underlying progression logic is
+identical across all three, exactly as the spec asked.
+
+**Deliberately NOT built this round** (flagged, not silently skipped):
+the spec's item 4 ("system determines the mission based on year level,
+KSSR coverage, previous performance, current progression, difficulty,
+topics needing reinforcement") is a real adaptive-recommendation engine
+— what's shipped is the simpler, honest version of that: a FIXED
+category sequence plus a random mission pick within the current
+category, which delivers the "the system decides, not the student"
+FEELING the spec is really after, without the performance-tracking
+infrastructure a true adaptive engine would need (that's a much bigger
+scoped feature — recommend treating it as its own future round rather
+than folding it in here silently). The path coordinates are hand-placed
+against the reference art at one viewport reference size — worth a
+real-device check since portrait screen aspect ratios vary. The old
+"or try a different story" mission list on the category page (from the
+previous round) is still there but is now dead-flow from the main map —
+not removed in case it's still useful as a deep link, flagged for Lynda
+to say whether to delete it outright.
+
+Verified: `tsc --noEmit` clean project-wide (same pre-existing baseline
+errors as noted in every prior round, none new). Multi-discipline
+(fusion) question work from the previous round is unchanged/untouched
+this round, per Lynda's note to keep building on it — next round's
+natural continuation is more fusion generators (money+time+measurement
+etc.) rather than more map polish.
