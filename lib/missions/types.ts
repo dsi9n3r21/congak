@@ -54,6 +54,14 @@ export interface MissionVariant {
   outcomeSuccess: Bilingual;
   outcomeRetry: Bilingual;
   reflection: Bilingual;
+  /** Path under /public to this variant's scene illustration (e.g.
+   * "/missions/scenes/lost-kittens-0.webp"). Optional — MissionPlayer
+   * falls back to the mission's emoji when a variant doesn't have one
+   * yet, so art can land gradually without breaking anything. One image
+   * per VARIANT, not per question: the cast/setting is fixed per
+   * variant, only the numbers in generateMath() change each play, so a
+   * single illustration covers every possible draw. */
+  image?: string;
   /** `mode` defaults to "medium" inside each generator so every existing
    * call site (and every mission that hasn't opted into scaling yet)
    * keeps working unchanged. */

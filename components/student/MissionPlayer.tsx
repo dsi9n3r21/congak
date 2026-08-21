@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Bi } from "@/lib/i18n/Bi";
@@ -15,6 +15,62 @@ import { isAnswerCorrect } from "@/lib/questions/grading";
 import { MathSymbolBar } from "@/components/student/MathSymbolBar";
 
 type Stage = "intro" | "question" | "success" | "reward" | "reflection";
+
+/**
+ * Small "Pintar walks to the next stop" strip — a compact row of dots
+ * (one per map node) with Pintar's icon animating one step forward on
+ * mount. Shown on the reward screen right when a mission finishes, so
+ * the moment of finishing VISUALLY connects to the next node instead of
+ * just returning to a static map afterward (per Lynda's ask: "when it
+ * finish 1 stop, pintar move to the next stop, then continue to the
+ * next question"). Purely decorative — the actual node-unlock state
+ * still lives server-side in adventure_runs, this just previews the
+ * move that's about to happen.
+ */
+function PintarWalkStrip({ fromNode, totalNodes, lang }: { fromNode: number; totalNodes: number; lang: Lang }) {
+  const [walked, setWalked] = useState(false);
+  useEffect(() => {
+    // Fires once on mount, after a short beat, so the student sees
+    // Pintar sitting at the JUST-CLEARED node before stepping forward —
+    // a plain instant jump wouldn't read as "moving".
+    const t = setTimeout(() => setWalked(true), 450);
+    return () => clearTimeout(t);
+  }, []);
+  const dots = Array.from({ length: totalNodes }, (_, i) => i + 1);
+  const atNode = walked ? Math.min(fromNode + 1, totalNodes) : fromNode;
+
+  return (
+    <div className="relative mt-4 rounded-kite bg-white/15 px-4 py-5">
+      <div className="relative flex items-center justify-between">
+        {dots.map((n) => (
+          <div key={n} className="flex flex-1 items-center">
+            <div
+              className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                n <= fromNode ? "bg-white" : n === fromNode + 1 ? "bg-white/90" : "bg-white/30"
+              }`}
+            />
+            {n < totalNodes && (
+              <div className={`h-0.5 flex-1 ${n < atNode ? "bg-white" : "bg-white/25"} transition-colors duration-700`} />
+            )}
+          </div>
+        ))}
+      </div>
+      <div
+        className="pointer-events-none absolute top-1/2 h-9 w-9 -translate-y-[calc(50%+13px)] transition-all duration-700 ease-out"
+        style={{ left: `calc(${((atNode - 1) / (totalNodes - 1)) * 100}% - ${((atNode - 1) / (totalNodes - 1)) * 36}px)` }}
+      >
+        <Image src="/pintar/idle.png" alt="Pintar" fill className="object-contain drop-shadow" />
+      </div>
+      <p className="relative mt-4 text-center text-[11px] font-semibold text-white/80">
+        {walked ? (
+          <Bi text={{ ms: `Menuju ke Halangan ${atNode}...`, en: `Heading to Obstacle ${atNode}...` }} lang={lang} />
+        ) : (
+          <Bi text={{ ms: `Halangan ${fromNode} selesai!`, en: `Obstacle ${fromNode} cleared!` }} lang={lang} />
+        )}
+      </p>
+    </div>
+  );
+}
 
 const PINTAR = {
   intro: "/pintar/showing.png",
@@ -39,6 +95,8 @@ export function MissionPlayer({
   lang,
   mode = "medium",
   nextCategoryLabel,
+  nodeNumber,
+  totalNodes,
 }: {
   missionId: string;
   lang: Lang;
@@ -48,6 +106,13 @@ export function MissionPlayer({
    * Pintar pointing forward rather than a dead end back to a menu.
    * Undefined when this mission is the last node (nothing to point to). */
   nextCategoryLabel?: Bilingual;
+  /** This mission's 1-indexed position in the map sequence, and the
+   * total node count — together these drive the small animated "Pintar
+   * walks to the next stop" strip on the reward screen (see
+   * PintarWalkStrip below). Both optional so MissionPlayer still works
+   * if a mission is ever opened outside the map flow. */
+  nodeNumber?: number;
+  totalNodes?: number;
 }) {
   const router = useRouter();
   // Safe: page.tsx already calls notFound() server-side if this id
@@ -136,19 +201,27 @@ export function MissionPlayer({
     <div className="mx-auto max-w-md px-5 pb-10 pt-4">
       {/* ---- Story Introduction ---- */}
       {stage === "intro" && (
-        <div className="rounded-kite bg-white p-5 text-center shadow-card">
-          <div className="relative mx-auto h-28 w-28">
-            <Image src={PINTAR.intro} alt="Pintar" fill className="object-contain" />
+        <div className="overflow-hidden rounded-kite bg-white shadow-card">
+          {variant.image && (
+            <div className="relative aspect-[4/3] w-full">
+              <Image src={variant.image} alt="" fill className="object-cover" priority />
+              <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/30 to-transparent" />
+            </div>
+          )}
+          <div className="p-5 text-center">
+            <div className={`relative mx-auto h-28 w-28 ${variant.image ? "-mt-16" : ""}`}>
+              <Image src={PINTAR.intro} alt="Pintar" fill className="object-contain drop-shadow-lg" />
+            </div>
+            <p className="mt-3 text-base leading-relaxed text-ink">
+              <Bi text={t(variant.intro)} lang={lang} />
+            </p>
+            <button
+              onClick={() => setStage("question")}
+              className="mt-5 w-full min-h-[44px] rounded-kite bg-kuning py-3 font-display font-bold text-white"
+            >
+              {lang === "en" ? "Let's help!" : "Mari bantu!"} →
+            </button>
           </div>
-          <p className="mt-3 text-base leading-relaxed text-ink">
-            <Bi text={t(variant.intro)} lang={lang} />
-          </p>
-          <button
-            onClick={() => setStage("question")}
-            className="mt-5 w-full min-h-[44px] rounded-kite bg-kuning py-3 font-display font-bold text-white"
-          >
-            {lang === "en" ? "Let's help!" : "Mari bantu!"} →
-          </button>
         </div>
       )}
 
@@ -276,16 +349,20 @@ export function MissionPlayer({
               {lang === "en" ? "Level up! 🎉" : "Naik tahap! 🎉"}
             </p>
           )}
-          {nextCategoryLabel && (
-            <p className="relative mt-2 text-sm opacity-90">
-              <Bi
-                text={{
-                  ms: `Seterusnya: ${nextCategoryLabel.ms}`,
-                  en: `Next stop: ${nextCategoryLabel.en}`,
-                }}
-                lang={lang}
-              />
-            </p>
+          {nodeNumber && totalNodes ? (
+            totalNodes > 1 && <PintarWalkStrip fromNode={nodeNumber} totalNodes={totalNodes} lang={lang} />
+          ) : (
+            nextCategoryLabel && (
+              <p className="relative mt-2 text-sm opacity-90">
+                <Bi
+                  text={{
+                    ms: `Seterusnya: ${nextCategoryLabel.ms}`,
+                    en: `Next stop: ${nextCategoryLabel.en}`,
+                  }}
+                  lang={lang}
+                />
+              </p>
+            )
           )}
           {badge && (
             <p className="relative mt-2 text-sm opacity-90">

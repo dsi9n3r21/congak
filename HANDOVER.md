@@ -4565,3 +4565,92 @@ errors as noted in every prior round, none new). Multi-discipline
 this round, per Lynda's note to keep building on it — next round's
 natural continuation is more fusion generators (money+time+measurement
 etc.) rather than more map polish.
+
+## Round: Scene art wired in + a real difficulty-mode bug caught + "Pintar walks to the next stop"
+
+Lynda delivered 29 scene illustrations as 3 contact-sheet grids (10+10+9
+panels) matching the checklist from the previous round's reply exactly.
+Processed and wired them in, and caught a real correctness bug from two
+rounds ago while doing it.
+
+**29 scenes cropped, matched, and wired.** Split each grid into its
+cells (uniform grid, ~0.8% inset to clear the panel borders — verified
+clean via contact-sheet review, no gutter bleed). Matched every cell to
+its mission+variant by content (kittens/numbered trees -> Lost Kittens
+variant 0 "Number Forest", grocery store interior -> Grocery Challenge
+variant 1, etc.) — all 29 confirmed against the variant `tokens` Claude
+had extracted from missions.ts, not guessed from filenames. Resized
+each to a 1000px-longest-side WEBP at quality 78 (~2.36MB total for all
+29, ~81KB average) — kept each image's NATIVE aspect ratio rather than
+force-cropping every one to an identical size: the three source grids
+have different aspect ratios (landscape ~1.6:1, ~1.25:1, and portrait
+~0.67:1), so a uniform hard crop would have cut real content out of
+whichever set didn't match; the mission intro screen instead uses a
+fixed `aspect-[4/3]` card with `object-cover`, letting CSS handle
+consistent on-screen framing per source image instead of baking in a
+lossy crop. Added optional `image?: string` to `MissionVariant`
+(`lib/missions/types.ts`) with a doc comment reinforcing the
+variant-not-per-question rule from the earlier design conversation.
+Files live at `public/missions/scenes/{mission-id}-{variantIndex}.webp`.
+MissionPlayer's intro screen now shows the scene as a banner with
+Pintar's sprite overlapping its bottom edge (`-mt-16` pull); falls back
+to the original plain layout when `variant.image` is undefined, so
+nothing broke for the (currently zero, but future-proofed) case of an
+unillustrated variant.
+
+**Bug caught while wiring images in: difficulty-mode scaling from 2
+rounds ago was never actually taking effect.** `lib/missions/types.ts`
+and `missionMath.ts` were correctly updated back then so each generator
+ACCEPTS a `mode` parameter — but every call site in `missions.ts` was
+still `generateMath: () => generateEqualShare([5, 4, 8])`, an arrow
+function that takes NO parameters and therefore silently ignores the
+`mode` argument MissionPlayer passes in. Every mission has been running
+at Medium's number ranges regardless of the selected mode this whole
+time. Root cause: the earlier round's smoke test called the generator
+functions directly (`generateMissingAngle([...], mode)`) to verify the
+math itself was sound, but never exercised the actual
+`variant.generateMath(mode)` call chain the app uses at runtime — so the
+wiring gap was invisible to that test. Fixed via a scripted pass over
+all 26 `generateMath: () => generateXxx(...)` call sites for the 12
+mode-aware generators, rewriting them to `generateMath: (mode) =>
+generateXxx(..., mode)` (3 `generateBudgetSubtract` call sites needed a
+manual follow-up fix — mode landed in the wrong positional argument
+slot since that generator takes an optional `budgetOptions` array before
+`mode`). The 3 existing multi-step generators are untouched/still not
+mode-aware, consistent with the standing note that Hard mode is meant to
+prefer them as-is rather than also scaling their numbers.
+
+**Verification this round is stronger than before, specifically to
+close the gap that let the bug through**: a new smoke test now calls
+`variant.generateMath(mode)` through the REAL mission objects (every
+mission x every variant x every mode x 20-30 draws = 1740-2610 draws
+across different runs), not the raw generator functions in isolation —
+0 failures. A separate check confirmed all 29 `image` paths resolve to
+an actual file on disk. `tsc --noEmit` clean project-wide (same
+pre-existing baseline noise as every prior round).
+
+**"Pintar walks to the next stop"** — Lynda asked whether Pintar could
+visibly be at node 1 when the journey starts, then move to the next
+node right after finishing one, before the next question. Full
+persistent-map-during-a-question is a bigger layout refactor (would need
+the map to live in a shared Next.js layout instead of unmounting on
+every route change) — flagged, not attempted this round. What's shipped
+instead: a new `PintarWalkStrip` component on the (non-mega) reward
+screen — a compact 1-9 dot row that shows Pintar sitting at the
+just-cleared node for a beat ("Obstacle N cleared!"), then animates one
+step forward ("Heading to Obstacle N+1...") via a CSS transition, right
+at the moment finishing a mission would naturally prompt it. Wired via
+new `nodeNumber`/`totalNodes` props threaded from
+`/quests/[missionId]/page.tsx` (same node-order computation already
+used for the "Mission N" header and "Next stop" label) through to
+MissionPlayer. Purely visual — doesn't touch the actual server-side
+unlock state in `adventure_runs`, just previews the move that's about to
+happen once the student taps through to the map.
+
+**Flagged, not built this round**: persistent-map full architecture
+(map stays mounted and Pintar's marker animates in place across a route
+change, instead of the reward-screen preview strip shipped here) — real
+option if Lynda wants the fuller version later; worth prototyping as its
+own round given the layout refactor involved. Multi-discipline (fusion)
+question set is still just the 1 example from 2 rounds ago — Lynda's
+asked to keep building these out, next natural round.

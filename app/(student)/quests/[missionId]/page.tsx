@@ -59,7 +59,14 @@ export default async function MissionPage({
         <span className="mt-1 inline-block text-xs font-bold text-kuning-dark">⭐ +{mission.rewardXp} XP</span>
       </header>
 
-      <MissionPlayer missionId={mission.id} lang={lang} mode={mode} nextCategoryLabel={nextLabel} />
+      <MissionPlayer
+        missionId={mission.id}
+        lang={lang}
+        mode={mode}
+        nextCategoryLabel={nextLabel}
+        nodeNumber={nodeNumber}
+        totalNodes={nodeOrder.length}
+      />
     </main>
   );
 }
