@@ -108,21 +108,34 @@ export async function completeMission(input: CompleteMissionInput): Promise<Comp
     // "cleared" on the top-level map (clear_adventure_obstacle) — so a
     // category no longer completes the whole map off a single mission,
     // it takes a full LEVELS_PER_WORLD walk through that world's path.
-    const { data: levelDone } = await supabase.rpc("clear_world_level", {
+    const { data: levelDone, error: levelError } = await supabase.rpc("clear_world_level", {
       p_student_id: student.id,
       p_mode: input.mode,
       p_category: input.category,
       p_total_levels: LEVELS_PER_WORLD,
     });
+    if (levelError) {
+      // Previously silent — if `clear_world_level` doesn't exist yet
+      // (migration 0044 not applied to this Supabase project) or fails
+      // for any other reason, this used to fail with NO trace anywhere:
+      // the student just always saw level 1 again next visit, and
+      // nothing in the logs said why. Logged now so this shows up in
+      // Vercel's function logs instead of looking like "progress just
+      // doesn't save" with no lead to follow.
+      console.error("clear_world_level RPC failed — check migration 0044_world_levels.sql is applied:", levelError);
+    }
     worldCompleted = !!levelDone;
 
     if (worldCompleted) {
-      const { data: mapDone } = await supabase.rpc("clear_adventure_obstacle", {
+      const { data: mapDone, error: mapError } = await supabase.rpc("clear_adventure_obstacle", {
         p_student_id: student.id,
         p_mode: input.mode,
         p_category: input.category,
         p_total_categories: TOTAL_ADVENTURE_CATEGORIES,
       });
+      if (mapError) {
+        console.error("clear_adventure_obstacle RPC failed — check migration 0043_adventure_map.sql is applied:", mapError);
+      }
       adventureCompleted = !!mapDone;
 
       if (adventureCompleted) {

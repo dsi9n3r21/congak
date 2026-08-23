@@ -54,13 +54,21 @@ export default async function WorldPage({
 
   let clearedCount = 0;
   if (student) {
-    const { data: world } = await supabase
+    const { data: world, error: worldError } = await supabase
       .from("world_levels")
       .select("cleared_count")
       .eq("student_id", student.id)
       .eq("mode", mode)
       .eq("category", category)
       .single();
+    // PGRST116 = "no rows found", which is the NORMAL first-ever-visit
+    // case (nothing played in this world/mode yet) — not an error worth
+    // logging. Anything else (e.g. the table not existing because
+    // migration 0044 hasn't been applied yet) gets logged so a "why is
+    // progress always 0" report has a trail to follow in Vercel's logs.
+    if (worldError && worldError.code !== "PGRST116") {
+      console.error("world_levels read failed — check migration 0044_world_levels.sql is applied:", worldError);
+    }
     clearedCount = Math.min(world?.cleared_count ?? 0, LEVELS_PER_WORLD);
   }
   const worldComplete = clearedCount >= LEVELS_PER_WORLD;
@@ -104,7 +112,7 @@ export default async function WorldPage({
             <Bi text={MODE_LABEL[mode]} lang={lang} />
           </span>
           <span className="text-[11px] font-semibold text-ink/40">
-            {clearedCount}/{LEVELS_PER_WORLD} <Bi text={{ ms: "aras", en: "levels" }} lang={lang} />
+            <Bi text={{ ms: `Aras ${nextLevelNumber} daripada ${LEVELS_PER_WORLD}`, en: `Level ${nextLevelNumber} of ${LEVELS_PER_WORLD}` }} lang={lang} />
           </span>
         </div>
       </header>

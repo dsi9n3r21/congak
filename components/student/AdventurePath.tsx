@@ -201,7 +201,17 @@ export function AdventurePath({
                     {node}
                   </div>
                 )}
-                {label && lang && (
+                {/* Label shown only on the CURRENT node. With as few as
+                    1-2 authored missions per category cycling across 8
+                    levels, showing every node's label produced an
+                    obviously-repetitive wall of duplicate text (e.g.
+                    "The Great Leak" / "The Leaky Water Tank" alternating
+                    all the way up) — a real content-scale issue, not
+                    something a label-placement tweak alone fixes.
+                    Showing just the one that matters (what's next) both
+                    resolves the clutter and matches "topics support the
+                    mission, they don't dominate it". */}
+                {label && lang && isCurrent && (
                   <span
                     className={`whitespace-nowrap rounded-full bg-white/90 px-2 py-1 text-[10px] font-bold text-ink shadow-card ${
                       labelOnRight ? "ml-1.5" : "mr-1.5"

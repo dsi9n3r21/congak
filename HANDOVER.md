@@ -4957,3 +4957,69 @@ fine to leave as per-world only.
 
 Verified: `tsc --noEmit` clean. Mission-generator smoke test re-run
 (870 draws, 0 bad) after the deterministic-level and homepage changes.
+
+## Round: Progress not saving — traced to a likely un-applied migration, plus two real UI fixes
+
+Lynda sent 2 screenshots: homepage shows Easy at "3/9 worlds" but the
+Measurement Village map (Easy) shows "0/8 levels" and resets to level 1
+every time she reopens it after playing. Also flagged the 8-vs-9 number
+proximity being confusing, and level labels repeating on the map.
+
+**Most likely root cause — NOT something fixable from this side alone.**
+Checked every RPC function name between `lib/actions/missions.ts` and
+both `0043_adventure_map.sql` / `0044_world_levels.sql` — all match
+exactly, no typo. The far more likely explanation: migration
+`0044_world_levels.sql` (the one that creates `world_levels` and the
+`clear_world_level`/`restart_world` functions) has probably not been
+applied to the real Supabase project yet — flagged as an outstanding
+step in every round since it was written, still outstanding. If that
+migration isn't applied, `supabase.rpc("clear_world_level", ...)` fails
+because the function doesn't exist — but Supabase's JS client doesn't
+throw on this, it returns `{ data: null, error }`, and the code was
+previously destructuring only `data`, silently ignoring `error`. Net
+effect: a level "completes" visually in the moment (XP/reward screen
+shows, `PintarWalkStrip` animates forward) because that part of
+`completeMission` doesn't depend on `world_levels` — but nothing was
+ever actually saved to `world_levels`, so the next page load reads
+`cleared_count = 0` again. This exactly matches "moves to next number,
+then resets to 1 when reopened." Separately, the homepage's "3/9" for
+Easy is very likely LEFT OVER from the OLD single-obstacle-per-category
+system (before levels existed at all) — those 3 categories were marked
+cleared via `clear_adventure_obstacle` directly, in an earlier round,
+before `world_levels` existed. So "3/9 worlds done" and "Measurement
+Village 0/8" can both be true and non-contradictory: 3 categories
+finished under the old system, and the 4th (first one played under the
+NEW system) can't save progress if 0044 was never applied.
+
+**Fixed the SILENT part of this regardless** (this was a real gap worth
+closing even once the migration question is confirmed): both
+`clear_world_level` and `clear_adventure_obstacle` calls in
+`completeMission` now log their `error` to the server console instead of
+discarding it, tagged with which migration file to check. Same for the
+`world_levels` read on the world page (skips logging the expected
+"no rows yet" case — `PGRST116` — so a normal first-time visit to a
+world doesn't spam the log, but anything else, like the table not
+existing, now shows up). None of this changes what the student sees;
+it means the NEXT time something like this happens, Vercel's function
+logs will say exactly which migration to check instead of nothing at
+all.
+
+**Fixed for real, no DB dependency**: (1) level labels beside map nodes
+now show ONLY on the current/next node, not on every cleared and locked
+one — with as few as 1-2 authored missions per category cycling across
+8 levels, showing all 8 labels was an obviously-repetitive wall of
+duplicate text (exactly what the screenshot showed); (2) the world
+page's level readout changed from "0/8 levels" to "Level 1 of 8" —
+different phrasing from the homepage's "3/9 worlds" specifically so the
+two numbers read as clearly different things at a glance instead of two
+similar-looking fractions sitting near each other in the flow.
+
+**Needs Lynda to confirm, next message**: whether migrations 0043 and
+especially 0044 have actually been run against the production Supabase
+project. This can't be verified from the code side — if 0044 hasn't
+been applied, that's very likely the entire explanation for progress not
+saving, and applying it (Supabase dashboard -> SQL Editor -> paste
+0044's contents -> Run) should fix it immediately, with the new logging
+now in place as a safety net if something else is also wrong.
+
+Verified: `tsc --noEmit` clean.
