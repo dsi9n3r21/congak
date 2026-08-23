@@ -64,18 +64,33 @@ export default async function WorldPage({
     clearedCount = Math.min(world?.cleared_count ?? 0, LEVELS_PER_WORLD);
   }
   const worldComplete = clearedCount >= LEVELS_PER_WORLD;
+  const nextLevelNumber = Math.min(clearedCount + 1, LEVELS_PER_WORLD);
 
-  // The current level's mission is picked fresh on every visit, same
-  // "unlimited via randomization" approach the obstacle model already
-  // used — a level isn't a specific authored mission, just a slot in
-  // the path.
-  const featured = missions[Math.floor(Math.random() * missions.length)];
-  const levelHref = `/quests/${featured.id}?mode=${mode}&category=${category}&level=${Math.min(clearedCount + 1, LEVELS_PER_WORLD)}`;
+  // Which mission each of the 8 level SLOTS shows is now fixed by level
+  // number (cycling through the category's mission pool), not randomised
+  // on every visit — that was the real cause of "the map says level 2
+  // but inside I'm on a different topic": the mission shown for a given
+  // level used to be re-rolled on every page load, so revisiting "level
+  // 2" could land on a completely different mission than last time, and
+  // the level number on the map had no stable relationship to what was
+  // actually inside it. Level N (1-indexed) always shows
+  // missions[(N-1) % missions.length] now — still cycles through
+  // variety when a category has more than one authored mission, but
+  // predictably, so a level's identity is stable across visits. The
+  // per-play NUMBERS inside that mission are still freshly randomised
+  // every time (via generateMath), so it's never literally repeated
+  // content, just a stable topic per level slot.
+  const missionForLevel = (levelNumber: number) => missions[(levelNumber - 1) % missions.length];
+  const featured = missionForLevel(nextLevelNumber);
+  const levelHref = `/quests/${featured.id}?mode=${mode}&category=${category}&level=${nextLevelNumber}`;
+  // Labels shown beside each node on the map — see AdventurePath's
+  // `levelLabels` prop.
+  const levelLabels = Array.from({ length: LEVELS_PER_WORLD }, (_, i) => missionForLevel(i + 1).title);
 
   return (
     <main className="min-h-screen pb-24 md:pb-8">
       <header className="px-5 pt-6 pb-3">
-        <Link href={`/quests?mode=${mode}`} className="text-xs font-semibold text-ink/50">
+        <Link href="/quests" className="text-xs font-semibold text-ink/50">
           ← <Bi text={{ ms: "Semua Dunia", en: "All Worlds" }} lang={lang} />
         </Link>
         <div className="mt-2 flex items-center gap-2.5">
@@ -102,6 +117,8 @@ export default async function WorldPage({
           imageAspect={WORLD_IMAGE_ASPECT}
           pathPoints={WORLD_PATH_POINTS[mode]}
           levelHref={levelHref}
+          levelLabels={levelLabels}
+          lang={lang}
         />
       </section>
 

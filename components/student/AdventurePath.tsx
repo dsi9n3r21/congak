@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Bi } from "@/lib/i18n/Bi";
+import type { Bilingual, Lang } from "@/lib/i18n/dictionary";
 import type { PathPoint } from "@/lib/missions/worldPathPoints";
 
 // Node diameter: the original top-level map's nodes read ~60px on
@@ -27,6 +29,8 @@ export function AdventurePath({
   worldImage,
   imageAspect,
   pathPoints,
+  levelLabels,
+  lang,
   levelHref,
   onLevelPress,
 }: {
@@ -43,6 +47,11 @@ export function AdventurePath({
    * a future world/mode without traced points yet still renders
    * sensibly instead of crashing. */
   pathPoints?: PathPoint[];
+  /** One label per level, shown as a small pill beside its node — e.g.
+   * the mission title that level currently shows. Optional; omit to
+   * render nodes with no labels. */
+  levelLabels?: Bilingual[];
+  lang?: Lang;
   /** href for the CURRENT (next playable) level only — locked/cleared
    * nodes render as plain non-navigating markers in this v1 (replaying a
    * cleared level happens via the world page's own restart flow, not by
@@ -152,6 +161,11 @@ export function AdventurePath({
           const p = points[i];
           const isCurrent = lvl.state === "current";
           const isCleared = lvl.state === "cleared";
+          const label = levelLabels?.[i];
+          // Labels sit on whichever side of the node has more room —
+          // opposite the direction the node leans on the zig-zag, so a
+          // label near the right edge of the image doesn't get clipped.
+          const labelOnRight = p.x < 50;
           const node = (
             <div
               className={`relative flex items-center justify-center rounded-full border-4 border-white font-display font-bold text-white shadow-hero ${
@@ -177,15 +191,26 @@ export function AdventurePath({
               className="absolute -translate-x-1/2 -translate-y-1/2"
               style={{ top: `${p.y}%`, left: `${p.x}%`, opacity: lvl.state === "locked" ? 0.55 : 1 }}
             >
-              {isCurrent ? (
-                <Link href={levelHref} onClick={() => onLevelPress?.(lvl.index)} aria-label={`Level ${lvl.index}`}>
-                  {node}
-                </Link>
-              ) : (
-                <div aria-label={`Level ${lvl.index}`} aria-disabled={lvl.state === "locked"}>
-                  {node}
-                </div>
-              )}
+              <div className="relative flex items-center" style={{ flexDirection: labelOnRight ? "row" : "row-reverse" }}>
+                {isCurrent ? (
+                  <Link href={levelHref} onClick={() => onLevelPress?.(lvl.index)} aria-label={`Level ${lvl.index}`}>
+                    {node}
+                  </Link>
+                ) : (
+                  <div aria-label={`Level ${lvl.index}`} aria-disabled={lvl.state === "locked"}>
+                    {node}
+                  </div>
+                )}
+                {label && lang && (
+                  <span
+                    className={`whitespace-nowrap rounded-full bg-white/90 px-2 py-1 text-[10px] font-bold text-ink shadow-card ${
+                      labelOnRight ? "ml-1.5" : "mr-1.5"
+                    }`}
+                  >
+                    <Bi text={label} lang={lang} />
+                  </span>
+                )}
+              </div>
             </div>
           );
         })}

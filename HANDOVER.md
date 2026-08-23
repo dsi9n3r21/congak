@@ -4879,3 +4879,81 @@ bakes "RM" into the front of `correctAnswer`, measurement doesn't put
 anything on the number) is still there, just not making anything wrong
 right now — a future consistency pass could standardize this rather
 than only special-casing the suffix direction.
+
+## Round: Path placement (properly this time), the real level/topic mismatch, and a much simpler homepage
+
+Lynda pushed back that the map still pointed at trees/sky, asked for a
+clear explanation of how missions actually work because "the map says
+level 2 but inside you're already at topic 5", asked for topic titles
+to live beside the map numbers instead of in a big list, and asked for
+the whole Quests homepage simplified to 3 big Easy/Medium/Hard buttons
+with a small world visual on each and a big Pintar.
+
+**Path placement, done properly this time.** Previous round's points
+were eyeballed without a reference grid and were visibly wrong. This
+round: generated a 10%-gridline overlay on each of the 3 backdrop images
+first, read pixel-accurate percentages directly off the grid, then
+rendered the 8 traced points BACK onto each image as a visual proof
+(dots + connecting lines) and viewed the result before shipping —
+caught and fixed one remaining bad point this way (medium mode's level
+8 landed in open sky between buildings; moved it onto the "KEEP GOING"
+billboard rooftop, a real landmark). All 24 points (3 modes × 8 levels)
+now sit on an actual path/road/bridge/log/landmark in every backdrop,
+verified by eye against the rendered proof images before delivery, not
+just described in a code comment.
+
+**The real cause of "map says level 2, inside I'm on topic 5"**: found
+and fixed a second real bug, not just a documentation gap. The world
+page picked which mission to show for the "current" level via
+`missions[Math.floor(Math.random() * missions.length)]` — a fresh
+random pick on EVERY page load, with no relationship to the level
+number at all. So revisiting "Level 2" could show a completely
+different mission than it did last time, and there was never a stable
+answer to "what is level 2" — explaining exactly the confusion
+reported. Fixed by making the mission assignment a pure function of
+level number: `missions[(levelNumber - 1) % missions.length]`, cycling
+through a category's mission pool deterministically. A category with
+only 1 mission shows that mission at every level (still fresh numbers
+each time via `generateMath`); a category with 3 missions cycles
+1-2-3-1-2-3-1-2 across the 8 levels. Level N is now always the same
+mission, every visit — the map and "what's inside" can no longer
+disagree.
+
+**Topic titles moved onto the map itself, list removed from the
+homepage.** `AdventurePath` now takes an optional `levelLabels` array
+(now populated for real, using the deterministic mapping above) and
+renders each level's mission title as a small pill beside its node —
+placed on whichever side has more room so it doesn't run off the image
+edge. The homepage's big "list all 9 worlds with progress" section is
+gone entirely.
+
+**Homepage rebuilt around 3 big mode cards.** Replaced the old
+mode-pill-row + separate journey-CTA + world-list stack with: a large
+Pintar image up top (the "attract attention" ask), then 3 full-width
+mode cards (Easy/Medium/Hard), each showing a thumbnail of that mode's
+actual world backdrop, worlds-cleared progress (e.g. "3/9 worlds"), and
+a Start/Continue/Replay label that's accurate per mode (computed by
+querying `adventure_runs` and `world_levels` across all 3 modes in one
+pass, so every card's progress is real without needing a mode selected
+first). Tapping a card goes straight to that mode's next-uncleared
+world — no intermediate "choose a world" screen, consistent with the
+"system decides, student doesn't browse a list" principle from the
+very first UX-fix round. `MODE_ACCENT` was initially written with a
+`merah` color token that doesn't exist in `tailwind.config` (checked
+against the real token list before shipping — `saga` is the actual
+red-family token) — caught and fixed before delivery, not a customer-
+facing miss.
+
+**Known trade-off, flagged**: the old single "Play Adventure Again"
+mega-button (replaying the ENTIRE map — all 9 worlds — at once after a
+full clear) no longer has a homepage entry point now that the world
+list is gone; `ReplayAdventureButton` still exists and works, just
+isn't wired into the new homepage. Replaying is still possible per-world
+via each world page's own "Replay This World" button, just not as one
+single mega-action anymore — worth a decision from Lynda on whether
+that mega-replay button should come back somewhere (e.g. on a mode
+card, once nesting a button inside a `<Link>` card is worked out) or is
+fine to leave as per-world only.
+
+Verified: `tsc --noEmit` clean. Mission-generator smoke test re-run
+(870 draws, 0 bad) after the deterministic-level and homepage changes.

@@ -21,34 +21,34 @@ export interface PathPoint {
  */
 export const WORLD_PATH_POINTS: Record<MissionMode, PathPoint[]> = {
   easy: [
-    { x: 62, y: 93 },
-    { x: 32, y: 84 },
-    { x: 52, y: 73 },
-    { x: 22, y: 61 },
-    { x: 42, y: 50 },
-    { x: 52, y: 39 },
-    { x: 66, y: 27 },
-    { x: 76, y: 13 },
+    { x: 45, y: 95 }, // stone patch, bottom center
+    { x: 30, y: 80 }, // ON the wooden bridge over the stream
+    { x: 63, y: 71 }, // stones right of the pond, near the lamp post
+    { x: 14, y: 60 }, // stones near the "You can do it, Pintar!" sign
+    { x: 46, y: 52 }, // stones right of the pond, upper path
+    { x: 22, y: 41 }, // stones near the butterfly, left path
+    { x: 50, y: 31 }, // stones near the picnic table
+    { x: 32, y: 21 }, // stones near the Fun Park sign / playground junction
   ],
   medium: [
-    { x: 58, y: 94 },
-    { x: 35, y: 82 },
-    { x: 22, y: 68 },
-    { x: 48, y: 58 },
-    { x: 58, y: 44 },
-    { x: 38, y: 34 },
-    { x: 25, y: 20 },
-    { x: 15, y: 8 },
+    { x: 45, y: 94 }, // bottom crosswalk
+    { x: 22, y: 82 }, // road bend near the canal bridge
+    { x: 15, y: 68 }, // on the stone bridge over the canal
+    { x: 40, y: 60 }, // road curving toward the roundabout
+    { x: 63, y: 54 }, // at the roundabout, by the fountain
+    { x: 45, y: 42 }, // road curving back left, below the purple building
+    { x: 30, y: 32 }, // monorail track, near the purple building base
+    { x: 48, y: 25 }, // the "KEEP GOING" billboard, on the purple building roof
   ],
   hard: [
-    { x: 28, y: 92 },
-    { x: 22, y: 78 },
-    { x: 32, y: 68 },
-    { x: 22, y: 55 },
-    { x: 30, y: 44 },
-    { x: 45, y: 33 },
-    { x: 62, y: 20 },
-    { x: 80, y: 10 },
+    { x: 25, y: 90 }, // dirt path near the "Keep going, Pintar!" sign
+    { x: 18, y: 78 }, // on the wooden bridge over the stream
+    { x: 27, y: 66 }, // dirt path near the fallen-log area
+    { x: 48, y: 57 }, // ON the fallen log, crossing the stream
+    { x: 62, y: 45 }, // base of the waterfall, right side
+    { x: 68, y: 30 }, // climbing the glacier/waterfall edge
+    { x: 72, y: 18 }, // upper glacier stream
+    { x: 78, y: 9 }, // near the flag and cabin at the top
   ],
 };
 

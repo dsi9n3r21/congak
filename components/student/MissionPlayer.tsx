@@ -443,7 +443,7 @@ export function MissionPlayer({
               onClick={() =>
                 router.push(
                   reward?.adventureCompleted
-                    ? `/quests?mode=${mode}`
+                    ? `/quests`
                     : `/quests/world/${category ?? mission.category}?mode=${mode}`
                 )
               }
