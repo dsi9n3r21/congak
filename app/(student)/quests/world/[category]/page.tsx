@@ -5,6 +5,7 @@ import { Bi } from "@/lib/i18n/Bi";
 import { MISSIONS } from "@/lib/missions/missions";
 import { MISSION_CATEGORY_STYLES } from "@/lib/missions/categoryStyle";
 import { LEVELS_PER_WORLD, WORLD_NAME } from "@/lib/missions/worldConfig";
+import { WORLD_PATH_POINTS, WORLD_IMAGE_ASPECT } from "@/lib/missions/worldPathPoints";
 import { AdventurePath } from "@/components/student/AdventurePath";
 import { ReplayWorldButton } from "@/components/student/ReplayWorldButton";
 import type { MissionCategory, MissionMode } from "@/lib/missions/types";
@@ -98,6 +99,8 @@ export default async function WorldPage({
           totalLevels={LEVELS_PER_WORLD}
           clearedCount={clearedCount}
           worldImage={MODE_BACKDROP[mode]}
+          imageAspect={WORLD_IMAGE_ASPECT}
+          pathPoints={WORLD_PATH_POINTS[mode]}
           levelHref={levelHref}
         />
       </section>

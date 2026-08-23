@@ -3,7 +3,7 @@ import { getRecommendedTopic } from "@/lib/content/recommended";
 import { PintarChat } from "@/components/student/PintarChat";
 import type { Lang } from "@/lib/i18n/dictionary";
 
-export default async function PintarPage() {
+export default async function PintarPage({ searchParams }: { searchParams: { ask?: string } }) {
   const supabase = createClient();
   const {
     data: { user },
@@ -27,6 +27,7 @@ export default async function PintarPage() {
       level={student?.level ?? 1}
       xp={student?.xp ?? 0}
       streakDays={student?.streak_count ?? 0}
+      initialQuestion={searchParams.ask}
     />
   );
 }

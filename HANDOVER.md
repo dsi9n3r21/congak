@@ -4800,3 +4800,82 @@ Server-side engine now has a "which question were you asking about?"
 fallback per Lynda's husband's note — that's damage control on his end
 and should stay regardless of this fix (a real product safety net for
 any future context gaps, not a substitute for sending correct history).
+
+## Round: Three bugs from real usage — grading, journey wording, path placement
+
+Lynda played through the app herself and sent 3 screenshots. All three
+were real, fixed for real:
+
+**1a. Correct answer marked wrong.** "The Great Leak" mission asks for
+water remaining after a conversion+subtraction; its own hint text shows
+the answer WITH a unit ("11200 - 1120 = 10080 mL"), so Lynda typed
+"10,080mL" — matching exactly what the app itself showed her — and it
+was marked wrong. Root cause: `lib/questions/grading.ts`'s
+`normalizeAnswer` already stripped thousands-commas but never stripped a
+trailing unit suffix, and the generator's stored `correctAnswer` is the
+bare number ("10080") with no unit. Fixed by extending
+`normalizeAnswer` to drop a trailing unit label (e.g. "ml", "cm") ONLY
+when what's left is purely numeic — checked against every
+`correctAnswer:` across both `lib/missions/missionMath.ts` and
+`lib/questions/generators/*.ts` first to confirm nothing relies on a
+trailing letter surviving comparison (fractions use "/", money uses a
+"RM" PREFIX not suffix, so unaffected). Verified with 10 hand-picked
+cases including the exact reported input, a wrong-number case (must
+still fail), and the RM-prefix case (intentionally still fails — a
+prefix/suffix mismatch is a different bug, out of scope here, and
+"fixing" it by guessing would risk accepting wrong answers).
+
+**1b. "Ask Pintar" lost the question.** The link went to a bare
+`/pintar` with no context, so the specific problem the student was
+stuck on had to be retyped from memory. Fixed: the link now carries the
+actual question text as `?ask=` (`/pintar?ask=<encoded question>`); the
+Pintar page reads it and passes it to `PintarChat` as a new
+`initialQuestion` prop, which — after the normal greeting — sends it as
+a real first message automatically, so a student lands in Pintar's chat
+with their actual stuck problem already asked, not an empty box.
+
+**2. "Start Your Journey" never changed to "Continue" once worlds were
+already cleared.** Cosmetic but confusing — 3/9 worlds ticked done and
+the button still read like day one. Fixed: the top map now computes
+`hasAnyProgress` (any world fully cleared, OR the current world already
+has 1+ levels done) and swaps the label to "CONTINUE YOUR
+JOURNEY"/"TERUSKAN PENGEMBARAAN" once that's true. The href/behavior
+was already correct (always resumes at the true next level) — this was
+purely a wording fix, not a progress-tracking bug.
+
+**3. Level nodes floating disconnected from the artwork's path
+("until it goes to the sky").** The previous `AdventurePath` positioned
+nodes via an abstract alternating-percentage zig-zag with NO relationship
+to what's actually drawn in the backdrop image, and displayed that
+backdrop with `object-cover` inside an arbitrary-height scroll
+container — so even hand-picked coordinates couldn't have lined up with
+the art, since the image itself was being stretched/cropped
+unpredictably relative to any fixed percentage grid. Fixed properly, not
+patched: new `lib/missions/worldPathPoints.ts` hand-traces 8 points
+(percent of image width/height) actually walking the visible stone
+path/road/trail in each of the 3 backdrop images (viewed each image
+directly to trace them), and `AdventurePath` now renders the backdrop at
+its TRUE native aspect ratio (`898/1752`, `object-contain` in an
+aspect-ratio box, no crop/stretch) so those percentages land exactly
+where traced. Nodes and connecting path lines both now read off the same
+`pathPoints` array. Kept a generic zig-zag as a fallback (only used if a
+future mode/point-count doesn't have traced points yet) rather than
+crashing.
+
+Verified: `tsc --noEmit` clean (one shifted-line-number instance of the
+pre-existing `ReactMarkdown` children-any warning, not new). Re-ran the
+mission-generator smoke test (1305 draws, 0 bad) plus a new pass
+confirming `isAnswerCorrect` still accepts every mission's exact
+`correctAnswer` against itself post-fix (0 mismatches) — guards against
+the unit-stripping change accidentally breaking a different answer
+format.
+
+**Not done / flagged**: replaying one specific already-cleared level
+still isn't supported (only whole-world replay); the hand-traced path
+points are eyeballed against the artwork, not pixel-measured — worth a
+quick look on a real device per world/mode combination; the RM-prefix
+vs unit-suffix answer-format inconsistency between generators (money
+bakes "RM" into the front of `correctAnswer`, measurement doesn't put
+anything on the number) is still there, just not making anything wrong
+right now — a future consistency pass could standardize this rather
+than only special-casing the suffix direction.

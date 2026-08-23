@@ -250,7 +250,10 @@ export function MissionPlayer({
               )}
               {attempts >= 2 && (
                 <div className="mt-2.5 flex gap-2 border-t border-saga-light/60 pt-2.5 text-xs font-semibold">
-                  <Link href="/pintar" className="flex-1 text-center text-ungu-dark underline">
+                  <Link
+                    href={`/pintar?ask=${encodeURIComponent(t(draw.questionText)[lang === "en" ? "en" : "ms"])}`}
+                    className="flex-1 text-center text-ungu-dark underline"
+                  >
                     {lang === "en" ? "Ask Pintar" : "Tanya Pintar"}
                   </Link>
                   <Link href="/learn" className="flex-1 text-center text-ungu-dark underline">

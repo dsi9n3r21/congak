@@ -3,22 +3,18 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import type { Lang } from "@/lib/i18n/dictionary";
+import type { PathPoint } from "@/lib/missions/worldPathPoints";
 
-// Vertical distance between level nodes, and how far alternating nodes
-// zig-zag left/right — hand-tuned so the path reads as a winding trail
-// on a ~380-430px wide phone viewport, not a straight ladder.
-const LEVEL_SPACING = 132;
-const ZIGZAG_X = 22; // percentage points either side of center
-// Node diameter: the previous map's nodes read ~60px on screen; +20%
-// per the brief.
+// Node diameter: the original top-level map's nodes read ~60px on
+// screen; +20% per the brief that started this component.
 const NODE_SIZE = 72;
 // Explicit safe-area asks from the brief: 120px clearance above the
 // bottom nav, plus the nav's own height (~64px bar + iOS home-indicator
 // safe-area-inset, roughly another 24px on notched phones) so level 1
-// is never actually touching the tab bar.
+// is never actually touching the tab bar. Applied as bottom padding on
+// the OUTER scroll container (below the image), not baked into the
+// image-aspect box itself.
 const BOTTOM_SAFE_PADDING = 120 + 88;
-const TOP_SAFE_PADDING = 32;
 
 export interface AdventureLevel {
   index: number; // 1-based
@@ -29,12 +25,24 @@ export function AdventurePath({
   totalLevels,
   clearedCount,
   worldImage,
+  imageAspect,
+  pathPoints,
   levelHref,
   onLevelPress,
 }: {
   totalLevels: number;
   clearedCount: number;
   worldImage: string;
+  /** width / height of `worldImage`'s native pixels — the image renders
+   * at exactly this ratio (no crop, no stretch) so `pathPoints`
+   * (percentages of the image) land exactly where they were traced. */
+  imageAspect: number;
+  /** Hand-traced points (percent of image width/height), bottom-to-top,
+   * one per level. Falls back to a generic centered zig-zag if omitted
+   * or the wrong length — kept as a fallback, not the primary path, so
+   * a future world/mode without traced points yet still renders
+   * sensibly instead of crashing. */
+  pathPoints?: PathPoint[];
   /** href for the CURRENT (next playable) level only — locked/cleared
    * nodes render as plain non-navigating markers in this v1 (replaying a
    * cleared level happens via the world page's own restart flow, not by
@@ -46,12 +54,18 @@ export function AdventurePath({
   const currentNodeRef = useRef<HTMLDivElement>(null);
   const [parallaxY, setParallaxY] = useState(0);
 
-  const containerHeight = totalLevels * LEVEL_SPACING + TOP_SAFE_PADDING + BOTTOM_SAFE_PADDING;
+  const points: PathPoint[] =
+    pathPoints && pathPoints.length === totalLevels
+      ? pathPoints
+      : Array.from({ length: totalLevels }, (_, i) => ({
+          x: 50 + (i % 2 === 0 ? 22 : -22),
+          y: 6 + ((totalLevels - 1 - i) / Math.max(1, totalLevels - 1)) * 88,
+        }));
 
   // ---- Camera: auto-focus the current (next playable) level on mount,
   // instead of opening at the top of a long path — the whole point of
-  // this rebuild per the brief. Runs after layout so scrollIntoView has
-  // real dimensions to work with; "auto" (not "smooth") so it doesn't
+  // this component. Runs after layout so scrollIntoView has real
+  // dimensions to work with; "auto" (not "smooth") so it doesn't
   // visibly scroll-race the fade-in on slower phones.
   useEffect(() => {
     const t = setTimeout(() => {
@@ -60,10 +74,9 @@ export function AdventurePath({
     return () => clearTimeout(t);
   }, []);
 
-  // ---- Parallax: background layers drift at a fraction of scroll
-  // speed. Listens on the SCROLL CONTAINER (this component owns its own
-  // overflow-y-auto region rather than relying on window/page scroll) —
-  // rAF-throttled so it stays smooth on a mid-range phone.
+  // ---- Parallax: a couple of decorative layers drift at a fraction of
+  // scroll speed, inside the same image-aspect box as the backdrop and
+  // nodes. rAF-throttled so it stays smooth on a mid-range phone.
   const ticking = useRef(false);
   const handleScroll = useCallback(() => {
     if (ticking.current) return;
@@ -81,80 +94,62 @@ export function AdventurePath({
     return { index: levelNumber, state };
   });
 
-  // Node `top`, counting from the BOTTOM of the tall container upward —
-  // level 1 is lowest (large `top`), level `totalLevels` is highest
-  // (small `top`, just below TOP_SAFE_PADDING) — per "path starts at
-  // the bottom".
-  const topFor = (levelIndex: number) => TOP_SAFE_PADDING + (totalLevels - levelIndex) * LEVEL_SPACING;
-  const leftPctFor = (levelIndex: number) => 50 + (levelIndex % 2 === 0 ? ZIGZAG_X : -ZIGZAG_X);
-
   return (
     <div
       ref={scrollRef}
       onScroll={handleScroll}
-      className="relative h-[70vh] min-h-[420px] w-full overflow-y-auto overscroll-contain rounded-kite shadow-card"
-      style={{ WebkitOverflowScrolling: "touch" }}
+      className="relative max-h-[75vh] w-full overflow-y-auto overscroll-contain rounded-kite shadow-card"
+      style={{ WebkitOverflowScrolling: "touch", paddingBottom: BOTTOM_SAFE_PADDING }}
     >
-      {/* Backdrop image, sized to the full scrollable height so it
-          doesn't tile/repeat. */}
-      <div className="absolute inset-x-0 top-0" style={{ height: containerHeight }}>
-        <Image src={worldImage} alt="" fill className="object-cover object-top" priority />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/25" />
-      </div>
+      {/* Image-aspect box: renders the backdrop at its TRUE native ratio
+          (no object-cover crop, no stretch to an arbitrary height) so
+          the hand-traced percentage points in `pathPoints` land exactly
+          on the path drawn in the artwork. */}
+      <div className="relative w-full" style={{ aspectRatio: imageAspect }}>
+        <Image src={worldImage} alt="" fill className="object-contain" priority sizes="100vw" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/15" />
 
-      {/* Parallax layer 1 (far, slow): clouds */}
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 text-4xl opacity-70"
-        style={{ height: containerHeight, transform: `translateY(${-parallaxY * 0.15}px)` }}
-      >
-        {Array.from({ length: Math.ceil(totalLevels / 2) }, (_, i) => (
-          <span key={i} className="absolute" style={{ left: `${(i % 2 === 0 ? 12 : 68) + (i % 3) * 4}%`, top: i * LEVEL_SPACING * 2 + 40 }}>
-            ☁️
-          </span>
-        ))}
-      </div>
+        {/* Parallax leaf accents near a couple of the path points */}
+        <div
+          className="pointer-events-none absolute inset-0 text-2xl opacity-70"
+          style={{ transform: `translateY(${-parallaxY * 0.08}px)` }}
+        >
+          {points
+            .filter((_, i) => i % 2 === 0)
+            .map((p, i) => (
+              <span key={i} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${p.x}%`, top: `${Math.max(2, p.y - 6)}%` }}>
+                🌿
+              </span>
+            ))}
+        </div>
 
-      {/* Parallax layer 2 (near, faster): leafy decoration */}
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 text-2xl opacity-80"
-        style={{ height: containerHeight, transform: `translateY(${-parallaxY * 0.35}px)` }}
-      >
-        {Array.from({ length: totalLevels }, (_, i) => (
-          <span key={i} className="absolute" style={{ left: `${(i % 2 === 0 ? 82 : 6) + (i % 2) * 4}%`, top: i * LEVEL_SPACING + 90 }}>
-            🌿
-          </span>
-        ))}
-      </div>
-
-      {/* Path + nodes */}
-      <div className="relative" style={{ height: containerHeight }}>
-        <svg className="absolute inset-0 h-full w-full">
-          {levels.slice(0, -1).map((lvl) => {
-            const next = levels[lvl.index]; // levels[lvl.index] === level (lvl.index+1), since 0-based array
-            const y1 = topFor(lvl.index) + NODE_SIZE / 2;
-            const y2 = topFor(next.index) + NODE_SIZE / 2;
-            const x1 = leftPctFor(lvl.index);
-            const x2 = leftPctFor(next.index);
+        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+          {levels.slice(0, -1).map((lvl, i) => {
+            const next = levels[i + 1];
+            const p1 = points[i];
+            const p2 = points[i + 1];
             const segmentDone = next.state !== "locked";
             return (
               <line
                 key={`seg-${lvl.index}`}
-                x1={`${x1}%`}
-                y1={y1}
-                x2={`${x2}%`}
-                y2={y2}
+                x1={p1.x}
+                y1={p1.y}
+                x2={p2.x}
+                y2={p2.y}
+                vectorEffect="non-scaling-stroke"
                 stroke={segmentDone ? "#ffd94a" : "white"}
                 strokeWidth={segmentDone ? 8 : 6}
                 strokeLinecap="round"
-                strokeDasharray={segmentDone ? undefined : "3 12"}
-                opacity={segmentDone ? 1 : 0.5}
-                style={segmentDone ? { filter: "drop-shadow(0 0 6px #ffd94a)" } : undefined}
+                strokeDasharray={segmentDone ? undefined : "3 10"}
+                opacity={segmentDone ? 1 : 0.6}
+                style={segmentDone ? { filter: "drop-shadow(0 0 4px #ffd94a)" } : undefined}
               />
             );
           })}
         </svg>
 
-        {levels.map((lvl) => {
+        {levels.map((lvl, i) => {
+          const p = points[i];
           const isCurrent = lvl.state === "current";
           const isCleared = lvl.state === "cleared";
           const node = (
@@ -179,8 +174,8 @@ export function AdventurePath({
             <div
               key={lvl.index}
               ref={isCurrent ? currentNodeRef : undefined}
-              className="absolute -translate-x-1/2"
-              style={{ top: topFor(lvl.index), left: `${leftPctFor(lvl.index)}%`, opacity: lvl.state === "locked" ? 0.5 : 1 }}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ top: `${p.y}%`, left: `${p.x}%`, opacity: lvl.state === "locked" ? 0.55 : 1 }}
             >
               {isCurrent ? (
                 <Link href={levelHref} onClick={() => onLevelPress?.(lvl.index)} aria-label={`Level ${lvl.index}`}>

@@ -25,6 +25,12 @@ interface PintarChatProps {
   level: number;
   xp: number;
   streakDays: number;
+  /** A question carried over from elsewhere in the app (currently: the
+   * mission player's "Ask Pintar" link after 2 wrong attempts) — sent as
+   * a real first message right after the greeting, so the context that
+   * prompted the trip to Pintar isn't lost, instead of landing on an
+   * empty chat and having to retype the question from scratch. */
+  initialQuestion?: string;
 }
 
 // bm/en only — the engine's contract doesn't have a "both" option, so
@@ -79,7 +85,7 @@ function PintarMarkdown({ text }: { text: string }) {
   );
 }
 
-export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, streakDays }: PintarChatProps) {
+export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, streakDays, initialQuestion }: PintarChatProps) {
   const [messages, setMessages] = useState<DisplayMessage[]>([]);
   const [avatarState, setAvatarState] = useState<PintarAvatarState>("thinking");
   const [quickReplies, setQuickReplies] = useState<PintarQuickReply[]>([]);
@@ -175,9 +181,14 @@ export function PintarChat({ studentName, lang, currentTopicTitle, level, xp, st
   useEffect(() => {
     if (greetedRef.current) return;
     greetedRef.current = true;
-    callEngine(GREETING_TRIGGER, { showUserBubble: false });
-    // Only ever run once per mount — callEngine is intentionally omitted
-    // from deps here (it's recreated when props change, but re-greeting on
+    (async () => {
+      await callEngine(GREETING_TRIGGER, { showUserBubble: false });
+      if (initialQuestion) {
+        await callEngine(initialQuestion, { showUserBubble: true });
+      }
+    })();
+    // Only ever run once per mount — callEngine/initialQuestion are
+    // intentionally omitted from deps here (re-greeting or re-asking on
     // every prop change would restart the conversation).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

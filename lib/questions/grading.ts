@@ -9,17 +9,29 @@
 
 /** Normalises a student or stored answer before comparison: trims outer
  * whitespace, strips thousands-separator commas, collapses internal
- * whitespace, and lowercases. None of Congak's generators ever use a comma
- * as anything other than a thousands separator (checked against every
- * `correctAnswer:` in lib/questions/generators/*.ts — fractions use "/",
- * money uses "RM12.50", no generator emits a comma-joined list), so
- * stripping commas is safe across every topic. */
+ * whitespace, lowercases, and drops a trailing UNIT LABEL directly after
+ * a number (e.g. "10080ml" or "10080 mL" -> "10080") when doing so
+ * leaves a purely numeric value. Found via a real report: a mission
+ * asks "how much water is left" and its own hint text shows the answer
+ * WITH a unit ("10080 mL"), so a student typing it back exactly as
+ * shown — "10,080mL" — was marked wrong even though the number was
+ * correct, because the stored correctAnswer is the bare number "10080"
+ * with no unit. The unit-strip only fires when what's left is plain
+ * digits (optionally one decimal point): checked against every
+ * `correctAnswer:` in lib/missions/missionMath.ts and
+ * lib/questions/generators/*.ts, nothing relies on a trailing letter
+ * suffix surviving comparison (fractions use "/", money uses a "RM"
+ * PREFIX not a suffix, MCQ/word answers don't start with a digit so
+ * never match this pattern) — so this is safe across every topic. */
 export function normalizeAnswer(raw: string): string {
-  return raw
+  let s = raw
     .trim()
     .replace(/,/g, "")
     .replace(/\s+/g, " ")
     .toLowerCase();
+  const withUnitStripped = s.match(/^(\d+(\.\d+)?)\s*[a-z]+$/);
+  if (withUnitStripped) s = withUnitStripped[1];
+  return s;
 }
 
 export function isAnswerCorrect(studentAnswer: string, correctAnswer: string): boolean {

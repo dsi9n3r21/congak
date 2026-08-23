@@ -64,6 +64,14 @@ export default async function QuestsPage({ searchParams }: { searchParams: { mod
   const allCleared = clearedCount === worldOrder.length;
   const currentCategory = allCleared ? null : worldOrder[clearedCount];
   const journeyHref = currentCategory ? `/quests/world/${currentCategory}?mode=${mode}` : null;
+  // Only say "START" when there's genuinely nothing done yet anywhere in
+  // this mode — the moment ANY world is fully cleared, or the current
+  // world already has a level or two done, this is a returning student,
+  // not a fresh one, even though the button always points at the same
+  // href (the next uncleared level). Lynda flagged the old always-"START"
+  // wording as misleading once she had 3 worlds done and it still said
+  // "START YOUR JOURNEY" going into world 4.
+  const hasAnyProgress = clearedCount > 0 || (currentCategory ? (levelCounts[currentCategory] ?? 0) > 0 : false);
   const champion = BADGES.adventure_champion;
 
   return (
@@ -97,7 +105,15 @@ export default async function QuestsPage({ searchParams }: { searchParams: { mod
             href={journeyHref}
             className="block w-full min-h-[52px] rounded-kite bg-gradient-to-r from-kuning to-kuning-dark py-4 text-center font-display text-base font-bold text-white shadow-hero"
           >
-            <Bi text={{ ms: "MULA PENGEMBARAAN", en: "START YOUR JOURNEY" }} lang={lang} /> →
+            <Bi
+              text={
+                hasAnyProgress
+                  ? { ms: "TERUSKAN PENGEMBARAAN", en: "CONTINUE YOUR JOURNEY" }
+                  : { ms: "MULA PENGEMBARAAN", en: "START YOUR JOURNEY" }
+              }
+              lang={lang}
+            />{" "}
+            →
           </Link>
         ) : (
           <div className="rounded-kite bg-gradient-to-r from-kuning to-ungu-dark py-4 text-center font-display text-base font-bold text-white shadow-hero">
