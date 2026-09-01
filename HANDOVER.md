@@ -5023,3 +5023,44 @@ saving, and applying it (Supabase dashboard -> SQL Editor -> paste
 now in place as a safety net if something else is also wrong.
 
 Verified: `tsc --noEmit` clean.
+
+## Round: Found the real cause — stale service worker cache, not a save failure
+
+Lynda ran the diagnostic query from last round. Result: `world_levels`
+showed `number` at 1 and `measurement` at a full 8 — real, persisted,
+correct data. This conclusively rules out the "migration not applied /
+RPC silently failing" theory from last round: saving works and always
+has (at least since these rows were written).
+
+**Real root cause, found via `next.config.js`**: this app is a PWA
+(`next-pwa`) with an active service worker in production
+(`disable: process.env.NODE_ENV === "development"`). The custom
+`runtimeCaching` array (added for lesson content + images) REPLACES
+`next-pwa`'s built-in default caching rules entirely rather than merging
+with them — so whatever sensible default behavior it normally ships for
+plain page navigations was silently gone, with no rule covering regular
+page loads at all. Net effect: reopening the installed app could serve
+an OLD cached HTML snapshot of a page instead of asking the server for
+current data — matching "closes and reopens, map shows old progress"
+exactly, and very plausibly ALSO explaining why the map still looked
+wrong even after 2 rounds of path-point fixes that were verified correct
+by rendering them onto the actual images before shipping: she may have
+been looking at a cached page from BEFORE those fixes, not the current
+one.
+
+**Fix**: added an explicit `runtimeCaching` rule matching navigation
+requests (`request.mode === "navigate"`, i.e. real page loads) with a
+`NetworkFirst` strategy — tries the live network first (5s timeout),
+only falls back to a cached copy if genuinely offline. Existing
+`StaleWhileRevalidate` (lesson content) and `CacheFirst` (images) rules
+left untouched — those are fine for slow-changing content, this was
+specifically about pages showing live, per-student progress.
+
+Verified: `next.config.js` loads without error (`node -c` + a direct
+`require()` check — config isn't TypeScript so `tsc` doesn't cover it).
+
+**Not yet confirmed**: whether this was the ONLY issue, or whether the
+homepage's world-count and the map's path placement need a fresh look
+once this deploys and Lynda does a hard reload — asked her to check
+after deploying, since a stale service worker can't be fully ruled out
+as "definitely the whole story" without seeing it fixed live.
