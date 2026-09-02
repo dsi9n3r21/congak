@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/lib/actions/auth";
 import { LanguageSelector } from "@/components/student/LanguageSelector";
 import { AccessibilityToggles } from "@/components/student/AccessibilityToggles";
+import { SupportFooter } from "@/components/shared/SupportFooter";
 import { Bi } from "@/lib/i18n/Bi";
 import { UI } from "@/lib/i18n/dictionary";
 
@@ -82,6 +83,16 @@ export default async function ProfilePage() {
         </form>
       </section>
 
+      {/* Same reasoning as the parent dashboard: a "support us
+          financially / email us feedback" ask belongs somewhere an
+          adult might land, not the core mission/learning flow a child
+          is actually using. Profile/settings is the one student-side
+          screen that fits — a parent checking language or account
+          settings alongside their kid will see it, without it
+          interrupting anything a child is doing mid-lesson. Added after
+          Lynda pointed out some parents never create a separate parent
+          account at all and only ever use the student login. */}
+      <SupportFooter lang={lang} />
     </main>
   );
 }

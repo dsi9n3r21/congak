@@ -5172,3 +5172,22 @@ sell the coffee ask without also inviting the "or just tell us what's
 wrong" option.
 
 Verified: `tsc --noEmit` clean.
+
+## Round: Also linked on the student side — profile/settings page
+
+Lynda pointed out a real gap: some parents never create a separate
+parent account at all, and only ever use their kid's student login
+directly — meaning the parent-dashboard-only placement from last round
+would never reach them.
+
+Agreed and added `SupportFooter` to the student profile/settings page
+(`app/(student)/profile/page.tsx`) as well — deliberately the settings
+screen specifically, not the homepage/dashboard/quests/any actual
+learning screen. Reasoning unchanged from before (this is an adult-
+relevant ask), just recognizing that "adult-relevant" and "parent
+dashboard" aren't the same set of people — a parent checking their
+kid's language setting or logging them out lands on profile too, and
+it's a quiet corner that doesn't interrupt an actual lesson/mission in
+progress.
+
+Verified: `tsc --noEmit` clean.
