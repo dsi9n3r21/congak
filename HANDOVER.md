@@ -5112,3 +5112,63 @@ Verified: `tsc --noEmit` clean. New standalone check confirms
 `WORLD_PATH_POINTS[mode].length === LEVELS_PER_WORLD` for all 3 modes
 (would have caught the very type of mismatch `AdventurePath`'s fallback
 logic is designed to survive, but shouldn't be relied upon silently).
+
+## Round: New public "Buy Congak a Coffee" support page
+
+Lynda wants to distribute Congak widely and is preparing for real
+hosting + Pintar API-token costs at scale. Asked for a new public page
+with her Touch 'n Go eWallet QR code, explaining Congak is free and
+inviting optional support — explicitly asked for better copy than her
+own draft.
+
+Shipped `/coffee` (`app/coffee/page.tsx`, public — no auth, matches the
+pattern of the existing root marketing `app/page.tsx`), with copy in
+`lib/content/coffeeCopy.ts` following the same bilingual-content-file
+convention as `homepageCopy.ts`. Her QR card image saved as
+`public/support/tng-qr.webp` (converted from the uploaded JPG, ~55KB).
+
+Copy leans on being explicit and repeated about "optional" (said twice,
+not buried in fine print) and honest about where the money actually
+goes (hosting + Pintar's per-use AI tokens, not vague "support us")
+rather than generic charity-page language — matches the standing project
+value of not overselling/fabricating claims (same principle documented
+in `homepageCopy.ts`'s own header comment about swapping placeholder
+stats for real ones).
+
+**Not done, flagged**: no link to `/coffee` was added anywhere else in
+the app (nav, footer, dashboard) — Lynda's ask was specifically for the
+page itself, presumably to link directly when sharing Congak. Worth a
+follow-up if she wants it discoverable from inside the app too (e.g. a
+small link in the parent dashboard or homepage footer).
+
+Verified: `tsc --noEmit` clean.
+
+## Round: Coffee page linked in-app, feedback email added
+
+Follow-up to the `/coffee` page: Lynda asked for it to be linked from
+inside the app too, plus a feedback email (razsoulconsultancy@gmail.com)
+with a line inviting people to share thoughts — asked for a rephrase of
+her own draft.
+
+**Feedback line, rephrased**: her draft ("Share us your thought so we
+can make Congak better together") became "Found a bug, or have an idea
+to make Congak better? We'd genuinely love to hear it." — more natural
+English/BM phrasing, same warm intent, plus gives people concrete
+categories (bug vs idea) rather than an open-ended "thoughts" which is
+harder to actually act on when replying to an email.
+
+**Where it's linked**: deliberately NOT on student-facing screens —
+"support us financially" and "email us feedback" are asks for the
+adult, not the child playing missions. Added to: (1) the public
+marketing homepage's existing footer (`components/home/Homepage.tsx`) —
+a "Support Us" link alongside the existing Login/Sign up links, plus
+the feedback email; (2) the parent dashboard
+(`app/parent/dashboard/page.tsx`), which had no footer at all before —
+added a new shared `SupportFooter` component
+(`components/shared/SupportFooter.tsx`) for this, coffee link + email,
+reusable if a 3rd surface wants it later. The `/coffee` page itself also
+got its own feedback section (same copy, same email) so it doesn't only
+sell the coffee ask without also inviting the "or just tell us what's
+wrong" option.
+
+Verified: `tsc --noEmit` clean.

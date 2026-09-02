@@ -323,7 +323,16 @@ export function Homepage() {
           <Link href="/auth/signup" className="underline underline-offset-2">
             <Bi text={HOME.footer.signup} lang={lang} />
           </Link>
+          <Link href="/coffee" className="underline underline-offset-2">
+            <Bi text={{ ms: "Sokong Kami", en: "Support Us" }} lang={lang} />
+          </Link>
         </div>
+        <p className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-ink/40">
+          <Bi text={{ ms: "Ada cadangan?", en: "Got feedback?" }} lang={lang} />
+          <a href="mailto:razsoulconsultancy@gmail.com" className="underline">
+            razsoulconsultancy@gmail.com
+          </a>
+        </p>
         <p className="mt-4 text-[11px] text-ink/30">© {new Date().getFullYear()} Congak</p>
       </footer>
     </main>

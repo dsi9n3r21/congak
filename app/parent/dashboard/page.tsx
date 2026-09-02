@@ -4,6 +4,7 @@ import { LinkChildForm } from "@/components/parent/LinkChildForm";
 import { logout } from "@/lib/actions/auth";
 import { Bi } from "@/lib/i18n/Bi";
 import { UI } from "@/lib/i18n/dictionary";
+import { SupportFooter } from "@/components/shared/SupportFooter";
 
 interface LinkedChild {
   id: string;
@@ -96,6 +97,7 @@ export default async function ParentDashboardPage() {
           </Link>
         ))}
       </section>
+      <SupportFooter lang={lang} />
     </main>
   );
 }
