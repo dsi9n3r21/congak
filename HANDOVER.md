@@ -5064,3 +5064,51 @@ homepage's world-count and the map's path placement need a fresh look
 once this deploys and Lynda does a hard reload — asked her to check
 after deploying, since a stale service worker can't be fully ruled out
 as "definitely the whole story" without seeing it fixed live.
+
+## Round: Actually re-checked the screenshot, found real remaining issues, fixed them
+
+Lynda pushed back on the previous round's "looks correct" assessment.
+Right call — I'd described the screenshot from memory instead of
+inspecting it closely, and there WERE real problems in it.
+
+**Path placement — genuinely still wrong, but only at the very top of
+each world.** Zoomed into all 3 panels of her screenshot pixel-by-pixel.
+Levels 1-7 in each world were correctly on-path. Level 8 (the final
+node before reaching "B") was NOT: Number Forest's landed in open sky
+above the mountain peaks, Easy's sat at balloon-height above the Fun
+Park sign instead of on the ground, Medium's sat just above the "KEEP
+GOING" billboard instead of on it. All three re-traced against the grid
+overlay again and re-verified by rendering the corrected points back
+onto the actual images before shipping this time (same discipline as
+before, just re-applied more carefully to the one node that was still
+off). This is presumably also why my "already correct" read last round
+was wrong — I described the panels from memory/general impression
+rather than zooming into the specific area she was pointing at.
+
+**The recurring "8 vs 9" / "homepage says 4, inside says 1" confusion —
+addressed with a real design change, not just another explanation.**
+For context (not a bug, but worth being explicit about since it's come
+up twice): "4/9 worlds" and "Level 1 of 8" were never contradicting each
+other — 4 WHOLE worlds cleared out of 9 total, and the 5th world hasn't
+been started yet, so Level 1 there is exactly correct. But two numbers
+that close together, shown in different corners of the flow, are a
+legitimate readability problem regardless of being "technically
+correct" — a student (or a parent skimming quickly) shouldn't have to
+puzzle through this each time. Fixed by changing
+`LEVELS_PER_WORLD` from 8 to 5 (`lib/missions/worldConfig.ts`) — a
+number nobody could mistake for "9". Side benefits: less title
+repetition on the map (5 slots to fill from a category's mission pool
+instead of 8, so a 2-mission category now only repeats once instead of
+three times), and each world completes faster, which is probably better
+pacing for a Year 4-6 audience anyway. `WORLD_PATH_POINTS` re-derived to
+exactly 5 points per mode (a verified-on-path subset of the previous 8,
+re-rendered onto the images to confirm before shipping, not just
+trusted by inheritance). Existing saved progress is unaffected —
+`clearedCount` is read via `Math.min(saved_count, LEVELS_PER_WORLD)`,
+so a student who'd already hit 8/8 under the old system now correctly
+reads as complete (capped at 5/5), nothing lost or corrupted.
+
+Verified: `tsc --noEmit` clean. New standalone check confirms
+`WORLD_PATH_POINTS[mode].length === LEVELS_PER_WORLD` for all 3 modes
+(would have caught the very type of mismatch `AdventurePath`'s fallback
+logic is designed to survive, but shouldn't be relied upon silently).
