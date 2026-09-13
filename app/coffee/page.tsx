@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Coffee, Heart } from "lucide-react";
+import { Coffee, Heart, ExternalLink } from "lucide-react";
 import { Bi } from "@/lib/i18n/Bi";
 import { COFFEE } from "@/lib/content/coffeeCopy";
 
@@ -50,13 +50,20 @@ export default function CoffeePage() {
         ))}
       </section>
 
-      {/* ---- The QR ---- */}
-      <section className="mx-5 mt-6 rounded-kite bg-white p-5 text-center shadow-card">
-        <div className="relative mx-auto aspect-[1031/1595] w-full max-w-[280px] overflow-hidden rounded-kite shadow-hero">
-          <Image src="/support/tng-qr.webp" alt="Touch 'n Go eWallet QR code" fill className="object-contain" />
-        </div>
+      {/* ---- Ko-fi CTA ---- */}
+      <section className="mx-5 mt-6 rounded-kite bg-white p-6 text-center shadow-card">
+        <a
+          href={COFFEE.koFiUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-kite bg-gradient-to-r from-kuning to-kuning-dark px-6 font-display text-base font-bold text-white shadow-hero"
+        >
+          <Coffee size={20} strokeWidth={2.5} />
+          <Bi text={COFFEE.koFiButtonLabel} lang={lang} />
+          <ExternalLink size={16} strokeWidth={2.5} />
+        </a>
         <p className="mt-3 text-xs font-semibold text-ink/50">
-          <Bi text={COFFEE.qrCaption} lang={lang} />
+          <Bi text={COFFEE.koFiCaption} lang={lang} />
         </p>
       </section>
 

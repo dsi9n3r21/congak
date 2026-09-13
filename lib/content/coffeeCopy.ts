@@ -10,6 +10,10 @@ import type { Bilingual } from "@/lib/i18n/dictionary";
  * to be honest about WHERE the money goes (hosting + Pintar's AI
  * tokens) rather than vague, and to say "optional" more than once
  * rather than bury it in fine print.
+ *
+ * Was originally built around a personal Touch 'n Go eWallet QR code —
+ * swapped for a Ko-fi link after Lynda decided showing her personal QR
+ * publicly wasn't appropriate. Ko-fi page linked to her PayPal.
  */
 export const COFFEE = {
   eyebrow: { ms: "Sokong Congak", en: "Support Congak" } satisfies Bilingual,
@@ -39,9 +43,11 @@ export const COFFEE = {
     en: "Nothing here is required. Every lesson, every practice question, every mission stays free for everyone, always. This is just a way to say thank you, if you'd like to.",
   } satisfies Bilingual,
 
-  qrCaption: {
-    ms: "Imbas dengan mana-mana aplikasi perbankan atau e-dompet",
-    en: "Scan with any banking app or e-wallet",
+  koFiUrl: "https://ko-fi.com/razsoul",
+  koFiButtonLabel: { ms: "Belanja Kopi di Ko-fi", en: "Buy a Coffee on Ko-fi" } satisfies Bilingual,
+  koFiCaption: {
+    ms: "Anda akan dibawa ke Ko-fi untuk menyumbang dengan selamat melalui PayPal.",
+    en: "You'll be taken to Ko-fi to give securely via PayPal.",
   } satisfies Bilingual,
 
   thanksHeadline: { ms: "Terima kasih kerana menggunakan Congak 🪁", en: "Thank you for using Congak 🪁" } satisfies Bilingual,
