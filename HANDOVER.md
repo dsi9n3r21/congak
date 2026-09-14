@@ -5276,3 +5276,36 @@ parent/teacher; if "let a parent see how their kid worked through it"
 is ever wanted, that would need actual persistence (e.g. saving the
 canvas as an image with the attempt) which is a bigger, separate
 feature.
+
+## Round: Fixed — drawing on the canvas got wiped when tapping the answer field
+
+Lynda tested the new free-draw working area on a real phone: drew out
+411 × 38 correctly, then tapped the "Final answer" field right below
+it — and the whole drawing vanished.
+
+**Root cause**: `WorkingCanvas.tsx`'s resize logic set `canvas.width`/
+`canvas.height` on every `window resize` event to keep the drawing
+buffer matching the on-screen size. But setting a `<canvas>` element's
+width or height ALWAYS clears its contents — even when set to the exact
+value it already had. And on mobile, focusing a text input opens the
+on-screen keyboard, which shrinks the visible viewport, which fires a
+`resize` event on `window` — even though the canvas's own container
+never actually changed size. So every tap into the answer field was
+silently triggering a same-size "resize" that wiped the canvas anyway.
+
+**Fixed** with two guards, not a workaround: (1) compare the newly
+computed width/height against the canvas's current width/height first,
+and skip the resize entirely if nothing actually changed — the keyboard-
+open case never reaches the wipe at all now; (2) for a resize that IS
+real (rotating the phone, genuinely different container size), snapshot
+the current drawing via `canvas.toDataURL()` before resizing, then
+redraw it onto the freshly-sized canvas — so even a real resize doesn't
+lose a student's work. `hasDrawnRef` (a ref, not just the `hasDrawn`
+state) tracks whether there's anything to snapshot, since the resize
+handler is set up once in a `[]`-dependency effect and would otherwise
+close over a stale value of `hasDrawn`.
+
+Verified: `tsc --noEmit` clean against the real project (working copy +
+full `node_modules` from the previous round both happened to survive
+this time, so this was checked directly rather than rebuilt from
+memory).

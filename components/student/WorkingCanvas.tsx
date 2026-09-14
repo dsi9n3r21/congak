@@ -28,6 +28,7 @@ export const WorkingCanvas = forwardRef<WorkingCanvasHandle, { lang: Lang; disab
   const containerRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
+  const hasDrawnRef = useRef(false);
   const [hasDrawn, setHasDrawn] = useState(false);
   const [tool, setTool] = useState<"pen" | "eraser">("pen");
 
@@ -35,6 +36,7 @@ export const WorkingCanvas = forwardRef<WorkingCanvasHandle, { lang: Lang; disab
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (canvas && ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasDrawnRef.current = false;
     setHasDrawn(false);
   };
 
@@ -43,6 +45,17 @@ export const WorkingCanvas = forwardRef<WorkingCanvasHandle, { lang: Lang; disab
   // Size the canvas's drawing buffer to match its on-screen size at the
   // device's actual pixel ratio — without this, lines look blurry on
   // phone screens and drawing coordinates drift from touch position.
+  //
+  // Real bug fixed here: setting canvas.width/height ALWAYS wipes its
+  // contents, even to an unchanged value — and mobile browsers fire a
+  // window `resize` event when the on-screen keyboard opens (the
+  // viewport shrinks) even though this canvas's own container size
+  // never changed. Net effect: tapping the "final answer" field right
+  // below the canvas silently erased anything just drawn. Fixed with
+  // two guards: skip the resize entirely when the computed size hasn't
+  // actually changed, and snapshot + restore the drawing across any
+  // resize that IS real (e.g. rotating the phone), so neither case can
+  // lose a student's work.
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -50,8 +63,13 @@ export const WorkingCanvas = forwardRef<WorkingCanvasHandle, { lang: Lang; disab
     const resize = () => {
       const rect = container.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
+      const newWidth = Math.round(rect.width * dpr);
+      const newHeight = Math.round(rect.height * dpr);
+      if (canvas.width === newWidth && canvas.height === newHeight) return;
+
+      const snapshot = hasDrawnRef.current ? canvas.toDataURL() : null;
+      canvas.width = newWidth;
+      canvas.height = newHeight;
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
       const ctx = canvas.getContext("2d");
@@ -59,6 +77,11 @@ export const WorkingCanvas = forwardRef<WorkingCanvasHandle, { lang: Lang; disab
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
+        if (snapshot) {
+          const img = new Image();
+          img.onload = () => ctx.drawImage(img, 0, 0, rect.width, rect.height);
+          img.src = snapshot;
+        }
       }
     };
     resize();
@@ -76,6 +99,7 @@ export const WorkingCanvas = forwardRef<WorkingCanvasHandle, { lang: Lang; disab
     e.currentTarget.setPointerCapture(e.pointerId);
     drawingRef.current = true;
     lastPointRef.current = getPoint(e);
+    hasDrawnRef.current = true;
     setHasDrawn(true);
   };
 
