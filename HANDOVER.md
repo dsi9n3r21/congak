@@ -5191,3 +5191,88 @@ it's a quiet corner that doesn't interrupt an actual lesson/mission in
 progress.
 
 Verified: `tsc --noEmit` clean.
+
+## Round: Free-draw "show your working" — real feedback from a Year 5 student
+
+Lynda relayed feedback via a teacher WhatsApp group: a Year 5 student
+found the typed "show your working" box awkward for actual math working
+(column addition, long division don't type out naturally). The teacher's
+own suggestion was structured number-boxes, with free-draw as the
+fallback "if that's not feasible" — went with free-draw since one
+canvas component works identically across every operation type, where
+number-grids would need a different layout per operation (addition
+columns vs. long-division brackets vs. multiplication grids).
+
+**Found the pattern was tripled first.** The exact "show your working"
+block (label + `MathSymbolBar` + `textarea`) was duplicated verbatim
+across `QuestionPlayer.tsx`, `QuizPlayer.tsx`, and `ExamFlow.tsx` —
+never shared. `workingText` in all three was confirmed to be pure
+ephemeral UI state (checked every usage — never read for grading,
+persistence, or submission anywhere), which meant the whole thing could
+be pulled into one self-contained component without any of the 3
+parents needing to change how they work otherwise.
+
+**Built**: `components/student/WorkingCanvas.tsx` — a free-draw
+scratchpad using Pointer Events (one code path for finger, mouse, and
+stylus alike, rather than separate touch/mouse handlers), pen + eraser
+toggle, a Clear button, and canvas sizing that accounts for
+`devicePixelRatio` so lines aren't blurry on phone screens. The
+requested "make sure they know they can write there" instruction is a
+ghost placeholder INSIDE the empty canvas ("✏️ Tap and write here with
+your finger or a stylus") that disappears the moment a student draws
+anything — the same pattern signature pads use, chosen over a caption
+below the box since captions are easy to skip past and a prompt sitting
+right where you're meant to act isn't.
+
+`components/student/WorkingArea.tsx` — wraps the canvas together with
+the original typed textarea + `MathSymbolBar` behind a Draw/Type toggle
+pill, **defaulting to Draw** per the specific feedback (typing was the
+friction point; Draw is the fix, Type stays one tap away for students
+who prefer it). Owns all its state internally; a parent only passes
+`lang`, `disabled`, and `resetSignal` (anything whose identity changes
+on a new question — used `question`/`index` objects already in scope in
+each of the 3 players) and the component clears both the canvas and any
+typed text automatically.
+
+All 3 players (`QuestionPlayer`, `QuizPlayer`, `ExamFlow`) now render
+`<WorkingArea>` in place of their old duplicated block; each had its own
+now-dead `workingText`/`workingTextareaRef` state and `MathSymbolBar`
+import removed. `MissionPlayer.tsx`'s `MathSymbolBar` usage is
+unrelated (attached to the actual final-answer input, not a working
+scratchpad — missions never had a separate "show working" box) and was
+correctly left untouched.
+
+**Also found and fixed while verifying, unrelated to today's feature**:
+`app/coffee/page.tsx` was still present in the repo and now broken —
+Lynda had asked for that page to be removed entirely in favor of linking
+straight to Ko-fi, `lib/content/coffeeCopy.ts` was already trimmed down
+accordingly in an earlier round, but the page itself was apparently
+never deleted from the live repo, so it was referencing copy fields
+that no longer exist. This would have failed the next real `next build`
+regardless of anything in this round. Deleted it.
+
+**Verified properly this time**: this round started from a fresh
+`unzip` of Lynda's actual current repo (my previous local working copy
+had been lost to a sandbox reset partway through the last few rounds'
+patches — those were rebuilt from memory without a live checkout to
+verify against). Ran a full `npm install` (794 packages, not a partial
+install) and `tsc --noEmit` against the complete real project — clean,
+zero errors, including catching and fixing 4 leftover `setWorkingText()`
+reset calls the initial edit missed (one in QuestionPlayer, one in
+QuizPlayer, two in ExamFlow) that a narrower check wouldn't have caught.
+`next build` itself still hits the same pre-existing sandbox-only
+Google Fonts network restriction noted in every prior round (no
+internet access to fonts.googleapis.com here) — environment limitation,
+not a code issue; `tsc` is the meaningful signal and it's clean.
+
+**Not done, flagged**: MissionPlayer's Adventure Map challenges don't
+have a "show working" box at all (missions are single final-answer
+challenges) — if handwritten working would help there too, that's a
+separate, smaller addition (just adding `<WorkingArea>` to
+MissionPlayer's question stage) rather than something this round
+touched. The canvas is a pure scratchpad like the typed version it
+replaces — nothing drawn is saved, graded, or visible to a
+parent/teacher; if "let a parent see how their kid worked through it"
+is ever wanted, that would need actual persistence (e.g. saving the
+canvas as an image with the attempt) which is a bigger, separate
+feature.

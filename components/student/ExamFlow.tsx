@@ -11,7 +11,7 @@ import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
 import { OptionLabel, optionFontClass } from "@/components/student/OptionLabel";
 import { QuestionDiagram } from "@/components/student/diagrams/QuestionDiagram";
-import { MathSymbolBar } from "@/components/student/MathSymbolBar";
+import { WorkingArea } from "@/components/student/WorkingArea";
 
 // 90 minutes mirrors a real Malaysian primary school exam paper length
 // (roughly matching a combined Kertas 1 + Kertas 2 sitting); question count
@@ -53,9 +53,7 @@ export function ExamFlow({ lang }: { lang: Lang }) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [currentValue, setCurrentValue] = useState("");
-  const [workingText, setWorkingText] = useState("");
   const answerInputRef = useRef<HTMLInputElement>(null);
-  const workingTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [result, setResult] = useState<ExamResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -99,7 +97,6 @@ export function ExamFlow({ lang }: { lang: Lang }) {
     setIndex(0);
     setAnswers([]);
     setCurrentValue("");
-    setWorkingText("");
     setPhase("active");
   }
 
@@ -114,7 +111,6 @@ export function ExamFlow({ lang }: { lang: Lang }) {
     }
     setAnswers(updated);
     setCurrentValue("");
-    setWorkingText("");
     setIndex((i) => i + 1);
   }
 
@@ -214,25 +210,7 @@ export function ExamFlow({ lang }: { lang: Lang }) {
             </div>
           ) : (
             <>
-              <div className="mt-5">
-                <label className="mb-1.5 block text-xs font-semibold text-ink/60">
-                  <Bi text={UI.showWorking} lang={lang} />
-                </label>
-                <div className="mb-2">
-                  <MathSymbolBar inputRef={workingTextareaRef} value={workingText} onChange={setWorkingText} />
-                </div>
-                <textarea
-                  ref={workingTextareaRef}
-                  value={workingText}
-                  onChange={(e) => setWorkingText(e.target.value)}
-                  placeholder={lang === "en" ? "Work it out here..." : "Buat kira-kira di sini..."}
-                  rows={10}
-                  className="w-full min-h-[220px] resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
-                />
-                <p className="mt-1 text-[11px] text-ink/40">
-                  <Bi text={UI.showWorkingHint} lang={lang} />
-                </p>
-              </div>
+              <WorkingArea lang={lang} resetSignal={index} />
               <label className="mb-1.5 mt-4 block text-xs font-semibold text-ink/60">
                 <Bi text={UI.finalAnswer} lang={lang} />
               </label>

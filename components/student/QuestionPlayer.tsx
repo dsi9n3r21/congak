@@ -13,7 +13,7 @@ import { UI } from "@/lib/i18n/dictionary";
 import { Bi } from "@/lib/i18n/Bi";
 import { OptionLabel, optionFontClass } from "@/components/student/OptionLabel";
 import { QuestionDiagram } from "@/components/student/diagrams/QuestionDiagram";
-import { MathSymbolBar } from "@/components/student/MathSymbolBar";
+import { WorkingArea } from "@/components/student/WorkingArea";
 
 type Status = "answering" | "correct" | "incorrect";
 
@@ -22,9 +22,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
   const [question, setQuestion] = useState<GeneratedQuestion>(() => generateFromTemplate(topic, 0));
   const [status, setStatus] = useState<Status>("answering");
   const [inputValue, setInputValue] = useState("");
-  const [workingText, setWorkingText] = useState("");
   const answerInputRef = useRef<HTMLInputElement>(null);
-  const workingTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [mistakeHint, setMistakeHint] = useState<Bilingual | null>(null);
   const [stats, setStats] = useState({ correct: 0, attempted: 0 });
@@ -89,7 +87,6 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
       setQuestion(generateFromTemplate(topic, nextIndex));
       setStatus("answering");
       setInputValue("");
-      setWorkingText("");
       setSelected(null);
       setMistakeHint(null);
       questionStartRef.current = Date.now();
@@ -136,26 +133,7 @@ export function QuestionPlayer({ topic, lang }: { topic: TopicContent; lang: Lan
 
         {question.type !== "mcq" && (
           <>
-            <div className="mt-5">
-              <label className="mb-1.5 block text-xs font-semibold text-ink/60">
-                <Bi text={UI.showWorking} lang={lang} />
-              </label>
-              <div className="mb-2">
-                <MathSymbolBar inputRef={workingTextareaRef} value={workingText} onChange={setWorkingText} disabled={status !== "answering"} />
-              </div>
-              <textarea
-                ref={workingTextareaRef}
-                value={workingText}
-                disabled={status !== "answering"}
-                onChange={(e) => setWorkingText(e.target.value)}
-                placeholder={lang === "en" ? "Work it out here..." : "Buat kira-kira di sini..."}
-                rows={10}
-                className="w-full min-h-[220px] resize-y rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base leading-relaxed focus:border-ungu focus:outline-none"
-              />
-              <p className="mt-1 text-[11px] text-ink/40">
-                <Bi text={UI.showWorkingHint} lang={lang} />
-              </p>
-            </div>
+            <WorkingArea lang={lang} disabled={status !== "answering"} resetSignal={question} />
 
             <label className="mb-1.5 mt-4 block text-xs font-semibold text-ink/60">
               <Bi text={UI.finalAnswer} lang={lang} />
