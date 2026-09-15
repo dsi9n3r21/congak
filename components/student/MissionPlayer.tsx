@@ -12,7 +12,7 @@ import { getMissionById } from "@/lib/missions/missions";
 import { BADGES } from "@/lib/missions/badges";
 import { completeMission } from "@/lib/actions/missions";
 import { isAnswerCorrect } from "@/lib/questions/grading";
-import { MathSymbolBar } from "@/components/student/MathSymbolBar";
+import { WorkingArea } from "@/components/student/WorkingArea";
 
 type Stage = "intro" | "question" | "success" | "reward" | "reflection";
 
@@ -268,6 +268,16 @@ export function MissionPlayer({
             <Bi text={t(draw.questionText)} lang={lang} />
           </p>
 
+          {/* Missions never had a separate scratchpad — the math symbol
+              bar (with ÷ and =) used to sit right on the FINAL ANSWER
+              field, which invited exactly the bug a student hit: typing
+              the whole working ("0.6÷2= 0.3") into the answer box
+              instead of just the result, and getting marked wrong for
+              it. Giving missions the same Draw/Type scratchpad the
+              other 3 players already have fixes this at the source —
+              the answer box is only for the final number now. */}
+          <WorkingArea lang={lang} disabled={stage !== "question"} resetSignal={draw} />
+
           <input
             ref={answerInputRef}
             type="text"
@@ -276,12 +286,9 @@ export function MissionPlayer({
             onKeyDown={(e) => {
               if (e.key === "Enter") submit();
             }}
-            placeholder={lang === "en" ? "Type your answer..." : "Taip jawapan..."}
+            placeholder={lang === "en" ? "Final answer only..." : "Jawapan akhir sahaja..."}
             className="mt-4 w-full rounded-kite border-2 border-ink/10 px-4 py-3 font-num text-base focus:border-ungu focus:outline-none"
           />
-          <div className="mt-2.5">
-            <MathSymbolBar inputRef={answerInputRef} value={answer} onChange={setAnswer} />
-          </div>
 
           <button
             onClick={submit}

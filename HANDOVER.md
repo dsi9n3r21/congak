@@ -5309,3 +5309,42 @@ Verified: `tsc --noEmit` clean against the real project (working copy +
 full `node_modules` from the previous round both happened to survive
 this time, so this was checked directly rather than rebuilt from
 memory).
+
+## Round: Real bug — mission answer marked wrong because it had nowhere else to show working
+
+Lynda reported a correct answer marked wrong twice in a row: student
+typed "0.6÷2= 0.3" into the answer box for a question whose real answer
+is "0.3" — the full expression, not just the result.
+
+**Root cause, found by checking the actual source**: `MissionPlayer.tsx`
+never had a separate "show your working" area at all — unlike
+QuestionPlayer/QuizPlayer/ExamFlow (which just got one this round), the
+`MathSymbolBar` (with its ÷ and = buttons) was attached DIRECTLY to the
+final-answer input. With nowhere else to work through the problem, a
+student naturally used the only input available and typed the whole
+calculation — and `isAnswerCorrect` correctly, if unhelpfully, said
+"0.6÷2= 0.3" doesn't equal "0.3".
+
+**Fixed at the source, not just patched around**: MissionPlayer now
+gets the same `<WorkingArea>` Draw/Type scratchpad the other 3 players
+have (using `draw` — the current math-draw object — as its
+`resetSignal`, since a new one is generated per mission attempt). The
+answer input's placeholder changed from generic "Type your answer..."
+to "Final answer only..." to reinforce the distinction now that there's
+somewhere else for the rest of it to go.
+
+**Also added a safety net in `lib/questions/grading.ts`**: if a
+student's raw input contains "=", `normalizeAnswer` now keeps only
+what's after the LAST "=" before comparing — so even if someone still
+types a full expression into an answer box out of habit (or hasn't
+reloaded to see the new scratchpad yet), the final value alone gets
+graded correctly. Verified this never fires on the correctAnswer side
+of any comparison (no stored answer in the codebase contains "=").
+
+Verified: `tsc --noEmit` clean. Targeted test with the exact string from
+the screenshot ("0.6÷2= 0.3" against correct answer "0.3") now passes,
+alongside 7 other cases covering the earlier unit-suffix fix, fractions,
+and money to confirm no regressions — 8/8. Also re-ran the full mission
+smoke test (870 draws across every mission/variant/mode) checking each
+generator's own `correctAnswer` still grades as correct against itself
+— 0 mismatches.

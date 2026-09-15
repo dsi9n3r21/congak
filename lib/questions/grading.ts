@@ -22,10 +22,22 @@
  * lib/questions/generators/*.ts, nothing relies on a trailing letter
  * suffix surviving comparison (fractions use "/", money uses a "RM"
  * PREFIX not a suffix, MCQ/word answers don't start with a digit so
- * never match this pattern) — so this is safe across every topic. */
+ * never match this pattern) — so this is safe across every topic.
+ *
+ * Also strips a full worked expression down to just its result: a
+ * student can type "0.6÷2= 0.3" instead of just "0.3" (most likely
+ * MissionPlayer, where the math symbol bar — with a "=" button — used
+ * to sit directly on the final-answer field with no separate
+ * scratchpad, actively inviting this). Splits on the LAST "=" and
+ * keeps only what's after it. Safe against every stored correctAnswer
+ * too — none of them contain "=", so this never fires on that side of
+ * the comparison. */
 export function normalizeAnswer(raw: string): string {
-  let s = raw
-    .trim()
+  let s = raw.trim();
+  if (s.includes("=")) {
+    s = s.slice(s.lastIndexOf("=") + 1).trim();
+  }
+  s = s
     .replace(/,/g, "")
     .replace(/\s+/g, " ")
     .toLowerCase();
